@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2024-05-23
+### Merged
+- **Feature Complete:** Merged all features from `jules-3728563315125857798-70eb2013` into `master`.
+- **Documentation:** Added `DASHBOARD.md` for submodule tracking.
+- **Standards:** Updated `AGENTS.md` with comprehensive universal instructions.
+
 ## [1.0.0] - 2024-05-23
 ### Added
 - **60 FPS Support:** Game now runs at 60Hz. Logic update rate adjusted to match.
