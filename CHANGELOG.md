@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2] - 2024-05-23
+### Maintenance
+- **Submodules:** Updated all submodules to their latest upstream versions.
+  - `doxygen-awesome-css` updated to v2.4.1.
+  - `tools/asm-differ` updated to latest main.
+  - `tools/blender/fast64` updated to latest main.
+  - `tools/decomp-permuter` updated to latest main.
+  - `tools/torch` updated to latest main.
+- **Documentation:** Updated `DASHBOARD.md` and `PROJECT_STRUCTURE.md` to reflect the new submodule status.
+
 ## [1.0.1] - 2024-05-23
 ### Merged
 - **Feature Complete:** Merged all features from `jules-3728563315125857798-70eb2013` into `master`.
