@@ -194,6 +194,16 @@ UNUSED s16 D_800DC590 = 0;
 f32 gVBlankTimer = 0.0f;
 f32 gCourseTimer = 0.0f;
 
+static OSTime sLastTime = 0;
+static OSTime sAccumulator = 0;
+
+// New Feature Settings
+s32 gEnable60FPS = 0;
+s32 gEnableWidescreen = 0;
+s32 gEnableFastBoot = 0;
+s32 gDisableRubberBanding = 0;
+s32 gUnlockAll = 0;
+
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
     thread->queue = NULL;
@@ -465,7 +475,12 @@ void display_and_vsync(void) {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void*) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+
+    // If 60 FPS mode is NOT enabled, wait for a second VBlank to maintain 30 FPS.
+    if (!gEnable60FPS) {
+        osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    }
+
     crash_screen_set_framebuffer(gPhysicalFramebuffers[sRenderedFramebuffer]);
 
     if (++sRenderedFramebuffer == 3) {
@@ -566,13 +581,45 @@ void setup_game_memory(void) {
  *
  */
 void game_init_clear_framebuffer(void) {
-    gGamestateNext = 0; // = START_MENU_FROM_QUIT?
+    gGamestateNext = START_MENU_FROM_QUIT;
+    if (gEnableFastBoot) {
+        gMenuSelection = START_MENU;
+    }
     clear_framebuffer(0);
 }
 
 void race_logic_loop(void) {
     s16 i;
     u16 rotY;
+
+    if (gEnable60FPS) {
+        OSTime currentTime = osGetTime();
+        if (sLastTime == 0) {
+            sLastTime = currentTime;
+        }
+        OSTime deltaTime = currentTime - sLastTime;
+        sLastTime = currentTime;
+
+        // Cap delta time to prevent spiral of death (max 4 frames)
+        if (deltaTime > OS_USEC_TO_CYCLES(66664)) {
+            deltaTime = OS_USEC_TO_CYCLES(66664);
+        }
+
+        sAccumulator += deltaTime;
+
+        OSTime tickDuration = OS_USEC_TO_CYCLES(16666); // ~60Hz logic rate
+
+        gTickSpeed = 0;
+        while (sAccumulator >= tickDuration) {
+            gTickSpeed++;
+            sAccumulator -= tickDuration;
+        }
+        // Safety cap
+        if (gTickSpeed > 5) gTickSpeed = 5;
+    } else {
+        sLastTime = 0; // Reset for when we switch back
+        sAccumulator = 0;
+    }
 
     gMatrixObjectCount = 0;
     gMatrixEffectCount = 0;
@@ -594,7 +641,9 @@ void race_logic_loop(void) {
 
     switch (gActiveScreenMode) {
         case SCREEN_MODE_1P:
-            gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                gTickSpeed = 2;
+            }
             replays_loop();
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
@@ -653,10 +702,12 @@ void race_logic_loop(void) {
             break;
 
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
-            if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
-            } else {
-                gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                if (gCurrentCourseId == COURSE_DK_JUNGLE) {
+                    gTickSpeed = 3;
+                } else {
+                    gTickSpeed = 2;
+                }
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
@@ -698,10 +749,12 @@ void race_logic_loop(void) {
 
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL:
 
-            if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
-            } else {
-                gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                if (gCurrentCourseId == COURSE_DK_JUNGLE) {
+                    gTickSpeed = 3;
+                } else {
+                    gTickSpeed = 2;
+                }
             }
 
             if (gIsGamePaused == 0) {
@@ -744,32 +797,34 @@ void race_logic_loop(void) {
             break;
 
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
-            if (gPlayerCountSelection1 == 3) {
-                switch (gCurrentCourseId) {
-                    case COURSE_BOWSER_CASTLE:
-                    case COURSE_MOO_MOO_FARM:
-                    case COURSE_SKYSCRAPER:
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 3;
-                        break;
-                    default:
-                        gTickSpeed = 2;
-                        break;
-                }
-            } else {
-                // Four players
-                switch (gCurrentCourseId) {
-                    case COURSE_BLOCK_FORT:
-                    case COURSE_DOUBLE_DECK:
-                    case COURSE_BIG_DONUT:
-                        gTickSpeed = 2;
-                        break;
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 4;
-                        break;
-                    default:
-                        gTickSpeed = 3;
-                        break;
+            if (!gEnable60FPS) {
+                if (gPlayerCountSelection1 == 3) {
+                    switch (gCurrentCourseId) {
+                        case COURSE_BOWSER_CASTLE:
+                        case COURSE_MOO_MOO_FARM:
+                        case COURSE_SKYSCRAPER:
+                        case COURSE_DK_JUNGLE:
+                            gTickSpeed = 3;
+                            break;
+                        default:
+                            gTickSpeed = 2;
+                            break;
+                    }
+                } else {
+                    // Four players
+                    switch (gCurrentCourseId) {
+                        case COURSE_BLOCK_FORT:
+                        case COURSE_DOUBLE_DECK:
+                        case COURSE_BIG_DONUT:
+                            gTickSpeed = 2;
+                            break;
+                        case COURSE_DK_JUNGLE:
+                            gTickSpeed = 4;
+                            break;
+                        default:
+                            gTickSpeed = 3;
+                            break;
+                    }
                 }
             }
             if (gIsGamePaused == 0) {

@@ -425,11 +425,13 @@ bool is_cc_mode_complete(s32 cc_mode) {
 
 // Check if the 150CC mode has all 4 gold cups
 s32 has_unlocked_extra_mode(void) {
+    if (gUnlockAll) return 1;
     return is_cc_mode_complete(CC_150);
 }
 
 // Check if the Extra mode has all 4 gold cups
 s32 has_completed_extra_mode(void) {
+    if (gUnlockAll) return 1;
     return is_cc_mode_complete(CC_EXTRA);
 }
 

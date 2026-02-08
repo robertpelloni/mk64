@@ -261,7 +261,8 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_OPTION_RETURN_GAME_SELECT:
             case SUB_MENU_OPTION_SOUND_MODE:
             case SUB_MENU_OPTION_COPY_CONTROLLER_PAK:
-            case SUB_MENU_OPTION_ERASE_ALL_DATA: {
+            case SUB_MENU_OPTION_ERASE_ALL_DATA:
+            case SUB_MENU_EXTRAS: {
                 tempVar = false;
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_OPTION_MAX)) {
                     gSubMenuSelection += 1;
@@ -395,11 +396,65 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             play_sound2(SOUND_MENU_GO_BACK);
                             return;
                         }
+                        case SUB_MENU_EXTRAS: {
+                            gSubMenuSelection = SUB_MENU_EXTRAS_60FPS;
+                            play_sound2(SOUND_MENU_SELECT);
+                            return;
+                        }
                     }
                 }
                 // maybe else return?;
                 break;
             }
+            case SUB_MENU_EXTRAS_60FPS:
+            case SUB_MENU_EXTRAS_WIDESCREEN:
+            case SUB_MENU_EXTRAS_FAST_BOOT:
+            case SUB_MENU_EXTRAS_NO_RUBBER:
+            case SUB_MENU_EXTRAS_UNLOCK_ALL:
+            case SUB_MENU_EXTRAS_RETURN:
+                if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
+                    gSubMenuSelection++;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if ((btnAndStick & U_JPAD) && (gSubMenuSelection > SUB_MENU_EXTRAS_MIN)) {
+                    gSubMenuSelection--;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if (btnAndStick & B_BUTTON) {
+                    gSubMenuSelection = SUB_MENU_EXTRAS;
+                    play_sound2(SOUND_MENU_GO_BACK);
+                    return;
+                }
+                if ((btnAndStick & A_BUTTON) || (btnAndStick & (L_JPAD | R_JPAD))) {
+                    switch (gSubMenuSelection) {
+                        case SUB_MENU_EXTRAS_60FPS:
+                            gEnable60FPS ^= 1;
+                            break;
+                        case SUB_MENU_EXTRAS_WIDESCREEN:
+                            gEnableWidescreen ^= 1;
+                            break;
+                        case SUB_MENU_EXTRAS_FAST_BOOT:
+                            gEnableFastBoot ^= 1;
+                            break;
+                        case SUB_MENU_EXTRAS_NO_RUBBER:
+                            gDisableRubberBanding ^= 1;
+                            break;
+                        case SUB_MENU_EXTRAS_UNLOCK_ALL:
+                            gUnlockAll ^= 1;
+                            break;
+                        case SUB_MENU_EXTRAS_RETURN:
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_EXTRAS;
+                                play_sound2(SOUND_MENU_GO_BACK);
+                                return;
+                            }
+                            break;
+                    }
+                    if (gSubMenuSelection != SUB_MENU_EXTRAS_RETURN) {
+                         play_sound2(SOUND_MENU_SELECT);
+                    }
+                }
+                break;
             case SUB_MENU_ERASE_QUIT:
             case SUB_MENU_ERASE_ERASE: {
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_ERASE_MAX)) {

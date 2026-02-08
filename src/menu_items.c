@@ -482,7 +482,29 @@ char* gTextOptionMenu[] = {
     "SOUND MODE",
     "COPY N64 CONTROLLER PAK",
     "ERASE ALL DATA",
+    "EXTRAS",
 };
+
+char* gTextExtrasMenu[] = {
+    "60 FPS MODE",
+    "WIDESCREEN 16:9",
+    "FAST BOOT",
+    "DISABLE RUBBER BANDING",
+    "UNLOCK ALL",
+    "RETURN",
+};
+
+char* gTextExtrasHelp[] = {
+    "RENDERS AT 60 FRAMES PER SECOND.",
+    "EXPANDS FIELD OF VIEW FOR 16:9.",
+    "SKIPS STARTUP LOGOS.",
+    "DISABLES AI SPEED ADJUSTMENT.",
+    "TEMPORARILY UNLOCKS ALL CONTENT.",
+    "RETURN TO OPTIONS MENU.",
+};
+
+char* gTextOn = "ON";
+char* gTextOff = "OFF";
 
 char* D_800E7878[] = {
     "ALL SAVED DATA WILL BE",
@@ -6857,10 +6879,41 @@ void func_800A1FB0(MenuItem* arg0) {
 
     gDisplayListHead = draw_box(gDisplayListHead, 0, 0, 0x00000140, 0x000000F0, 0, 0, 0, 0x00000064);
     switch (gSubMenuSelection) {
+        case SUB_MENU_EXTRAS_60FPS:
+        case SUB_MENU_EXTRAS_WIDESCREEN:
+        case SUB_MENU_EXTRAS_FAST_BOOT:
+        case SUB_MENU_EXTRAS_NO_RUBBER:
+        case SUB_MENU_EXTRAS_UNLOCK_ALL:
+        case SUB_MENU_EXTRAS_RETURN:
+            for (i = 0; i < ARRAY_COUNT(gTextExtrasMenu); i++) {
+                set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_EXTRAS_MIN, i, 3);
+                print_text_mode_1(0x32, 0x30 + (0x18 * i), gTextExtrasMenu[i], 0, 0.9f, 1.0f);
+                if (i == (gSubMenuSelection - SUB_MENU_EXTRAS_MIN)) {
+                    spE0.column = 0x32;
+                    spE0.row = 0x30 + (0x18 * i);
+                }
+            }
+            set_text_color(TEXT_GREEN);
+            print_text1_center_mode_1(0xE0, 0x30, gEnable60FPS ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x18, gEnableWidescreen ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x30, gEnableFastBoot ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x48, gDisableRubberBanding ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x60, gUnlockAll ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+
+            // Draw Description/Tooltip
+            set_text_color(TEXT_YELLOW);
+            {
+                s32 helpIdx = gSubMenuSelection - SUB_MENU_EXTRAS_MIN;
+                if (helpIdx >= 0 && helpIdx < ARRAY_COUNT(gTextExtrasHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextExtrasHelp[helpIdx], 0, 0.7f, 0.7f);
+                }
+            }
+            break;
         case SUB_MENU_OPTION_RETURN_GAME_SELECT:
         case SUB_MENU_OPTION_SOUND_MODE:
         case SUB_MENU_OPTION_COPY_CONTROLLER_PAK:
         case SUB_MENU_OPTION_ERASE_ALL_DATA:
+        case SUB_MENU_EXTRAS:
             for (i = 0; i < ARRAY_COUNT(gTextOptionMenu); i++) {
                 set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_OPTION_MIN, i, 3);
                 print_text_mode_1(0x00000032, 0x55 + (0x23 * i), gTextOptionMenu[i], 0, 0.9f, 1.0f);

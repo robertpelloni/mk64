@@ -133,6 +133,22 @@ void regulate_cpu_speed(s32 playerId, f32 targetSpeed, Player* player) {
     s32 var_a1;
 
     speed = player->speed;
+
+    if (gDisableRubberBanding) {
+        if (!(player->effects & BANANA_SPINOUT_EFFECT) && !(player->effects & DRIVING_SPINOUT_EFFECT) &&
+            !(player->effects & LIGHTNING_STRIKE_EFFECT) && !(player->triggers & VERTICAL_TUMBLE_TRIGGER) &&
+            !(player->triggers & HIT_BY_STAR_TRIGGER) && !(player->triggers & HIGH_TUMBLE_TRIGGER) &&
+            !(player->triggers & LOW_TUMBLE_TRIGGER)) {
+             if (speed < targetSpeed) {
+                player->effects &= ~CPU_FAST_EFFECT;
+                player_accelerate_alternative(player);
+            } else {
+                player->effects &= ~CPU_FAST_EFFECT;
+                player_decelerate_alternative(player, 1.0f);
+            }
+        }
+        return;
+    }
     if (!(player->effects & BANANA_SPINOUT_EFFECT) && !(player->effects & DRIVING_SPINOUT_EFFECT) &&
         !(player->effects & LIGHTNING_STRIKE_EFFECT) && !(player->triggers & VERTICAL_TUMBLE_TRIGGER) &&
         !(player->triggers & HIT_BY_STAR_TRIGGER) && !(player->triggers & HIGH_TUMBLE_TRIGGER) &&
