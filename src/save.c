@@ -10,6 +10,7 @@
 #include "save_data.h"
 #include "replays.h"
 #include "code_80057C60.h"
+#include "main.h"
 
 /*** macros ***/
 #define PFS_COMPANY_CODE(c0, c1) ((u16) (((c0) << 8) | ((c1))))
@@ -55,6 +56,19 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
+void save_options(void) {
+    u8 packed = (gSoundMode & 0x03);
+    if (gEnable60FPS) packed |= (1 << 2);
+    if (gEnableWidescreen) packed |= (1 << 3);
+    if (gEnableFastBoot) packed |= (1 << 4);
+    if (gDisableRubberBanding) packed |= (1 << 5);
+    if (gUnlockAll) packed |= (1 << 6);
+
+    gSaveData.main.saveInfo.soundMode = packed;
+    write_save_data_grand_prix_points_and_sound_mode();
+    update_save_data_backup();
+}
+
 void func_800B46D0(void) {
     s32 i;
 
@@ -96,6 +110,13 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     }
     main->saveInfo.soundMode = SOUND_STEREO;
     gSoundMode = SOUND_STEREO;
+
+    gEnable60FPS = 0;
+    gEnableWidescreen = 0;
+    gEnableFastBoot = 0;
+    gDisableRubberBanding = 0;
+    gUnlockAll = 0;
+
     set_sound_mode();
     write_save_data_grand_prix_points_and_sound_mode();
 }
@@ -136,6 +157,7 @@ u8 compute_save_data_checksum_2(void) {
 
 void load_save_data(void) {
     s32 i;
+    u8 packed;
 
     osEepromLongRead(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData), (u8*) &gSaveData, sizeof(SaveData));
     // 16: 4 cup records * 4 course records?
@@ -145,7 +167,14 @@ void load_save_data(void) {
 
     validate_save_data();
 
-    gSoundMode = gSaveData.main.saveInfo.soundMode;
+    packed = gSaveData.main.saveInfo.soundMode;
+    gSoundMode = packed & 0x03;
+    gEnable60FPS = (packed >> 2) & 1;
+    gEnableWidescreen = (packed >> 3) & 1;
+    gEnableFastBoot = (packed >> 4) & 1;
+    gDisableRubberBanding = (packed >> 5) & 1;
+    gUnlockAll = (packed >> 6) & 1;
+
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;
     }

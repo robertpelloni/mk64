@@ -283,18 +283,14 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                     sp38->subState = -1;
                 }
                 if (tempVar && gSoundMode != sp38->state) {
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
-                    update_save_data_backup();
+                    save_options();
                     sp38->state = gSoundMode;
                 }
                 if (btnAndStick & B_BUTTON) {
                     func_8009E280();
                     play_sound2(SOUND_MENU_GO_BACK);
                     if (gSoundMode != sp38->state) {
-                        gSaveData.main.saveInfo.soundMode = gSoundMode;
-                        write_save_data_grand_prix_points_and_sound_mode();
-                        update_save_data_backup();
+                        save_options();
                         sp38->state = gSoundMode;
                     }
                     return;
@@ -422,6 +418,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 if (btnAndStick & B_BUTTON) {
                     gSubMenuSelection = SUB_MENU_EXTRAS;
+                    save_options();
                     play_sound2(SOUND_MENU_GO_BACK);
                     return;
                 }
@@ -429,22 +426,28 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                     switch (gSubMenuSelection) {
                         case SUB_MENU_EXTRAS_60FPS:
                             gEnable60FPS ^= 1;
+                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_WIDESCREEN:
                             gEnableWidescreen ^= 1;
+                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_FAST_BOOT:
                             gEnableFastBoot ^= 1;
+                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_NO_RUBBER:
                             gDisableRubberBanding ^= 1;
+                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_UNLOCK_ALL:
                             gUnlockAll ^= 1;
+                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_RETURN:
                             if (btnAndStick & A_BUTTON) {
                                 gSubMenuSelection = SUB_MENU_EXTRAS;
+                                save_options();
                                 play_sound2(SOUND_MENU_GO_BACK);
                                 return;
                             }
@@ -1193,9 +1196,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
-                    update_save_data_backup();
+                    save_options();
                 }
                 if ((btnAndStick & L_JPAD) && (gSoundMode > 0)) {
                     gSoundMode -= 1;
@@ -1204,8 +1205,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
+                    save_options();
                 }
                 if (btnAndStick & U_JPAD) {
                     gDebugMenuSelection = DEBUG_MENU_PLAYER;
