@@ -16,6 +16,7 @@
 #include "cpu_vehicles_camera_path.h"
 #include "main.h"
 #include "spawn_players.h"
+#include "flycam.h"
 
 #include <course.h>
 
@@ -930,7 +931,11 @@ void func_8001EE98(Player* player, Camera* camera, s8 index) {
             } else if (gIsGamePaused == 1) {
                 func_8001A0A4(&D_80152300[cameraIndex], camera, player, index, cameraIndex);
             } else {
-                func_8001A0DC(&D_80152300[cameraIndex], camera, player, index, cameraIndex);
+                if (gEnableFlycam) {
+                    flycam(camera, player, index);
+                } else {
+                    func_8001A0DC(&D_80152300[cameraIndex], camera, player, index, cameraIndex);
+                }
             }
             break;
         case BATTLE:

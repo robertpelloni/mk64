@@ -222,6 +222,7 @@ extern s32 gEnableWidescreen;
 extern s32 gEnableFastBoot;
 extern s32 gDisableRubberBanding;
 extern s32 gUnlockAll;
+extern s32 gEnableFlycam;
 
 extern s32 gModeSelection;
 extern s32 D_800DC540;

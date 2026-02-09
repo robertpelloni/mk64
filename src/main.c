@@ -203,6 +203,7 @@ s32 gEnableWidescreen = 0;
 s32 gEnableFastBoot = 0;
 s32 gDisableRubberBanding = 0;
 s32 gUnlockAll = 0;
+s32 gEnableFlycam = 0;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
@@ -646,6 +647,7 @@ void race_logic_loop(void) {
             }
             replays_loop();
             if (gIsGamePaused == 0) {
+                func_8001EE98(gPlayerOneCopy, camera1, 0);
                 for (i = 0; i < gTickSpeed; i++) {
                     if (D_8015011E) {
                         gCourseTimer += COURSE_TIMER_ITER;
@@ -653,7 +655,7 @@ void race_logic_loop(void) {
                     func_802909F0();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
-                    func_8001EE98(gPlayerOneCopy, camera1, 0);
+                    //func_8001EE98(gPlayerOneCopy, camera1, 0);
                     func_80028F70();
                     func_8028F474();
                     func_80059AC8();

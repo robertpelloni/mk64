@@ -35,6 +35,17 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Content:** Unlocks the "Extra" mode (Mirror Mode), all cups, and all characters (if any were locked).
 *   **Note:** This unlock is persistent as long as the setting is enabled.
 
+#### 6. Fly Cam
+*   **Default:** OFF
+*   **Description:** Enables a free-flying camera mode.
+*   **Details:** Allows you to detach the camera from the player and fly around the level freely.
+*   **Controls (Controller 1):**
+    *   **Toggle Mode:** L Trigger (In-game)
+    *   **Move:** Analog Stick (Rotate), A (Forward), B (Backward), C-Up (Up), C-Down (Down)
+    *   **Speed Boost:** Z Trigger (Hold while moving)
+    *   **Target Player:** R Trigger (Toggle tracking), C-Left (Next Player), C-Right (Previous Player)
+    *   **Switch Cam Mode:** D-Pad Up (Toggles between player position and previous flycam position)
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).

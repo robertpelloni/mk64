@@ -16,6 +16,7 @@
 #include "render_player.h"
 #include "code_80057C60.h"
 #include "effects.h"
+#include "flycam.h"
 #include "buffers.h"
 #include "path.h"
 #include "player_controller.h"
@@ -91,6 +92,9 @@ void func_8001F9E4(Player* player, Camera* camera, s8 screenId) {
 }
 
 u16 check_player_camera_collision(Player* player, Camera* camera, f32 arg2, f32 arg3) {
+    if (isFlycam) {
+        return 1;
+    }
     UNUSED f32 pad[6];
     f32 sp64;
     f32 sp60;
@@ -103,6 +107,10 @@ u16 check_player_camera_collision(Player* player, Camera* camera, f32 arg2, f32 
     f32 sp44;
     s16 var_v0;
     u16 ret;
+
+    if (isFlycam) {
+        return 1;
+    }
 
     ret = false;
     switch (gActiveScreenMode) { /* irregular */

@@ -491,6 +491,7 @@ char* gTextExtrasMenu[] = {
     "FAST BOOT",
     "DISABLE RUBBER BANDING",
     "UNLOCK ALL",
+    "FLY CAM",
     "RETURN",
 };
 
@@ -500,6 +501,7 @@ char* gTextExtrasHelp[] = {
     "SKIPS STARTUP LOGOS.",
     "DISABLES AI SPEED ADJUSTMENT.",
     "TEMPORARILY UNLOCKS ALL CONTENT.",
+    "TOGGLES FREE FLY CAMERA MODE.",
     "RETURN TO OPTIONS MENU.",
 };
 
