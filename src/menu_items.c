@@ -492,6 +492,7 @@ char* gTextExtrasMenu[] = {
     "DISABLE RUBBER BANDING",
     "UNLOCK ALL",
     "FLY CAM",
+    "DEBUG MODE",
     "RETURN",
 };
 
@@ -502,6 +503,7 @@ char* gTextExtrasHelp[] = {
     "DISABLES AI SPEED ADJUSTMENT.",
     "TEMPORARILY UNLOCKS ALL CONTENT.",
     "TOGGLES FREE FLY CAMERA MODE.",
+    "ENABLES DEBUG MENU AND FEATURES.",
     "RETURN TO OPTIONS MENU.",
 };
 

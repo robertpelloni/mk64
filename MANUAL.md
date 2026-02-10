@@ -46,6 +46,18 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **Target Player:** R Trigger (Toggle tracking), C-Left (Next Player), C-Right (Previous Player)
     *   **Switch Cam Mode:** D-Pad Up (Toggles between player position and previous flycam position)
 
+#### 7. Debug Mode
+*   **Default:** OFF
+*   **Description:** Enables the game's debug menu and debug features.
+*   **Features:**
+    *   **Quick Menu Navigation:** Press Start to skip through menus.
+    *   **Resource Meters:** Toggle by holding R and tapping B (L must not be held).
+    *   **Soft Reset:** Hold A + B + R + L to reset to the start screen.
+    *   **Race Info:** During a single-player race staging, tap L while holding A + B to view player direction and path points.
+    *   **Lap Skip:** Tap D-Pad Up (P1), Right (P1+P2), or Down (All) to set players to the final lap.
+    *   **Instant Start:** Press Z on any controller to immediately start the race.
+    *   **Character Switch:** During the ceremony cutscene, hold C-Buttons or D-Pad to switch characters.
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).
