@@ -1858,7 +1858,11 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
 void load_menu_states(s32 menuSelection) {
     s32 i;
 
-    gDebugMenuSelection = DEBUG_MENU_SELECTION;
+    if (gEnableDebugMode) {
+        gDebugMenuSelection = DEBUG_MENU_DEBUG_MODE;
+    } else {
+        gDebugMenuSelection = DEBUG_MENU_SELECTION;
+    }
     gMenuTimingCounter = 0;
     gMenuDelayTimer = 0;
     gDemoUseController = 0;
