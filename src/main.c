@@ -886,27 +886,23 @@ void race_logic_loop(void) {
             break;
     }
 
-    if (!gEnableDebugMode) {
-        gEnableResourceMeters = 0;
-    } else {
-        if (gEnableResourceMeters) {
-            resource_display();
-            if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
-                (gControllerOne->buttonPressed & B_BUTTON)) {
-                gEnableResourceMeters = 0;
-            }
-        } else {
-            if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
-                (gControllerOne->buttonPressed & B_BUTTON)) {
-                gEnableResourceMeters = 1;
-            }
+    if (gEnableResourceMeters) {
+        resource_display();
+    }
+
+    if (gEnableDebugMode) {
+        if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
+            (gControllerOne->buttonPressed & B_BUTTON)) {
+            gEnableResourceMeters ^= 1;
         }
     }
     func_802A4300();
     func_800591B4();
     func_80093E20();
 #if DVDL
-    display_dvdl();
+    if (gEnableDebugMode) {
+        display_dvdl();
+    }
 #endif
     gDPFullSync(gDisplayListHead++);
     gSPEndDisplayList(gDisplayListHead++);
@@ -950,7 +946,9 @@ void game_state_handler(void) {
             init_rcp();
             func_80094A64(gGfxPool);
 #if DVDL
-            display_dvdl();
+            if (gEnableDebugMode) {
+                display_dvdl();
+            }
 #endif
             break;
         case RACING:

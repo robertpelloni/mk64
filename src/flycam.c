@@ -10,10 +10,13 @@
 #include <variables.h>
 #include "player_controller.h"
 #include "code_80057C60.h"
+#include "cpu_vehicles_camera_path.h"
 
 // Yaw/pitch rotation sensitivity
 #define SENSITIVITY_X 0.0003f
 #define SENSITIVITY_Y 0.0003f
+
+extern u16 D_80152300[4];
 
 u32 isFlycam = false;
 u32 fRankIndex = 0;
@@ -75,7 +78,7 @@ void flycam(Camera *camera, Player *player, s8 index) {
         if (isFlycam) {
             player->type |= PLAYER_CPU;
         } else {
-            player->type &= PLAYER_CPU;
+            player->type &= ~PLAYER_CPU;
         }
 
         gIsHUDVisible = !isFlycam;
@@ -100,7 +103,8 @@ void flycam(Camera *camera, Player *player, s8 index) {
     // Driving mode
     if (!isFlycam) {
         // Use normal camera code
-        func_8001E45C(camera, &gPlayers[fRankIndex], index);
+        s32 cameraIndex = camera - &cameras[0];
+        func_8001A0DC(&D_80152300[cameraIndex], camera, player, index, cameraIndex);
         return;
     }
 

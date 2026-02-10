@@ -46,12 +46,20 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **Target Player:** R Trigger (Toggle tracking), C-Left (Next Player), C-Right (Previous Player)
     *   **Switch Cam Mode:** D-Pad Up (Toggles between player position and previous flycam position)
 
-#### 7. Debug Mode
+#### 7. Resource Meters
 *   **Default:** OFF
-*   **Description:** Enables the game's debug menu and debug features.
+*   **Description:** Displays system resource usage bars (CPU, GPU, etc.) on-screen.
+*   **Details:** Useful for performance analysis.
+    *   **Red:** Sound Updates / VBlank Duration
+    *   **Yellow:** Level Script Execution / RSP Duration
+    *   **Orange:** Rendering / RDP Duration
+
+#### 8. Debug Mode
+*   **Default:** OFF
+*   **Description:** Enables the game's debug menu and additional developer features.
 *   **Features:**
     *   **Quick Menu Navigation:** Press Start to skip through menus.
-    *   **Resource Meters:** Toggle by holding R and tapping B (L must not be held).
+    *   **Resource Meters Shortcut:** Toggle meters during gameplay by holding R and tapping B (L must not be held).
     *   **Soft Reset:** Hold A + B + R + L to reset to the start screen.
     *   **Race Info:** During a single-player race staging, tap L while holding A + B to view player direction and path points.
     *   **Lap Skip:** Tap D-Pad Up (P1), Right (P1+P2), or Down (All) to set players to the final lap.

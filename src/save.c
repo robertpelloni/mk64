@@ -66,6 +66,8 @@ void save_options(void) {
     if (gEnableFlycam) packed |= (1 << 7);
 
     gSaveData.main.saveInfo.soundMode = packed;
+    gSaveData.main.checksum[0] = gEnableResourceMeters ? 1 : 0;
+
     write_save_data_grand_prix_points_and_sound_mode();
     update_save_data_backup();
 }
@@ -119,6 +121,9 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     gUnlockAll = 0;
     gEnableDebugMode = 0;
     gEnableFlycam = 0;
+    gEnableResourceMeters = 0;
+
+    main->checksum[0] = 0;
 
     set_sound_mode();
     write_save_data_grand_prix_points_and_sound_mode();
@@ -178,6 +183,8 @@ void load_save_data(void) {
     gDisableRubberBanding = (packed >> 5) & 1;
     gEnableDebugMode = (packed >> 6) & 1;
     gEnableFlycam = (packed >> 7) & 1;
+
+    gEnableResourceMeters = gSaveData.main.checksum[0] & 1;
 
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;

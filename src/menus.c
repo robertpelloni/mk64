@@ -408,6 +408,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_NO_RUBBER:
             case SUB_MENU_EXTRAS_UNLOCK_ALL:
             case SUB_MENU_EXTRAS_FLYCAM:
+            case SUB_MENU_EXTRAS_PROFILER:
             case SUB_MENU_EXTRAS_DEBUG:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
@@ -448,6 +449,10 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_FLYCAM:
                             gEnableFlycam ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_PROFILER:
+                            gEnableResourceMeters ^= 1;
                             save_options();
                             break;
                         case SUB_MENU_EXTRAS_DEBUG:
