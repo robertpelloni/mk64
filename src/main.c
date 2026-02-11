@@ -197,12 +197,48 @@ f32 gCourseTimer = 0.0f;
 static OSTime sLastTime = 0;
 static OSTime sAccumulator = 0;
 
-// New Feature Settings
+/**
+ * @brief Enhancements: 60 FPS Mode.
+ *
+ * When enabled, the game renders at 60 frames per second.
+ * Game logic is decoupled to maintain correct speed.
+ */
 s32 gEnable60FPS = 0;
+
+/**
+ * @brief Enhancements: Widescreen 16:9 Mode.
+ *
+ * Adjusts FOV and HUD projection for 16:9 displays.
+ */
 s32 gEnableWidescreen = 0;
+
+/**
+ * @brief Enhancements: Fast Boot.
+ *
+ * Skips startup logos and intro sequences.
+ */
 s32 gEnableFastBoot = 0;
+
+/**
+ * @brief Enhancements: Disable AI Rubber Banding.
+ *
+ * Removes artificial speedup/slowdown for CPU opponents.
+ */
 s32 gDisableRubberBanding = 0;
+
+/**
+ * @brief Enhancements: Unlock All Content.
+ *
+ * Temporarily unlocks all cups, characters, and modes.
+ * This setting is not persisted to save data.
+ */
 s32 gUnlockAll = 0;
+
+/**
+ * @brief Enhancements: Fly Cam Mode.
+ *
+ * Enables a free-roaming debug camera controllable by the player.
+ */
 s32 gEnableFlycam = 0;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {

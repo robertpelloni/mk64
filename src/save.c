@@ -56,6 +56,23 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
+/**
+ * @brief Saves current game options to the EEPROM.
+ *
+ * Packs boolean feature flags into the upper bits of the sound mode byte
+ * to persist settings without altering the save data structure size.
+ *
+ * **Packing Scheme:**
+ * - Bits 0-1: Sound Mode (Stereo/Headphone/Mono)
+ * - Bit 2: 60 FPS Mode
+ * - Bit 3: Widescreen Mode
+ * - Bit 4: Fast Boot
+ * - Bit 5: Disable Rubber Banding
+ * - Bit 6: Debug Mode
+ * - Bit 7: Fly Cam
+ *
+ * Resource Meters setting is stored in `checksum[0]` as an overflow storage.
+ */
 void save_options(void) {
     u8 packed = (gSoundMode & 0x03);
     if (gEnable60FPS) packed |= (1 << 2);
@@ -105,6 +122,12 @@ void func_800B4728(s32 arg0) {
     func_800B45E0(arg0);
 }
 
+/**
+ * @brief Resets all save data options and progress to default values.
+ *
+ * Clears Grand Prix points and resets all enhancement settings (60FPS, Widescreen, etc.)
+ * to their default (OFF) state.
+ */
 void reset_save_data_grand_prix_points_and_sound_mode(void) {
     s32 cup_index;
     Stuff* main = &gSaveData.main;
@@ -163,6 +186,12 @@ u8 compute_save_data_checksum_2(void) {
     return (tmp % 256);
 }
 
+/**
+ * @brief Loads save data from EEPROM and unpacks options.
+ *
+ * Reads the persistent save data and extracts the bit-packed enhancement settings
+ * from `soundMode` and `checksum[0]`.
+ */
 void load_save_data(void) {
     s32 i;
     u8 packed;

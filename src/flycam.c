@@ -43,29 +43,21 @@ void flycam_load_state(Camera *camera);
 
 
 /**
- * Controls
+ * @brief Main execution loop for the Flycam (Free Camera) feature.
  *
- * Forward: A
- * Backward: B
+ * Handles initialization, input processing, and state management for the free-roaming camera.
  *
- * Go faster: Z
+ * **Controls:**
+ * - **Move:** Analog Stick (Rotate), A (Forward), B (Backward)
+ * - **Vertical:** C-Up (Up), C-Down (Down)
+ * - **Speed:** Z Trigger (Hold for boost)
+ * - **Targeting:** R Trigger (Toggle target), C-Right (Next), C-Left (Prev)
+ * - **Mode:** D-Pad Up (Toggle position restore)
  *
- * Up:       C-up
- * Down:     C-down
- *
- * Targets players based on rank position
- *
- * Target player: R-trig
- * Target next player: C-right
- * Target previous player: C-left
- *
- * Switch camera modes:   D-pad left
- *
- * Camera mode 1: Enter flycam at the player's position
- * Camera mode 2: Enter flycam at previous flycam spot
- *
-*/
-
+ * @param camera Pointer to the current camera structure.
+ * @param player Pointer to the player associated with the camera.
+ * @param index Index of the camera/player.
+ */
 void flycam(Camera *camera, Player *player, s8 index) {
     struct Controller *controller = &gControllers[0];
 
@@ -120,6 +112,12 @@ void flycam(Camera *camera, Player *player, s8 index) {
     flycam_controller_manager(camera, controller, player);
 }
 
+/**
+ * @brief Saves the current flycam position and orientation.
+ *
+ * Used when exiting flycam mode to allow restoration later if desired.
+ * @param camera Pointer to the camera structure.
+ */
 void flycam_save_state(Camera *camera) {
     fState.pos[0] = camera->pos[0];
     fState.pos[1] = camera->pos[1];
@@ -135,6 +133,11 @@ void flycam_save_state(Camera *camera) {
     fModeInit = true;
 }
 
+/**
+ * @brief Restores the saved flycam position and orientation.
+ *
+ * @param camera Pointer to the camera structure.
+ */
 void flycam_load_state(Camera *camera) {
     camera->pos[0] = fState.pos[0];
     camera->pos[1] = fState.pos[1];
