@@ -68,7 +68,7 @@ Navigate to **Options** -> **Extras** to access the new settings.
 
 #### 9. Stick Deadzone
 *   **Default:** 7
-*   **Range:** 0 to 100
+*   **Range:** 0 to 31
 *   **Description:** Adjusts the analog stick's deadzone sensitivity.
 *   **Details:**
     *   **Deadzone:** The area around the center of the stick where input is ignored.

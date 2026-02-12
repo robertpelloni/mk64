@@ -464,12 +464,11 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_DEADZONE:
                             if (btnAndStick & R_JPAD) {
-                                if (gStickDeadzone < 100) gStickDeadzone++;
+                                if (gStickDeadzone < 31) gStickDeadzone++;
                             } else if (btnAndStick & L_JPAD) {
                                 if (gStickDeadzone > 0) gStickDeadzone--;
                             } else if (btnAndStick & A_BUTTON) {
-                                // Toggle preset values if A is pressed? Or just do nothing?
-                                // For now, let's make A cycle through common values 7 -> 15 -> 0 -> 7
+                                // Toggle preset values
                                 if (gStickDeadzone == 7) gStickDeadzone = 15;
                                 else if (gStickDeadzone == 15) gStickDeadzone = 0;
                                 else gStickDeadzone = 7;
