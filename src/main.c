@@ -39,6 +39,7 @@
 #include <debug.h>
 #include "crash_screen.h"
 #include "buffers/gfx_output_buffer.h"
+#include "input_display.h"
 
 void func_80091B78(void);
 void audio_init(void);
@@ -262,6 +263,13 @@ s32 gToggleMusic = 1;
  * 1 = Enabled, 0 = Disabled.
  */
 s32 gToggleSFX = 1;
+
+/**
+ * @brief Enhancements: Input Display.
+ *
+ * Toggles on-screen controller input visualization.
+ */
+s32 gEnableInputDisplay = 0;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
@@ -946,6 +954,10 @@ void race_logic_loop(void) {
 
     if (gEnableResourceMeters) {
         resource_display();
+    }
+
+    if (gEnableInputDisplay) {
+        render_input_display();
     }
 
     if (gEnableDebugMode) {

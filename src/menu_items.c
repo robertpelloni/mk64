@@ -497,6 +497,7 @@ char* gTextExtrasMenu[] = {
     "STICK DEADZONE",
     "TOGGLE MUSIC",
     "TOGGLE SFX",
+    "INPUT DISPLAY",
     "RETURN",
 };
 
@@ -512,6 +513,7 @@ char* gTextExtrasHelp[] = {
     "SETS ANALOG STICK DEADZONE.",
     "TOGGLES BACKGROUND MUSIC.",
     "TOGGLES SOUND EFFECTS.",
+    "DISPLAYS CONTROLLER INPUTS.",
     "RETURN TO OPTIONS MENU.",
 };
 

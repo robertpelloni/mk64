@@ -413,6 +413,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_DEADZONE:
             case SUB_MENU_EXTRAS_MUSIC:
             case SUB_MENU_EXTRAS_SFX:
+            case SUB_MENU_EXTRAS_INPUT_DISPLAY:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
                     gSubMenuSelection++;
@@ -464,7 +465,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_DEADZONE:
                             if (btnAndStick & R_JPAD) {
-                                if (gStickDeadzone < 31) gStickDeadzone++;
+                                if (gStickDeadzone < 15) gStickDeadzone++;
                             } else if (btnAndStick & L_JPAD) {
                                 if (gStickDeadzone > 0) gStickDeadzone--;
                             } else if (btnAndStick & A_BUTTON) {
@@ -481,6 +482,10 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_SFX:
                             gToggleSFX ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_INPUT_DISPLAY:
+                            gEnableInputDisplay ^= 1;
                             save_options();
                             break;
                         case SUB_MENU_EXTRAS_RETURN:

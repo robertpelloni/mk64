@@ -68,7 +68,7 @@ Navigate to **Options** -> **Extras** to access the new settings.
 
 #### 9. Stick Deadzone
 *   **Default:** 7
-*   **Range:** 0 to 31
+*   **Range:** 0 to 15
 *   **Description:** Adjusts the analog stick's deadzone sensitivity.
 *   **Details:**
     *   **Deadzone:** The area around the center of the stick where input is ignored.
@@ -84,6 +84,10 @@ Navigate to **Options** -> **Extras** to access the new settings.
 #### 11. Toggle SFX
 *   **Default:** ON
 *   **Description:** Toggles the in-game sound effects (SFX) on or off.
+
+#### 12. Input Display
+*   **Default:** OFF
+*   **Description:** Displays a visual overlay of the controller inputs (Analog Stick, A, B, Z, R, Start) in the bottom right corner of the screen.
 
 ## Saving Settings
 
