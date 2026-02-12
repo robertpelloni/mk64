@@ -66,6 +66,25 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **Instant Start:** Press Z on any controller to immediately start the race.
     *   **Character Switch:** During the ceremony cutscene, hold C-Buttons or D-Pad to switch characters.
 
+#### 9. Stick Deadzone
+*   **Default:** 7
+*   **Range:** 0 to 100
+*   **Description:** Adjusts the analog stick's deadzone sensitivity.
+*   **Details:**
+    *   **Deadzone:** The area around the center of the stick where input is ignored.
+    *   **Controls:**
+        *   **Left/Right:** Decrease/Increase value by 1.
+        *   **A Button:** Cycles through presets (0, 7, 15, 20).
+    *   **Usage:** Increase this value if your controller has drift or feels too sensitive. Decrease it for more responsive input on tight sticks.
+
+#### 10. Toggle Music
+*   **Default:** ON
+*   **Description:** Toggles the in-game background music on or off.
+
+#### 11. Toggle SFX
+*   **Default:** ON
+*   **Description:** Toggles the in-game sound effects (SFX) on or off.
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).

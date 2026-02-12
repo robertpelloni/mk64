@@ -241,6 +241,28 @@ s32 gUnlockAll = 0;
  */
 s32 gEnableFlycam = 0;
 
+/**
+ * @brief Enhancements: Analog Stick Deadzone.
+ *
+ * Configurable deadzone for the analog stick.
+ * Range: 0-100 (Default: 7)
+ */
+s32 gStickDeadzone = 7;
+
+/**
+ * @brief Enhancements: Music Toggle.
+ *
+ * 1 = Enabled, 0 = Disabled.
+ */
+s32 gToggleMusic = 1;
+
+/**
+ * @brief Enhancements: SFX Toggle.
+ *
+ * 1 = Enabled, 0 = Disabled.
+ */
+s32 gToggleSFX = 1;
+
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
     thread->queue = NULL;

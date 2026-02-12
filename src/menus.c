@@ -410,6 +410,9 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_FLYCAM:
             case SUB_MENU_EXTRAS_PROFILER:
             case SUB_MENU_EXTRAS_DEBUG:
+            case SUB_MENU_EXTRAS_DEADZONE:
+            case SUB_MENU_EXTRAS_MUSIC:
+            case SUB_MENU_EXTRAS_SFX:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
                     gSubMenuSelection++;
@@ -457,6 +460,28 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_DEBUG:
                             gEnableDebugMode ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_DEADZONE:
+                            if (btnAndStick & R_JPAD) {
+                                if (gStickDeadzone < 100) gStickDeadzone++;
+                            } else if (btnAndStick & L_JPAD) {
+                                if (gStickDeadzone > 0) gStickDeadzone--;
+                            } else if (btnAndStick & A_BUTTON) {
+                                // Toggle preset values if A is pressed? Or just do nothing?
+                                // For now, let's make A cycle through common values 7 -> 15 -> 0 -> 7
+                                if (gStickDeadzone == 7) gStickDeadzone = 15;
+                                else if (gStickDeadzone == 15) gStickDeadzone = 0;
+                                else gStickDeadzone = 7;
+                            }
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_MUSIC:
+                            gToggleMusic ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_SFX:
+                            gToggleSFX ^= 1;
                             save_options();
                             break;
                         case SUB_MENU_EXTRAS_RETURN:

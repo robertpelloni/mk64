@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2024-05-23
+
+### Added
+- **Analog Deadzone Configuration:** Added a slider in the Extras menu to adjust the joystick deadzone (0-100). Default is 7.
+- **Music/SFX Toggles:** Added options to toggle Background Music and Sound Effects independently in the Extras menu.
+- **Documentation:** Unified AI agent instructions into `LLM_INSTRUCTIONS.md` and updated `MANUAL.md` with new features.
+
+### Changed
+- **Save Data:** Expanded save data packing to store Deadzone, Music Toggle, and SFX Toggle settings.
+- **Submodules:** Updated `asm-differ`, `blender/fast64`, `decomp-permuter`, and `torch` to latest versions.
+
 ## [1.1.0] - 2024-05-22
 
 ### Added

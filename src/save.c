@@ -83,7 +83,10 @@ void save_options(void) {
     if (gEnableFlycam) packed |= (1 << 7);
 
     gSaveData.main.saveInfo.soundMode = packed;
-    gSaveData.main.checksum[0] = gEnableResourceMeters ? 1 : 0;
+    // Pack Resource Meters (Bit 7) and Deadzone (Bits 0-6) into checksum[0]
+    gSaveData.main.checksum[0] = ((gEnableResourceMeters & 1) << 7) | (gStickDeadzone & 0x7F);
+    // Pack Music (Bit 0) and SFX (Bit 1) into checksum[3]
+    gSaveData.main.checksum[3] = (gToggleMusic & 1) | ((gToggleSFX & 1) << 1);
 
     write_save_data_grand_prix_points_and_sound_mode();
     update_save_data_backup();
@@ -145,8 +148,12 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     gEnableDebugMode = 0;
     gEnableFlycam = 0;
     gEnableResourceMeters = 0;
+    gStickDeadzone = 7;
+    gToggleMusic = 1;
+    gToggleSFX = 1;
 
-    main->checksum[0] = 0;
+    main->checksum[0] = 7; // Default deadzone
+    main->checksum[3] = 3; // Music(1) | SFX(1)
 
     set_sound_mode();
     write_save_data_grand_prix_points_and_sound_mode();
@@ -213,7 +220,14 @@ void load_save_data(void) {
     gEnableDebugMode = (packed >> 6) & 1;
     gEnableFlycam = (packed >> 7) & 1;
 
-    gEnableResourceMeters = gSaveData.main.checksum[0] & 1;
+    // Unpack Resource Meters and Deadzone
+    gEnableResourceMeters = (gSaveData.main.checksum[0] >> 7) & 1;
+    gStickDeadzone = gSaveData.main.checksum[0] & 0x7F;
+    if (gStickDeadzone > 100) gStickDeadzone = 7; // Safety cap
+
+    // Unpack Music (Bit 0) and SFX (Bit 1) from checksum[3]
+    gToggleMusic = gSaveData.main.checksum[3] & 1;
+    gToggleSFX = (gSaveData.main.checksum[3] >> 1) & 1;
 
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;
