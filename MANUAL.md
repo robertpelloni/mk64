@@ -89,6 +89,16 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Default:** OFF
 *   **Description:** Displays a visual overlay of the controller inputs (Analog Stick, A, B, Z, R, Start) in the bottom right corner of the screen.
 
+#### 13. Speedometer
+*   **Default:** OFF
+*   **Description:** Displays an on-screen speedometer bar in the bottom left corner.
+*   **Details:** Visualizes the player's current speed with a color-coded bar (Green -> Yellow -> Red).
+
+#### 14. Level Reset
+*   **Default:** OFF
+*   **Description:** Enables a button combination to instantly restart the race.
+*   **Controls:** Press **L + R + Start** simultaneously to restart.
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).

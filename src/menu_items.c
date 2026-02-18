@@ -498,6 +498,8 @@ char* gTextExtrasMenu[] = {
     "TOGGLE MUSIC",
     "TOGGLE SFX",
     "INPUT DISPLAY",
+    "SPEEDOMETER",
+    "LEVEL RESET (L+R+S)",
     "RETURN",
 };
 
@@ -514,6 +516,8 @@ char* gTextExtrasHelp[] = {
     "TOGGLES BACKGROUND MUSIC.",
     "TOGGLES SOUND EFFECTS.",
     "DISPLAYS CONTROLLER INPUTS.",
+    "TOGGLES ON-SCREEN SPEEDOMETER.",
+    "ENABLES L+R+START TO RESET RACE.",
     "RETURN TO OPTIONS MENU.",
 };
 

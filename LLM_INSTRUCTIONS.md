@@ -83,9 +83,13 @@ The game uses EEPROM for saving. To avoid shifting offsets and invalidating exis
         *   Bit 7: **Resource Meters** (Boolean)
         *   Bit 6: **Toggle Music** (Boolean)
         *   Bit 5: **Toggle SFX** (Boolean)
-        *   Bits 0-4: **Analog Stick Deadzone** (Integer 0-31)
+        *   Bit 4: **Input Display** (Boolean)
+        *   Bits 0-3: **Analog Stick Deadzone** (Integer 0-15)
+    *   **`onlyBestTimeTrialRecords[0].unknownBytes[0]` (8 bits):** "Extended" settings container.
+        *   Bit 0: **Speedometer**
+        *   Bit 1: **Level Reset**
 
-**Protocol:** When adding a new boolean setting, find a spare bit in `checksum` bytes or unused struct padding. **DO NOT** change the size of `SaveData`.
+**Protocol:** When adding a new boolean setting, prefer `onlyBestTimeTrialRecords[0].unknownBytes[0]` as `checksum[0]` is full. **DO NOT** change the size of `SaveData`.
 
 ### B. Menu System Architecture
 The menu system is split between definition and logic.

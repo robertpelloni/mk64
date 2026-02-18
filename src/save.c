@@ -90,7 +90,12 @@ void save_options(void) {
                                  ((gEnableInputDisplay & 1) << 4) |
                                  (gStickDeadzone & 0xF);
 
+    // Pack Extended Options into onlyBestTimeTrialRecords[0].unknownBytes[0]
+    gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] = (gEnableSpeedometer & 1) | ((gEnableLevelReset & 1) << 1);
+
     write_save_data_grand_prix_points_and_sound_mode();
+    // Persist extended options (index 0 covers bytes for first cup, but we just need the struct write)
+    func_800B559C(0);
     update_save_data_backup();
 }
 
@@ -231,6 +236,15 @@ void load_save_data(void) {
     gStickDeadzone = gSaveData.main.checksum[0] & 0xF;
 
     if (gStickDeadzone > 15) gStickDeadzone = 7; // Safety cap
+
+    // Unpack Extended Options from onlyBestTimeTrialRecords[0].unknownBytes[0]
+    // Bit 0: Speedometer
+    // Bit 1: Level Reset
+    {
+        u8 extended = gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0];
+        gEnableSpeedometer = extended & 1;
+        gEnableLevelReset = (extended >> 1) & 1;
+    }
 
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;

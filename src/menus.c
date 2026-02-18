@@ -414,6 +414,8 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_MUSIC:
             case SUB_MENU_EXTRAS_SFX:
             case SUB_MENU_EXTRAS_INPUT_DISPLAY:
+            case SUB_MENU_EXTRAS_SPEEDOMETER:
+            case SUB_MENU_EXTRAS_LEVEL_RESET:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
                     gSubMenuSelection++;
@@ -486,6 +488,14 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_EXTRAS_INPUT_DISPLAY:
                             gEnableInputDisplay ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_SPEEDOMETER:
+                            gEnableSpeedometer ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_LEVEL_RESET:
+                            gEnableLevelReset ^= 1;
                             save_options();
                             break;
                         case SUB_MENU_EXTRAS_RETURN:

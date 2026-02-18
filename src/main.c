@@ -40,6 +40,7 @@
 #include "crash_screen.h"
 #include "buffers/gfx_output_buffer.h"
 #include "input_display.h"
+#include "speedometer.h"
 
 void func_80091B78(void);
 void audio_init(void);
@@ -270,6 +271,20 @@ s32 gToggleSFX = 1;
  * Toggles on-screen controller input visualization.
  */
 s32 gEnableInputDisplay = 0;
+
+/**
+ * @brief Enhancements: Speedometer.
+ *
+ * Toggles on-screen speedometer.
+ */
+s32 gEnableSpeedometer = 0;
+
+/**
+ * @brief Enhancements: Level Reset.
+ *
+ * Enables L + R + Start to restart the race.
+ */
+s32 gEnableLevelReset = 0;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
@@ -698,6 +713,20 @@ void race_logic_loop(void) {
         return;
     }
 
+    if (gEnableLevelReset &&
+        (gControllerOne->button & L_TRIG) &&
+        (gControllerOne->button & R_TRIG) &&
+        (gControllerOne->buttonPressed & START_BUTTON)) {
+
+        gIsGamePaused = 0; // Unpause if paused
+        // Equivalent to "Retry"
+        D_800DC510 = 0; // Mode?
+        gGamestateNext = RACING;
+        // Force reload
+        gCurrentlyLoadedCourseId = 0xFF;
+        return;
+    }
+
     if (sNumVBlanks >= 6) {
         sNumVBlanks = 5;
     }
@@ -958,6 +987,10 @@ void race_logic_loop(void) {
 
     if (gEnableInputDisplay) {
         render_input_display();
+    }
+
+    if (gEnableSpeedometer) {
+        render_speedometer();
     }
 
     if (gEnableDebugMode) {
