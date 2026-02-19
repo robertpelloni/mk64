@@ -94,10 +94,13 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Description:** Displays an on-screen speedometer bar in the bottom left corner.
 *   **Details:** Visualizes the player's current speed with a color-coded bar (Green -> Yellow -> Red).
 
-#### 14. Level Reset
+#### 14. Level Reset & Save States
 *   **Default:** OFF
-*   **Description:** Enables a button combination to instantly restart the race.
-*   **Controls:** Press **L + R + Start** simultaneously to restart.
+*   **Description:** Enables practice tools including Level Reset and Save States.
+*   **Controls:**
+    *   **Restart Race:** Press **L + R + Start**.
+    *   **Save State:** Press **L + D-Pad Left** (Saves position & velocity).
+    *   **Load State:** Press **L + D-Pad Right** (Teleports to saved state).
 
 ## Saving Settings
 

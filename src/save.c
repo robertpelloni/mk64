@@ -8,6 +8,7 @@
 #include "menu_items.h"
 #include "menus.h"
 #include "save_data.h"
+#include "save_extended.h"
 #include "replays.h"
 #include "code_80057C60.h"
 #include "main.h"
@@ -83,15 +84,9 @@ void save_options(void) {
     if (gEnableFlycam) packed |= (1 << 7);
 
     gSaveData.main.saveInfo.soundMode = packed;
-    // Pack Resource Meters (7), Music (6), SFX (5), Input Display (4), and Deadzone (0-3) into checksum[0]
-    gSaveData.main.checksum[0] = ((gEnableResourceMeters & 1) << 7) |
-                                 ((gToggleMusic & 1) << 6) |
-                                 ((gToggleSFX & 1) << 5) |
-                                 ((gEnableInputDisplay & 1) << 4) |
-                                 (gStickDeadzone & 0xF);
 
-    // Pack Extended Options into onlyBestTimeTrialRecords[0].unknownBytes[0]
-    gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] = (gEnableSpeedometer & 1) | ((gEnableLevelReset & 1) << 1);
+    // Use extended save logic for other options
+    SaveExtended_Save();
 
     write_save_data_grand_prix_points_and_sound_mode();
     // Persist extended options (index 0 covers bytes for first cup, but we just need the struct write)
@@ -160,11 +155,15 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     gToggleSFX = 1;
 
     gEnableInputDisplay = 0;
-    // Pack defaults: Meters(0), Music(1), SFX(1), Input(0), Deadzone(7) -> 01100111 = 0x67
-    main->checksum[0] = 0x67;
+    gEnableSpeedometer = 0;
+    gEnableLevelReset = 0;
+
+    // Use extended save logic to clear defaults (which updates globals and save struct)
+    SaveExtended_Save();
 
     set_sound_mode();
     write_save_data_grand_prix_points_and_sound_mode();
+    func_800B559C(0);
 }
 
 // create a magic number based on the time trial records
@@ -228,23 +227,17 @@ void load_save_data(void) {
     gEnableDebugMode = (packed >> 6) & 1;
     gEnableFlycam = (packed >> 7) & 1;
 
-    // Unpack Resource Meters, Music, SFX, Input Display, and Deadzone from checksum[0]
-    gEnableResourceMeters = (gSaveData.main.checksum[0] >> 7) & 1;
-    gToggleMusic = (gSaveData.main.checksum[0] >> 6) & 1;
-    gToggleSFX = (gSaveData.main.checksum[0] >> 5) & 1;
-    gEnableInputDisplay = (gSaveData.main.checksum[0] >> 4) & 1;
-    gStickDeadzone = gSaveData.main.checksum[0] & 0xF;
+    // Use extended save logic to unpack
+    gEnableResourceMeters = SaveExtended_GetResourceMeters();
+    gToggleMusic = SaveExtended_GetMusic();
+    gToggleSFX = SaveExtended_GetSFX();
+    gEnableInputDisplay = SaveExtended_GetInputDisplay();
+    gStickDeadzone = SaveExtended_GetDeadzone();
 
     if (gStickDeadzone > 15) gStickDeadzone = 7; // Safety cap
 
-    // Unpack Extended Options from onlyBestTimeTrialRecords[0].unknownBytes[0]
-    // Bit 0: Speedometer
-    // Bit 1: Level Reset
-    {
-        u8 extended = gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0];
-        gEnableSpeedometer = extended & 1;
-        gEnableLevelReset = (extended >> 1) & 1;
-    }
+    gEnableSpeedometer = SaveExtended_GetSpeedometer();
+    gEnableLevelReset = SaveExtended_GetLevelReset();
 
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;

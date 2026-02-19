@@ -230,6 +230,12 @@ extern s32 gEnableInputDisplay;
 extern s32 gEnableSpeedometer;
 extern s32 gEnableLevelReset;
 
+// Save State Variables
+extern s32 gPracticeSaveState; // 0 = None, 1 = Exists
+extern Vec3f gPracticePosition;
+extern Vec3s gPracticeRotation;
+extern Vec3f gPracticeVelocity;
+
 extern s32 gModeSelection;
 extern s32 D_800DC540;
 extern s32 D_800DC544;

@@ -286,6 +286,12 @@ s32 gEnableSpeedometer = 0;
  */
 s32 gEnableLevelReset = 0;
 
+// Save State Data
+s32 gPracticeSaveState = 0;
+Vec3f gPracticePosition = {0, 0, 0};
+Vec3s gPracticeRotation = {0, 0, 0};
+Vec3f gPracticeVelocity = {0, 0, 0};
+
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
     thread->queue = NULL;
@@ -713,6 +719,7 @@ void race_logic_loop(void) {
         return;
     }
 
+    // Level Reset (L + R + Start)
     if (gEnableLevelReset &&
         (gControllerOne->button & L_TRIG) &&
         (gControllerOne->button & R_TRIG) &&
@@ -720,11 +727,32 @@ void race_logic_loop(void) {
 
         gIsGamePaused = 0; // Unpause if paused
         // Equivalent to "Retry"
-        D_800DC510 = 0; // Mode?
+        D_800DC510 = 0;
         gGamestateNext = RACING;
-        // Force reload
         gCurrentlyLoadedCourseId = 0xFF;
         return;
+    }
+
+    // Save States (L + Left/Right)
+    // Only in 1P mode for stability
+    if (gEnableLevelReset && (gPlayerCountSelection1 == 1) && (gControllerOne->button & L_TRIG)) {
+        // Save: L + Left
+        if (gControllerOne->buttonPressed & L_JPAD) {
+            vec3f_copy(gPracticePosition, gPlayerOne->pos);
+            vec3s_copy(gPracticeRotation, gPlayerOne->rot);
+            vec3f_copy(gPracticeVelocity, gPlayerOne->velocity);
+            gPracticeSaveState = 1;
+            play_sound2(SOUND_MENU_OK_CLICKED);
+        }
+        // Load: L + Right
+        if ((gControllerOne->buttonPressed & R_JPAD) && gPracticeSaveState) {
+            vec3f_copy(gPlayerOne->pos, gPracticePosition);
+            vec3s_copy(gPlayerOne->rot, gPracticeRotation);
+            vec3f_copy(gPlayerOne->velocity, gPracticeVelocity);
+            // Reset player visual rotation interpolation to avoid snapping glitch
+            vec3s_copy(gPlayerOne->visualRot, gPracticeRotation);
+            play_sound2(SOUND_MENU_CURSOR_MOVE);
+        }
     }
 
     if (sNumVBlanks >= 6) {

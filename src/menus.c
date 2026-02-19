@@ -407,15 +407,12 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_FAST_BOOT:
             case SUB_MENU_EXTRAS_NO_RUBBER:
             case SUB_MENU_EXTRAS_UNLOCK_ALL:
-            case SUB_MENU_EXTRAS_FLYCAM:
             case SUB_MENU_EXTRAS_PROFILER:
             case SUB_MENU_EXTRAS_DEBUG:
             case SUB_MENU_EXTRAS_DEADZONE:
             case SUB_MENU_EXTRAS_MUSIC:
             case SUB_MENU_EXTRAS_SFX:
-            case SUB_MENU_EXTRAS_INPUT_DISPLAY:
-            case SUB_MENU_EXTRAS_SPEEDOMETER:
-            case SUB_MENU_EXTRAS_LEVEL_RESET:
+            case SUB_MENU_EXTRAS_PRACTICE_MENU:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
                     gSubMenuSelection++;
@@ -453,10 +450,6 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             gUnlockAll ^= 1;
                             save_options();
                             break;
-                        case SUB_MENU_EXTRAS_FLYCAM:
-                            gEnableFlycam ^= 1;
-                            save_options();
-                            break;
                         case SUB_MENU_EXTRAS_PROFILER:
                             gEnableResourceMeters ^= 1;
                             save_options();
@@ -486,17 +479,12 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             gToggleSFX ^= 1;
                             save_options();
                             break;
-                        case SUB_MENU_EXTRAS_INPUT_DISPLAY:
-                            gEnableInputDisplay ^= 1;
-                            save_options();
-                            break;
-                        case SUB_MENU_EXTRAS_SPEEDOMETER:
-                            gEnableSpeedometer ^= 1;
-                            save_options();
-                            break;
-                        case SUB_MENU_EXTRAS_LEVEL_RESET:
-                            gEnableLevelReset ^= 1;
-                            save_options();
+                        case SUB_MENU_EXTRAS_PRACTICE_MENU:
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_PRACTICE_INPUT_DISPLAY;
+                                play_sound2(SOUND_MENU_SELECT);
+                                return;
+                            }
                             break;
                         case SUB_MENU_EXTRAS_RETURN:
                             if (btnAndStick & A_BUTTON) {
@@ -507,9 +495,53 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             }
                             break;
                     }
-                    if (gSubMenuSelection != SUB_MENU_EXTRAS_RETURN) {
+                    if (gSubMenuSelection != SUB_MENU_EXTRAS_RETURN && gSubMenuSelection != SUB_MENU_EXTRAS_PRACTICE_MENU) {
                          play_sound2(SOUND_MENU_SELECT);
                     }
+                }
+                break;
+            case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+            case SUB_MENU_PRACTICE_SPEEDOMETER:
+            case SUB_MENU_PRACTICE_LEVEL_RESET:
+            case SUB_MENU_PRACTICE_FLYCAM:
+            case SUB_MENU_PRACTICE_RETURN:
+                if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_PRACTICE_MAX)) {
+                    gSubMenuSelection++;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if ((btnAndStick & U_JPAD) && (gSubMenuSelection > SUB_MENU_PRACTICE_MIN)) {
+                    gSubMenuSelection--;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if (btnAndStick & B_BUTTON) {
+                    gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
+                    play_sound2(SOUND_MENU_GO_BACK);
+                    return;
+                }
+                if (btnAndStick & A_BUTTON) {
+                    switch (gSubMenuSelection) {
+                        case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+                            gEnableInputDisplay ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_PRACTICE_SPEEDOMETER:
+                            gEnableSpeedometer ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_PRACTICE_LEVEL_RESET:
+                            gEnableLevelReset ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_PRACTICE_FLYCAM:
+                            gEnableFlycam ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_PRACTICE_RETURN:
+                            gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
+                            play_sound2(SOUND_MENU_GO_BACK);
+                            return;
+                    }
+                    play_sound2(SOUND_MENU_SELECT);
                 }
                 break;
             case SUB_MENU_ERASE_QUIT:
