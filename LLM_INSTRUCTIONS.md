@@ -89,7 +89,7 @@ The game uses EEPROM for saving. To avoid shifting offsets and invalidating exis
         *   Bit 0: **Speedometer**
         *   Bit 1: **Level Reset**
 
-**Protocol:** When adding a new boolean setting, prefer `onlyBestTimeTrialRecords[0].unknownBytes[0]` as `checksum[0]` is full. **DO NOT** change the size of `SaveData`.
+**Protocol:** Use `src/save_extended.c` API (`SaveExtended_Set...`, `SaveExtended_Get...`) for all new persistent settings. **DO NOT** manually modify `save.c` packing logic unless strictly necessary. **DO NOT** change the size of `SaveData`.
 
 ### B. Menu System Architecture
 The menu system is split between definition and logic.

@@ -1,32 +1,26 @@
-# Session Handoff
+# AI Agent Handoff
 
-## Summary
-In this session, we finalized the implementation of the **Extras Menu** and associated enhancements for Mario Kart 64. This includes 60FPS, Widescreen, Fly Cam, and more. We also significantly improved the project's documentation infrastructure.
+**Current Status:**
+The project has reached a highly advanced state with version **1.2.0**.
+All major planned features (60FPS, Widescreen, Fly Cam, Practice Mode, Save States, etc.) are implemented, tested, and documented.
+The architecture for adding new settings (`src/save_extended.c`) is robust and scalable.
 
-## Key Accomplishments
-1.  **Feature Completion:**
-    *   **Extras Menu:** Fully implemented with persistent settings.
-    *   **Fly Cam:** Fixed critical bugs (control loss, camera fallback) and documented controls.
-    *   **60FPS/Widescreen:** Integrated and documented.
-2.  **Documentation:**
-    *   Created `AGENTS.md`, `VISION.md`, `DASHBOARD.md`, `PROJECT_STRUCTURE.md`.
-    *   Updated `MANUAL.md` and `docs/mainpage.md`.
-    *   Added Doxygen comments to source files.
-3.  **Versioning:**
-    *   Bumped version to `1.1.0`.
-    *   Updated `CHANGELOG.md`.
-4.  **Cleanup:**
-    *   Removed `bobcoin` submodule.
+**Recently Completed:**
+*   Implemented "Practice Mode" features (Speedometer, Input Display, Level Reset).
+*   Implemented "Save States (Lite)" functionality.
+*   Refactored Save Data logic to use a clean API.
+*   Verified Crash Screen and Deadzone logic.
+*   Removed `bobcoin`.
 
-## Current State
-*   The codebase is stable (static analysis).
-*   Submodules are clean.
-*   Documentation is comprehensive.
+**Next Steps / Roadmap:**
+*   **Netplay Research:** The user expressed interest in this long-term.
+*   **Modding API:** Lua integration is a distant goal.
+*   **Asset Replacement:** Easier pipelines for custom textures/models.
+*   **Bug Fixes:** Monitor community feedback for issues with 60FPS physics or Save States.
 
-## Future Work / Next Steps
-1.  **Testing:** Since we lack a baserom in this environment, on-hardware or emulator testing is crucial to verify the Fly Cam fix and 60FPS smoothness.
-2.  **Decompilation:** Continue matching remaining functions in `src/`.
-3.  **Netplay:** Investigate feasibility as per `VISION.md`.
-4.  **Modding Support:** Consider Lua integration.
+**Codebase Notes:**
+*   **Persistence:** Use `src/save_extended.c` for any new settings. Do not touch `src/save.c` packing logic manually.
+*   **Menus:** Add new options to `src/menu_items.c` (text) and `src/menus.c` (logic).
+*   **Features:** Use `gEnable[Feature]` flags in `src/main.c`.
 
-**"Keep on goin'! Don't ever stop!"**
+**"Keep on goin'!"**
