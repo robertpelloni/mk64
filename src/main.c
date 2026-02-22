@@ -42,6 +42,8 @@
 #include "input_display.h"
 #include "speedometer.h"
 
+extern s32 gLapCountByPlayerId[];
+
 void func_80091B78(void);
 void audio_init(void);
 void create_debug_thread(void);
@@ -292,6 +294,20 @@ s32 gEnableLevelReset = 0;
  * 0 = Default, 1 = Disabled, 2+ = Specific Items.
  */
 u16 gPracticeItemOption = 0;
+
+/**
+ * @brief Enhancements: Lap Skip.
+ *
+ * Enables L + D-Pad Up to skip the current lap.
+ */
+u16 gEnableLapSkip = 0;
+
+/**
+ * @brief Enhancements: Timer Freeze.
+ *
+ * Stops the course timer from incrementing.
+ */
+u16 gPracticeTimerFreeze = 0;
 
 // Save State Data
 s32 gPracticeSaveState = 0;
@@ -762,6 +778,16 @@ void race_logic_loop(void) {
         }
     }
 
+    // Lap Skip (L + D-Pad Up)
+    // Only in 1P mode to avoid confusion. Checks if lap count < 2 (so max lap becomes 3)
+    if (gEnableLapSkip && (gPlayerCountSelection1 == 1) && (gControllerOne->button & L_TRIG) && (gControllerOne->buttonPressed & U_JPAD)) {
+        if (gPlayers[0].lapCount < 2) {
+             gPlayers[0].lapCount++;
+             gLapCountByPlayerId[0]++;
+             play_sound2(SOUND_MENU_OK_CLICKED);
+        }
+    }
+
     if (sNumVBlanks >= 6) {
         sNumVBlanks = 5;
     }
@@ -779,7 +805,7 @@ void race_logic_loop(void) {
             if (gIsGamePaused == 0) {
                 func_8001EE98(gPlayerOneCopy, camera1, 0);
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E) {
+                    if (D_8015011E && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -843,7 +869,7 @@ void race_logic_loop(void) {
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -891,7 +917,7 @@ void race_logic_loop(void) {
 
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -961,7 +987,7 @@ void race_logic_loop(void) {
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();

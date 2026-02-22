@@ -230,6 +230,8 @@ extern s32 gEnableInputDisplay;
 extern s32 gEnableSpeedometer;
 extern s32 gEnableLevelReset;
 extern u16 gPracticeItemOption;
+extern u16 gEnableLapSkip;
+extern u16 gPracticeTimerFreeze;
 
 // Save State Variables
 extern s32 gPracticeSaveState; // 0 = None, 1 = Exists

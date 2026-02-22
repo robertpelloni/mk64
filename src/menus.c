@@ -505,6 +505,8 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_PRACTICE_LEVEL_RESET:
             case SUB_MENU_PRACTICE_FLYCAM:
             case SUB_MENU_PRACTICE_ITEM_OPTION:
+            case SUB_MENU_PRACTICE_LAP_SKIP:
+            case SUB_MENU_PRACTICE_TIMER_FREEZE:
             case SUB_MENU_PRACTICE_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_PRACTICE_MAX)) {
                     gSubMenuSelection++;
@@ -544,6 +546,12 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                 else gPracticeItemOption = 16;
                             }
                             save_options();
+                            break;
+                        case SUB_MENU_PRACTICE_LAP_SKIP:
+                            if (btnAndStick & A_BUTTON) { gEnableLapSkip ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_TIMER_FREEZE:
+                            if (btnAndStick & A_BUTTON) { gPracticeTimerFreeze ^= 1; save_options(); }
                             break;
                         case SUB_MENU_PRACTICE_RETURN:
                             if (btnAndStick & A_BUTTON) {

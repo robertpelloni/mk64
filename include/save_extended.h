@@ -18,6 +18,8 @@ s32 SaveExtended_GetSFX(void);
 s32 SaveExtended_GetDeadzone(void);
 s32 SaveExtended_GetResourceMeters(void);
 s32 SaveExtended_GetItemOption(void);
+s32 SaveExtended_GetLapSkip(void);
+s32 SaveExtended_GetTimerFreeze(void);
 
 // Setters
 void SaveExtended_SetSpeedometer(s32 value);
@@ -28,5 +30,7 @@ void SaveExtended_SetSFX(s32 value);
 void SaveExtended_SetDeadzone(s32 value);
 void SaveExtended_SetResourceMeters(s32 value);
 void SaveExtended_SetItemOption(s32 value);
+void SaveExtended_SetLapSkip(s32 value);
+void SaveExtended_SetTimerFreeze(s32 value);
 
 #endif

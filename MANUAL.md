@@ -110,6 +110,17 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **None:** Item boxes give nothing.
     *   **Banana, Shells, Stars, etc.:** Forces every item box to yield the selected item.
 
+#### 16. Lap Skip
+*   **Default:** OFF
+*   **Description:** Allows you to instantly complete the current lap.
+*   **Controls:** Press **L + D-Pad Up** during a race.
+*   **Note:** Only works in Single Player mode to prevent accidental skips in multiplayer.
+
+#### 17. Timer Freeze
+*   **Default:** OFF
+*   **Description:** Stops the race timer from incrementing.
+*   **Usage:** Useful for practicing specific sections without time pressure or for infinite time trials.
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).

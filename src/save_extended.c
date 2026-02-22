@@ -22,6 +22,10 @@
 // Bit 0: Speedometer
 // Bit 1: Level Reset
 // Bits 2-6: Item Option (5 bits)
+// Bit 7: Lap Skip
+
+// UnknownBytes[1] Map:
+// Bit 0: Timer Freeze
 
 void SaveExtended_Init(void) {
     // Nothing special needed, logic handled in getters/setters
@@ -43,8 +47,14 @@ void SaveExtended_Save(void) {
     if (gEnableSpeedometer) unknown0 |= BIT(0);
     if (gEnableLevelReset) unknown0 |= BIT(1);
     unknown0 |= (gPracticeItemOption & 0x1F) << 2; // Bits 2-6
+    if (gEnableLapSkip) unknown0 |= BIT(7);
 
     gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] = unknown0;
+
+    // UnknownBytes[1] packing
+    u8 unknown1 = 0;
+    if (gPracticeTimerFreeze) unknown1 |= BIT(0);
+    gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[1] = unknown1;
 
     // Commit
     // Note: We depend on save.c functions which might not be exposed.
@@ -86,6 +96,14 @@ s32 SaveExtended_GetItemOption(void) {
     return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] >> 2) & 0x1F;
 }
 
+s32 SaveExtended_GetLapSkip(void) {
+    return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] >> 7) & 1;
+}
+
+s32 SaveExtended_GetTimerFreeze(void) {
+    return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[1] >> 0) & 1;
+}
+
 // Setters (Updates globals, persistence happens on Save)
 void SaveExtended_SetSpeedometer(s32 value) {
     gEnableSpeedometer = value;
@@ -118,4 +136,12 @@ void SaveExtended_SetResourceMeters(s32 value) {
 
 void SaveExtended_SetItemOption(s32 value) {
     gPracticeItemOption = value;
+}
+
+void SaveExtended_SetLapSkip(s32 value) {
+    gEnableLapSkip = value;
+}
+
+void SaveExtended_SetTimerFreeze(s32 value) {
+    gPracticeTimerFreeze = value;
 }

@@ -19,6 +19,8 @@
 - [x] **Level Reset:** L+R+Start to restart race instantly.
 - [x] **Save States (Lite):** Position save/load (L+Left/Right).
 - [x] **Item Control:** Force specific items or disable items.
+- [x] **Lap Skip:** Skip current lap (L+Up).
+- [x] **Timer Freeze:** Stop race timer.
 
 ## 3. UI & UX Polish (Completed)
 - [x] **Extras Menu:** Centralized configuration menu.
@@ -27,7 +29,6 @@
 - [x] **Manual:** Comprehensive documentation.
 
 ## 4. Future Goals
-- [ ] **Lap/Timer Control:** Freeze timer, force lap count.
 - [ ] **Ghost Data Enhancement:** Save ghost data to flash/expansion.
 - [ ] **Modding Support:** Hooks for custom textures/models.
 - [ ] **Online Play:** (Investigation phase).
