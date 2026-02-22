@@ -102,6 +102,14 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **Save State:** Press **L + D-Pad Left** (Saves position & velocity).
     *   **Load State:** Press **L + D-Pad Right** (Teleports to saved state).
 
+#### 15. Item Control
+*   **Default:** Default (Normal Logic)
+*   **Description:** Allows you to override the item box probability logic.
+*   **Options:**
+    *   **Default:** Normal game behavior.
+    *   **None:** Item boxes give nothing.
+    *   **Banana, Shells, Stars, etc.:** Forces every item box to yield the selected item.
+
 ## Saving Settings
 
 All settings changed in the **Extras** menu are now **saved permanently** to the game's EEPROM (save file).

@@ -1,21 +1,31 @@
-# Submodule Dashboard
+# Project Dashboard
 
-This dashboard lists all active submodules, their paths, versions, and status. Use this to track dependencies.
+## Project Structure
+*   **root:** Main build files and documentation.
+*   **src/**: Source code (C and Assembly).
+    *   `src/racing/`: Core racing logic (actors, physics).
+    *   `src/audio/`: Sound and music.
+    *   `src/menu_items.c`, `src/menus.c`: UI logic.
+*   **include/**: Header files.
+*   **asm/**: Disassembled ASM files (non-decompiled).
+*   **assets/**: Extracted game assets (textures, models).
+*   **tools/**: Build tools and submodules.
 
-## Active Submodules
+## Submodules Status
 
-| Name | Path | Version/Commit | Status | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **doxygen-awesome-css** | `doxygen-awesome-css` | `1f36200` (v2.4.1) | Active | Modern CSS styling for Doxygen documentation. |
-| **asm-differ** | `tools/asm-differ` | `4eb23bc` (heads/main) | Active | Tool for comparing assembly output during decompilation. |
-| **fast64** | `tools/blender/fast64` | `dd418d1` (v2.5.1) | Active | Blender plugin for N64 display list generation. |
-| **decomp-permuter** | `tools/decomp-permuter` | `ec2efee` (heads/main) | Active | Tool for randomizing C code to match assembly. |
-| **torch** | `tools/torch` | `3dde9e6` (heads/main) | Active | Decompilation support tool. |
+| Submodule | Path | Description | Status |
+| :--- | :--- | :--- | :--- |
+| **asm-differ** | `tools/asm-differ/` | Tool for comparing C output with original ASM. | Active |
+| **fast64** | `tools/blender/fast64/` | Blender plugin for N64 asset creation. | Active |
+| **decomp-permuter** | `tools/decomp-permuter/` | C code permuter for matching ASM. | Active |
+| **torch** | `tools/torch/` | Build system / Toolchain helper. | Active |
+| **doxygen-awesome-css** | `doxygen-awesome-css/` | CSS theme for Doxygen documentation. | Active |
 
-*Note: `bobcoin` has been removed.*
+## Build Info
+*   **Version:** 1.2.0
+*   **Target:** N64 (US v1.0)
+*   **Compiler:** IDO 5.3 / 7.1 (via recomp)
 
-## Maintenance Instructions
-
-*   **Update:** To update a submodule, run `git submodule update --remote [path]`.
-*   **Sync:** Ensure local submodules are synced with `git submodule sync`.
-*   **Documentation:** When updating a submodule version, update this dashboard.
+## Recent Changes
+*   **1.2.0:** Implemented Analog Deadzone, Music/SFX toggles, Save Persistence Fix.
+*   **1.1.0:** Added Practice Mode (Input Display, Speedometer, Level Reset).

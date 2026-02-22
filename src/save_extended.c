@@ -21,6 +21,7 @@
 // UnknownBytes[0] Map:
 // Bit 0: Speedometer
 // Bit 1: Level Reset
+// Bits 2-6: Item Option (5 bits)
 
 void SaveExtended_Init(void) {
     // Nothing special needed, logic handled in getters/setters
@@ -41,6 +42,7 @@ void SaveExtended_Save(void) {
     u8 unknown0 = 0;
     if (gEnableSpeedometer) unknown0 |= BIT(0);
     if (gEnableLevelReset) unknown0 |= BIT(1);
+    unknown0 |= (gPracticeItemOption & 0x1F) << 2; // Bits 2-6
 
     gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] = unknown0;
 
@@ -80,6 +82,10 @@ s32 SaveExtended_GetResourceMeters(void) {
     return (gSaveData.main.checksum[0] >> 7) & 1;
 }
 
+s32 SaveExtended_GetItemOption(void) {
+    return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[0] >> 2) & 0x1F;
+}
+
 // Setters (Updates globals, persistence happens on Save)
 void SaveExtended_SetSpeedometer(s32 value) {
     gEnableSpeedometer = value;
@@ -108,4 +114,8 @@ void SaveExtended_SetDeadzone(s32 value) {
 
 void SaveExtended_SetResourceMeters(s32 value) {
     gEnableResourceMeters = value;
+}
+
+void SaveExtended_SetItemOption(s32 value) {
+    gPracticeItemOption = value;
 }

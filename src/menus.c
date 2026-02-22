@@ -504,6 +504,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_PRACTICE_SPEEDOMETER:
             case SUB_MENU_PRACTICE_LEVEL_RESET:
             case SUB_MENU_PRACTICE_FLYCAM:
+            case SUB_MENU_PRACTICE_ITEM_OPTION:
             case SUB_MENU_PRACTICE_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_PRACTICE_MAX)) {
                     gSubMenuSelection++;
@@ -518,30 +519,45 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                     play_sound2(SOUND_MENU_GO_BACK);
                     return;
                 }
-                if (btnAndStick & A_BUTTON) {
+                if ((btnAndStick & A_BUTTON) || (btnAndStick & (L_JPAD | R_JPAD))) {
                     switch (gSubMenuSelection) {
                         case SUB_MENU_PRACTICE_INPUT_DISPLAY:
-                            gEnableInputDisplay ^= 1;
-                            save_options();
+                            if (btnAndStick & A_BUTTON) { gEnableInputDisplay ^= 1; save_options(); }
                             break;
                         case SUB_MENU_PRACTICE_SPEEDOMETER:
-                            gEnableSpeedometer ^= 1;
-                            save_options();
+                            if (btnAndStick & A_BUTTON) { gEnableSpeedometer ^= 1; save_options(); }
                             break;
                         case SUB_MENU_PRACTICE_LEVEL_RESET:
-                            gEnableLevelReset ^= 1;
-                            save_options();
+                            if (btnAndStick & A_BUTTON) { gEnableLevelReset ^= 1; save_options(); }
                             break;
                         case SUB_MENU_PRACTICE_FLYCAM:
-                            gEnableFlycam ^= 1;
+                            if (btnAndStick & A_BUTTON) { gEnableFlycam ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_ITEM_OPTION:
+                            // Cycle through item options
+                            // 0=Default, 1=None, 2=Banana... 16=Super Mushroom
+                            if ((btnAndStick & R_JPAD) || (btnAndStick & A_BUTTON)) {
+                                if (gPracticeItemOption < 16) gPracticeItemOption++;
+                                else gPracticeItemOption = 0;
+                            } else if (btnAndStick & L_JPAD) {
+                                if (gPracticeItemOption > 0) gPracticeItemOption--;
+                                else gPracticeItemOption = 16;
+                            }
                             save_options();
                             break;
                         case SUB_MENU_PRACTICE_RETURN:
-                            gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
-                            play_sound2(SOUND_MENU_GO_BACK);
-                            return;
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
+                                play_sound2(SOUND_MENU_GO_BACK);
+                                return;
+                            }
+                            break;
                     }
-                    play_sound2(SOUND_MENU_SELECT);
+                    if (gSubMenuSelection != SUB_MENU_PRACTICE_RETURN && gSubMenuSelection != SUB_MENU_PRACTICE_ITEM_OPTION) {
+                        play_sound2(SOUND_MENU_SELECT);
+                    } else if (gSubMenuSelection == SUB_MENU_PRACTICE_ITEM_OPTION) {
+                        play_sound2(SOUND_MENU_CURSOR_MOVE);
+                    }
                 }
                 break;
             case SUB_MENU_ERASE_QUIT:

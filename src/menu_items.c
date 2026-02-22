@@ -520,6 +520,7 @@ char* gTextPracticeMenu[] = {
     "SPEEDOMETER",
     "LEVEL RESET (L+R+S)",
     "FLY CAM",
+    "ITEM CONTROL",
     "RETURN",
 };
 
@@ -528,7 +529,28 @@ char* gTextPracticeHelp[] = {
     "TOGGLES ON-SCREEN SPEEDOMETER.",
     "ENABLES L+R+START TO RESET RACE.",
     "TOGGLES FREE FLY CAMERA MODE.",
+    "SETS FORCED ITEM (PRACTICE).",
     "RETURN TO EXTRAS MENU.",
+};
+
+char* gTextItemOptions[] = {
+    "DEFAULT",
+    "NONE",
+    "BANANA",
+    "BANANA BUNCH",
+    "GREEN SHELL",
+    "TRIPLE GREEN",
+    "RED SHELL",
+    "TRIPLE RED",
+    "BLUE SHELL",
+    "THUNDERBOLT",
+    "FAKE ITEM BOX",
+    "STAR",
+    "BOO",
+    "MUSHROOM",
+    "DOUBLE MUSHROOM",
+    "TRIPLE MUSHROOM",
+    "SUPER MUSHROOM",
 };
 
 char* gTextOn = "ON";
@@ -6940,6 +6962,36 @@ void func_800A1FB0(MenuItem* arg0) {
                 s32 helpIdx = gSubMenuSelection - SUB_MENU_EXTRAS_MIN;
                 if (helpIdx >= 0 && helpIdx < ARRAY_COUNT(gTextExtrasHelp)) {
                      print_text1_center_mode_1(160, 200, gTextExtrasHelp[helpIdx], 0, 0.7f, 0.7f);
+                }
+            }
+            break;
+        case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+        case SUB_MENU_PRACTICE_SPEEDOMETER:
+        case SUB_MENU_PRACTICE_LEVEL_RESET:
+        case SUB_MENU_PRACTICE_FLYCAM:
+        case SUB_MENU_PRACTICE_ITEM_OPTION:
+        case SUB_MENU_PRACTICE_RETURN:
+            for (i = 0; i < ARRAY_COUNT(gTextPracticeMenu); i++) {
+                set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_PRACTICE_MIN, i, 3);
+                print_text_mode_1(0x32, 0x30 + (0x18 * i), gTextPracticeMenu[i], 0, 0.9f, 1.0f);
+                if (i == (gSubMenuSelection - SUB_MENU_PRACTICE_MIN)) {
+                    spE0.column = 0x32;
+                    spE0.row = 0x30 + (0x18 * i);
+                }
+            }
+            set_text_color(TEXT_GREEN);
+            print_text1_center_mode_1(0xE0, 0x30, gEnableInputDisplay ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x18, gEnableSpeedometer ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x30, gEnableLevelReset ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x48, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x60, gTextItemOptions[gPracticeItemOption], 0, 0.9f, 1.0f);
+
+            // Draw Description/Tooltip
+            set_text_color(TEXT_YELLOW);
+            {
+                s32 helpIdx = gSubMenuSelection - SUB_MENU_PRACTICE_MIN;
+                if (helpIdx >= 0 && helpIdx < ARRAY_COUNT(gTextPracticeHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextPracticeHelp[helpIdx], 0, 0.7f, 0.7f);
                 }
             }
             break;

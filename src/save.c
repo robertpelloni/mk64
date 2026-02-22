@@ -157,6 +157,7 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     gEnableInputDisplay = 0;
     gEnableSpeedometer = 0;
     gEnableLevelReset = 0;
+    gPracticeItemOption = 0;
 
     // Use extended save logic to clear defaults (which updates globals and save struct)
     SaveExtended_Save();
@@ -238,6 +239,7 @@ void load_save_data(void) {
 
     gEnableSpeedometer = SaveExtended_GetSpeedometer();
     gEnableLevelReset = SaveExtended_GetLevelReset();
+    gPracticeItemOption = SaveExtended_GetItemOption();
 
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;

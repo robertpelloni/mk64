@@ -286,6 +286,13 @@ s32 gEnableSpeedometer = 0;
  */
 s32 gEnableLevelReset = 0;
 
+/**
+ * @brief Enhancements: Item Control.
+ *
+ * 0 = Default, 1 = Disabled, 2+ = Specific Items.
+ */
+u16 gPracticeItemOption = 0;
+
 // Save State Data
 s32 gPracticeSaveState = 0;
 Vec3f gPracticePosition = {0, 0, 0};

@@ -17,6 +17,7 @@ s32 SaveExtended_GetMusic(void);
 s32 SaveExtended_GetSFX(void);
 s32 SaveExtended_GetDeadzone(void);
 s32 SaveExtended_GetResourceMeters(void);
+s32 SaveExtended_GetItemOption(void);
 
 // Setters
 void SaveExtended_SetSpeedometer(s32 value);
@@ -26,5 +27,6 @@ void SaveExtended_SetMusic(s32 value);
 void SaveExtended_SetSFX(s32 value);
 void SaveExtended_SetDeadzone(s32 value);
 void SaveExtended_SetResourceMeters(s32 value);
+void SaveExtended_SetItemOption(s32 value);
 
 #endif
