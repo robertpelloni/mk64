@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.2] - Save System Safety & Optimization
+### Changed
+- **Performance:** Optimized menu save logic. Settings like "Stick Deadzone" and "Item Control" now only trigger a save when exiting the menu, preventing EEPROM wear and menu lag.
+- **Verification:** Confirmed that the extended settings storage in `checksum[0]` is safe and does not conflict with the game's integrity checks or checksum calculations.
+
 ## [1.5.0] - Robust Save States & Feedback
 ### Added
 - **Robust Save States:** Save States (L + D-Pad Left/Right) now preserve:

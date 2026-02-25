@@ -469,7 +469,6 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                 else if (gStickDeadzone == 15) gStickDeadzone = 0;
                                 else gStickDeadzone = 7;
                             }
-                            save_options();
                             break;
                         case SUB_MENU_EXTRAS_MUSIC:
                             gToggleMusic ^= 1;
@@ -545,7 +544,6 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                 if (gPracticeItemOption > 0) gPracticeItemOption--;
                                 else gPracticeItemOption = 16;
                             }
-                            save_options();
                             break;
                         case SUB_MENU_PRACTICE_LAP_SKIP:
                             if (btnAndStick & A_BUTTON) { gEnableLapSkip ^= 1; save_options(); }
@@ -1306,7 +1304,6 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    save_options();
                 }
                 if ((btnAndStick & L_JPAD) && (gSoundMode > 0)) {
                     gSoundMode -= 1;
@@ -1315,7 +1312,6 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    save_options();
                 }
                 if (btnAndStick & U_JPAD) {
                     gDebugMenuSelection = DEBUG_MENU_PLAYER;
