@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0] - Robust Save States & Feedback
+### Added
+- **Robust Save States:** Save States (L + D-Pad Left/Right) now preserve:
+    - **Held Item:** The item currently in the player's inventory.
+    - **Lap Count:** The current lap number.
+    - **RNG State:** The Random Number Generator seed, ensuring consistent outcomes for deterministic events.
+- **On-Screen Feedback:** Added "STATE SAVED" and "STATE LOADED" text overlays to provide immediate visual confirmation of save state actions.
+
+### Changed
+- Updated `MANUAL.md` with detailed Save State information.
+- Refined Save State logic in `src/main.c` to integrate deeply with player and game state variables.
+
 ## [1.4.0] - Practice Tools: Lap Skip & Timer Freeze
 ### Added
 - **Lap Skip:** Added "Lap Skip" feature (L + D-Pad Up) to instantly complete the current lap. Useful for practicing specific laps or finishing races quickly.

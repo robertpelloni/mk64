@@ -94,13 +94,17 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Description:** Displays an on-screen speedometer bar in the bottom left corner.
 *   **Details:** Visualizes the player's current speed with a color-coded bar (Green -> Yellow -> Red).
 
-#### 14. Level Reset & Save States
+#### 14. Level Reset & Save States (Practice)
 *   **Default:** OFF
-*   **Description:** Enables practice tools including Level Reset and Save States.
+*   **Description:** Enables powerful practice tools for speedrunners and casual players.
 *   **Controls:**
-    *   **Restart Race:** Press **L + R + Start**.
-    *   **Save State:** Press **L + D-Pad Left** (Saves position & velocity).
-    *   **Load State:** Press **L + D-Pad Right** (Teleports to saved state).
+    *   **Restart Race:** Press **L + R + Start** (Instant retry).
+    *   **Save State:** Press **L + D-Pad Left**.
+        *   Saves: Position, Rotation, Velocity, **Held Item**, **Lap Count**, and **RNG State**.
+        *   Feedback: Displays "STATE SAVED" on screen.
+    *   **Load State:** Press **L + D-Pad Right**.
+        *   Loads: All saved data instantly.
+        *   Feedback: Displays "STATE LOADED" on screen.
 
 #### 15. Item Control
 *   **Default:** Default (Normal Logic)

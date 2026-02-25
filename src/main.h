@@ -238,6 +238,9 @@ extern s32 gPracticeSaveState; // 0 = None, 1 = Exists
 extern Vec3f gPracticePosition;
 extern Vec3s gPracticeRotation;
 extern Vec3f gPracticeVelocity;
+extern s16 gPracticeItem;
+extern s16 gPracticeLap;
+extern u16 gPracticeRNG;
 
 extern s32 gModeSelection;
 extern s32 D_800DC540;

@@ -314,6 +314,11 @@ s32 gPracticeSaveState = 0;
 Vec3f gPracticePosition = {0, 0, 0};
 Vec3s gPracticeRotation = {0, 0, 0};
 Vec3f gPracticeVelocity = {0, 0, 0};
+s16 gPracticeItem = 0;
+s16 gPracticeLap = 0;
+u16 gPracticeRNG = 0;
+s32 gPracticeFeedbackTimer = 0;
+char* gPracticeFeedbackText = NULL;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
@@ -764,7 +769,12 @@ void race_logic_loop(void) {
             vec3f_copy(gPracticePosition, gPlayerOne->pos);
             vec3s_copy(gPracticeRotation, gPlayerOne->rot);
             vec3f_copy(gPracticeVelocity, gPlayerOne->velocity);
+            gPracticeItem = gPlayerOne->currentItemCopy;
+            gPracticeLap = gPlayerOne->lapCount;
+            gPracticeRNG = gRandomSeed16;
             gPracticeSaveState = 1;
+            gPracticeFeedbackText = "STATE SAVED";
+            gPracticeFeedbackTimer = 60;
             play_sound2(SOUND_MENU_OK_CLICKED);
         }
         // Load: L + Right
@@ -774,6 +784,14 @@ void race_logic_loop(void) {
             vec3f_copy(gPlayerOne->velocity, gPracticeVelocity);
             // Reset player visual rotation interpolation to avoid snapping glitch
             vec3s_copy(gPlayerOne->visualRot, gPracticeRotation);
+
+            gPlayerOne->currentItemCopy = gPracticeItem;
+            gPlayerOne->lapCount = gPracticeLap;
+            gLapCountByPlayerId[0] = gPracticeLap;
+            gRandomSeed16 = gPracticeRNG;
+
+            gPracticeFeedbackText = "STATE LOADED";
+            gPracticeFeedbackTimer = 60;
             play_sound2(SOUND_MENU_CURSOR_MOVE);
         }
     }
@@ -1052,6 +1070,12 @@ void race_logic_loop(void) {
 
     if (gEnableSpeedometer) {
         render_speedometer();
+    }
+
+    if (gPracticeFeedbackTimer > 0 && gPracticeFeedbackText != 0) {
+        // Center-ish text
+        print_text_mode_1(110, 200, gPracticeFeedbackText, 0, 0.5f, 0.5f);
+        gPracticeFeedbackTimer--;
     }
 
     if (gEnableDebugMode) {
