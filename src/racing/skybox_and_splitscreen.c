@@ -585,7 +585,11 @@ void set_perspective_and_aspect_ratio(void) {
     }
     switch (gScreenModeSelection) { /* switch 1; irregular */
         case SCREEN_MODE_1P:        /* switch 1 */
-            gScreenAspect = 1.33333334f;
+            if (gEnableWidescreen) {
+                gScreenAspect = 1.77777778f; // 16:9
+            } else {
+                gScreenAspect = 1.33333334f;
+            }
             return;
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL: /* switch 1 */
             gScreenAspect = 0.66666667f;
@@ -594,7 +598,11 @@ void set_perspective_and_aspect_ratio(void) {
             gScreenAspect = 2.66666667f;
             return;
         case SCREEN_MODE_3P_4P_SPLITSCREEN: /* switch 1 */
-            gScreenAspect = 1.33333334f;
+            if (gEnableWidescreen) {
+                gScreenAspect = 1.77777778f; // 16:9
+            } else {
+                gScreenAspect = 1.33333334f;
+            }
             return;
     }
 }

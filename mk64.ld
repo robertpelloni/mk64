@@ -83,6 +83,13 @@ SECTIONS
       BUILD_DIR/src/audio/seqplayer.o(.text*);
       BUILD_DIR/src/audio/external.o(.text*);
       BUILD_DIR/src/audio/port_eu.o(.text*);
+      BUILD_DIR/src/flycam.o(.text*);
+      BUILD_DIR/src/input_display.o(.text*);
+      BUILD_DIR/src/speedometer.o(.text*);
+      BUILD_DIR/src/save_extended.o(.text*);
+      BUILD_DIR/src/modding/mod_hooks.o(.text*);
+      BUILD_DIR/src/modding/mod_assets.o(.text*);
+      BUILD_DIR/src/pc_port/platform_save.o(.text*);
       #if DEBUG
          BUILD_DIR/src/os/osCartRomInit.o(.text*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.text*);
@@ -242,6 +249,13 @@ SECTIONS
       BUILD_DIR/src/audio/load.o(.data*);
       BUILD_DIR/src/audio/playback.o(.data*);
       BUILD_DIR/src/audio/effects.o(.data*);
+      BUILD_DIR/src/flycam.o(.data*);
+      BUILD_DIR/src/input_display.o(.data*);
+      BUILD_DIR/src/speedometer.o(.data*);
+      BUILD_DIR/src/save_extended.o(.data*);
+      BUILD_DIR/src/modding/mod_hooks.o(.data*);
+      BUILD_DIR/src/modding/mod_assets.o(.data*);
+      BUILD_DIR/src/pc_port/platform_save.o(.data*);
       #if DEBUG
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.data*);
          BUILD_DIR/src/debug/debug.o(.data*);
@@ -295,6 +309,13 @@ SECTIONS
       BUILD_DIR/src/audio/seqplayer.o(.rodata*);
       BUILD_DIR/src/audio/external.o(.rodata*);
       BUILD_DIR/src/audio/port_eu.o(.rodata*);
+      BUILD_DIR/src/flycam.o(.rodata*);
+      BUILD_DIR/src/input_display.o(.rodata*);
+      BUILD_DIR/src/speedometer.o(.rodata*);
+      BUILD_DIR/src/save_extended.o(.rodata*);
+      BUILD_DIR/src/modding/mod_hooks.o(.rodata*);
+      BUILD_DIR/src/modding/mod_assets.o(.rodata*);
+      BUILD_DIR/src/pc_port/platform_save.o(.rodata*);
       #if DEBUG
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.rodata*);
          BUILD_DIR/src/debug/debug.o(.rodata*);
@@ -339,6 +360,13 @@ SECTIONS
       BUILD_DIR/src/code_800AF9B0.o(.bss*);
       BUILD_DIR/src/menus.o(.bss*);
       BUILD_DIR/src/save.o(.bss*);
+      BUILD_DIR/src/flycam.o(.bss*);
+      BUILD_DIR/src/input_display.o(.bss*);
+      BUILD_DIR/src/speedometer.o(.bss*);
+      BUILD_DIR/src/save_extended.o(.bss*);
+      BUILD_DIR/src/modding/mod_hooks.o(.bss*);
+      BUILD_DIR/src/modding/mod_assets.o(.bss*);
+      BUILD_DIR/src/pc_port/platform_save.o(.bss*);
       #if DEBUG
          BUILD_DIR/src/os/osCartRomInit.o(.bss*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.bss*);

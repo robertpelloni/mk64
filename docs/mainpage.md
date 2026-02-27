@@ -57,4 +57,18 @@ Complete resources for learning about mk64 decomp
 </a>
 </div>
 
+<div class="pagebutton">
+<a class="pagea" href="manual_8md.html">
+<div class="pagelink">
+  <div class="pageimg"><img width=320 src="buttonimage.png" /></div>
+  <div class="content">
+    <div class="pageheading">User Manual</div>
+    <div class="pagedescription">
+      <p>Documentation for game enhancements and new features (60FPS, Flycam, etc.)</p>
+    </div>
+  </div>
+</div>
+</a>
+</div>
+
 @endhtmlonly

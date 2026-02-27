@@ -36,6 +36,7 @@
 #include "spawn_players.h"
 #include "sounds.h"
 #include "data/some_data.h"
+#include "modding/mod_hooks.h"
 
 //! @warning this macro is undef'd at the end of this file
 #define MAKE_RGB(r, g, b) (((r) << 0x10) | ((g) << 0x08) | (b << 0x00))
@@ -2572,6 +2573,9 @@ void func_8005CB60(s32 playerId, s32 lapCount) {
             if (lapCount == 3) {
                 playerHUD[playerId].someTimer = playerHUD[playerId].lapCompletionTimes[*huh];
             }
+
+            Mod_OnLapComplete(playerId, lapCount);
+
             if (gModeSelection == (s32) 1) {
                 if (D_80165638 >= playerHUD[playerId].someTimer1) {
                     if (D_80165638 != playerHUD[playerId].someTimer1) {

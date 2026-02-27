@@ -217,6 +217,31 @@ extern s32 gActiveScreenMode;
 extern s32 gScreenModeSelection;
 extern s32 gPlayerCountSelection1;
 
+extern s32 gEnable60FPS;
+extern s32 gEnableWidescreen;
+extern s32 gEnableFastBoot;
+extern s32 gDisableRubberBanding;
+extern s32 gUnlockAll;
+extern s32 gEnableFlycam;
+extern s32 gStickDeadzone;
+extern s32 gToggleMusic;
+extern s32 gToggleSFX;
+extern s32 gEnableInputDisplay;
+extern s32 gEnableSpeedometer;
+extern s32 gEnableLevelReset;
+extern u16 gPracticeItemOption;
+extern u16 gEnableLapSkip;
+extern u16 gPracticeTimerFreeze;
+
+// Save State Variables
+extern s32 gPracticeSaveState; // 0 = None, 1 = Exists
+extern Vec3f gPracticePosition;
+extern Vec3s gPracticeRotation;
+extern Vec3f gPracticeVelocity;
+extern s16 gPracticeItem;
+extern s16 gPracticeLap;
+extern u16 gPracticeRNG;
+
 extern s32 gModeSelection;
 extern s32 D_800DC540;
 extern s32 D_800DC544;

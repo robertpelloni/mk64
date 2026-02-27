@@ -15,6 +15,7 @@
 #include "cpu_vehicles_camera_path.h"
 #include "menu_items.h"
 #include "seq_ids.h"
+#include "main.h"
 
 s8 D_8018EF10;
 UnkStruct8018EF18 D_8018EF18[16];
@@ -1225,6 +1226,10 @@ void func_800C40F0(u8 arg0) {
 void play_sound(u32 soundBits, Vec3f* position, u8 cameraId, f32* arg3, f32* arg4, s8* arg5) {
     u8 bank;
     struct Sound* temp_v0;
+
+    if (!gToggleSFX) {
+        return;
+    }
 
     bank = soundBits >> 0x1C;
     if (sSoundBankDisabled[bank] == false) {
@@ -2890,11 +2895,17 @@ void play_sound2(s32 soundBits) {
 }
 
 void play_sequence(u16 index) {
+    if (!gToggleMusic) {
+        return;
+    }
     func_800C3448(index | 0x0010000);
     D_800EA15C = index;
 }
 
 void play_sequence2(u16 index) {
+    if (!gToggleMusic) {
+        return;
+    }
     func_800C3448(index | 0x1010000);
     D_800EA160 = index;
 }

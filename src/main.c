@@ -39,6 +39,11 @@
 #include <debug.h>
 #include "crash_screen.h"
 #include "buffers/gfx_output_buffer.h"
+#include "input_display.h"
+#include "speedometer.h"
+#include "modding/mod_hooks.h"
+
+extern s32 gLapCountByPlayerId[];
 
 void func_80091B78(void);
 void audio_init(void);
@@ -193,6 +198,128 @@ s16 sNumVBlanks = 0;
 UNUSED s16 D_800DC590 = 0;
 f32 gVBlankTimer = 0.0f;
 f32 gCourseTimer = 0.0f;
+
+static OSTime sLastTime = 0;
+static OSTime sAccumulator = 0;
+
+/**
+ * @brief Enhancements: 60 FPS Mode.
+ *
+ * When enabled, the game renders at 60 frames per second.
+ * Game logic is decoupled to maintain correct speed.
+ */
+s32 gEnable60FPS = 0;
+
+/**
+ * @brief Enhancements: Widescreen 16:9 Mode.
+ *
+ * Adjusts FOV and HUD projection for 16:9 displays.
+ */
+s32 gEnableWidescreen = 0;
+
+/**
+ * @brief Enhancements: Fast Boot.
+ *
+ * Skips startup logos and intro sequences.
+ */
+s32 gEnableFastBoot = 0;
+
+/**
+ * @brief Enhancements: Disable AI Rubber Banding.
+ *
+ * Removes artificial speedup/slowdown for CPU opponents.
+ */
+s32 gDisableRubberBanding = 0;
+
+/**
+ * @brief Enhancements: Unlock All Content.
+ *
+ * Temporarily unlocks all cups, characters, and modes.
+ * This setting is not persisted to save data.
+ */
+s32 gUnlockAll = 0;
+
+/**
+ * @brief Enhancements: Fly Cam Mode.
+ *
+ * Enables a free-roaming debug camera controllable by the player.
+ */
+s32 gEnableFlycam = 0;
+
+/**
+ * @brief Enhancements: Analog Stick Deadzone.
+ *
+ * Configurable deadzone for the analog stick.
+ * Range: 0-100 (Default: 7)
+ */
+s32 gStickDeadzone = 7;
+
+/**
+ * @brief Enhancements: Music Toggle.
+ *
+ * 1 = Enabled, 0 = Disabled.
+ */
+s32 gToggleMusic = 1;
+
+/**
+ * @brief Enhancements: SFX Toggle.
+ *
+ * 1 = Enabled, 0 = Disabled.
+ */
+s32 gToggleSFX = 1;
+
+/**
+ * @brief Enhancements: Input Display.
+ *
+ * Toggles on-screen controller input visualization.
+ */
+s32 gEnableInputDisplay = 0;
+
+/**
+ * @brief Enhancements: Speedometer.
+ *
+ * Toggles on-screen speedometer.
+ */
+s32 gEnableSpeedometer = 0;
+
+/**
+ * @brief Enhancements: Level Reset.
+ *
+ * Enables L + R + Start to restart the race.
+ */
+s32 gEnableLevelReset = 0;
+
+/**
+ * @brief Enhancements: Item Control.
+ *
+ * 0 = Default, 1 = Disabled, 2+ = Specific Items.
+ */
+u16 gPracticeItemOption = 0;
+
+/**
+ * @brief Enhancements: Lap Skip.
+ *
+ * Enables L + D-Pad Up to skip the current lap.
+ */
+u16 gEnableLapSkip = 0;
+
+/**
+ * @brief Enhancements: Timer Freeze.
+ *
+ * Stops the course timer from incrementing.
+ */
+u16 gPracticeTimerFreeze = 0;
+
+// Save State Data
+s32 gPracticeSaveState = 0;
+Vec3f gPracticePosition = {0, 0, 0};
+Vec3s gPracticeRotation = {0, 0, 0};
+Vec3f gPracticeVelocity = {0, 0, 0};
+s16 gPracticeItem = 0;
+s16 gPracticeLap = 0;
+u16 gPracticeRNG = 0;
+s32 gPracticeFeedbackTimer = 0;
+char* gPracticeFeedbackText = NULL;
 
 void create_thread(OSThread* thread, OSId id, void (*entry)(void*), void* arg, void* sp, OSPri pri) {
     thread->next = NULL;
@@ -465,7 +592,12 @@ void display_and_vsync(void) {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void*) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+
+    // If 60 FPS mode is NOT enabled, wait for a second VBlank to maintain 30 FPS.
+    if (!gEnable60FPS) {
+        osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    }
+
     crash_screen_set_framebuffer(gPhysicalFramebuffers[sRenderedFramebuffer]);
 
     if (++sRenderedFramebuffer == 3) {
@@ -566,13 +698,45 @@ void setup_game_memory(void) {
  *
  */
 void game_init_clear_framebuffer(void) {
-    gGamestateNext = 0; // = START_MENU_FROM_QUIT?
+    gGamestateNext = START_MENU_FROM_QUIT;
+    if (gEnableFastBoot) {
+        gMenuSelection = START_MENU;
+    }
     clear_framebuffer(0);
 }
 
 void race_logic_loop(void) {
     s16 i;
     u16 rotY;
+
+    if (gEnable60FPS) {
+        OSTime currentTime = osGetTime();
+        if (sLastTime == 0) {
+            sLastTime = currentTime;
+        }
+        OSTime deltaTime = currentTime - sLastTime;
+        sLastTime = currentTime;
+
+        // Cap delta time to prevent spiral of death (max 4 frames)
+        if (deltaTime > OS_USEC_TO_CYCLES(66664)) {
+            deltaTime = OS_USEC_TO_CYCLES(66664);
+        }
+
+        sAccumulator += deltaTime;
+
+        OSTime tickDuration = OS_USEC_TO_CYCLES(16666); // ~60Hz logic rate
+
+        gTickSpeed = 0;
+        while (sAccumulator >= tickDuration) {
+            gTickSpeed++;
+            sAccumulator -= tickDuration;
+        }
+        // Safety cap
+        if (gTickSpeed > 5) gTickSpeed = 5;
+    } else {
+        sLastTime = 0; // Reset for when we switch back
+        sAccumulator = 0;
+    }
 
     gMatrixObjectCount = 0;
     gMatrixEffectCount = 0;
@@ -582,6 +746,65 @@ void race_logic_loop(void) {
     if (gIsInQuitToMenuTransition != 0) {
         func_802A38B4();
         return;
+    }
+
+    // Level Reset (L + R + Start)
+    if (gEnableLevelReset &&
+        (gControllerOne->button & L_TRIG) &&
+        (gControllerOne->button & R_TRIG) &&
+        (gControllerOne->buttonPressed & START_BUTTON)) {
+
+        gIsGamePaused = 0; // Unpause if paused
+        // Equivalent to "Retry"
+        D_800DC510 = 0;
+        gGamestateNext = RACING;
+        gCurrentlyLoadedCourseId = 0xFF;
+        return;
+    }
+
+    // Save States (L + Left/Right)
+    // Only in 1P mode for stability
+    if (gEnableLevelReset && (gPlayerCountSelection1 == 1) && (gControllerOne->button & L_TRIG)) {
+        // Save: L + Left
+        if (gControllerOne->buttonPressed & L_JPAD) {
+            vec3f_copy(gPracticePosition, gPlayerOne->pos);
+            vec3s_copy(gPracticeRotation, gPlayerOne->rot);
+            vec3f_copy(gPracticeVelocity, gPlayerOne->velocity);
+            gPracticeItem = gPlayerOne->currentItemCopy;
+            gPracticeLap = gPlayerOne->lapCount;
+            gPracticeRNG = gRandomSeed16;
+            gPracticeSaveState = 1;
+            gPracticeFeedbackText = "STATE SAVED";
+            gPracticeFeedbackTimer = 60;
+            play_sound2(SOUND_MENU_OK_CLICKED);
+        }
+        // Load: L + Right
+        if ((gControllerOne->buttonPressed & R_JPAD) && gPracticeSaveState) {
+            vec3f_copy(gPlayerOne->pos, gPracticePosition);
+            vec3s_copy(gPlayerOne->rot, gPracticeRotation);
+            vec3f_copy(gPlayerOne->velocity, gPracticeVelocity);
+            // Reset player visual rotation interpolation to avoid snapping glitch
+            vec3s_copy(gPlayerOne->visualRot, gPracticeRotation);
+
+            gPlayerOne->currentItemCopy = gPracticeItem;
+            gPlayerOne->lapCount = gPracticeLap;
+            gLapCountByPlayerId[0] = gPracticeLap;
+            gRandomSeed16 = gPracticeRNG;
+
+            gPracticeFeedbackText = "STATE LOADED";
+            gPracticeFeedbackTimer = 60;
+            play_sound2(SOUND_MENU_CURSOR_MOVE);
+        }
+    }
+
+    // Lap Skip (L + D-Pad Up)
+    // Only in 1P mode to avoid confusion. Checks if lap count < 2 (so max lap becomes 3)
+    if (gEnableLapSkip && (gPlayerCountSelection1 == 1) && (gControllerOne->button & L_TRIG) && (gControllerOne->buttonPressed & U_JPAD)) {
+        if (gPlayers[0].lapCount < 2) {
+             gPlayers[0].lapCount++;
+             gLapCountByPlayerId[0]++;
+             play_sound2(SOUND_MENU_OK_CLICKED);
+        }
     }
 
     if (sNumVBlanks >= 6) {
@@ -594,17 +817,20 @@ void race_logic_loop(void) {
 
     switch (gActiveScreenMode) {
         case SCREEN_MODE_1P:
-            gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                gTickSpeed = 2;
+            }
             replays_loop();
             if (gIsGamePaused == 0) {
+                func_8001EE98(gPlayerOneCopy, camera1, 0);
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E) {
+                    if (D_8015011E && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
-                    func_8001EE98(gPlayerOneCopy, camera1, 0);
+                    //func_8001EE98(gPlayerOneCopy, camera1, 0);
                     func_80028F70();
                     func_8028F474();
                     func_80059AC8();
@@ -653,14 +879,16 @@ void race_logic_loop(void) {
             break;
 
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
-            if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
-            } else {
-                gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                if (gCurrentCourseId == COURSE_DK_JUNGLE) {
+                    gTickSpeed = 3;
+                } else {
+                    gTickSpeed = 2;
+                }
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -698,15 +926,17 @@ void race_logic_loop(void) {
 
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL:
 
-            if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
-            } else {
-                gTickSpeed = 2;
+            if (!gEnable60FPS) {
+                if (gCurrentCourseId == COURSE_DK_JUNGLE) {
+                    gTickSpeed = 3;
+                } else {
+                    gTickSpeed = 2;
+                }
             }
 
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -744,37 +974,39 @@ void race_logic_loop(void) {
             break;
 
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
-            if (gPlayerCountSelection1 == 3) {
-                switch (gCurrentCourseId) {
-                    case COURSE_BOWSER_CASTLE:
-                    case COURSE_MOO_MOO_FARM:
-                    case COURSE_SKYSCRAPER:
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 3;
-                        break;
-                    default:
-                        gTickSpeed = 2;
-                        break;
-                }
-            } else {
-                // Four players
-                switch (gCurrentCourseId) {
-                    case COURSE_BLOCK_FORT:
-                    case COURSE_DOUBLE_DECK:
-                    case COURSE_BIG_DONUT:
-                        gTickSpeed = 2;
-                        break;
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 4;
-                        break;
-                    default:
-                        gTickSpeed = 3;
-                        break;
+            if (!gEnable60FPS) {
+                if (gPlayerCountSelection1 == 3) {
+                    switch (gCurrentCourseId) {
+                        case COURSE_BOWSER_CASTLE:
+                        case COURSE_MOO_MOO_FARM:
+                        case COURSE_SKYSCRAPER:
+                        case COURSE_DK_JUNGLE:
+                            gTickSpeed = 3;
+                            break;
+                        default:
+                            gTickSpeed = 2;
+                            break;
+                    }
+                } else {
+                    // Four players
+                    switch (gCurrentCourseId) {
+                        case COURSE_BLOCK_FORT:
+                        case COURSE_DOUBLE_DECK:
+                        case COURSE_BIG_DONUT:
+                            gTickSpeed = 2;
+                            break;
+                        case COURSE_DK_JUNGLE:
+                            gTickSpeed = 4;
+                            break;
+                        default:
+                            gTickSpeed = 3;
+                            break;
+                    }
                 }
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
-                    if (D_8015011E != 0) {
+                    if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
                     func_802909F0();
@@ -829,27 +1061,37 @@ void race_logic_loop(void) {
             break;
     }
 
-    if (!gEnableDebugMode) {
-        gEnableResourceMeters = 0;
-    } else {
-        if (gEnableResourceMeters) {
-            resource_display();
-            if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
-                (gControllerOne->buttonPressed & B_BUTTON)) {
-                gEnableResourceMeters = 0;
-            }
-        } else {
-            if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
-                (gControllerOne->buttonPressed & B_BUTTON)) {
-                gEnableResourceMeters = 1;
-            }
+    if (gEnableResourceMeters) {
+        resource_display();
+    }
+
+    if (gEnableInputDisplay) {
+        render_input_display();
+    }
+
+    if (gEnableSpeedometer) {
+        render_speedometer();
+    }
+
+    if (gPracticeFeedbackTimer > 0 && gPracticeFeedbackText != 0) {
+        // Center-ish text
+        print_text_mode_1(110, 200, gPracticeFeedbackText, 0, 0.5f, 0.5f);
+        gPracticeFeedbackTimer--;
+    }
+
+    if (gEnableDebugMode) {
+        if ((!(gControllerOne->button & L_TRIG)) && (gControllerOne->button & R_TRIG) &&
+            (gControllerOne->buttonPressed & B_BUTTON)) {
+            gEnableResourceMeters ^= 1;
         }
     }
     func_802A4300();
     func_800591B4();
     func_80093E20();
 #if DVDL
-    display_dvdl();
+    if (gEnableDebugMode) {
+        display_dvdl();
+    }
 #endif
     gDPFullSync(gDisplayListHead++);
     gSPEndDisplayList(gDisplayListHead++);
@@ -893,7 +1135,9 @@ void game_state_handler(void) {
             init_rcp();
             func_80094A64(gGfxPool);
 #if DVDL
-            display_dvdl();
+            if (gEnableDebugMode) {
+                display_dvdl();
+            }
 #endif
             break;
         case RACING:
@@ -1199,6 +1443,9 @@ void thread5_game_loop(UNUSED void* arg) {
             gGamestate = gGamestateNext;
             update_gamestate();
         }
+
+        Mod_OnGameTick();
+
         profiler_log_thread5_time(THREAD5_START);
         config_gfx_pool();
         read_controllers();

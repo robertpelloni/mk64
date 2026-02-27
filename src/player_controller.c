@@ -4805,24 +4805,24 @@ s16 get_clamped_stickX_with_deadzone(struct Controller* controller) {
     temp_stickX2 = temp_stickX;
     temp_stickY2 = temp_stickY;
 
-    if (temp_stickX > 0xC) {
-        temp_stickY2 = (temp_stickY * 0x000C) / temp_stickX;
-        temp_stickX2 = 0x000C;
+    if (temp_stickX > gStickDeadzone) {
+        temp_stickY2 = (temp_stickY * gStickDeadzone) / temp_stickX;
+        temp_stickX2 = gStickDeadzone;
     }
-    if (temp_stickX2 < -0xC) {
-        temp_stickY2 = (temp_stickY2 * 0x000C) / -temp_stickX2;
-        temp_stickX2 = -0x000C;
+    if (temp_stickX2 < -gStickDeadzone) {
+        temp_stickY2 = (temp_stickY * gStickDeadzone) / -temp_stickX2;
+        temp_stickX2 = -gStickDeadzone;
     }
-    if (temp_stickY2 > 0xC) {
-        temp_stickX2 = (temp_stickX2 * 0x000C) / temp_stickY2;
-        temp_stickY2 = 0x000C;
+    if (temp_stickY2 > gStickDeadzone) {
+        temp_stickX2 = (temp_stickX2 * gStickDeadzone) / temp_stickY2;
+        temp_stickY2 = gStickDeadzone;
     }
-    if (temp_stickY2 < -0xC) {
-        temp_stickX2 = (temp_stickX2 * 0x000C) / -temp_stickY2;
-        temp_stickY2 = -0x000C;
+    if (temp_stickY2 < -gStickDeadzone) {
+        temp_stickX2 = (temp_stickX2 * gStickDeadzone) / -temp_stickY2;
+        temp_stickY2 = -gStickDeadzone;
     }
-    if ((((controller->rawStickX > -0xD) && (controller->rawStickX < 0xD)) && (controller->rawStickY > -0xD)) &&
-        (controller->rawStickY < 0xD)) {
+    if ((((controller->rawStickX > -(gStickDeadzone + 1)) && (controller->rawStickX < (gStickDeadzone + 1))) && (controller->rawStickY > -(gStickDeadzone + 1))) &&
+        (controller->rawStickY < (gStickDeadzone + 1))) {
         temp_stickX = 0;
         temp_stickY = 0;
     } else {
@@ -4858,24 +4858,24 @@ s16 get_clamped_stickY_with_deadzone(struct Controller* controller) {
     temp_StickX2 = temp_StickX;
     temp_StickY2 = temp_StickY;
 
-    if (temp_StickX > 0xC) {
-        temp_StickY2 = (temp_StickY * 0x000C) / temp_StickX;
-        temp_StickX2 = 0x000C;
+    if (temp_StickX > gStickDeadzone) {
+        temp_StickY2 = (temp_StickY * gStickDeadzone) / temp_StickX;
+        temp_StickX2 = gStickDeadzone;
     }
-    if (temp_StickX2 < -0xC) {
-        temp_StickY2 = (temp_StickY2 * 0x000C) / -temp_StickX2;
-        temp_StickX2 = -0x000C;
+    if (temp_StickX2 < -gStickDeadzone) {
+        temp_StickY2 = (temp_StickY * gStickDeadzone) / -temp_StickX2;
+        temp_StickX2 = -gStickDeadzone;
     }
-    if (temp_StickY2 > 0xC) {
-        temp_StickX2 = (temp_StickX2 * 0x000C) / temp_StickY2;
-        temp_StickY2 = 0x000C;
+    if (temp_StickY2 > gStickDeadzone) {
+        temp_StickX2 = (temp_StickX2 * gStickDeadzone) / temp_StickY2;
+        temp_StickY2 = gStickDeadzone;
     }
-    if (temp_StickY2 < -0xC) {
-        temp_StickX2 = (temp_StickX2 * 0x000C) / -temp_StickY2;
-        temp_StickY2 = -0x000C;
+    if (temp_StickY2 < -gStickDeadzone) {
+        temp_StickX2 = (temp_StickX2 * gStickDeadzone) / -temp_StickY2;
+        temp_StickY2 = -gStickDeadzone;
     }
-    if ((((controller->rawStickX > -0xD) && (controller->rawStickX < 0xD)) && (controller->rawStickY > -0xD)) &&
-        (controller->rawStickY < 0xD)) {
+    if ((((controller->rawStickX > -(gStickDeadzone + 1)) && (controller->rawStickX < (gStickDeadzone + 1))) && (controller->rawStickY > -(gStickDeadzone + 1))) &&
+        (controller->rawStickY < (gStickDeadzone + 1))) {
         temp_StickX = 0;
         temp_StickY = 0;
     } else {

@@ -17,6 +17,7 @@
 #include "save.h"
 #include "replays.h"
 #include "save_data.h"
+#include "pc_port/platform_save.h"
 #include <sounds.h>
 #include "spawn_players.h"
 #include "seq_ids.h"
@@ -261,7 +262,8 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_OPTION_RETURN_GAME_SELECT:
             case SUB_MENU_OPTION_SOUND_MODE:
             case SUB_MENU_OPTION_COPY_CONTROLLER_PAK:
-            case SUB_MENU_OPTION_ERASE_ALL_DATA: {
+            case SUB_MENU_OPTION_ERASE_ALL_DATA:
+            case SUB_MENU_EXTRAS: {
                 tempVar = false;
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_OPTION_MAX)) {
                     gSubMenuSelection += 1;
@@ -282,18 +284,14 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                     sp38->subState = -1;
                 }
                 if (tempVar && gSoundMode != sp38->state) {
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
-                    update_save_data_backup();
+                    save_options();
                     sp38->state = gSoundMode;
                 }
                 if (btnAndStick & B_BUTTON) {
                     func_8009E280();
                     play_sound2(SOUND_MENU_GO_BACK);
                     if (gSoundMode != sp38->state) {
-                        gSaveData.main.saveInfo.soundMode = gSoundMode;
-                        write_save_data_grand_prix_points_and_sound_mode();
-                        update_save_data_backup();
+                        save_options();
                         sp38->state = gSoundMode;
                     }
                     return;
@@ -395,11 +393,187 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             play_sound2(SOUND_MENU_GO_BACK);
                             return;
                         }
+                        case SUB_MENU_EXTRAS: {
+                            gSubMenuSelection = SUB_MENU_EXTRAS_60FPS;
+                            play_sound2(SOUND_MENU_SELECT);
+                            return;
+                        }
                     }
                 }
                 // maybe else return?;
                 break;
             }
+            case SUB_MENU_EXTRAS_60FPS:
+            case SUB_MENU_EXTRAS_WIDESCREEN:
+            case SUB_MENU_EXTRAS_FAST_BOOT:
+            case SUB_MENU_EXTRAS_NO_RUBBER:
+            case SUB_MENU_EXTRAS_UNLOCK_ALL:
+            case SUB_MENU_EXTRAS_PROFILER:
+            case SUB_MENU_EXTRAS_DEBUG:
+            case SUB_MENU_EXTRAS_DEADZONE:
+            case SUB_MENU_EXTRAS_MUSIC:
+            case SUB_MENU_EXTRAS_SFX:
+            case SUB_MENU_EXTRAS_PRACTICE_MENU:
+            case SUB_MENU_EXTRAS_RETURN:
+                if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
+                    gSubMenuSelection++;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if ((btnAndStick & U_JPAD) && (gSubMenuSelection > SUB_MENU_EXTRAS_MIN)) {
+                    gSubMenuSelection--;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if (btnAndStick & B_BUTTON) {
+                    gSubMenuSelection = SUB_MENU_EXTRAS;
+                    save_options();
+                    play_sound2(SOUND_MENU_GO_BACK);
+                    return;
+                }
+                if ((btnAndStick & A_BUTTON) || (btnAndStick & (L_JPAD | R_JPAD))) {
+                    switch (gSubMenuSelection) {
+                        case SUB_MENU_EXTRAS_60FPS:
+                            gEnable60FPS ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_WIDESCREEN:
+                            gEnableWidescreen ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_FAST_BOOT:
+                            gEnableFastBoot ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_NO_RUBBER:
+                            gDisableRubberBanding ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_UNLOCK_ALL:
+                            gUnlockAll ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_PROFILER:
+                            gEnableResourceMeters ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_DEBUG:
+                            gEnableDebugMode ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_DEADZONE:
+                            if (btnAndStick & R_JPAD) {
+                                if (gStickDeadzone < 15) gStickDeadzone++;
+                            } else if (btnAndStick & L_JPAD) {
+                                if (gStickDeadzone > 0) gStickDeadzone--;
+                            } else if (btnAndStick & A_BUTTON) {
+                                // Toggle preset values
+                                if (gStickDeadzone == 7) gStickDeadzone = 15;
+                                else if (gStickDeadzone == 15) gStickDeadzone = 0;
+                                else gStickDeadzone = 7;
+                            }
+                            break;
+                        case SUB_MENU_EXTRAS_MUSIC:
+                            gToggleMusic ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_SFX:
+                            gToggleSFX ^= 1;
+                            save_options();
+                            break;
+                        case SUB_MENU_EXTRAS_PRACTICE_MENU:
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_PRACTICE_INPUT_DISPLAY;
+                                play_sound2(SOUND_MENU_SELECT);
+                                return;
+                            }
+                            break;
+                        case SUB_MENU_EXTRAS_RETURN:
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_EXTRAS;
+                                save_options();
+                                play_sound2(SOUND_MENU_GO_BACK);
+                                return;
+                            }
+                            break;
+                    }
+                    if (gSubMenuSelection != SUB_MENU_EXTRAS_RETURN && gSubMenuSelection != SUB_MENU_EXTRAS_PRACTICE_MENU) {
+                         play_sound2(SOUND_MENU_SELECT);
+                    }
+                }
+                break;
+            case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+            case SUB_MENU_PRACTICE_SPEEDOMETER:
+            case SUB_MENU_PRACTICE_LEVEL_RESET:
+            case SUB_MENU_PRACTICE_FLYCAM:
+            case SUB_MENU_PRACTICE_ITEM_OPTION:
+            case SUB_MENU_PRACTICE_LAP_SKIP:
+            case SUB_MENU_PRACTICE_TIMER_FREEZE:
+            case SUB_MENU_PRACTICE_SAVE_GHOST:
+            case SUB_MENU_PRACTICE_RETURN:
+                if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_PRACTICE_MAX)) {
+                    gSubMenuSelection++;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if ((btnAndStick & U_JPAD) && (gSubMenuSelection > SUB_MENU_PRACTICE_MIN)) {
+                    gSubMenuSelection--;
+                    play_sound2(SOUND_MENU_CURSOR_MOVE);
+                }
+                if (btnAndStick & B_BUTTON) {
+                    gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
+                    play_sound2(SOUND_MENU_GO_BACK);
+                    return;
+                }
+                if ((btnAndStick & A_BUTTON) || (btnAndStick & (L_JPAD | R_JPAD))) {
+                    switch (gSubMenuSelection) {
+                        case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+                            if (btnAndStick & A_BUTTON) { gEnableInputDisplay ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_SPEEDOMETER:
+                            if (btnAndStick & A_BUTTON) { gEnableSpeedometer ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_LEVEL_RESET:
+                            if (btnAndStick & A_BUTTON) { gEnableLevelReset ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_FLYCAM:
+                            if (btnAndStick & A_BUTTON) { gEnableFlycam ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_ITEM_OPTION:
+                            // Cycle through item options
+                            // 0=Default, 1=None, 2=Banana... 16=Super Mushroom
+                            if ((btnAndStick & R_JPAD) || (btnAndStick & A_BUTTON)) {
+                                if (gPracticeItemOption < 16) gPracticeItemOption++;
+                                else gPracticeItemOption = 0;
+                            } else if (btnAndStick & L_JPAD) {
+                                if (gPracticeItemOption > 0) gPracticeItemOption--;
+                                else gPracticeItemOption = 16;
+                            }
+                            break;
+                        case SUB_MENU_PRACTICE_LAP_SKIP:
+                            if (btnAndStick & A_BUTTON) { gEnableLapSkip ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_TIMER_FREEZE:
+                            if (btnAndStick & A_BUTTON) { gPracticeTimerFreeze ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_SAVE_GHOST:
+                            if (btnAndStick & A_BUTTON) {
+                                PC_SavePracticeGhost(gPlayerOne);
+                                play_sound2(SOUND_MENU_OK_CLICKED);
+                            }
+                            break;
+                        case SUB_MENU_PRACTICE_RETURN:
+                            if (btnAndStick & A_BUTTON) {
+                                gSubMenuSelection = SUB_MENU_EXTRAS_PRACTICE_MENU;
+                                play_sound2(SOUND_MENU_GO_BACK);
+                                return;
+                            }
+                            break;
+                    }
+                    if (gSubMenuSelection != SUB_MENU_PRACTICE_RETURN && gSubMenuSelection != SUB_MENU_PRACTICE_ITEM_OPTION) {
+                        play_sound2(SOUND_MENU_SELECT);
+                    } else if (gSubMenuSelection == SUB_MENU_PRACTICE_ITEM_OPTION) {
+                        play_sound2(SOUND_MENU_CURSOR_MOVE);
+                    }
+                }
+                break;
             case SUB_MENU_ERASE_QUIT:
             case SUB_MENU_ERASE_ERASE: {
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_ERASE_MAX)) {
@@ -1138,9 +1312,6 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
-                    update_save_data_backup();
                 }
                 if ((btnAndStick & L_JPAD) && (gSoundMode > 0)) {
                     gSoundMode -= 1;
@@ -1149,8 +1320,6 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     }
                     play_sound2(SOUND_MENU_CURSOR_MOVE);
                     set_sound_mode();
-                    gSaveData.main.saveInfo.soundMode = gSoundMode;
-                    write_save_data_grand_prix_points_and_sound_mode();
                 }
                 if (btnAndStick & U_JPAD) {
                     gDebugMenuSelection = DEBUG_MENU_PLAYER;
@@ -1793,7 +1962,11 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
 void load_menu_states(s32 menuSelection) {
     s32 i;
 
-    gDebugMenuSelection = DEBUG_MENU_SELECTION;
+    if (gEnableDebugMode) {
+        gDebugMenuSelection = DEBUG_MENU_DEBUG_MODE;
+    } else {
+        gDebugMenuSelection = DEBUG_MENU_SELECTION;
+    }
     gMenuTimingCounter = 0;
     gMenuDelayTimer = 0;
     gDemoUseController = 0;
@@ -1829,7 +2002,6 @@ void load_menu_states(s32 menuSelection) {
         case 0:
         case START_MENU: {
             gIsMirrorMode = 0;
-            gEnableDebugMode = DEBUG_MODE_TOGGLE;
             gCupSelection = MUSHROOM_CUP;
             gCourseIndexInCup = 0;
             gTimeTrialDataCourseIndex = 0;
@@ -1847,7 +2019,6 @@ void load_menu_states(s32 menuSelection) {
         }
         case 1:
         case MAIN_MENU: {
-            gEnableDebugMode = DEBUG_MODE_TOGGLE;
             gIsMirrorMode = 0;
             gCourseMapInit = 0;
             func_800B5F30();
