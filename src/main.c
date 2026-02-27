@@ -41,6 +41,7 @@
 #include "buffers/gfx_output_buffer.h"
 #include "input_display.h"
 #include "speedometer.h"
+#include "modding/mod_hooks.h"
 
 extern s32 gLapCountByPlayerId[];
 
@@ -1442,6 +1443,9 @@ void thread5_game_loop(UNUSED void* arg) {
             gGamestate = gGamestateNext;
             update_gamestate();
         }
+
+        Mod_OnGameTick();
+
         profiler_log_thread5_time(THREAD5_START);
         config_gfx_pool();
         read_controllers();

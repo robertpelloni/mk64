@@ -131,3 +131,16 @@ All settings changed in the **Extras** menu are now **saved permanently** to the
 *   Settings are saved automatically when you change them or exit the Extras menu.
 *   Settings are preserved across console resets and power cycles.
 *   **Note:** Resetting Save Data (Erase All Data) will reset these settings to their default (OFF) values.
+
+## Modding & PC Features
+
+### Save Data (PC Port)
+The game now uses a file-based save system independent of the N64 Controller Pak.
+*   **Ghost Data:** Saved directly to disk as individual files.
+*   **Settings:** Saved to a standard configuration file.
+*   **Practice Ghosts:** In Practice Mode, you can now dump the current race history to a "Practice Ghost" file for analysis, even if you didn't finish the race or set a record.
+
+### Modding Support
+This version includes hooks for external modding tools.
+*   **Event Hooks:** `OnRaceStart`, `OnLapComplete`, etc., are exposed for scripting.
+*   **Asset Loading:** A registry system is in place to allow replacing textures and models at runtime (requires supported PC backend).

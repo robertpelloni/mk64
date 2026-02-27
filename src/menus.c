@@ -17,6 +17,7 @@
 #include "save.h"
 #include "replays.h"
 #include "save_data.h"
+#include "pc_port/platform_save.h"
 #include <sounds.h>
 #include "spawn_players.h"
 #include "seq_ids.h"
@@ -506,6 +507,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_PRACTICE_ITEM_OPTION:
             case SUB_MENU_PRACTICE_LAP_SKIP:
             case SUB_MENU_PRACTICE_TIMER_FREEZE:
+            case SUB_MENU_PRACTICE_SAVE_GHOST:
             case SUB_MENU_PRACTICE_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_PRACTICE_MAX)) {
                     gSubMenuSelection++;
@@ -550,6 +552,12 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_PRACTICE_TIMER_FREEZE:
                             if (btnAndStick & A_BUTTON) { gPracticeTimerFreeze ^= 1; save_options(); }
+                            break;
+                        case SUB_MENU_PRACTICE_SAVE_GHOST:
+                            if (btnAndStick & A_BUTTON) {
+                                PC_SavePracticeGhost(gPlayerOne);
+                                play_sound2(SOUND_MENU_OK_CLICKED);
+                            }
                             break;
                         case SUB_MENU_PRACTICE_RETURN:
                             if (btnAndStick & A_BUTTON) {

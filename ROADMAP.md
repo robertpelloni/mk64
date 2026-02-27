@@ -29,6 +29,7 @@
 - [x] **Manual:** Comprehensive documentation.
 
 ## 4. Future Goals
-- [ ] **Ghost Data Enhancement:** Save ghost data to flash/expansion.
-- [ ] **Modding Support:** Hooks for custom textures/models.
+- [x] **Ghost Data Enhancement:** Abstracted save/ghost data to PC filesystem.
+- [x] **Modding Support:** Core hooks (`OnGameTick`, `OnRaceStart`) implemented.
+- [ ] **Modding Support (Advanced):** Asset Replacement, Lua Scripting.
 - [ ] **Online Play:** (Investigation phase).

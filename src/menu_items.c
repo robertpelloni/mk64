@@ -480,7 +480,7 @@ char* D_800E7860[] = {
 char* gTextOptionMenu[] = {
     "RETURN TO GAME SELECT",
     "SOUND MODE",
-    "COPY N64 CONTROLLER PAK",
+    "MANAGE SAVE DATA",
     "ERASE ALL DATA",
     "EXTRAS",
 };
@@ -574,25 +574,25 @@ char* D_800E7884[] = {
 
 // In a perfect world this would be `char *D_800E7890[][4]`
 char* D_800E7890[] = {
-    "CONTROLLER 1 DOES NOT HAVE ",
-    "N64 CONTROLLER PAK",
+    "NO SAVE FILE FOUND",
+    "ON DISK",
     "",
     "",
 
     "UNABLE TO READ ",
-    "N64 CONTROLLER PAK DATA ",
-    "FROM CONTROLLER 1",
+    "SAVE FILE DATA ",
+    "FROM DISK",
     "",
 
-    "UNABLE TO CREATE GAME DATA ",
-    "FROM CONTROLLER 1 ",
-    "N64 CONTROLLER PAK",
+    "UNABLE TO CREATE SAVE FILE ",
+    "ON DISK ",
+    "",
     "",
 
     "UNABLE TO COPY GHOST ",
-    "-- INSUFFICIENT FREE PAGES ",
-    "IN CONTROLLER 1 ",
-    "N64 CONTROLLER PAK",
+    "-- DISK FULL ",
+    "",
+    "",
 };
 
 // In a perfect world this would be `char *D_800E78D0[][3]`
@@ -2493,6 +2493,7 @@ void setup_menus(void) {
                 add_menu_item(MENU_ITEM_TYPE_08C, 0, 0, MENU_ITEM_PRIORITY_6);
                 add_menu_item(MENU_ITEM_TYPE_07C, 0, 0, MENU_ITEM_PRIORITY_6);
                 add_menu_item(MENU_ITEM_TYPE_07D, 0, 0, MENU_ITEM_PRIORITY_6);
+    add_menu_item(MENU_ITEM_PRACTICE_SAVE_GHOST, 0, 0, MENU_ITEM_PRIORITY_6);
                 add_menu_item(MENU_ITEM_TYPE_07E, 0, 0, MENU_ITEM_PRIORITY_6);
                 add_menu_item(MENU_ITEM_TYPE_07F, 0, 0, MENU_ITEM_PRIORITY_6);
                 add_menu_item(MENU_ITEM_TYPE_080, 0, 0, MENU_ITEM_PRIORITY_6);

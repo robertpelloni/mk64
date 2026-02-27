@@ -7,10 +7,12 @@ The architecture for adding new settings (`src/save_extended.c`) is robust and s
 
 **Recently Completed:**
 *   Implemented "Practice Mode" features (Speedometer, Input Display, Level Reset).
-*   Implemented "Save States (Lite)" functionality.
+*   Implemented **Robust Save States** (Items, RNG, Laps).
 *   Refactored Save Data logic to use a clean API.
 *   Verified Crash Screen and Deadzone logic.
 *   Removed `bobcoin`.
+*   Implemented **PC Save Abstraction** and **Modding Hooks**.
+*   Added "Save Ghost" to Practice Menu.
 
 **Next Steps / Roadmap:**
 *   **Netplay Research:** The user expressed interest in this long-term.

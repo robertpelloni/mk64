@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.0] - PC Porting & Modding Support
+### Added
+- **PC Save System:** Abstracted save logic to use file I/O instead of N64 Controller Pak calls. Added support for saving "Practice Ghosts" to disk.
+- **Modding Hooks:** Implemented `Mod_OnRaceStart`, `Mod_OnLapComplete`, and `Mod_OnGameTick` hooks for external scripting support.
+- **Asset Registry:** Added `mod_assets.c` to facilitate data-driven asset replacement (textures/models).
+
+### Changed
+- **UI Updates:** Renamed "Controller Pak" menu options to "Save File" / "Disk" to reflect the PC environment.
+- **Refactoring:** Created `src/pc_port/` and `src/modding/` directories to separate platform-specific logic.
+
 ## [1.5.2] - Save System Safety & Optimization
 ### Changed
 - **Performance:** Optimized menu save logic. Settings like "Stick Deadzone" and "Item Control" now only trigger a save when exiting the menu, preventing EEPROM wear and menu lag.
