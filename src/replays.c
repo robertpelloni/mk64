@@ -324,21 +324,21 @@ void process_post_time_trial_replay(void) {
     }
 }
 
-// See process_post_time_trial_replay comment
-void process_course_ghost_replay(void) {
+void process_ghost_replay_generic(u32* replayData, s32* replayIdx, s32* framesRemaining, u16* buttonsPrev, struct Controller* controller, Player* playerToStop) {
     u32 inputs;
     u32 stickBytes;
-    UNUSED u16 unk;
     u16 buttonsTemp;
     s16 stickVal;
     s16 buttons = 0;
-    if (sCourseGhostReplayIdx >= 0x1000) {
-        func_80005AE8(gPlayerThree);
+
+    if (*replayIdx >= 0x1000) {
+        func_80005AE8(playerToStop);
         return;
     }
 
-    inputs = sCourseGhostReplay[sCourseGhostReplayIdx];
+    inputs = replayData[*replayIdx];
     stickBytes = inputs & REPLAY_STICK_X;
+
     // converting signed 8-bit values to signed 16-bit values
     if (stickBytes < 0x80U) {
         stickVal = (s16) (stickBytes & 0xFF);
@@ -346,14 +346,14 @@ void process_course_ghost_replay(void) {
         stickVal = (s16) (stickBytes | (~0xFF));
     }
     stickBytes = (u32) (inputs & REPLAY_STICK_Y) >> 8;
-    gControllerSeven->rawStickX = stickVal;
+    controller->rawStickX = stickVal;
 
     if (stickBytes < 0x80U) {
         stickVal = (s16) (stickBytes & 0xFF);
     } else {
         stickVal = (s16) (stickBytes | (~0xFF));
     }
-    gControllerSeven->rawStickY = stickVal;
+    controller->rawStickY = stickVal;
 
     if (inputs & REPLAY_A_BUTTON) {
         buttons = A_BUTTON;
@@ -367,80 +367,31 @@ void process_course_ghost_replay(void) {
     if (inputs & REPLAY_R_TRIG) {
         buttons |= R_TRIG;
     }
+
     // Blanks the A, B, Z, R and L buttons
-    buttonsTemp = gControllerSeven->buttonPressed & REPLAY_MASK;
-    gControllerSeven->buttonPressed = (buttons & (buttons ^ sButtonsPrevCourseGhost)) | buttonsTemp;
-    buttonsTemp = gControllerSeven->buttonDepressed & REPLAY_MASK;
-    gControllerSeven->buttonDepressed = (sButtonsPrevCourseGhost & (buttons ^ sButtonsPrevCourseGhost)) | buttonsTemp;
-    sButtonsPrevCourseGhost = buttons;
-    gControllerSeven->button = buttons;
-    if (sCourseGhostFramesRemaining == 0) {
-        sCourseGhostReplayIdx++;
-        sCourseGhostFramesRemaining = (s32) (sCourseGhostReplay[sCourseGhostReplayIdx] & REPLAY_FRAME_COUNTER);
+    buttonsTemp = controller->buttonPressed & REPLAY_MASK;
+    controller->buttonPressed = (buttons & (buttons ^ *buttonsPrev)) | buttonsTemp;
+    buttonsTemp = controller->buttonDepressed & REPLAY_MASK;
+    controller->buttonDepressed = (*buttonsPrev & (buttons ^ *buttonsPrev)) | buttonsTemp;
+    *buttonsPrev = buttons;
+    controller->button = buttons;
+
+    if (*framesRemaining == 0) {
+        (*replayIdx)++;
+        *framesRemaining = (s32) (replayData[*replayIdx] & REPLAY_FRAME_COUNTER);
     } else {
-        sCourseGhostFramesRemaining -= (s32) REPLAY_FRAME_INCREMENT;
+        *framesRemaining -= (s32) REPLAY_FRAME_INCREMENT;
     }
 }
 
 // See process_post_time_trial_replay comment
+void process_course_ghost_replay(void) {
+    process_ghost_replay_generic(sCourseGhostReplay, &sCourseGhostReplayIdx, &sCourseGhostFramesRemaining, &sButtonsPrevCourseGhost, gControllerSeven, gPlayerThree);
+}
+
+// See process_post_time_trial_replay comment
 void process_player_ghost_replay(void) {
-    u32 inputs;
-    u32 stickBytes;
-    UNUSED u16 unk;
-    u16 buttons_temp;
-    s16 stickVal;
-    s16 buttons = 0;
-
-    if (sPlayerGhostReplayIdx >= 0x1000) {
-        func_80005AE8(gPlayerTwo);
-        return;
-    }
-    inputs = sPlayerGhostReplay[sPlayerGhostReplayIdx];
-    stickBytes = inputs & REPLAY_STICK_X;
-    if (stickBytes < 0x80U) {
-        stickVal = (s16) (stickBytes & 0xFF);
-    } else {
-        stickVal = (s16) (stickBytes | ~0xFF);
-    }
-
-    stickBytes = (u32) (inputs & REPLAY_STICK_Y) >> 8;
-
-    gControllerSix->rawStickX = stickVal;
-
-    if (stickBytes < 0x80U) {
-        stickVal = (s16) (stickBytes & 0xFF);
-    } else {
-        stickVal = (s16) (stickBytes | (~0xFF));
-    }
-
-    gControllerSix->rawStickY = stickVal;
-
-    if (inputs & REPLAY_A_BUTTON) {
-        buttons = A_BUTTON;
-    }
-    if (inputs & REPLAY_B_BUTTON) {
-        buttons |= B_BUTTON;
-    }
-    if (inputs & REPLAY_Z_TRIG) {
-        buttons |= Z_TRIG;
-    }
-    if (inputs & REPLAY_R_TRIG) {
-        buttons |= R_TRIG;
-    }
-    buttons_temp = gControllerSix->buttonPressed & REPLAY_MASK;
-    gControllerSix->buttonPressed = (buttons & (buttons ^ sPlayerGhostButtonsPrev)) | buttons_temp;
-
-    buttons_temp = gControllerSix->buttonDepressed & REPLAY_MASK;
-    gControllerSix->buttonDepressed = (sPlayerGhostButtonsPrev & (buttons ^ sPlayerGhostButtonsPrev)) | buttons_temp;
-    sPlayerGhostButtonsPrev = buttons;
-    gControllerSix->button = buttons;
-
-    if (sPlayerGhostFramesRemaining == 0) {
-        sPlayerGhostReplayIdx++;
-        sPlayerGhostFramesRemaining = (s32) (sPlayerGhostReplay[sPlayerGhostReplayIdx] & REPLAY_FRAME_COUNTER);
-    } else {
-        sPlayerGhostFramesRemaining -= (s32) REPLAY_FRAME_INCREMENT;
-    }
+    process_ghost_replay_generic(sPlayerGhostReplay, &sPlayerGhostReplayIdx, &sPlayerGhostFramesRemaining, &sPlayerGhostButtonsPrev, gControllerSix, gPlayerTwo);
 }
 
 // See process_post_time_trial_replay comment

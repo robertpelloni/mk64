@@ -557,6 +557,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             if (btnAndStick & A_BUTTON) {
                                 PC_SavePracticeGhost(gPlayerOne);
                                 play_sound2(SOUND_MENU_OK_CLICKED);
+                                return;
                             }
                             break;
                         case SUB_MENU_PRACTICE_RETURN:

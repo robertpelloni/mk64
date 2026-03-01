@@ -98,7 +98,7 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Default:** OFF
 *   **Description:** Enables powerful practice tools for speedrunners and casual players.
 *   **Controls:**
-    *   **Restart Race:** Press **L + R + Start** (Instant retry).
+    *   **Fast Reset:** Press **L + R + Start** (Instant retry). Instantly teleports the player back to the start line and resets the race logic without forcing a long, full-level reload.
     *   **Save State:** Press **L + D-Pad Left**.
         *   Saves: Position, Rotation, Velocity, **Held Item**, **Lap Count**, and **RNG State**.
         *   Feedback: Displays "STATE SAVED" on screen.
