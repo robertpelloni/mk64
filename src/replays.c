@@ -324,7 +324,7 @@ void process_post_time_trial_replay(void) {
     }
 }
 
-void process_ghost_replay_generic(u32* replayData, s32* replayIdx, s32* framesRemaining, u16* buttonsPrev, struct Controller* controller, Player* playerToStop) {
+void process_ghost_replay_generic(u32* replayData, s16* replayIdx, u32* framesRemaining, u16* buttonsPrev, struct Controller* controller, Player* playerToStop) {
     u32 inputs;
     u32 stickBytes;
     u16 buttonsTemp;

@@ -1,12 +1,5 @@
 # Changelog
 
-## [1.6.1] - Fast Reset & Refactoring
-### Added
-- **Fast Reset:** Upgraded the "Level Reset" feature (L + R + Start) to perform a "Fast Reset". Instead of fully unloading and reloading the track from ROM, the game now instantly resets state variables and warps the player to the start line.
-
-### Changed
-- **Refactoring:** Combined heavily redundant ghost playback logic in `src/replays.c` (`process_course_ghost_replay` and `process_player_ghost_replay`) into a single, generic `process_ghost_replay_generic` function.
-
 ## [1.6.0] - PC Porting & Modding Support
 ### Added
 - **PC Save System:** Abstracted save logic to use file I/O instead of N64 Controller Pak calls. Added support for saving "Practice Ghosts" to disk.

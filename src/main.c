@@ -758,8 +758,7 @@ void race_logic_loop(void) {
         // Equivalent to "Retry"
         D_800DC510 = 0;
         gGamestateNext = RACING;
-        // Not resetting gCurrentlyLoadedCourseId enables a "Fast Reset"
-        // without unloading and reloading the track model from ROM.
+        gCurrentlyLoadedCourseId = 0xFF;
         return;
     }
 
