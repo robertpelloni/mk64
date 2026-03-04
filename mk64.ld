@@ -90,6 +90,7 @@ SECTIONS
       BUILD_DIR/src/modding/mod_hooks.o(.text*);
       BUILD_DIR/src/modding/mod_assets.o(.text*);
       BUILD_DIR/src/pc_port/platform_save.o(.text*);
+      BUILD_DIR/src/pc_port/platform_window.o(.text*);
       #if DEBUG
          BUILD_DIR/src/os/osCartRomInit.o(.text*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.text*);
@@ -256,6 +257,7 @@ SECTIONS
       BUILD_DIR/src/modding/mod_hooks.o(.data*);
       BUILD_DIR/src/modding/mod_assets.o(.data*);
       BUILD_DIR/src/pc_port/platform_save.o(.data*);
+      BUILD_DIR/src/pc_port/platform_window.o(.data*);
       #if DEBUG
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.data*);
          BUILD_DIR/src/debug/debug.o(.data*);
@@ -316,6 +318,7 @@ SECTIONS
       BUILD_DIR/src/modding/mod_hooks.o(.rodata*);
       BUILD_DIR/src/modding/mod_assets.o(.rodata*);
       BUILD_DIR/src/pc_port/platform_save.o(.rodata*);
+      BUILD_DIR/src/pc_port/platform_window.o(.rodata*);
       #if DEBUG
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.rodata*);
          BUILD_DIR/src/debug/debug.o(.rodata*);
@@ -367,6 +370,7 @@ SECTIONS
       BUILD_DIR/src/modding/mod_hooks.o(.bss*);
       BUILD_DIR/src/modding/mod_assets.o(.bss*);
       BUILD_DIR/src/pc_port/platform_save.o(.bss*);
+      BUILD_DIR/src/pc_port/platform_window.o(.bss*);
       #if DEBUG
          BUILD_DIR/src/os/osCartRomInit.o(.bss*);
          BUILD_DIR/src/debug/crash_screen_enhancement.o(.bss*);

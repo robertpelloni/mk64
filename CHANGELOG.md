@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2] - Global Documentation Overhaul & PC Port Abstraction Prep
+### Added
+- **Global AI Guidelines:** Implemented a unified `LLM_INSTRUCTIONS.md` to standardize development protocols across Claude, Gemini, GPT, Copilot, and generic Agents.
+- **Documentation:** Created/updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `HANDOFF.md`, `DASHBOARD.md`, and `IDEAS.md` to reflect the comprehensive state of the project, submodules, and future architecture.
+
+### Changed
+- Refactored model-specific markdown files (`CLAUDE.md`, `GEMINI.md`, etc.) to reference the new universal instructions.
+
 ## [1.6.0] - PC Porting & Modding Support
 ### Added
 - **PC Save System:** Abstracted save logic to use file I/O instead of N64 Controller Pak calls. Added support for saving "Practice Ghosts" to disk.

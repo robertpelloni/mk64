@@ -597,7 +597,6 @@ void render_palm_trees(Camera* camera, Mat4 arg1, UNUSED struct Actor* actor) {
     s32 offset = SEGMENT_OFFSET(d_course_dks_jungle_parkway_tree_spawn);
     struct UnkActorSpawnData* var_s1 =
         (struct UnkActorSpawnData*) VIRTUAL_TO_PHYSICAL2(gSegmentTable[segment] + offset);
-    UNUSED s32 pad;
     Vec3f spD4;
     f32 var_f22;
     Mat4 sp90;
@@ -681,9 +680,7 @@ void render_palm_trees(Camera* camera, Mat4 arg1, UNUSED struct Actor* actor) {
 #include "actors/kiwano_fruit/render.inc.c"
 
 void render_actor_shell(Camera* camera, Mat4 matrix, struct ShellActor* shell) {
-    UNUSED s16 pad;
     u16 temp_t8;
-    UNUSED s32 pad2;
     s16 sp58[15] = // D_802B87E8;
         { 0x0000, 0x0400, 0x0800, 0x0c00, 0x1000, 0x1400, 0x1800, 0x1c00,
           0x1c00, 0x1800, 0x1400, 0x1000, 0x0c00, 0x0800, 0x0400 };
@@ -730,12 +727,6 @@ void render_actor_shell(Camera* camera, Mat4 matrix, struct ShellActor* shell) {
         gSPDisplayList(gDisplayListHead++, D_0D005368);
     }
 }
-
-UNUSED s16 D_802B8808[] = { 0x0014, 0x0028, 0x0000, 0x0000 };
-
-UNUSED s16 D_802B8810[] = { 0x0fc0, 0x0000, 0xffff, 0xffff, 0x0014, 0x0000, 0x0000, 0x0000, 0x0fc0, 0x0fc0,
-                            0xffff, 0xffff, 0xffec, 0x0000, 0x0000, 0x0000, 0x0000, 0x0fc0, 0xffff, 0xffff,
-                            0xffec, 0x0028, 0x0000, 0x0000, 0x0000, 0x0000, 0xffff, 0xffff };
 
 #include "actors/green_shell/render.inc.c"
 
@@ -818,7 +809,6 @@ void spawn_piranha_plants(struct ActorSpawnData* spawnData) {
     s32 offset = SEGMENT_OFFSET(spawnData);
     struct ActorSpawnData* temp_s0 = (struct ActorSpawnData*) VIRTUAL_TO_PHYSICAL2(gSegmentTable[segment] + offset);
     struct PiranhaPlant* temp_v1;
-    UNUSED s32 pad;
     Vec3f startingPos;
     Vec3f startingVelocity;
     Vec3s startingRot;
@@ -876,11 +866,9 @@ void spawn_palm_trees(struct ActorSpawnData* spawnData) {
 
 // Trees, cacti, shrubs, etc.
 void spawn_foliage(struct ActorSpawnData* arg0) {
-    UNUSED s32 pad[4];
     Vec3f position;
     Vec3f velocity;
     Vec3s rotation;
-    UNUSED s16 pad2;
     s16 actorType;
     struct Actor* temp_s0;
     struct ActorSpawnData* var_s3;
@@ -1045,7 +1033,6 @@ void destroy_all_actors(void) {
 }
 
 void spawn_course_actors(void) {
-    UNUSED s32 pad;
     Vec3f position;
     Vec3f velocity = { 0.0f, 0.0f, 0.0f };
     Vec3s rotation = { 0, 0, 0 };
@@ -1610,7 +1597,6 @@ bool collision_piranha_plant(Player* player, struct PiranhaPlant* plant) {
 }
 
 bool collision_yoshi_egg(Player* player, struct YoshiValleyEgg* egg) {
-    UNUSED f32 pad[5];
     f32 z_dist;
     f32 xz_dist;
     f32 x_dist;
@@ -1678,7 +1664,6 @@ bool collision_tree(Player* player, struct Actor* actor) {
     f32 sp44;
     f32 var_f16;
     f32 xz_dist;
-    UNUSED f32 pad[2];
     f32 temp_f12;
     f32 temp_f0_4;
     Vec3f actorPos;
@@ -2061,9 +2046,7 @@ void evaluate_actor_collision_between_two_destructible_actors(struct Actor* acto
 }
 
 void evaluate_collision_between_player_actor(Player* player, struct Actor* actor) {
-    UNUSED s32 pad;
     s16 temp_lo;
-    UNUSED s32 pad2[2];
     s16 temp_v1;
     Player* owner;
     f32 temp_f0;
@@ -2303,7 +2286,6 @@ void evaluate_collision_for_destructible_actors(void) {
     struct Actor* actor1;
     struct Actor* actor2;
     s32 i, j;
-    UNUSED s32 pad;
 
     for (i = gNumPermanentActors; i < (ACTOR_LIST_SIZE - 1); i++) {
         actor1 = &gActorList[i];
@@ -2451,11 +2433,9 @@ void render_item_boxes(struct UnkStruct_800DC5EC* arg0) {
 void render_course_actors(struct UnkStruct_800DC5EC* arg0) {
     Camera* camera = arg0->camera;
     u16 pathCounter = arg0->pathCounter;
-    UNUSED s32 pad[12];
     s32 i;
 
     struct Actor* actor;
-    UNUSED Vec3f sp4C = { 0.0f, 5.0f, 10.0f };
     f32 sp48 = sins(camera->rot[1] - 0x8000); // unk26;
     f32 temp_f0 = coss(camera->rot[1] - 0x8000);
 

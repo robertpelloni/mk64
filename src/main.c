@@ -21,6 +21,7 @@
 #include "profiler.h"
 #include "race_logic.h"
 #include "skybox_and_splitscreen.h"
+#include "pc_port/platform_window.h"
 #include "render_objects.h"
 #include "effects.h"
 #include "code_80281780.h"
@@ -331,6 +332,9 @@ void main_func(void) {
 #ifdef VERSION_EU
     osTvType = TV_TYPE_PAL;
 #endif
+
+    PC_WindowInit(); // Initialize PC Window/GL Context (No-op on N64)
+
     osInitialize();
 #ifdef DEBUG
     isPrintfInit(); // init osSyncPrintf
@@ -591,6 +595,10 @@ void display_and_vsync(void) {
     profiler_log_thread5_time(AFTER_DISPLAY_LISTS);
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void*) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
+
+    PC_SwapBuffers(); // Present frame (No-op on N64)
+    PC_PollEvents();  // Poll window events
+
     profiler_log_thread5_time(THREAD5_END);
 
     // If 60 FPS mode is NOT enabled, wait for a second VBlank to maintain 30 FPS.

@@ -3714,62 +3714,12 @@ s16 func_8007AFB0(s32 objectIndex, s32 arg1) {
     randomItem = gen_random_item_human(gLapCountByPlayerId[arg1], gGPCurrentRaceRankByPlayerId[arg1]);
 
     if (gPracticeItemOption != 0) {
-        // If "Disable Items" is selected (option 1), randomItem will be ITEM_NONE (0)
-        // Options 2+ map to specific items
-        if (gPracticeItemOption == 1) {
-            randomItem = ITEM_NONE;
-        } else {
-            // Map option index to item ID.
-            // Option 2 -> Item 1, etc? Or direct mapping?
-            // Let's use a direct mapping where option values match item IDs if possible,
-            // but we need "Disable" (1) to be distinct from "None" (0, default).
-            // Actually, let's make the menu handle the mapping or just use a switch here.
-            // Menu: 0=Default, 1=None, 2=Banana, 3=Banana Bunch...
-
-            // For now, let's assume gPracticeItemOption holds the ITEM_ID directly,
-            // except 0 is "Default" and we need a way to say "None".
-            // Let's define:
-            // 0 = Default
-            // 1 = Force None (ITEM_NONE is 0, so we return 0)
-            // 2 = Force Banana (ITEM_BANANA is 1)
-            // ...
-            // This offset logic is annoying.
-            // Let's rely on the menu setting gPracticeItemOption to the actual ITEM_ID + 2?
-            // No, simpler:
-
-            if (gPracticeItemOption == 1) {
-                randomItem = ITEM_NONE;
-            } else {
-               // Option 2 maps to ITEM_BANANA (1)
-               // Option 3 maps to ITEM_BANANA_BUNCH (2)
-               // ...
-               randomItem = gPracticeItemOption - 1;
-               // Wait, if option 2 is banana (1), then 2-1 = 1. Correct.
-               // If option 15 is Super Mushroom (15), then 15-1 = 14 (Triple Mush). Incorrect.
-
-               // Let's look at defines.h again.
-               // ITEM_NONE = 0
-               // ITEM_BANANA = 1
-               // ...
-               // ITEM_SUPER_MUSHROOM = 15
-
-               // If I want the menu to go: Default, None, Banana, ...
-               // 0: Default
-               // 1: None (Force 0)
-               // 2: Banana (Force 1)
-               // ...
-               // 16: Super Mushroom (Force 15)
-
-               // So randomItem = gPracticeItemOption - 1;
-               // If gPracticeItemOption is 1, randomItem = 0 (None). Correct.
-               // If gPracticeItemOption is 2, randomItem = 1 (Banana). Correct.
-
-               // Wait, ITEM_NONE is 0. If randomItem is 0, does it give nothing?
-               // Yes, presumably.
-
-               randomItem = gPracticeItemOption - 1;
-            }
-        }
+        // Map Practice Menu option index to actual Item ID.
+        // Menu Option 0 = Default (Bypasses this block)
+        // Menu Option 1 = None (ITEM_NONE = 0)
+        // Menu Option 2 = Banana (ITEM_BANANA = 1)
+        // ... etc
+        randomItem = gPracticeItemOption - 1;
     }
 
     if (playerHUD[arg1].itemOverride != 0) {
