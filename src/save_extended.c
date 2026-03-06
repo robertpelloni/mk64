@@ -26,6 +26,7 @@
 
 // UnknownBytes[1] Map:
 // Bit 0: Timer Freeze
+// Bit 1: Custom Assets (Modding)
 
 void SaveExtended_Init(void) {
     // Nothing special needed, logic handled in getters/setters
@@ -54,6 +55,7 @@ void SaveExtended_Save(void) {
     // UnknownBytes[1] packing
     u8 unknown1 = 0;
     if (gPracticeTimerFreeze) unknown1 |= BIT(0);
+    if (gEnableCustomAssets) unknown1 |= BIT(1);
     gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[1] = unknown1;
 
     // Commit
@@ -104,6 +106,10 @@ s32 SaveExtended_GetTimerFreeze(void) {
     return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[1] >> 0) & 1;
 }
 
+s32 SaveExtended_GetCustomAssets(void) {
+    return (gSaveData.onlyBestTimeTrialRecords[0].unknownBytes[1] >> 1) & 1;
+}
+
 // Setters (Updates globals, persistence happens on Save)
 void SaveExtended_SetSpeedometer(s32 value) {
     gEnableSpeedometer = value;
@@ -144,4 +150,8 @@ void SaveExtended_SetLapSkip(s32 value) {
 
 void SaveExtended_SetTimerFreeze(s32 value) {
     gPracticeTimerFreeze = value;
+}
+
+void SaveExtended_SetCustomAssets(s32 value) {
+    gEnableCustomAssets = value;
 }

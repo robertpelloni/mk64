@@ -1,12 +1,12 @@
 # Changelog
 
-## [1.6.2] - Global Documentation Overhaul & PC Port Abstraction Prep
+## [1.6.3] - Modding UI & Audio Abstraction
 ### Added
-- **Global AI Guidelines:** Implemented a unified `LLM_INSTRUCTIONS.md` to standardize development protocols across Claude, Gemini, GPT, Copilot, and generic Agents.
-- **Documentation:** Created/updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `HANDOFF.md`, `DASHBOARD.md`, and `IDEAS.md` to reflect the comprehensive state of the project, submodules, and future architecture.
+- **Custom Assets Toggle:** Added a "CUSTOM ASSETS" option to the Extras menu. This persists to EEPROM and controls whether the game attempts to load external textures/models via the Modding Asset Registry.
+- **PC Audio Abstraction:** Created `src/pc_port/platform_audio.c` as a skeleton for future SDL audio backend integration.
 
 ### Changed
-- Refactored model-specific markdown files (`CLAUDE.md`, `GEMINI.md`, etc.) to reference the new universal instructions.
+- **TODO Cleanup:** Re-prioritized roadmap and todo lists to focus on advanced modding and PC backend ports.
 
 ## [1.6.0] - PC Porting & Modding Support
 ### Added

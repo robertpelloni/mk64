@@ -497,6 +497,7 @@ char* gTextExtrasMenu[] = {
     "TOGGLE MUSIC",
     "TOGGLE SFX",
     "PRACTICE OPTIONS",
+    "CUSTOM ASSETS",
     "RETURN",
 };
 
@@ -512,6 +513,7 @@ char* gTextExtrasHelp[] = {
     "TOGGLES BACKGROUND MUSIC.",
     "TOGGLES SOUND EFFECTS.",
     "OPEN PRACTICE MODE SETTINGS.",
+    "LOAD EXTERNAL ASSETS (MODDING).",
     "RETURN TO OPTIONS MENU.",
 };
 
@@ -523,7 +525,6 @@ char* gTextPracticeMenu[] = {
     "ITEM CONTROL",
     "LAP SKIP (L+UP)",
     "TIMER FREEZE",
-    "SAVE GHOST",
     "RETURN",
 };
 
@@ -535,7 +536,6 @@ char* gTextPracticeHelp[] = {
     "SETS FORCED ITEM (PRACTICE).",
     "ENABLES L+D-PAD UP TO SKIP LAP.",
     "STOPS THE RACE TIMER.",
-    "SAVES CURRENT RACE TO PC DISK.",
     "RETURN TO EXTRAS MENU.",
 };
 
@@ -6944,6 +6944,7 @@ void func_800A1FB0(MenuItem* arg0) {
         case SUB_MENU_EXTRAS_FLYCAM:
         case SUB_MENU_EXTRAS_PROFILER:
         case SUB_MENU_EXTRAS_DEBUG:
+        case SUB_MENU_EXTRAS_CUSTOM_ASSETS:
         case SUB_MENU_EXTRAS_RETURN:
             for (i = 0; i < ARRAY_COUNT(gTextExtrasMenu); i++) {
                 set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_EXTRAS_MIN, i, 3);
@@ -6962,6 +6963,7 @@ void func_800A1FB0(MenuItem* arg0) {
             print_text1_center_mode_1(0xE0, 0x30 + 0x78, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0x90, gEnableResourceMeters ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0xA8, gEnableDebugMode ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x108, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
 
             // Draw Description/Tooltip
             set_text_color(TEXT_YELLOW);
@@ -6979,7 +6981,6 @@ void func_800A1FB0(MenuItem* arg0) {
         case SUB_MENU_PRACTICE_ITEM_OPTION:
         case SUB_MENU_PRACTICE_LAP_SKIP:
         case SUB_MENU_PRACTICE_TIMER_FREEZE:
-        case SUB_MENU_PRACTICE_SAVE_GHOST:
         case SUB_MENU_PRACTICE_RETURN:
             for (i = 0; i < ARRAY_COUNT(gTextPracticeMenu); i++) {
                 set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_PRACTICE_MIN, i, 3);
@@ -6997,7 +6998,6 @@ void func_800A1FB0(MenuItem* arg0) {
             print_text1_center_mode_1(0xE0, 0x30 + 0x60, gTextItemOptions[gPracticeItemOption], 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0x78, gEnableLapSkip ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0x90, gPracticeTimerFreeze ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0xA8, "SAVE TO DISK", 0, 0.9f, 1.0f);
 
             // Draw Description/Tooltip
             set_text_color(TEXT_YELLOW);

@@ -26,8 +26,16 @@ void Mod_RegisterAsset(u32 id, void* original, char* name) {
     }
 }
 
+#include "main.h"
+
 void* Mod_GetAsset(void* original) {
     s32 i;
+
+    // Only fetch custom assets if the global toggle is enabled via the UI
+    if (!gEnableCustomAssets) {
+        return original;
+    }
+
     for (i = 0; i < gModAssetCount; i++) {
         if (gModAssets[i].originalPtr == original && gModAssets[i].replacementPtr != NULL) {
             return gModAssets[i].replacementPtr;

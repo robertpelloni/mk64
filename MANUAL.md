@@ -85,16 +85,21 @@ Navigate to **Options** -> **Extras** to access the new settings.
 *   **Default:** ON
 *   **Description:** Toggles the in-game sound effects (SFX) on or off.
 
-#### 12. Input Display
+#### 12. Custom Assets (Modding)
+*   **Default:** OFF
+*   **Description:** Enables the loading of external, user-provided textures and models.
+*   **Details:** When enabled, the game will check the modding asset registry before loading data from the base ROM. Requires a compatible PC build and a `gamedata` folder.
+
+#### 13. Input Display
 *   **Default:** OFF
 *   **Description:** Displays a visual overlay of the controller inputs (Analog Stick, A, B, Z, R, Start) in the bottom right corner of the screen.
 
-#### 13. Speedometer
+#### 14. Speedometer
 *   **Default:** OFF
 *   **Description:** Displays an on-screen speedometer bar in the bottom left corner.
 *   **Details:** Visualizes the player's current speed with a color-coded bar (Green -> Yellow -> Red).
 
-#### 14. Level Reset & Save States (Practice)
+#### 15. Level Reset & Save States (Practice)
 *   **Default:** OFF
 *   **Description:** Enables powerful practice tools for speedrunners and casual players.
 *   **Controls:**
@@ -106,7 +111,7 @@ Navigate to **Options** -> **Extras** to access the new settings.
         *   Loads: All saved data instantly.
         *   Feedback: Displays "STATE LOADED" on screen.
 
-#### 15. Item Control
+#### 16. Item Control
 *   **Default:** Default (Normal Logic)
 *   **Description:** Allows you to override the item box probability logic.
 *   **Options:**
@@ -114,16 +119,20 @@ Navigate to **Options** -> **Extras** to access the new settings.
     *   **None:** Item boxes give nothing.
     *   **Banana, Shells, Stars, etc.:** Forces every item box to yield the selected item.
 
-#### 16. Lap Skip
+#### 17. Lap Skip
 *   **Default:** OFF
 *   **Description:** Allows you to instantly complete the current lap.
 *   **Controls:** Press **L + D-Pad Up** during a race.
 *   **Note:** Only works in Single Player mode to prevent accidental skips in multiplayer.
 
-#### 17. Timer Freeze
+#### 18. Timer Freeze
 *   **Default:** OFF
 *   **Description:** Stops the race timer from incrementing.
 *   **Usage:** Useful for practicing specific sections without time pressure or for infinite time trials.
+
+#### 19. Save Ghost
+*   **Description:** Saves your current active practice run directly to disk as a "Practice Ghost".
+*   **Details:** This allows you to dump telemetry data even if you did not finish the race. (Requires PC Port backend).
 
 ## Saving Settings
 

@@ -414,6 +414,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_EXTRAS_MUSIC:
             case SUB_MENU_EXTRAS_SFX:
             case SUB_MENU_EXTRAS_PRACTICE_MENU:
+            case SUB_MENU_EXTRAS_CUSTOM_ASSETS:
             case SUB_MENU_EXTRAS_RETURN:
                 if ((btnAndStick & D_JPAD) && (gSubMenuSelection < SUB_MENU_EXTRAS_MAX)) {
                     gSubMenuSelection++;
@@ -484,6 +485,12 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                 gSubMenuSelection = SUB_MENU_PRACTICE_INPUT_DISPLAY;
                                 play_sound2(SOUND_MENU_SELECT);
                                 return;
+                            }
+                            break;
+                        case SUB_MENU_EXTRAS_CUSTOM_ASSETS:
+                            if (btnAndStick & A_BUTTON) {
+                                gEnableCustomAssets ^= 1;
+                                save_options();
                             }
                             break;
                         case SUB_MENU_EXTRAS_RETURN:

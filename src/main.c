@@ -21,8 +21,9 @@
 #include "profiler.h"
 #include "race_logic.h"
 #include "skybox_and_splitscreen.h"
-#include "pc_port/platform_window.h"
 #include "render_objects.h"
+#include "pc_port/platform_window.h"
+#include "pc_port/platform_audio.h"
 #include "effects.h"
 #include "code_80281780.h"
 #include "audio/external.h"
@@ -311,6 +312,13 @@ u16 gEnableLapSkip = 0;
  */
 u16 gPracticeTimerFreeze = 0;
 
+/**
+ * gEnableCustomAssets
+ * Allows the game to load external textures/models from the Asset Registry
+ * instead of the built-in ROM arrays. (Modding hook)
+ */
+s32 gEnableCustomAssets = 0;
+
 // Save State Data
 s32 gPracticeSaveState = 0;
 Vec3f gPracticePosition = {0, 0, 0};
@@ -334,6 +342,7 @@ void main_func(void) {
 #endif
 
     PC_WindowInit(); // Initialize PC Window/GL Context (No-op on N64)
+    PC_AudioInit();  // Initialize PC Audio Backend (No-op on N64)
 
     osInitialize();
 #ifdef DEBUG
@@ -598,6 +607,7 @@ void display_and_vsync(void) {
 
     PC_SwapBuffers(); // Present frame (No-op on N64)
     PC_PollEvents();  // Poll window events
+    PC_AudioProcess();// Process queued audio streams (No-op on N64)
 
     profiler_log_thread5_time(THREAD5_END);
 

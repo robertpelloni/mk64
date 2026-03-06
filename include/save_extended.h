@@ -20,6 +20,7 @@ s32 SaveExtended_GetResourceMeters(void);
 s32 SaveExtended_GetItemOption(void);
 s32 SaveExtended_GetLapSkip(void);
 s32 SaveExtended_GetTimerFreeze(void);
+s32 SaveExtended_GetCustomAssets(void);
 
 // Setters
 void SaveExtended_SetSpeedometer(s32 value);
@@ -32,5 +33,6 @@ void SaveExtended_SetResourceMeters(s32 value);
 void SaveExtended_SetItemOption(s32 value);
 void SaveExtended_SetLapSkip(s32 value);
 void SaveExtended_SetTimerFreeze(s32 value);
+void SaveExtended_SetCustomAssets(s32 value);
 
 #endif

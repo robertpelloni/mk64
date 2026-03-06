@@ -1,22 +1,13 @@
 # TODO List
 
-## Immediate Priorities (Current Session)
-- [x] **Lap Skip/Manipulation:** Add practice menu option to jump laps.
-- [x] **Timer Freeze:** Toggle to stop the race timer.
-- [x] **Refine Save States:** Save more state (items, current lap, etc.) to make it more robust.
-- [x] **Ghost Data Enhancement:** Implemented PC Save Abstraction.
-- [x] **Modding Support:** Implemented Mod Hooks and Asset Registry.
+## Immediate Priorities
+- [ ] **PC Input Abstraction:** Create `src/pc_port/platform_input.c` for SDL controller support (stubbed for N64).
+- [ ] **PC Filesystem Abstraction:** Fully implement `PC_SaveFile` and `PC_LoadFile` in `platform_save.c` using standard C `<stdio.h>` when built for PC.
 
 ## Short Term
-- [ ] **PC Port:** SDL/OpenGL Backend (major task).
-- [ ] **Online Play:** ENet integration.
+- [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).
+- [ ] **Online Play:** Abstract N64 controller inputs over ENet sockets.
 
 ## Long Term / Tech Debt
-- [ ] **Code Cleanup:** Remove unused variables found during `src/racing/actors.c` analysis.
-- [ ] **Submodule Sync:** Ensure all tools (`asm-differ`, `fast64`) are on stable commits.
-- [ ] **Build System:** Improve `Makefile` dependency tracking for header changes.
-
-## Long Term / Tech Debt
-- [ ] **Code Cleanup:** Remove unused variables found during `src/racing/actors.c` analysis.
-- [ ] **Submodule Sync:** Ensure all tools (`asm-differ`, `fast64`) are on stable commits.
+- [ ] **Lua API:** Expose `Player` structs to Lua scripts loaded at runtime (PC Port only).
 - [ ] **Build System:** Improve `Makefile` dependency tracking for header changes.

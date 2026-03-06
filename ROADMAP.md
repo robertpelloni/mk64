@@ -31,5 +31,7 @@
 ## 4. Future Goals
 - [x] **Ghost Data Enhancement:** Abstracted save/ghost data to PC filesystem.
 - [x] **Modding Support:** Core hooks (`OnGameTick`, `OnRaceStart`) implemented.
-- [ ] **Modding Support (Advanced):** Asset Replacement, Lua Scripting.
-- [ ] **Online Play:** (Investigation phase).
+- [x] **Modding Support (Advanced):** Asset Replacement UI Toggle and Registry skeleton.
+- [ ] **PC Port Backend:** Audio and Window abstraction (In progress).
+- [ ] **Modding Support (Advanced):** Lua Scripting API.
+- [ ] **Online Play:** ENet integration.
