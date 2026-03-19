@@ -24,6 +24,7 @@
 #include "render_objects.h"
 #include "pc_port/platform_window.h"
 #include "pc_port/platform_audio.h"
+#include "pc_port/platform_input.h"
 #include "effects.h"
 #include "code_80281780.h"
 #include "audio/external.h"
@@ -343,6 +344,7 @@ void main_func(void) {
 
     PC_WindowInit(); // Initialize PC Window/GL Context (No-op on N64)
     PC_AudioInit();  // Initialize PC Audio Backend (No-op on N64)
+    PC_InputInit();  // Initialize PC Input Backend (No-op on N64)
 
     osInitialize();
 #ifdef DEBUG
@@ -491,6 +493,9 @@ void read_controllers(void) {
     osContStartReadData(&gSIEventMesgQueue);
     osRecvMesg(&gSIEventMesgQueue, &msg, OS_MESG_BLOCK);
     osContGetReadData(gControllerPads);
+
+    PC_ReadInput(gControllerPads); // Override with PC inputs (No-op on N64)
+
     update_controller(0);
     update_controller(1);
     update_controller(2);

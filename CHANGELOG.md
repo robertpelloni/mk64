@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.4] - PC Input & Filesystem Finalization
+### Added
+- **PC Input Abstraction:** Created `src/pc_port/platform_input.c` and `.h`. Hooked `PC_ReadInput` into the primary controller polling function (`read_controllers` in `main.c`) to allow native SDL controller mapping to override N64 struct states.
+- **PC Filesystem Abstraction:** Fully implemented `PC_SaveFile` and `PC_LoadFile` in `platform_save.c` using standard C `<stdio.h>` calls (`fopen`, `fread`, `fwrite`) wrapped in `#ifdef PC_BUILD` guards.
+
 ## [1.6.3] - Modding UI & Audio Abstraction
 ### Added
 - **Custom Assets Toggle:** Added a "CUSTOM ASSETS" option to the Extras menu. This persists to EEPROM and controls whether the game attempts to load external textures/models via the Modding Asset Registry.
