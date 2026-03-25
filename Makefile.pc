@@ -21,8 +21,13 @@ INCLUDE_DIR := include
 BUILD_DIR := build/pc
 
 # Source Files
-# (Will eventually need to filter out pure N64 hardware files)
-C_FILES := $(shell find $(SRC_DIR) -name '*.c')
+# Find all C files, but explicitly filter out N64 hardware-specific folders
+# like libultra (`src/os`, `src/gu`, `src/io`) which contain MIPS assembly
+# or hardware registers that will not compile on a native PC.
+ALL_C_FILES := $(shell find $(SRC_DIR) -name '*.c')
+
+EXCLUDE_DIRS := src/os% src/gu% src/io%
+C_FILES := $(filter-out $(EXCLUDE_DIRS), $(ALL_C_FILES))
 
 # Object Files
 O_FILES := $(C_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)

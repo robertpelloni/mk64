@@ -1,8 +1,8 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **Filter N64 Assembly:** Update `Makefile.pc` to explicitly filter out `.s` assembly files and specific N64 OS/RSP hardware source files that will cause compilation errors on a native PC target (e.g., `src/os/osSpTaskYield.c`).
-- [ ] **SDL Renderer:** Begin translating `gSPDisplayList` and N64 ABI commands into an OpenGL/Vulkan rendering loop within `platform_window.c`.
+- [ ] **SDL Renderer Implementation:** Build out the `switch` statement in `PC_RenderDisplayList` within `platform_renderer.c`. Translate macros like `G_VTX` and `G_TRI1` into intermediate Vertex Buffer Objects (VBOs) for OpenGL 3.3+.
+- [ ] **Shader Generation:** Create a basic vertex/fragment shader pair in `platform_renderer.c` capable of handling N64 texture mapping (`G_SETTIMG`, `G_SETTILE`) and vertex coloring.
 
 ## Short Term
 - [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).

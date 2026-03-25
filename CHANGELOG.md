@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6] - PC Rendering Intercept & Pipeline refinement
+### Added
+- **PC Renderer Abstraction:** Added `src/pc_port/platform_renderer.c`. Intercepted the N64 Fast3D display list (`Gfx*`) directly within `exec_display_list` in `src/main.c`. This provides the critical hook for translating `gSP*` macros to OpenGL calls in the future.
+
+### Changed
+- **Makefile.pc:** Added a `filter-out` routine to explicitly ignore N64 hardware-specific assembly files (e.g., `src/os/`, `src/gu/`) during native PC builds.
+
 ## [1.6.5] - PC Port Build Pipeline
 ### Added
 - **Native PC Build:** Created `Makefile.pc` to compile the C codebase using a modern GCC/Clang toolchain. It defines the `PC_BUILD` macro, filters out N64 hardware dependencies (`TARGET_N64=0`), and sets up output directories for the `mk64_pc` executable.

@@ -25,6 +25,7 @@
 #include "pc_port/platform_window.h"
 #include "pc_port/platform_audio.h"
 #include "pc_port/platform_input.h"
+#include "pc_port/platform_renderer.h"
 #include "effects.h"
 #include "code_80281780.h"
 #include "audio/external.h"
@@ -345,6 +346,7 @@ void main_func(void) {
     PC_WindowInit(); // Initialize PC Window/GL Context (No-op on N64)
     PC_AudioInit();  // Initialize PC Audio Backend (No-op on N64)
     PC_InputInit();  // Initialize PC Input Backend (No-op on N64)
+    PC_RendererInit(); // Initialize PC Renderer context (No-op on N64)
 
     osInitialize();
 #ifdef DEBUG
@@ -529,6 +531,12 @@ void dispatch_audio_sptask(struct SPTask* spTask) {
 }
 
 void exec_display_list(struct SPTask* spTask) {
+    // When translating to PC, we want to intercept the completed display list
+    // right before it is sent to the N64 RSP via the task queue.
+    if (spTask != NULL && spTask->task.t.data_ptr != NULL) {
+        PC_RenderDisplayList((Gfx*)spTask->task.t.data_ptr);
+    }
+
     osWritebackDCacheAll();
     spTask->state = SPTASK_STATE_NOT_STARTED;
     if (sCurrentDisplaySPTask == NULL) {
