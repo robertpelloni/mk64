@@ -32,7 +32,7 @@
 - [x] **Ghost Data Enhancement:** Abstracted save/ghost data to PC filesystem.
 - [x] **Modding Support:** Core hooks (`OnGameTick`, `OnRaceStart`) implemented.
 - [x] **Modding Support (Advanced):** Asset Replacement UI Toggle and Registry skeleton.
-- [x] **PC Port Backend:** Filesystem (`stdio.h`), Window/Audio stubs, and Input polling overrides abstracted.
-- [ ] **PC Port Renderer:** SDL/OpenGL hardware translation pipeline.
+- [x] **PC Port Backend:** Filesystem (`stdio.h`), Window/Audio stubs, Input polling overrides, and `Makefile.pc` Build Pipeline created.
+- [ ] **PC Port Renderer:** SDL/OpenGL hardware translation pipeline (Translating `gSPDisplayList` macros).
 - [ ] **Modding Support (Advanced):** Lua Scripting API.
 - [ ] **Online Play:** ENet integration.

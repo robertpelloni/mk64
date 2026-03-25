@@ -1,7 +1,7 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **PC Port Build Pipeline:** Create a `Makefile.pc` to compile the current C codebase using GCC/Clang targeting a modern OS, defining the `PC_BUILD` macro.
+- [ ] **Filter N64 Assembly:** Update `Makefile.pc` to explicitly filter out `.s` assembly files and specific N64 OS/RSP hardware source files that will cause compilation errors on a native PC target (e.g., `src/os/osSpTaskYield.c`).
 - [ ] **SDL Renderer:** Begin translating `gSPDisplayList` and N64 ABI commands into an OpenGL/Vulkan rendering loop within `platform_window.c`.
 
 ## Short Term

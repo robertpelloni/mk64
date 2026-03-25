@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.6.5] - PC Port Build Pipeline
+### Added
+- **Native PC Build:** Created `Makefile.pc` to compile the C codebase using a modern GCC/Clang toolchain. It defines the `PC_BUILD` macro, filters out N64 hardware dependencies (`TARGET_N64=0`), and sets up output directories for the `mk64_pc` executable.
+
 ## [1.6.4] - PC Input & Filesystem Finalization
 ### Added
 - **PC Input Abstraction:** Created `src/pc_port/platform_input.c` and `.h`. Hooked `PC_ReadInput` into the primary controller polling function (`read_controllers` in `main.c`) to allow native SDL controller mapping to override N64 struct states.
