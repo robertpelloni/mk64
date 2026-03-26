@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.7] - PC Renderer Shaders & Gfx Parsing
+### Added
+- **PC Renderer Abstraction:** Added GLSL Shader source skeletons (OpenGL 3.3 Core) to `platform_renderer.c`.
+- **Gfx Parsing:** Implemented the core `while` loop within `PC_RenderDisplayList` that iterates over the Fast3DEX macro stream, extracting opcodes from the high byte of `w0` and dispatching them via a `switch` statement (handling `G_VTX`, `G_TRI1`, `G_SETTIMG`, `G_SETCOMBINE`, etc.). This logic is guarded by `#ifdef PC_BUILD`.
+
 ## [1.6.6] - PC Rendering Intercept & Pipeline refinement
 ### Added
 - **PC Renderer Abstraction:** Added `src/pc_port/platform_renderer.c`. Intercepted the N64 Fast3D display list (`Gfx*`) directly within `exec_display_list` in `src/main.c`. This provides the critical hook for translating `gSP*` macros to OpenGL calls in the future.

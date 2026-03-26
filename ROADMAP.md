@@ -34,6 +34,7 @@
 - [x] **Modding Support (Advanced):** Asset Replacement UI Toggle and Registry skeleton.
 - [x] **PC Port Backend:** Filesystem (`stdio.h`), Window/Audio stubs, Input overrides, and `Makefile.pc` Build Pipeline created.
 - [x] **PC Port Renderer:** Intercepted `gSPDisplayList` inside the N64 Task Queue (`platform_renderer.c`).
-- [ ] **PC Port Renderer:** Implement OpenGL Shaders & Buffer Translation for `Gfx` commands.
+- [x] **PC Port Renderer:** Created GLSL shader skeletons and `Gfx` Opcode parsing loop (`platform_renderer.c`).
+- [ ] **PC Port Renderer:** Fully implement N64 hardware translation (Vtx structures -> VBOs, DP matrices).
 - [ ] **Modding Support (Advanced):** Lua Scripting API.
 - [ ] **Online Play:** ENet integration.

@@ -1,8 +1,8 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **SDL Renderer Implementation:** Build out the `switch` statement in `PC_RenderDisplayList` within `platform_renderer.c`. Translate macros like `G_VTX` and `G_TRI1` into intermediate Vertex Buffer Objects (VBOs) for OpenGL 3.3+.
-- [ ] **Shader Generation:** Create a basic vertex/fragment shader pair in `platform_renderer.c` capable of handling N64 texture mapping (`G_SETTIMG`, `G_SETTILE`) and vertex coloring.
+- [ ] **VBO and Element Buffer Translation:** Implement the logic inside `case G_VTX:` to extract vertices from RAM (via `w1`) and push them into an OpenGL Vertex Buffer Object. Ensure N64 `s` and `t` texture coordinates are correctly scaled.
+- [ ] **Texture Format Decoding:** Implement the logic in `case G_SETTIMG:` and `case G_LOADBLOCK:` to decode the N64's CI4/CI8/RGBA16/RGBA32 raw bytes into `glTexture2D` formats.
 
 ## Short Term
 - [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).
