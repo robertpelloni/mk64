@@ -35,6 +35,8 @@
 - [x] **PC Port Backend:** Filesystem (`stdio.h`), Window/Audio stubs, Input overrides, and `Makefile.pc` Build Pipeline created.
 - [x] **PC Port Renderer:** Intercepted `gSPDisplayList` inside the N64 Task Queue (`platform_renderer.c`).
 - [x] **PC Port Renderer:** Created GLSL shader skeletons and `Gfx` Opcode parsing loop (`platform_renderer.c`).
-- [ ] **PC Port Renderer:** Fully implement N64 hardware translation (Vtx structures -> VBOs, DP matrices).
+- [x] **PC Port Renderer:** Vtx arrays correctly extracted and float-scaled to intermediate `PCVertex` array.
+- [x] **PC Port Renderer:** `G_SETTIMG` and `G_SETTILESIZE` logic added to extract raw texture bounds and format structs.
+- [ ] **PC Port Renderer:** Finalize `glBufferSubData` and `glTexImage2D` actual memory pushes using SDL context.
 - [ ] **Modding Support (Advanced):** Lua Scripting API.
 - [ ] **Online Play:** ENet integration.

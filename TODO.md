@@ -1,8 +1,8 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **VBO and Element Buffer Translation:** Implement the logic inside `case G_VTX:` to extract vertices from RAM (via `w1`) and push them into an OpenGL Vertex Buffer Object. Ensure N64 `s` and `t` texture coordinates are correctly scaled.
-- [ ] **Texture Format Decoding:** Implement the logic in `case G_SETTIMG:` and `case G_LOADBLOCK:` to decode the N64's CI4/CI8/RGBA16/RGBA32 raw bytes into `glTexture2D` formats.
+- [ ] **OpenGL Uploads:** Write the actual `glBufferSubData` and `glTexImage2D` commands in `platform_renderer.c` using the extracted `PCVertex` array and `PCTextureState`.
+- [ ] **SDL Window Context:** Fully implement `PC_WindowInit` with SDL2 to generate an actual visible window on the PC so the OpenGL commands have a context to execute against.
 
 ## Short Term
 - [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).

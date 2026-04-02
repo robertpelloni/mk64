@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.9] - PC Renderer Texture State Parsing
+### Added
+- **Texture Decoding Logic:** Fleshed out the `G_SETTIMG`, `G_SETTILESIZE`, and `G_LOADBLOCK` macro parsers in `src/pc_port/platform_renderer.c`. It now correctly extracts N64 texture formats (CI/RGBA), sizes, physical addresses, and calculates the true rendering width and height required for OpenGL `glTexImage2D` uploads.
+- **Texture State Tracking:** Added `PCTextureState sCurrentTexture` struct to maintain the active texture context during display list rendering.
+
 ## [1.6.7] - PC Renderer Shaders & Gfx Parsing
 ### Added
 - **PC Renderer Abstraction:** Added GLSL Shader source skeletons (OpenGL 3.3 Core) to `platform_renderer.c`.

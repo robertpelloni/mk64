@@ -85,10 +85,16 @@ void save_options(void) {
 
     gSaveData.main.saveInfo.soundMode = packed;
 
-    // Use extended save logic for other options
+    write_save_data_grand_prix_points_and_sound_mode();
+
+    // Use extended save logic for other options AFTER write_save_data_grand_prix_points_and_sound_mode
+    // because compute_save_data_checksum functions (which modify checksums) are called inside it.
+    // If SaveExtended modifies checksum[0], we must apply it last before the struct write.
     SaveExtended_Save();
 
-    write_save_data_grand_prix_points_and_sound_mode();
+    // Write out the modified struct with the newly packed checksum[0] and unknownBytes
+    osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData.main), (u8*) &gSaveData.main, sizeof(Stuff));
+
     // Persist extended options (index 0 covers bytes for first cup, but we just need the struct write)
     func_800B559C(0);
     update_save_data_backup();
@@ -615,6 +621,7 @@ void update_save_data_backup(void) {
         backup->saveInfo.grandPrixPoints[cup_index] = main->saveInfo.grandPrixPoints[cup_index];
     }
     backup->saveInfo.soundMode = main->saveInfo.soundMode;
+    backup->checksum[0] = main->checksum[0]; // Sync extended settings
     backup->checksum[1] = compute_save_data_checksum_backup_1();
     backup->checksum[2] = compute_save_data_checksum_backup_2();
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(backup), (u8*) backup, sizeof(Stuff));

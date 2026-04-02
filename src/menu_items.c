@@ -6949,31 +6949,57 @@ void func_800A1FB0(MenuItem* arg0) {
         case SUB_MENU_EXTRAS_DEBUG:
         case SUB_MENU_EXTRAS_CUSTOM_ASSETS:
         case SUB_MENU_EXTRAS_RETURN:
-            for (i = 0; i < ARRAY_COUNT(gTextExtrasMenu); i++) {
-                set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_EXTRAS_MIN, i, 3);
-                print_text_mode_1(0x32, 0x30 + (0x18 * i), gTextExtrasMenu[i], 0, 0.9f, 1.0f);
-                if (i == (gSubMenuSelection - SUB_MENU_EXTRAS_MIN)) {
-                    spE0.column = 0x32;
-                    spE0.row = 0x30 + (0x18 * i);
-                }
-            }
-            set_text_color(TEXT_GREEN);
-            print_text1_center_mode_1(0xE0, 0x30, gEnable60FPS ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x18, gEnableWidescreen ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x30, gEnableFastBoot ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x48, gDisableRubberBanding ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x60, gUnlockAll ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x78, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x90, gEnableResourceMeters ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0xA8, gEnableDebugMode ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x120, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-
-            // Draw Description/Tooltip
-            set_text_color(TEXT_YELLOW);
             {
-                s32 helpIdx = gSubMenuSelection - SUB_MENU_EXTRAS_MIN;
-                if (helpIdx >= 0 && helpIdx < ARRAY_COUNT(gTextExtrasHelp)) {
-                     print_text1_center_mode_1(160, 200, gTextExtrasHelp[helpIdx], 0, 0.7f, 0.7f);
+                // Implement scrolling logic to keep the selected item on screen
+                s32 totalItems = ARRAY_COUNT(gTextExtrasMenu);
+                s32 maxVisible = 7; // Max items to display on screen at once
+                s32 selectedIndex = gSubMenuSelection - SUB_MENU_EXTRAS_MIN;
+
+                // Calculate scrolling window
+                s32 startIdx = selectedIndex - (maxVisible / 2);
+                if (startIdx < 0) startIdx = 0;
+                if (startIdx > totalItems - maxVisible) startIdx = totalItems - maxVisible;
+                if (startIdx < 0) startIdx = 0; // Failsafe if totalItems < maxVisible
+
+                s32 endIdx = startIdx + maxVisible;
+                if (endIdx > totalItems) endIdx = totalItems;
+
+                s32 drawY = 0x30;
+
+                for (i = startIdx; i < endIdx; i++) {
+                    set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_EXTRAS_MIN, i, 3);
+                    print_text_mode_1(0x32, drawY, gTextExtrasMenu[i], 0, 0.9f, 1.0f);
+
+                    if (i == selectedIndex) {
+                        spE0.column = 0x32;
+                        spE0.row = drawY;
+                    }
+
+                    // Draw corresponding value toggles
+                    set_text_color(TEXT_GREEN);
+                    switch (i) {
+                        case 0: print_text1_center_mode_1(0xE0, drawY, gEnable60FPS ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 1: print_text1_center_mode_1(0xE0, drawY, gEnableWidescreen ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 2: print_text1_center_mode_1(0xE0, drawY, gEnableFastBoot ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 3: print_text1_center_mode_1(0xE0, drawY, gDisableRubberBanding ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 4: print_text1_center_mode_1(0xE0, drawY, gUnlockAll ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 5: print_text1_center_mode_1(0xE0, drawY, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 6: print_text1_center_mode_1(0xE0, drawY, gEnableResourceMeters ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 7: print_text1_center_mode_1(0xE0, drawY, gEnableDebugMode ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        // 8: Stick Deadzone (Needs int printing, simplified for now to generic text or off)
+                        case 8: func_80057A50(0xE0, drawY, " ", gStickDeadzone); break;
+                        case 9: print_text1_center_mode_1(0xE0, drawY, gToggleMusic ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 10: print_text1_center_mode_1(0xE0, drawY, gToggleSFX ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        // 11: Practice Menu (No toggle)
+                        case 12: print_text1_center_mode_1(0xE0, drawY, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                    }
+                    drawY += 0x18;
+                }
+
+                // Draw Description/Tooltip (Fixed position at bottom)
+                set_text_color(TEXT_YELLOW);
+                if (selectedIndex >= 0 && selectedIndex < ARRAY_COUNT(gTextExtrasHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextExtrasHelp[selectedIndex], 0, 0.7f, 0.7f);
                 }
             }
             break;
@@ -6986,30 +7012,47 @@ void func_800A1FB0(MenuItem* arg0) {
         case SUB_MENU_PRACTICE_TIMER_FREEZE:
         case SUB_MENU_PRACTICE_SAVE_GHOST:
         case SUB_MENU_PRACTICE_RETURN:
-            for (i = 0; i < ARRAY_COUNT(gTextPracticeMenu); i++) {
-                set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_PRACTICE_MIN, i, 3);
-                print_text_mode_1(0x32, 0x30 + (0x18 * i), gTextPracticeMenu[i], 0, 0.9f, 1.0f);
-                if (i == (gSubMenuSelection - SUB_MENU_PRACTICE_MIN)) {
-                    spE0.column = 0x32;
-                    spE0.row = 0x30 + (0x18 * i);
-                }
-            }
-            set_text_color(TEXT_GREEN);
-            print_text1_center_mode_1(0xE0, 0x30, gEnableInputDisplay ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x18, gEnableSpeedometer ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x30, gEnableLevelReset ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x48, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x60, gTextItemOptions[gPracticeItemOption], 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x78, gEnableLapSkip ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x90, gPracticeTimerFreeze ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0xA8, "SAVE TO DISK", 0, 0.9f, 1.0f);
-
-            // Draw Description/Tooltip
-            set_text_color(TEXT_YELLOW);
             {
-                s32 helpIdx = gSubMenuSelection - SUB_MENU_PRACTICE_MIN;
-                if (helpIdx >= 0 && helpIdx < ARRAY_COUNT(gTextPracticeHelp)) {
-                     print_text1_center_mode_1(160, 200, gTextPracticeHelp[helpIdx], 0, 0.7f, 0.7f);
+                s32 totalItems = ARRAY_COUNT(gTextPracticeMenu);
+                s32 maxVisible = 7;
+                s32 selectedIndex = gSubMenuSelection - SUB_MENU_PRACTICE_MIN;
+
+                s32 startIdx = selectedIndex - (maxVisible / 2);
+                if (startIdx < 0) startIdx = 0;
+                if (startIdx > totalItems - maxVisible) startIdx = totalItems - maxVisible;
+                if (startIdx < 0) startIdx = 0;
+
+                s32 endIdx = startIdx + maxVisible;
+                if (endIdx > totalItems) endIdx = totalItems;
+
+                s32 drawY = 0x30;
+
+                for (i = startIdx; i < endIdx; i++) {
+                    set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_PRACTICE_MIN, i, 3);
+                    print_text_mode_1(0x32, drawY, gTextPracticeMenu[i], 0, 0.9f, 1.0f);
+
+                    if (i == selectedIndex) {
+                        spE0.column = 0x32;
+                        spE0.row = drawY;
+                    }
+
+                    set_text_color(TEXT_GREEN);
+                    switch (i) {
+                        case 0: print_text1_center_mode_1(0xE0, drawY, gEnableInputDisplay ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 1: print_text1_center_mode_1(0xE0, drawY, gEnableSpeedometer ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 2: print_text1_center_mode_1(0xE0, drawY, gEnableLevelReset ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 3: print_text1_center_mode_1(0xE0, drawY, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 4: print_text1_center_mode_1(0xE0, drawY, gTextItemOptions[gPracticeItemOption], 0, 0.9f, 1.0f); break;
+                        case 5: print_text1_center_mode_1(0xE0, drawY, gEnableLapSkip ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 6: print_text1_center_mode_1(0xE0, drawY, gPracticeTimerFreeze ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 7: print_text1_center_mode_1(0xE0, drawY, "SAVE TO DISK", 0, 0.9f, 1.0f); break;
+                    }
+                    drawY += 0x18;
+                }
+
+                set_text_color(TEXT_YELLOW);
+                if (selectedIndex >= 0 && selectedIndex < ARRAY_COUNT(gTextPracticeHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextPracticeHelp[selectedIndex], 0, 0.7f, 0.7f);
                 }
             }
             break;

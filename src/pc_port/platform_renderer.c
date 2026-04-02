@@ -48,6 +48,18 @@ typedef struct {
 #define MAX_VTX_BUFFER 32 // F3DEX standard max vertices
 static PCVertex sVertexBuffer[MAX_VTX_BUFFER];
 
+// Texture State Tracking
+typedef struct {
+    u32 physicalAddr;
+    u8 format;  // e.g., G_IM_FMT_RGBA, G_IM_FMT_CI
+    u8 size;    // e.g., G_IM_SIZ_16b, G_IM_SIZ_32b
+    u16 width;
+    u16 height;
+    u32 glTextureId; // Bound OpenGL Texture
+} PCTextureState;
+
+static PCTextureState sCurrentTexture = {0, 0, 0, 0, 0, 0};
+
 // Global GL state identifiers
 static u32 sShaderProgram = 0;
 static u32 sVAO = 0;
@@ -142,16 +154,53 @@ void PC_RenderDisplayList(Gfx* displayList) {
                 break;
             }
 
-            case G_SETTIMG:
+            case G_SETTIMG: {
                 // Set Texture Image (Format, Size, Address)
-                // If address changes, we may need to decode N64 CI/RGBA formats to GL textures
+                // w0 = opcode(8) | format(3) | size(2) | width(12)
+                // w1 = physical memory address
+                u8 format = (cmd->words.w0 >> 21) & 0x7;
+                u8 size = (cmd->words.w0 >> 19) & 0x3;
+                // N64 width is typically w0 & 0xFFF, but it can be (w0 & 0xFFF) + 1 depending on ucode
+                u32 physAddr = cmd->words.w1;
+
+                sCurrentTexture.format = format;
+                sCurrentTexture.size = size;
+                sCurrentTexture.physicalAddr = physAddr;
+                // The actual width/height used for rendering is often set by G_SETTILESIZE.
+                // We cache the format and address here. If this is a new address,
+                // we might need to decode it to a GL texture immediately or wait for G_LOADBLOCK.
                 break;
+            }
 
             case G_SETTILE:
-            case G_SETTILESIZE:
+                // Sets TMEM offset, format, and other tile parameters.
+                break;
+
+            case G_SETTILESIZE: {
+                // Defines the width and height of the texture tile being rendered.
+                // w1 = uls(12) | ult(12) | lrs(12) | lrt(12)
+                // Width = (lrs - uls) / 4 + 1
+                // Height = (lrt - ult) / 4 + 1
+                u32 uls = (cmd->words.w0 >> 12) & 0xFFF;
+                u32 ult = (cmd->words.w0 >> 0)  & 0xFFF;
+                u32 lrs = (cmd->words.w1 >> 12) & 0xFFF;
+                u32 lrt = (cmd->words.w1 >> 0)  & 0xFFF;
+
+                sCurrentTexture.width  = ((lrs - uls) >> 2) + 1;
+                sCurrentTexture.height = ((lrt - ult) >> 2) + 1;
+
+                // Now we have Format, Size, Width, Height, and Address.
+                // If this is a standard RGBA16 texture, we would decode it here:
+                // e.g. decode_rgba16(sCurrentTexture.physicalAddr, sCurrentTexture.width, sCurrentTexture.height)
+                // and upload via glTexImage2D.
+                break;
+            }
+
             case G_LOADBLOCK:
             case G_LOADTLUT:
-                // Handle TMEM loading and texture parameter setups
+                // Handle TMEM loading and texture parameter setups (Palettes)
+                // If it's a CI4 or CI8 texture, G_LOADTLUT loads the palette.
+                // We must cache the palette colors here to decode the CI texture later.
                 break;
 
             case G_SETCOMBINE:
