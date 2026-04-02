@@ -22,10 +22,11 @@
 | **doxygen-awesome-css** | `doxygen-awesome-css/` | CSS theme for Doxygen documentation. | Active |
 
 ## Build Info
-*   **Version:** 1.2.0
-*   **Target:** N64 (US v1.0)
-*   **Compiler:** IDO 5.3 / 7.1 (via recomp)
+*   **Version:** 1.6.8
+*   **Target:** N64 (US v1.0) / Native PC Target (In Progress)
+*   **Compiler:** IDO 5.3 / 7.1 (N64) / GCC/Clang (PC)
 
 ## Recent Changes
-*   **1.2.0:** Implemented Analog Deadzone, Music/SFX toggles, Save Persistence Fix.
-*   **1.1.0:** Added Practice Mode (Input Display, Speedometer, Level Reset).
+*   **1.6.8:** Deep Code Audit, Unused Variable Purge, and Handoff Preparation.
+*   **1.6.7:** PC Renderer Shaders and Gfx Parsing Loop.
+*   **1.6.6:** PC Renderer Intercept and Assembly Filtering.

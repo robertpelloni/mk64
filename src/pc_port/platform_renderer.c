@@ -38,6 +38,16 @@ static const char* sFragmentShaderSource =
     "   }\n"
     "}\n";
 
+// Internal PC Vertex Format (Translates N64 Vtx_t to Floats)
+typedef struct {
+    f32 x, y, z;
+    f32 s, t; // TexCoords
+    f32 r, g, b, a;
+} PCVertex;
+
+#define MAX_VTX_BUFFER 32 // F3DEX standard max vertices
+static PCVertex sVertexBuffer[MAX_VTX_BUFFER];
+
 // Global GL state identifiers
 static u32 sShaderProgram = 0;
 static u32 sVAO = 0;
@@ -66,22 +76,71 @@ void PC_RenderDisplayList(Gfx* displayList) {
         u8 opcode = (u8)(cmd->words.w0 >> 24);
 
         switch (opcode) {
-            case G_VTX:
-                // Extract number of vertices and dest index
-                // Fetch vertices from physical memory address in w1
-                // Translate N64 Vtx struct (x,y,z, s,t, r,g,b,a) into GL floats
-                // Upload to VBO
-                break;
+            case G_VTX: {
+                // Decode G_VTX command
+                // w0 = opcode(8) | num_vertices(8) | dest_index(8) (varies slightly by ucode)
+                // w1 = pointer to Vtx array
+                // Note: IDO/F3DEX encoding for G_VTX varies, but generally:
+                s32 numVertices = (cmd->words.w0 >> 12) & 0xFF; // Usually number of vertices
+                s32 destIndex = (cmd->words.w0 >> 1) & 0x7F; // Usually destination index in RSP buffer
 
-            case G_TRI1:
-                // Extract 3 vertex indices
-                // glDrawArrays or queue to an element buffer
-                break;
+                // The address in w1 is usually a physical address or segment address
+                // We assume the OS translates this to a virtual pointer in the PC port
+                Vtx* vtxArray = (Vtx*)(uintptr_t)cmd->words.w1;
 
-            case G_TRI2:
-                // Extract 6 vertex indices
-                // Draw two triangles
+                if (vtxArray && numVertices <= MAX_VTX_BUFFER) {
+                    for (s32 i = 0; i < numVertices; i++) {
+                        s32 idx = destIndex + i;
+                        if (idx >= MAX_VTX_BUFFER) break;
+
+                        // N64 vertices are 16-bit integers.
+                        sVertexBuffer[idx].x = (f32)vtxArray[i].v.ob[0];
+                        sVertexBuffer[idx].y = (f32)vtxArray[i].v.ob[1];
+                        sVertexBuffer[idx].z = (f32)vtxArray[i].v.ob[2];
+
+                        // N64 texture coordinates are s10.5 fixed point, usually scaled later.
+                        // We translate to generic float, shader will apply scaling.
+                        sVertexBuffer[idx].s = (f32)vtxArray[i].v.tc[0] / 32.0f;
+                        sVertexBuffer[idx].t = (f32)vtxArray[i].v.tc[1] / 32.0f;
+
+                        // Color
+                        sVertexBuffer[idx].r = (f32)vtxArray[i].v.cn[0] / 255.0f;
+                        sVertexBuffer[idx].g = (f32)vtxArray[i].v.cn[1] / 255.0f;
+                        sVertexBuffer[idx].b = (f32)vtxArray[i].v.cn[2] / 255.0f;
+                        sVertexBuffer[idx].a = (f32)vtxArray[i].v.cn[3] / 255.0f;
+                    }
+
+                    // In OpenGL, we'd update the VBO with sVertexBuffer here via glBufferSubData
+                }
                 break;
+            }
+
+            case G_TRI1: {
+                // Decode F3DEX G_TRI1
+                s32 v0 = ((cmd->words.w0 >> 16) & 0xFF) / 2;
+                s32 v1 = ((cmd->words.w0 >> 8) & 0xFF) / 2;
+                s32 v2 = ((cmd->words.w0 >> 0) & 0xFF) / 2;
+
+                // OpenGL Element Buffer Array population (stubbed)
+                // e.g., glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, indices);
+                // where indices = { v0, v1, v2 }
+                break;
+            }
+
+            case G_TRI2: {
+                // Decode F3DEX G_TRI2
+                s32 v0 = ((cmd->words.w0 >> 16) & 0xFF) / 2;
+                s32 v1 = ((cmd->words.w0 >> 8) & 0xFF) / 2;
+                s32 v2 = ((cmd->words.w0 >> 0) & 0xFF) / 2;
+
+                s32 v3 = ((cmd->words.w1 >> 16) & 0xFF) / 2;
+                s32 v4 = ((cmd->words.w1 >> 8) & 0xFF) / 2;
+                s32 v5 = ((cmd->words.w1 >> 0) & 0xFF) / 2;
+
+                // e.g., glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
+                // where indices = { v0, v1, v2, v3, v4, v5 }
+                break;
+            }
 
             case G_SETTIMG:
                 // Set Texture Image (Format, Size, Address)

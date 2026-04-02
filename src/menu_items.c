@@ -491,6 +491,7 @@ char* gTextExtrasMenu[] = {
     "FAST BOOT",
     "DISABLE RUBBER BANDING",
     "UNLOCK ALL",
+    "FLY CAM",
     "RESOURCE METERS",
     "DEBUG MODE",
     "STICK DEADZONE",
@@ -507,6 +508,7 @@ char* gTextExtrasHelp[] = {
     "SKIPS STARTUP LOGOS.",
     "DISABLES AI SPEED ADJUSTMENT.",
     "TEMPORARILY UNLOCKS ALL CONTENT.",
+    "TOGGLES FREE FLY CAMERA MODE.",
     "DISPLAYS SYSTEM RESOURCE USAGE.",
     "ENABLES DEBUG MENU AND FEATURES.",
     "SETS ANALOG STICK DEADZONE.",
@@ -6964,7 +6966,7 @@ void func_800A1FB0(MenuItem* arg0) {
             print_text1_center_mode_1(0xE0, 0x30 + 0x78, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0x90, gEnableResourceMeters ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
             print_text1_center_mode_1(0xE0, 0x30 + 0xA8, gEnableDebugMode ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
-            print_text1_center_mode_1(0xE0, 0x30 + 0x108, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
+            print_text1_center_mode_1(0xE0, 0x30 + 0x120, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f);
 
             // Draw Description/Tooltip
             set_text_color(TEXT_YELLOW);
