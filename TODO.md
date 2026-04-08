@@ -1,8 +1,8 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **OpenGL Uploads:** Write the actual `glBufferSubData` and `glTexImage2D` commands in `platform_renderer.c` using the extracted `PCVertex` array and `PCTextureState`.
-- [ ] **SDL Window Context:** Fully implement `PC_WindowInit` with SDL2 to generate an actual visible window on the PC so the OpenGL commands have a context to execute against.
+- [ ] **SDL Window Context:** Fully implement `PC_WindowInit` with SDL2 (`SDL_CreateWindow`, `SDL_GL_CreateContext`) to generate an actual visible window on the PC so the OpenGL commands have a context to execute against.
+- [ ] **GLEW Integration:** Uncomment and link GLEW in the `Makefile.pc` to activate the `glBufferSubData`, `glUseProgram`, and `glTexImage2D` calls located inside the `platform_renderer.c` switch statements.
 
 ## Short Term
 - [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).

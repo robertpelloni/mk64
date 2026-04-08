@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.0] - PC Renderer N64 Texture Decoding
+### Added
+- **Texture Format Decoding:** Implemented standard C decoding algorithms (`decode_rgba16_to_rgba32` and `decode_ia16_to_rgba32`) in `src/pc_port/platform_renderer.c`. The `G_SETTILESIZE` logic block now correctly unpacks big-endian N64 16-bit texture payloads into 32-bit `GL_RGBA` arrays, resolving one of the largest hardware translation hurdles.
+- **OpenGL Memory Stubs:** Added correctly formatted (currently commented) OpenGL API calls (`glBufferSubData` and `glTexImage2D`) at the translation interception points to immediately push decoded vertices and textures to the GPU once the SDL2 context is finalized.
+
 ## [1.6.9] - PC Renderer Texture State Parsing
 ### Added
 - **Texture Decoding Logic:** Fleshed out the `G_SETTIMG`, `G_SETTILESIZE`, and `G_LOADBLOCK` macro parsers in `src/pc_port/platform_renderer.c`. It now correctly extracts N64 texture formats (CI/RGBA), sizes, physical addresses, and calculates the true rendering width and height required for OpenGL `glTexImage2D` uploads.

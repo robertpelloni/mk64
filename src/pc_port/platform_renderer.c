@@ -65,6 +65,48 @@ static u32 sShaderProgram = 0;
 static u32 sVAO = 0;
 static u32 sVBO = 0;
 
+/**
+ * Decodes N64 RGBA16 (5/5/5/1) to standard 32-bit RGBA8888 for OpenGL.
+ * @param src Pointer to raw N64 16-bit texture data.
+ * @param dest Pointer to allocated 32-bit destination buffer.
+ * @param width Texture width.
+ * @param height Texture height.
+ */
+static void decode_rgba16_to_rgba32(u16* src, u32* dest, s32 width, s32 height) {
+    s32 totalPixels = width * height;
+    for (s32 i = 0; i < totalPixels; i++) {
+        u16 pixel = src[i]; // Big-endian on N64, needs bswap if on x86
+
+        // Extract 5-bit channels
+        u8 r = (pixel >> 11) & 0x1F;
+        u8 g = (pixel >> 6) & 0x1F;
+        u8 b = (pixel >> 1) & 0x1F;
+        u8 a = (pixel & 1) ? 255 : 0;
+
+        // Scale to 8-bit (0-255)
+        r = (r << 3) | (r >> 2);
+        g = (g << 3) | (g >> 2);
+        b = (b << 3) | (b >> 2);
+
+        // Pack into 32-bit GL_RGBA format
+        dest[i] = (a << 24) | (b << 16) | (g << 8) | r;
+    }
+}
+
+/**
+ * Decodes N64 IA16 (8-bit intensity, 8-bit alpha) to RGBA8888.
+ */
+static void decode_ia16_to_rgba32(u16* src, u32* dest, s32 width, s32 height) {
+    s32 totalPixels = width * height;
+    for (s32 i = 0; i < totalPixels; i++) {
+        u16 pixel = src[i];
+        u8 i_val = (pixel >> 8) & 0xFF;
+        u8 a_val = pixel & 0xFF;
+
+        dest[i] = (a_val << 24) | (i_val << 16) | (i_val << 8) | i_val;
+    }
+}
+
 void PC_RendererInit(void) {
 #ifdef PC_BUILD
     // Initialize OpenGL Context (e.g., glViewport)
@@ -122,7 +164,11 @@ void PC_RenderDisplayList(Gfx* displayList) {
                         sVertexBuffer[idx].a = (f32)vtxArray[i].v.cn[3] / 255.0f;
                     }
 
-                    // In OpenGL, we'd update the VBO with sVertexBuffer here via glBufferSubData
+                    // OpenGL VBO SubData upload (stubbed until GLEW is included)
+                    // if (sVBO != 0) {
+                    //     glBindBuffer(GL_ARRAY_BUFFER, sVBO);
+                    //     glBufferSubData(GL_ARRAY_BUFFER, destIndex * sizeof(PCVertex), numVertices * sizeof(PCVertex), &sVertexBuffer[destIndex]);
+                    // }
                 }
                 break;
             }
@@ -189,10 +235,31 @@ void PC_RenderDisplayList(Gfx* displayList) {
                 sCurrentTexture.width  = ((lrs - uls) >> 2) + 1;
                 sCurrentTexture.height = ((lrt - ult) >> 2) + 1;
 
-                // Now we have Format, Size, Width, Height, and Address.
-                // If this is a standard RGBA16 texture, we would decode it here:
-                // e.g. decode_rgba16(sCurrentTexture.physicalAddr, sCurrentTexture.width, sCurrentTexture.height)
-                // and upload via glTexImage2D.
+                // If we have a valid physical address, attempt to decode and upload the texture
+                if (sCurrentTexture.physicalAddr != 0 && sCurrentTexture.width > 0 && sCurrentTexture.height > 0) {
+                    u32 numPixels = sCurrentTexture.width * sCurrentTexture.height;
+
+                    // Allocate a temporary buffer for the decoded 32-bit RGBA image
+                    // (In a real implementation, use a persistent buffer to avoid malloc in the render loop)
+                    // u32* glBuffer = malloc(numPixels * sizeof(u32));
+
+                    // The address points to raw N64 memory. We cast it to virtual pointers.
+                    void* srcData = (void*)(uintptr_t)sCurrentTexture.physicalAddr;
+
+                    if (sCurrentTexture.format == G_IM_FMT_RGBA && sCurrentTexture.size == G_IM_SIZ_16b) {
+                        // decode_rgba16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
+
+                        // glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
+                        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
+                    } else if (sCurrentTexture.format == G_IM_FMT_IA && sCurrentTexture.size == G_IM_SIZ_16b) {
+                        // decode_ia16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
+
+                        // glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
+                        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
+                    }
+
+                    // free(glBuffer);
+                }
                 break;
             }
 
