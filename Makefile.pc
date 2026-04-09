@@ -34,7 +34,7 @@ O_FILES := $(C_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 # Flags
 CFLAGS := -Wall -Wextra -g -O2 -I$(INCLUDE_DIR) -I$(SRC_DIR) -DPC_BUILD=1 -DTARGET_N64=0
-LDFLAGS := -lm
+LDFLAGS := -lm -lSDL2 -lGLEW -lGL
 
 # Executable Output
 TARGET := $(BUILD_DIR)/mk64_pc

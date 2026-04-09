@@ -38,6 +38,7 @@
 - [x] **PC Port Renderer:** Vtx arrays correctly extracted and float-scaled to intermediate `PCVertex` array.
 - [x] **PC Port Renderer:** `G_SETTIMG` and `G_SETTILESIZE` logic added to extract raw texture bounds and format structs.
 - [x] **PC Port Renderer:** N64 RGBA16 and IA16 decoders built and injected into Gfx parsing loop.
-- [ ] **PC Port Window:** Generate an actual SDL2 `SDL_Window` and `SDL_GLContext` for the backend to render to.
+- [x] **PC Port Window:** SDL2 `SDL_Window` and `SDL_GLContext` (OpenGL 3.3 Core) fully implemented.
+- [ ] **PC Port Audio/Input:** Implement SDL controller/keyboard polling and SDL Audio pushing.
 - [ ] **Modding Support (Advanced):** Lua Scripting API.
 - [ ] **Online Play:** ENet integration.

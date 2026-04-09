@@ -1,8 +1,8 @@
 # TODO List
 
 ## Immediate Priorities
-- [ ] **SDL Window Context:** Fully implement `PC_WindowInit` with SDL2 (`SDL_CreateWindow`, `SDL_GL_CreateContext`) to generate an actual visible window on the PC so the OpenGL commands have a context to execute against.
-- [ ] **GLEW Integration:** Uncomment and link GLEW in the `Makefile.pc` to activate the `glBufferSubData`, `glUseProgram`, and `glTexImage2D` calls located inside the `platform_renderer.c` switch statements.
+- [ ] **PC Input Abstraction:** Flesh out the `PC_ReadInput` stub in `platform_input.c`. Poll `SDL_GameController` and `SDL_Keyboard` to map native PC inputs to the N64 `OSContPad` bitmasks.
+- [ ] **PC Audio Backend:** Integrate `SDL_Audio` callback logic in `platform_audio.c`. Investigate how the decompiled `audio/external.c` pushes synthesized 16-bit PCM buffers to `osAiSetNextBuffer` and route that payload to the SDL queue.
 
 ## Short Term
 - [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).

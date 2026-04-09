@@ -4,8 +4,10 @@
 // The macro PC_BUILD should be defined in the PC target Makefile.
 
 #ifdef PC_BUILD
-// #include <GL/glew.h>
-// #include <SDL2/SDL.h>
+#include <GL/glew.h>
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
 #endif
 
 // GLSL Shader Source Skeletons (Targeting OpenGL 3.3 Core)
@@ -109,11 +111,49 @@ static void decode_ia16_to_rgba32(u16* src, u32* dest, s32 width, s32 height) {
 
 void PC_RendererInit(void) {
 #ifdef PC_BUILD
-    // Initialize OpenGL Context (e.g., glViewport)
-    // Compile and link sVertexShaderSource and sFragmentShaderSource into sShaderProgram
-    // glGenVertexArrays(1, &sVAO);
-    // glGenBuffers(1, &sVBO);
-    // ... setup attributes for Pos, TexCoord, Color
+    // Note: Window and GLEW initialization happens in PC_WindowInit before this.
+
+    // Generate base VBO and VAO
+    glGenVertexArrays(1, &sVAO);
+    glGenBuffers(1, &sVBO);
+
+    glBindVertexArray(sVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, sVBO);
+
+    // Allocate space for 32 vertices (MAX_VTX_BUFFER)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PCVertex) * MAX_VTX_BUFFER, NULL, GL_DYNAMIC_DRAW);
+
+    // Position attribute (layout = 0, vec3)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(PCVertex), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // TexCoord attribute (layout = 1, vec2)
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(PCVertex), (void*)(3 * sizeof(f32)));
+    glEnableVertexAttribArray(1);
+
+    // Color attribute (layout = 2, vec4)
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(PCVertex), (void*)(5 * sizeof(f32)));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // Compile Shader placeholder (Ideally wrapped in error checking)
+    u32 vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &sVertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    u32 fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &sFragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    sShaderProgram = glCreateProgram();
+    glAttachShader(sShaderProgram, vertexShader);
+    glAttachShader(sShaderProgram, fragmentShader);
+    glLinkProgram(sShaderProgram);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 #endif
 }
 
@@ -164,11 +204,11 @@ void PC_RenderDisplayList(Gfx* displayList) {
                         sVertexBuffer[idx].a = (f32)vtxArray[i].v.cn[3] / 255.0f;
                     }
 
-                    // OpenGL VBO SubData upload (stubbed until GLEW is included)
-                    // if (sVBO != 0) {
-                    //     glBindBuffer(GL_ARRAY_BUFFER, sVBO);
-                    //     glBufferSubData(GL_ARRAY_BUFFER, destIndex * sizeof(PCVertex), numVertices * sizeof(PCVertex), &sVertexBuffer[destIndex]);
-                    // }
+                    // OpenGL VBO SubData upload
+                    if (sVBO != 0) {
+                        glBindBuffer(GL_ARRAY_BUFFER, sVBO);
+                        glBufferSubData(GL_ARRAY_BUFFER, destIndex * sizeof(PCVertex), numVertices * sizeof(PCVertex), &sVertexBuffer[destIndex]);
+                    }
                 }
                 break;
             }
@@ -241,24 +281,24 @@ void PC_RenderDisplayList(Gfx* displayList) {
 
                     // Allocate a temporary buffer for the decoded 32-bit RGBA image
                     // (In a real implementation, use a persistent buffer to avoid malloc in the render loop)
-                    // u32* glBuffer = malloc(numPixels * sizeof(u32));
+                    u32* glBuffer = malloc(numPixels * sizeof(u32));
 
                     // The address points to raw N64 memory. We cast it to virtual pointers.
                     void* srcData = (void*)(uintptr_t)sCurrentTexture.physicalAddr;
 
                     if (sCurrentTexture.format == G_IM_FMT_RGBA && sCurrentTexture.size == G_IM_SIZ_16b) {
-                        // decode_rgba16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
+                        decode_rgba16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
 
-                        // glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
-                        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
+                        glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
                     } else if (sCurrentTexture.format == G_IM_FMT_IA && sCurrentTexture.size == G_IM_SIZ_16b) {
-                        // decode_ia16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
+                        decode_ia16_to_rgba32((u16*)srcData, glBuffer, sCurrentTexture.width, sCurrentTexture.height);
 
-                        // glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
-                        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
+                        glBindTexture(GL_TEXTURE_2D, sCurrentTexture.glTextureId);
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sCurrentTexture.width, sCurrentTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBuffer);
                     }
 
-                    // free(glBuffer);
+                    free(glBuffer);
                 }
                 break;
             }
@@ -290,8 +330,8 @@ void PC_RenderDisplayList(Gfx* displayList) {
 
 void PC_RendererShutdown(void) {
 #ifdef PC_BUILD
-    // glDeleteVertexArrays(1, &sVAO);
-    // glDeleteBuffers(1, &sVBO);
-    // glDeleteProgram(sShaderProgram);
+    glDeleteVertexArrays(1, &sVAO);
+    glDeleteBuffers(1, &sVBO);
+    glDeleteProgram(sShaderProgram);
 #endif
 }

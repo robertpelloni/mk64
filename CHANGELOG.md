@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.1] - SDL Window Context & GLEW Integration
+### Added
+- **SDL2 Window Integration:** Fully implemented `PC_WindowInit`, `PC_PollEvents`, and `PC_SwapBuffers` inside `src/pc_port/platform_window.c`. The PC port now spawns a native 640x480 SDL2 window with an active OpenGL 3.3 Core Profile context.
+- **GLEW Linkage:** Replaced all stubbed/commented OpenGL uploads (`glBufferSubData`, `glTexImage2D`) in `platform_renderer.c` with live GL API calls. Added `-lSDL2`, `-lGLEW`, and `-lGL` to the `LDFLAGS` in `Makefile.pc` to support the rendering execution.
+
 ## [1.7.0] - PC Renderer N64 Texture Decoding
 ### Added
 - **Texture Format Decoding:** Implemented standard C decoding algorithms (`decode_rgba16_to_rgba32` and `decode_ia16_to_rgba32`) in `src/pc_port/platform_renderer.c`. The `G_SETTILESIZE` logic block now correctly unpacks big-endian N64 16-bit texture payloads into 32-bit `GL_RGBA` arrays, resolving one of the largest hardware translation hurdles.
