@@ -273,7 +273,7 @@ typedef struct {
     /* 0x0064 */ Vec3f unk_064;
     /* 0x0070 */ f32 boundingBoxSize;
     /* 0x0074 */ f32 unk_074;
-    /* 0x0078 */ s16 unk_078;
+    /* 0x0078 */ s16 unk_078; // One source of angular velocity (turning / swerving) 
     /* 0x007A */ s16 unk_07A;
     /* 0x007C */ s32 steerPosition; // Where the kart is steering, related to joystick position. Basically, in [-53 to 53], but shifted 16 bits left
     /* 0x0080 */ f32 boostPower;
@@ -288,13 +288,13 @@ typedef struct {
     /* 0x00A4 */ f32 unk_0A4;
     /* 0x00A8 */ s16 unk_0A8;
     /* 0x00AA */ s16 unk_0AA;
-    /* 0x00AC */ s16 unk_0AC;
-    /* 0x00AE */ s16 unk_0AE;
+    /* 0x00AC */ s16 swerveDirection;
+    /* 0x00AE */ s16 unk_0AE; // preserved rotation velocity? To restore after effects wear off
     /* 0x00B0 */ s16 unk_0B0;
     /* 0x00B2 */ s16 unk_0B2;
-    /* 0x00B4 */ u16 unk_0B4;
+    /* 0x00B4 */ u16 swerveTimer;
     /* 0x00B6 */ u16 kartGraphics;
-    /* 0x00B8 */ f32 unk_0B8;
+    /* 0x00B8 */ f32 swerveAccelInit;
     /* 0x00BC */ u32 effects;
     /* 0x00C0 */ s16 unk_0C0;
     /* 0x00C2 */ s16 unk_0C2;
@@ -328,7 +328,7 @@ typedef struct {
     /* 0x01F8 */ f32 unk_1F8;
     /* 0x01FC */ f32 unk_1FC;
     /* 0x0200 */ u32 steerChangeIncrement; // May be s32. but less casting required if u32
-    /* 0x0204 */ s16 driftDuration;
+    /* 0x0204 */ s16 driftDuration; // charges up while drifting, primarily protects against driving spinouts
     /* 0x0206 */ s16 unk_206;
     /* 0x0208 */ f32 unk_208;
     /* 0x020C */ f32 unk_20C;
@@ -339,7 +339,7 @@ typedef struct {
     /* 0x0220 */ s16 nearestPathPointId; // ??
     /* 0x0222 */ s16 unk_222;
     /* 0x0224 */ f32 size;
-    /* 0x0228 */ s16 unk_228;
+    /* 0x0228 */ s16 driftStateCounter;
     /* 0x022A */ s16 driftState;
     /* 0x022C */ f32 previousSpeed;
     /* 0x0230 */ f32 unk_230;

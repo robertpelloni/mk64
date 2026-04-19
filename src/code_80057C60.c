@@ -5044,7 +5044,7 @@ void render_player_drift_particles(Player* player, UNUSED s8 playerIndex, s16 ar
     s16 envBlue;
     s32 sp8C[] = { 0x00ffffff, 0x00ffff00, 0x00ff9600 };
     if (player->particlePool1[arg2].isAlive == 1) {
-        if (player->driftDuration >= 0x32) {
+        if (player->driftDuration >= 50) {
             var_s0 = 1;
         } else {
             var_s0 = 0;
@@ -6258,7 +6258,7 @@ void func_8006C6AC(Player* player, s16 particleIndex, s8 playerId, s8 arg3) {
                 func_8005F90C(player, particleIndex, sp28, playerIdCopy, arg3);
             } else if (((player->effects & EARLY_START_SPINOUT_EFFECT) && !(player->type & PLAYER_START_SEQUENCE)) ||
                        (player->effects & BANANA_NEAR_SPINOUT_EFFECT) || (player->effects & AB_SPIN_EFFECT) ||
-                       (player->kartProps & DRIVING_SPINOUT)) {
+                       (player->kartProps & DRIVING_NEAR_SPINOUT)) {
                 func_8005ED48(player, particleIndex, sp28, playerIdCopy, arg3);
             } else {
                 setup_tyre_particles(player, particleIndex, sp28, playerIdCopy, arg3);
@@ -6398,7 +6398,7 @@ void func_8006CEC0(Player* arg0, s16 arg1, s8 playerId, s8 arg3) {
                 break;
         }
     } else {
-        if ((arg0->kartProps & BECOME_INVISIBLE) && (arg0->type & DRIVING_SPINOUT)) {
+        if ((arg0->kartProps & BECOME_INVISIBLE) && (arg0->type & DRIVING_NEAR_SPINOUT)) {
             func_80061224(arg0, arg1, sp20, playerId, arg3);
             return;
         } else if (((arg0->effects & LIGHTNING_EFFECT) == LIGHTNING_EFFECT) && (arg0->unk_0B0 < 0x32)) {
