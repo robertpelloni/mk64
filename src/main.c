@@ -465,7 +465,7 @@ void display_and_vsync(void) {
     osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     osViSwapBuffer((void*) PHYSICAL_TO_VIRTUAL(gPhysicalFramebuffers[sRenderedFramebuffer]));
     profiler_log_thread5_time(THREAD5_END);
-    osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
+    // osRecvMesg(&gGameVblankQueue, &gMainReceivedMesg, OS_MESG_BLOCK);
     crash_screen_set_framebuffer(gPhysicalFramebuffers[sRenderedFramebuffer]);
 
     if (++sRenderedFramebuffer == 3) {
@@ -594,7 +594,7 @@ void race_logic_loop(void) {
 
     switch (gActiveScreenMode) {
         case SCREEN_MODE_1P:
-            gTickSpeed = 2;
+            gTickSpeed = 1;
             replays_loop();
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
@@ -654,9 +654,9 @@ void race_logic_loop(void) {
 
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
             if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
+                gTickSpeed = 1;
             } else {
-                gTickSpeed = 2;
+                gTickSpeed = 1;
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {
@@ -699,9 +699,9 @@ void race_logic_loop(void) {
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL:
 
             if (gCurrentCourseId == COURSE_DK_JUNGLE) {
-                gTickSpeed = 3;
+                gTickSpeed = 1;
             } else {
-                gTickSpeed = 2;
+                gTickSpeed = 1;
             }
 
             if (gIsGamePaused == 0) {
@@ -745,32 +745,10 @@ void race_logic_loop(void) {
 
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
             if (gPlayerCountSelection1 == 3) {
-                switch (gCurrentCourseId) {
-                    case COURSE_BOWSER_CASTLE:
-                    case COURSE_MOO_MOO_FARM:
-                    case COURSE_SKYSCRAPER:
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 3;
-                        break;
-                    default:
-                        gTickSpeed = 2;
-                        break;
-                }
+                gTickSpeed = 1;
             } else {
                 // Four players
-                switch (gCurrentCourseId) {
-                    case COURSE_BLOCK_FORT:
-                    case COURSE_DOUBLE_DECK:
-                    case COURSE_BIG_DONUT:
-                        gTickSpeed = 2;
-                        break;
-                    case COURSE_DK_JUNGLE:
-                        gTickSpeed = 4;
-                        break;
-                    default:
-                        gTickSpeed = 3;
-                        break;
-                }
+                gTickSpeed = 1;
             }
             if (gIsGamePaused == 0) {
                 for (i = 0; i < gTickSpeed; i++) {

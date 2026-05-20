@@ -1327,11 +1327,11 @@ void func_8008A1D0(s32 objectIndex, s32 cameraId, s32 arg2, s32 arg3) {
     set_object_flag_status_false(objectIndex, 0x00100000 | VISIBLE);
     temp_v0 = get_horizontal_distance_to_camera(objectIndex, camera);
     if (temp_v0 < 0x2711U) {
-        var_a2 = 0x5555;
+        var_a2 = 0x7000;
     } else if (temp_v0 < 0x9C41U) {
-        var_a2 = 0x4000;
+        var_a2 = 0x5555;
     } else {
-        var_a2 = 0x2AAB;
+        var_a2 = 0x4000;
     }
     if ((is_object_visible_on_camera(objectIndex, camera, var_a2) != 0) && ((u32) (arg3 * arg3) >= temp_v0)) {
         set_object_flag_status_true(objectIndex, VISIBLE);
@@ -1350,9 +1350,9 @@ UNUSED void func_8008A2CC(s32 objectIndex, s32 cameraId, u16 arg2) {
     camera = &camera1[cameraId];
     set_object_flag_status_false(objectIndex, VISIBLE);
     if (no_init < 0x2711U) {
-        var_a2 = 0x5555;
+        var_a2 = 0x7000;
     } else if (no_init < 0x9C41U) {
-        var_a2 = 0x4000;
+        var_a2 = 0x5555;
     } else {
         var_a2 = arg2;
     }
@@ -1372,9 +1372,9 @@ s32 func_8008A364(s32 objectIndex, s32 cameraId, u16 arg2, s32 arg3) {
     if (dist < (arg3 * arg3)) {
         set_object_flag_status_true(objectIndex, 0x00020000);
         if (dist < 0x2711U) {
-            var_a2 = 0x5555;
+            var_a2 = 0x7000;
         } else if (dist < 0x9C41U) {
-            var_a2 = 0x4000;
+            var_a2 = 0x5555;
         } else {
             var_a2 = arg2;
         }
@@ -1406,7 +1406,7 @@ void func_8008A4CC(s32 objectIndex) {
                 if (D_8018CF68[loopIndex] == gObjectList[objectIndex].unk_0DF) {
                     set_object_flag_status_true(objectIndex, 0x00020000);
                 }
-                if (is_object_visible_on_camera(objectIndex, camera, 0x2AABU) != 0) {
+                if (is_object_visible_on_camera(objectIndex, camera, 0x4000U) != 0) {
                     set_object_flag_status_true(objectIndex, VISIBLE);
                 }
             }
@@ -1420,7 +1420,7 @@ UNUSED void func_8008A610(s32 objectIndex) {
 
     set_object_flag_status_false(objectIndex, VISIBLE);
     for (camera = camera1, loopIndex = 0; loopIndex < gPlayerCountSelection1; loopIndex++, camera++) {
-        if ((gObjectList[objectIndex].state != 0) && (is_object_visible_on_camera(objectIndex, camera, 0x2AABU) != 0)) {
+        if ((gObjectList[objectIndex].state != 0) && (is_object_visible_on_camera(objectIndex, camera, 0x4000U) != 0)) {
             set_object_flag_status_true(objectIndex, VISIBLE);
         }
     }
@@ -1437,9 +1437,9 @@ void func_8008A6DC(s32 objectIndex, f32 arg1) {
             (is_within_horizontal_distance_to_camera(objectIndex, camera, arg1) != 0)) {
             set_object_flag_status_true(objectIndex, 0x00020000);
             if (arg1 <= 500.0) {
-                var_a2 = 0x4000;
+                var_a2 = 0x5555;
             } else {
-                var_a2 = 0x2AAB;
+                var_a2 = 0x4000;
             }
             if (is_object_visible_on_camera(objectIndex, camera, var_a2) != 0) {
                 set_object_flag_status_true(objectIndex, VISIBLE);

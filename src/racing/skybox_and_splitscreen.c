@@ -585,16 +585,16 @@ void set_perspective_and_aspect_ratio(void) {
     }
     switch (gScreenModeSelection) { /* switch 1; irregular */
         case SCREEN_MODE_1P:        /* switch 1 */
-            gScreenAspect = 1.33333334f;
+            gScreenAspect = 1.77777778f; // 16:9
             return;
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL: /* switch 1 */
-            gScreenAspect = 0.66666667f;
+            gScreenAspect = 0.88888889f; // 8:9
             return;
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL: /* switch 1 */
-            gScreenAspect = 2.66666667f;
+            gScreenAspect = 3.55555556f; // 32:9
             return;
         case SCREEN_MODE_3P_4P_SPLITSCREEN: /* switch 1 */
-            gScreenAspect = 1.33333334f;
+            gScreenAspect = 1.77777778f; // 16:9
             return;
     }
 }

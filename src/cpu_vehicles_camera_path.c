@@ -975,13 +975,15 @@ bool func_800088D8(s32 playerId, s16 arg1, s16 arg2) {
         return 1;
     }
     if (arg1 < 0) {
-        return 1;
+        // Rubber banding disabled
+        return 0;
     }
     if (arg1 >= 4) {
         arg1 = 3;
     }
     if (D_80163330[playerId] == 1) {
-        return 1;
+        // Rubber banding disabled
+        return 0;
     }
     player = &gPlayers[playerId];
     if (player->type & PLAYER_HUMAN) {

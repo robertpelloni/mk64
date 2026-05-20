@@ -417,10 +417,8 @@ u8 func_800B5508(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
 // Check if all 4 cups have gold cups scored
 // for a given CC mode
 bool is_cc_mode_complete(s32 cc_mode) {
-    if (gSaveData.main.saveInfo.grandPrixPoints[cc_mode] == 0xFF) {
-        return true;
-    }
-    return false;
+    // Unlocked everything
+    return true;
 }
 
 // Check if the 150CC mode has all 4 gold cups
