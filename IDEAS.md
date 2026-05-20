@@ -12,7 +12,7 @@ MK64 is a highly sophisticated decompilation project for Mario Kart 64. To move 
 
 ## 3. Product & Ecosystem Perspectives
 *   **The "Level-Gen" Sandbox:** Integrate with **Jules-Autopilot**. A user could say, "Jules, create a 4-lap version of Banshee Boardwalk with 2x more lightning items," and the agent autonomously modifies the `courses/` C code and hot-reloads the game.
-*   **Embedded "Bobcoin" Kart-Racing:** Integrate **Bobcoin Proof-of-Play**. Users earn Bobcoin for "Winning Grand Prix Cups" or "Setting Local Course Records," turning nostalgic retro-gaming into a productive value-generating activity.
+*   **Embedded Kart-Racing Economy:** Integrate Proof-of-Play. Users earn tokens for "Winning Grand Prix Cups" or "Setting Local Course Records," turning nostalgic retro-gaming into a productive value-generating activity.
 
 ## 4. UX & Integration Perspectives
 *   **Unified "MUSE" HUD:** Create a **Custom WebGL Overlay** that mirrors the "Premium Design Standard" of Stone.Ledger. Instead of 1996 UI, users see a "Judicial Navy" and "Muted Gold" racing interface with fluid micro-animations and "Insanely Great" typography.

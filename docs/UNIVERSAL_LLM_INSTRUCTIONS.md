@@ -51,4 +51,4 @@ This repository is an **Omni-Workspace**—a centralized manager and command cen
 *   `logs/`: Operation logs and handoff archives.
 *   `aios/`, `borg/`, `metamcp/`: AI Orchestration layers.
 *   `bobmani/`: Rhythm game engine suite.
-*   `fwber/`, `bobcoin/`: Full-stack applications.
+*   `fwber/`: Full-stack applications.
