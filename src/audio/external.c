@@ -3309,7 +3309,7 @@ void func_800CA330(u8 arg0) {
     func_800C3448(arg0 << 0x10 | 0x110000FF);
 }
 
-void func_800CA388(u8 arg0) {
+void fade_all_channel_volume_scale(u8 arg0) {
     arg0 *= 2;
     fade_channel_volume_scale(0, 0, arg0);
     fade_channel_volume_scale(1, 0, arg0);

@@ -866,8 +866,7 @@ void logo_intro_menu_act(struct Controller* controller, UNUSED u16 controllerIdx
 
     // If any button is pressed then fade audio out
     if ((is_screen_being_faded() == 0) && (btnAndStick)) {
-        // TODO: Label audio functions
-        func_800CA388(0x3C);
+        fade_all_channel_volume_scale(0x3C);
 
         func_8009E1E4();
     }

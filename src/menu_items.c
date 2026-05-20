@@ -8533,7 +8533,7 @@ void handle_menus_with_pri_arg(s32 priSpecial) {
                 entry->param1++;
                 if (entry->param1 == 0x000000B4) {
                     func_8009E000(0x00000028);
-                    func_800CA388(0x64U);
+                    fade_all_channel_volume_scale(0x64U);
                     gMenuFadeType = MENU_FADE_TYPE_MAIN;
                 }
                 if ((entry->param2 != 0) && (entry->param1 >= 3)) {
@@ -11675,7 +11675,7 @@ void func_800AE218(MenuItem* arg0) {
                         func_8009DFE0(0x0000001E);
                         play_sound2(SOUND_MENU_OK_CLICKED);
                         func_800CA330(0x19U);
-                        func_800CA388(0x19U);
+                        fade_all_channel_volume_scale(0x19U);
                         if (arg0->paramf < 4.2) {
                             arg0->paramf += 4.0;
                         }
@@ -11962,7 +11962,7 @@ void func_800AF004(MenuItem* arg0) {
         case 6:
             func_8009DFE0(0x0000001E);
             func_800CA330(0x19U);
-            func_800CA388(0x19U);
+            fade_all_channel_volume_scale(0x19U);
             arg0->state = 7;
             break;
         case 7:

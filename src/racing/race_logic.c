@@ -409,7 +409,7 @@ UNUSED void func_8028EC38(s32 arg0) {
     gGotoMode = arg0;
     D_800DC510 = 6;
     func_800CA330(25);
-    func_800CA388(25);
+    fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;
     D_800DC5B8 = 0;
@@ -689,7 +689,7 @@ void func_8028F4E8(void) {
             ((gControllerFive->button & A_BUTTON) != 0) && ((gControllerFive->button & B_BUTTON) != 0)) {
 
             func_800CA330(0x19);
-            func_800CA388(0x19);
+            fade_all_channel_volume_scale(0x19);
             gGotoMode = START_MENU_FROM_QUIT;
             D_800DC510 = 6;
             D_800DC5B4 = 1;
@@ -876,7 +876,7 @@ void func_8028FBD4(void) {
     gGotoMode = START_MENU_FROM_QUIT;
     D_800DC510 = 6;
     func_800CA330(25);
-    func_800CA388(25);
+    fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;
     D_800DC5B8 = 0;
