@@ -120,8 +120,8 @@ void func_800C9250(u8);
 void play_star_music(u8);
 void stop_star_music(u8);
 void play_star_sound_effect(u8);
-void func_800CAFC0(u8);
-void func_800CB064(u8);
+void play_boo_sound_effect(u8);
+void stop_boo_sound_effect(u8);
 
 extern s32 D_8018D900[];
 extern s16 D_8018D920[];

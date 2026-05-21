@@ -4354,7 +4354,7 @@ void cpu_use_item_strategy(s32 playerId) {
 
         case CPU_STRATEGY_ITEM_THUNDERBOLT:
             use_thunder_item(player);
-            func_800CAC60(playerId);
+            play_thunder_sound_effect(playerId);
             func_8009E5BC();
             cpuStrategy->branch = CPU_STRATEGY_END_THUNDERBOLT;
             cpuStrategy->timer = 0;
@@ -4363,7 +4363,7 @@ void cpu_use_item_strategy(s32 playerId) {
 
         case CPU_STRATEGY_END_THUNDERBOLT:
             if (cpuStrategy->timer >= 0xF1) {
-                func_800CAD40((s32) ((u8) playerId));
+                play_thunder_sound_effect_stop((s32) ((u8) playerId));
                 cpuStrategy->branch = CPU_STRATEGY_WAIT_NEXT_ITEM;
                 cpuStrategy->timer = 0;
             }

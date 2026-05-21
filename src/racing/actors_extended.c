@@ -866,7 +866,7 @@ void use_thunder_item(Player* player) {
     func_8009E5BC();
     if ((player->type & PLAYER_HUMAN) != 0) {
         // Play sound.
-        func_800CAB4C(player - gPlayerOne);
+        play_star_sound_effect_stop(player - gPlayerOne);
     }
 
     for (index = 0; index < NUM_PLAYERS; index++) {

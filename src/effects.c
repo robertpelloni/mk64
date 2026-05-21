@@ -1397,7 +1397,7 @@ void apply_star_effect(Player* player, s8 playerIndex) {
                 D_8018D900[playerIndex] = 0;
             }
         } else if (D_8018D900[playerIndex] == 1) {
-            func_800CAACC((u8) playerIndex);
+            play_star_music_stop_effect((u8) playerIndex);
             D_8018D900[playerIndex] = 0;
         }
     }
@@ -1436,7 +1436,7 @@ void func_8008F86C(Player* player, s8 playerIndex) {
         stop_star_music(playerIndex);
         return;
     }
-    func_800CAACC(playerIndex);
+    play_star_music_stop_effect(playerIndex);
 }
 
 void apply_boo_effect(Player* player, s8 playerIndex) {
@@ -1461,7 +1461,7 @@ void apply_boo_effect(Player* player, s8 playerIndex) {
             gPlayerOtherScreensAlpha[playerIndex] = ALPHA_MAX;
             player->effects &= ~BOO_EFFECT;
             if ((player->type & PLAYER_HUMAN) != 0) {
-                func_800CB064(playerIndex);
+                stop_boo_sound_effect(playerIndex);
             }
         }
 
@@ -1471,7 +1471,7 @@ void apply_boo_effect(Player* player, s8 playerIndex) {
             player->alpha = ALPHA_MAX;
             player->effects &= ~BOO_EFFECT;
             if ((player->type & PLAYER_HUMAN) != 0) {
-                func_800CB064(playerIndex);
+                stop_boo_sound_effect(playerIndex);
             }
         }
     }
@@ -1498,7 +1498,7 @@ void trigger_boo(Player* player, s8 playerIndex) {
     gPlayerOtherScreensAlpha[playerIndex] = ALPHA_MAX;
 
     if ((player->type & PLAYER_HUMAN) != 0) {
-        func_800CAFC0(playerIndex);
+        play_boo_sound_effect(playerIndex);
     }
 }
 
@@ -1510,7 +1510,7 @@ void func_8008FB30(Player* player, s8 playerIndex) {
 
         player->effects &= ~BOO_EFFECT;
         if ((player->type & PLAYER_HUMAN) != 0) {
-            func_800CB064(playerIndex);
+            stop_boo_sound_effect(playerIndex);
         }
     }
 
@@ -1520,7 +1520,7 @@ void func_8008FB30(Player* player, s8 playerIndex) {
         player->alpha = ALPHA_MAX;
         player->effects &= ~BOO_EFFECT;
         if ((player->type & PLAYER_HUMAN) != 0) {
-            func_800CB064(playerIndex);
+            stop_boo_sound_effect(playerIndex);
         }
     }
 }

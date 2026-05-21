@@ -3431,13 +3431,13 @@ void play_star_sound_effect(u8 playerIndex) {
     }
 }
 
-void func_800CAACC(u8 playerId) {
+void play_star_music_stop_effect(u8 playerId) {
     if ((u8) D_800EA108 == 0) {
         func_800C5578(func_800C21E8(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
     }
 }
 
-void func_800CAB4C(u8 playerIndex) {
+void play_star_sound_effect_stop(u8 playerIndex) {
     UNUSED u8* temp_v1;
     UNUSED u8 temp_v0;
 
@@ -3465,7 +3465,7 @@ void func_800CAC08() {
     }
 }
 
-void func_800CAC60(UNUSED u8 arg0) {
+void play_thunder_sound_effect(UNUSED u8 arg0) {
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
         play_sound(SOUND_ACTION_EXPLOSION_2, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
         if ((D_800EA10C[0] != 1) && (D_800EA10C[1] != 1)) {
@@ -3476,7 +3476,7 @@ void func_800CAC60(UNUSED u8 arg0) {
     }
 }
 
-void func_800CAD40(UNUSED s32 arg0) {
+void play_thunder_sound_effect_stop(UNUSED s32 arg0) {
     if (D_800EA108 == 0) {
         if ((D_800EA170[0] == 0) && (D_800EA170[1] == 0) && (D_800EA170[2] == 0) && (D_800EA170[3] == 0)) {
             func_800C36C4(0, 1, 0x7FU, 0x19);
@@ -3510,7 +3510,7 @@ void func_800CADD0(u8 playerIndex, f32 arg1) {
     }
 }
 
-void func_800CAEC4(u8 playerId, f32 arg1) {
+void set_player_sound_effect_volume(u8 playerId, f32 arg1) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerId]) {
             case 2:
@@ -3534,7 +3534,7 @@ void func_800CAEC4(u8 playerId, f32 arg1) {
     }
 }
 
-void func_800CAFC0(u8 playerIndex) {
+void play_boo_sound_effect(u8 playerIndex) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerIndex]) {
             case 2:
@@ -3549,7 +3549,7 @@ void func_800CAFC0(u8 playerIndex) {
     }
 }
 
-void func_800CB064(u8 playerIndex) {
+void stop_boo_sound_effect(u8 playerIndex) {
     if (D_800EA108 == 0) {
         if (D_800EA170[playerIndex] == 1) {
             if ((u8) D_800EA168 == 0) {

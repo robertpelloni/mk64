@@ -40,7 +40,7 @@ void update_actor_red_blue_shell(struct ShellActor*);
 void func_802B4E30(struct Actor*);
 
 // audio/external.c
-extern void func_800CAB4C(u8);
+extern void play_star_sound_effect_stop(u8);
 
 extern f32 D_802B9F68;
 

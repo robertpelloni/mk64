@@ -1962,13 +1962,13 @@ void func_8002C954(Player* player, s8 playerId, Vec3f velocity) {
         }
         if ((var_f14 <= 0.6) && (((player->speed / 18.0f) * 216.0f) >= 40.0f) &&
             (!(player->type & PLAYER_INVISIBLE_OR_BOMB))) {
-            func_800CAEC4(playerId, 0.6F);
+            set_player_sound_effect_volume(playerId, 0.6F);
         } else if (!(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
             if ((var_f14 <= 0.6) && (((player->speed / 18.0f) * 216.0f) < 40.0f) &&
                 (((player->speed / 18.0f) * 216.0f) >= 10.0f)) {
-                func_800CAEC4(playerId, 0.3F);
+                set_player_sound_effect_volume(playerId, 0.3F);
             } else {
-                func_800CAEC4(playerId, var_f14);
+                set_player_sound_effect_volume(playerId, var_f14);
             }
         }
     }
