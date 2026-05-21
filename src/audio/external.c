@@ -3348,7 +3348,7 @@ void func_800CA49C(u8 playerIndex) {
     }
 }
 
-void func_800CA59C(u8 playerId) {
+void play_star_music(u8 playerId) {
     if ((D_800EA0EC[playerId] == 0) && (D_800EA108 == 0)) {
         play_sound((gPlayers[playerId].characterId * 0x10) + 0x29008001, &D_800E9F7C[playerId].pos, playerId,
                    &D_800EA1D4, &D_800EA1D4, (s8*) &D_800E9F7C[playerId].unk_14);
@@ -3375,7 +3375,7 @@ void func_800CA59C(u8 playerId) {
     }
 }
 
-void func_800CA730(u8 playerIndex) {
+void stop_star_music(u8 playerIndex) {
     if (D_800EA0EC[playerIndex] == 0) {
         if ((D_800EA108 == 0) && (D_800EA10C[playerIndex] != 0)) {
             play_sound(gPlayers[playerIndex].characterId * 0x10 + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08),
@@ -3416,7 +3416,7 @@ void func_800CA730(u8 playerIndex) {
     }
 }
 
-void func_800CA984(u8 playerIndex) {
+void play_star_sound_effect(u8 playerIndex) {
     u8 i;
     struct Unk_8018EFD8* temp_v0_2;
 

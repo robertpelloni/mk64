@@ -1393,7 +1393,7 @@ void apply_star_effect(Player* player, s8 playerIndex) {
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
             ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
             if (D_8018D900[playerIndex] == 1) {
-                func_800CA730(playerIndex);
+                stop_star_music(playerIndex);
                 D_8018D900[playerIndex] = 0;
             }
         } else if (D_8018D900[playerIndex] == 1) {
@@ -1419,12 +1419,12 @@ void trigger_star(Player* player, s8 playerIndex) {
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
         if (D_8018D900[playerIndex] == 1) {
-            func_800CA59C(playerIndex);
+            play_star_music(playerIndex);
             D_8018D900[playerIndex] = 2;
         }
         // This may be in charge of ending the star sound. Still unknown though.
     } else if (D_8018D900[playerIndex] == 1) {
-        func_800CA984(playerIndex);
+        play_star_sound_effect(playerIndex);
         D_8018D900[playerIndex] = 2;
     }
 }
@@ -1433,7 +1433,7 @@ void func_8008F86C(Player* player, s8 playerIndex) {
     player->effects &= ~STAR_EFFECT;
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800CA730(playerIndex);
+        stop_star_music(playerIndex);
         return;
     }
     func_800CAACC(playerIndex);
