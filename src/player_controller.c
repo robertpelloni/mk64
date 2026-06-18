@@ -24,6 +24,8 @@
 
 extern s32 D_8018D168;
 
+static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
 
 s16 cpu_forLuigi[] = { MARIO, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
@@ -4632,6 +4634,76 @@ void func_80037BB4(Player* player, Vec3f arg1) {
 }
 
 void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex) {
+    s32 i;
+    f32 distSq;
+    s32 isDrafting = 0;
+
+    // Drafting / Slipstream Mechanic
+    // Loop through all opponents to see if we are closely following them and if they are mostly in front of us.
+    for (i = 0; i < 8; i++) {
+        if (i != playerIndex && (gPlayers[i].type & PLAYER_EXISTS)) {
+            // Calculate distance vector (including Y axis to prevent drafting off bridges above/below)
+            f32 dx = gPlayers[i].pos[0] - player->pos[0];
+            f32 dy = gPlayers[i].pos[1] - player->pos[1];
+            f32 dz = gPlayers[i].pos[2] - player->pos[2];
+
+            // Fast Y check
+            if (dy > 30.0f || dy < -30.0f) continue;
+
+            distSq = dx * dx + dz * dz;
+
+            // If we are close enough (within 300 units)
+            if (distSq < 90000.0f && distSq > 400.0f) {
+                f32 dist = sqrtf(distSq);
+                // Normalize relative vector
+                f32 nx = dx / dist;
+                f32 nz = dz / dist;
+
+                // Calculate current player's velocity vector and normalize it
+                f32 vx = player->velocity[0];
+                f32 vz = player->velocity[2];
+                f32 vMag = sqrtf(vx * vx + vz * vz);
+
+                // Calculate opponent's velocity vector to ensure they are moving in the same direction
+                f32 opp_vx = gPlayers[i].velocity[0];
+                f32 opp_vz = gPlayers[i].velocity[2];
+                f32 opp_vMag = sqrtf(opp_vx * opp_vx + opp_vz * opp_vz);
+
+                if (vMag > 5.0f && opp_vMag > 5.0f) { // Only draft if both moving reasonably fast
+                    vx /= vMag;
+                    vz /= vMag;
+
+                    opp_vx /= opp_vMag;
+                    opp_vz /= opp_vMag;
+
+                    // Dot product to see if opponent is directly in front
+                    f32 dotPos = (nx * vx) + (nz * vz);
+
+                    // Dot product to see if opponent is moving in the same direction
+                    f32 dotDir = (opp_vx * vx) + (opp_vz * vz);
+
+                    if (dotPos > 0.9f && dotDir > 0.8f) { // ~25 degree cone in front, and driving same direction
+                        isDrafting = 1;
+                        break; // Found an opponent to draft off of, no need to check others
+                    }
+                }
+            }
+        }
+    }
+
+    if (isDrafting && player->boostTimer == 0) { // Don't stack drafts while already boosting
+        sDraftingTimers[playerIndex] += 1;
+        if (sDraftingTimers[playerIndex] > 60) { // Approx 1 second of drafting
+            player->effects |= MUSHROOM_EFFECT;
+            player->boostTimer = 0x50; // Standard mushroom duration
+            sDraftingTimers[playerIndex] = 0; // Reset
+        }
+    } else {
+        if (sDraftingTimers[playerIndex] > 0) {
+            sDraftingTimers[playerIndex] -= 1;
+        }
+    }
+
     if (((player->effects & BANANA_SPINOUT_EFFECT) != BANANA_SPINOUT_EFFECT) &&
         ((player->effects & DRIVING_SPINOUT_EFFECT) != DRIVING_SPINOUT_EFFECT) &&
         ((player->effects & HIT_BY_GREEN_SHELL_EFFECT) != HIT_BY_GREEN_SHELL_EFFECT) &&
