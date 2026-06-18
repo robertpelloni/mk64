@@ -25,6 +25,7 @@
 extern s32 D_8018D168;
 
 static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sPurpleTurboState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
 
@@ -1126,6 +1127,14 @@ void func_8002A79C(Player* player, s8 playerIndex) {
     if (((player->effects & MINI_TURBO_EFFECT) != MINI_TURBO_EFFECT) &&
         ((player->effects & DRIFTING_EFFECT) != DRIFTING_EFFECT) && (player->driftState >= 2)) {
         player->effects |= MINI_TURBO_EFFECT;
+
+        // Check if we hit the new Purple Stage (driftState == 4)
+        if (player->driftState >= 4) {
+            sPurpleTurboState[playerIndex] = 1;
+        } else {
+            sPurpleTurboState[playerIndex] = 0;
+        }
+
         player->unk_23A = 0;
         player->driftState = 0;
         player->driftStateCounter = 0;
@@ -1138,11 +1147,16 @@ void func_8002A79C(Player* player, s8 playerIndex) {
         }
     } else if ((player->effects & MINI_TURBO_EFFECT) == MINI_TURBO_EFFECT) {
         player->unk_23A += 1;
-        if (player->unk_23A >= 0x1F) {
+
+        // Standard Mini-Turbo lasts 0x1F frames. Purple lasts 0x3F frames.
+        s16 turboDuration = sPurpleTurboState[playerIndex] ? 0x3F : 0x1F;
+
+        if (player->unk_23A >= turboDuration) {
             player->unk_23A = 0;
             player->effects &= ~MINI_TURBO_EFFECT;
             player->driftState = 0;
             player->driftStateCounter = 0;
+            sPurpleTurboState[playerIndex] = 0; // Reset
         }
     }
 }
@@ -1158,7 +1172,8 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
             }
         } else {
             if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
-                if (player->driftState < 3) {
+                // Allow driftState to hit 4 (Stage 3 Purple Turbo)
+                if (player->driftState < 4) {
                     player->driftState++;
                 }
             }
@@ -1178,7 +1193,8 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
         }
     } else {
         if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
-            if (player->driftState < 3) {
+            // Allow driftState to hit 4 (Stage 3 Purple Turbo)
+            if (player->driftState < 4) {
                 player->driftState++;
             }
         }
