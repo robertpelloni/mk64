@@ -191,4 +191,6 @@ extern s16** cpu_forTwoPlayer[];
 
 extern s16 D_801656F0;
 
+void reset_retro_modern_state(void);
+
 #endif

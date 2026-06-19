@@ -26,6 +26,7 @@ extern s32 D_8018D168;
 
 static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sPurpleTurboState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sHasTricked[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
 
@@ -2451,6 +2452,15 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
     func_8002C4F8(player, playerId);
 }
 
+void reset_retro_modern_state(void) {
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        sDraftingTimers[i] = 0;
+        sPurpleTurboState[i] = 0;
+        sHasTricked[i] = 0;
+    }
+}
+
 void func_8002E4C4(Player* player) {
     s32 player_index;
 
@@ -4738,9 +4748,18 @@ void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex
             }
         }
         if ((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) {
+            sHasTricked[playerIndex] = 0; // Reset trick state when grounded
             func_80033AE0(player, controller, playerIndex);
         } else if (((player->effects & HOP_EFFECT) == HOP_EFFECT) && (player->collision.surfaceDistance[2] <= 5.0f)) {
+            sHasTricked[playerIndex] = 0; // Reset trick state when grounded from a hop
             func_80033AE0(player, controller, playerIndex);
+        } else {
+            // Trick Jump mechanic: if in midair and hit R trigger, grant a mini-turbo boost.
+            if ((controller->buttonPressed & R_TRIG) && !sHasTricked[playerIndex]) {
+                // Grant a mini-turbo style boost
+                trigger_wood_ramp_boost(player, playerIndex);
+                sHasTricked[playerIndex] = 1; // Prevent infinite trick exploit
+            }
         }
         player->effects &= ~BRAKING_EFFECT;
         if ((!(player->effects & BOOST_RAMP_ASPHALT_EFFECT)) && (!(player->effects & BOOST_RAMP_WOOD_EFFECT))) {

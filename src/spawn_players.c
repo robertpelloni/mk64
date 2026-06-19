@@ -1155,6 +1155,9 @@ void func_8003C0F0(void) {
     if (gModeSelection != BATTLE) {
         init_players();
     }
+
+    // Clear retro-modern feature state for the new race
+    reset_retro_modern_state();
 }
 
 void func_8003CD78(void) {
