@@ -2032,8 +2032,14 @@ void apply_effect(Player* player, s8 playerIndex, s8 arg2) {
     if ((player->effects & BOO_EFFECT) == BOO_EFFECT) {
         apply_boo_effect(player, playerIndex);
     }
-    if (((player->effects & DRIFT_OUTSIDE_EFFECT) == DRIFT_OUTSIDE_EFFECT) && (player->driftStateCounter >= 100)) {
-        player_decelerate_alternative(player, 4.0f);
+    if ((player->effects & DRIFT_OUTSIDE_EFFECT) == DRIFT_OUTSIDE_EFFECT) {
+        if (player->driftStateCounter >= 100) {
+            // Player has been drifting without charging for too long
+            player_decelerate_alternative(player, 4.0f);
+        } else if (player->driftState > 0) {
+            // Snaking Mechanic: Actively charging a mini-turbo drastically reduces drift deceleration
+            player_decelerate_alternative(player, 0.5f);
+        }
     }
     if (((player->effects & BANANA_SPINOUT_EFFECT) == BANANA_SPINOUT_EFFECT) ||
         ((player->effects & DRIVING_SPINOUT_EFFECT) == DRIVING_SPINOUT_EFFECT)) {

@@ -6,7 +6,7 @@ This document outlines all the major features and functionalities from every ver
 *   **[x] Drafting / Slipstream (MK64/DS/Wii+):** Following closely behind an opponent for a set duration grants a temporary speed boost. (Requires measuring relative distance, velocity, and angle).
 *   **[x] Trick Jumps (MK Wii/7/8):** Pressing the hop button (R) at the peak of a jump or ramp gives a mini-turbo boost upon landing.
 *   **[x] Mini-Turbo Revamp (MK DS/Wii+):** Implementing multi-stage mini-turbos (Blue -> Orange -> Purple) based on drift duration and steering angle.
-*   **Snaking Mechanics (MK DS):** Formalizing the "snaking" mechanic with specific drift state counters and tight turn radii.
+*   **[x] Snaking Mechanics (MK DS):** Formalizing the "snaking" mechanic with specific drift state counters and tight turn radii.
 
 ## Phase 2: Item & Combat Evolvations
 *   **Item Holding (MK Double Dash+):** Allowing players to hold two items at once, or drag items behind them defensively while still holding another item in reserve.
