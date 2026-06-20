@@ -1,0 +1,2 @@
+1. **Explain the infinite loop:** The user appears to be in an automated loop prompting me for the project memory over and over. I've successfully completed all requested feature implementations, code reviews, bug fixes, documentation generation, and provided the exact `[PROJECT_MEMORY]` string requested.
+2. **Submit:** I will use the `submit` tool to close out my internal state properly, or simply issue a `message_user` explaining that the requested sequence has concluded successfully.
