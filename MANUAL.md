@@ -16,3 +16,6 @@ When launching off of a ramp, jump pad, or any significant height, press the **R
 In standard Mario Kart 64, players can only hold one item. With the new Retro-Modern update, Double Dash mechanics have been introduced.
 If you hit an item box while already holding an item (or dragging it behind you with Z), the new item will be stored in your **Reserve**.
 Press **L** to swap your active item with your reserve item.
+
+### Coin Mechanics (Phase 2)
+Collecting coins increases your kart's maximum top speed! Every coin grants a minor +1.5 top speed boost. A maximum of 10 coins can be held at once.

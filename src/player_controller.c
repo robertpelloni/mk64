@@ -27,6 +27,8 @@ extern s32 D_8018D168;
 static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sPurpleTurboState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sHasTricked[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sCoins[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
 
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
 
@@ -2440,7 +2442,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= temp;
             player->velocity[1] *= temp;
             player->velocity[2] *= temp;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     if ((player->kartProps & BACK_UP) == BACK_UP) {
@@ -2469,6 +2471,7 @@ void reset_retro_modern_state(void) {
         sHasTricked[i] = 0;
         sReserveItems[i] = 0;
         sSwapCooldown[i] = 0;
+        sCoins[i] = 0;
     }
 }
 
@@ -2742,7 +2745,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= topSpeedMultiplier;
             player->velocity[1] *= topSpeedMultiplier;
             player->velocity[2] *= topSpeedMultiplier;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     func_8002C4F8(player, playerId);
@@ -2820,7 +2823,7 @@ void control_cpu_movement(Player* player, UNUSED Camera* camera, s8 screenId, s8
         player->velocity[0] *= topSpeedMultiplier;
         player->velocity[1] *= topSpeedMultiplier;
         player->velocity[2] *= topSpeedMultiplier;
-        player->speed = gKartTopSpeedTable[player->characterId];
+        player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
     }
 }
 
@@ -2930,7 +2933,7 @@ void func_8002F730(Player* player, UNUSED Camera* camera, UNUSED s8 screenId, s8
             player->velocity[0] *= topSpeedMultiplier;
             player->velocity[1] *= topSpeedMultiplier;
             player->velocity[2] *= topSpeedMultiplier;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
 }
@@ -5196,7 +5199,7 @@ void func_80038C6C(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= divOptimize;
             player->velocity[1] *= divOptimize;
             player->velocity[2] *= divOptimize;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     if ((player->kartProps & BACK_UP) == BACK_UP) {

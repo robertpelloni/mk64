@@ -20,3 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Item Holding (Double Dash):** Players can now carry a secondary reserve item (`sReserveItems`). If the active item slot is occupied, new items from boxes are placed in reserve.
 - **Item Swapping:** Pressing `L_TRIG` swaps the currently active item with the reserve item, allowing for tactical item holding and defensive dragging.
+
+## [1.7.3] - Phase 2 Coin Mechanics
+### Added
+- **Coin Speed Boost:** The physics engine (`player_controller.c`, `spawn_players.c`) now calculates `topSpeed` using a modifier based on the player's active coin count (`sCoins`), giving a 1.5f maximum velocity boost per coin.
