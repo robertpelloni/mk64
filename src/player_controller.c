@@ -2457,6 +2457,9 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
     }
     func_8002C4F8(player, playerId);
 }
+extern s16 sReserveItems[8];
+extern s16 sSwapCooldown[8];
+
 
 void reset_retro_modern_state(void) {
     s32 i;
@@ -2464,6 +2467,8 @@ void reset_retro_modern_state(void) {
         sDraftingTimers[i] = 0;
         sPurpleTurboState[i] = 0;
         sHasTricked[i] = 0;
+        sReserveItems[i] = 0;
+        sSwapCooldown[i] = 0;
     }
 }
 

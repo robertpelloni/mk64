@@ -1,32 +1,18 @@
 # Mario Kart 64: Retro-Modern Manual
 
-Welcome to the modernized Mario Kart 64 engine. This build retrofits several mechanics from later titles in the series directly into the classic MK64 physics engine.
+Welcome to the new "Retro-Modern" Sovereign Engine. We've backported advanced mechanics from future Mario Kart titles directly into the classic MK64 engine!
 
-Below is a guide on how to utilize these new mechanics to maximize your lap times.
+### Drafting / Slipstream (Phase 1)
+Tailgating an opponent directly in front of you builds up a slipstream charge. Once the hidden meter is full, you will automatically receive a temporary Mushroom-style speed boost. Stay directly in their exhaust path to charge it.
 
-## 1. Trick Jumps (Mario Kart Wii)
-Whenever your kart is airborne from a jump or ramp, press the **R Button** (Hop) just before landing.
+### Multi-Stage Mini-Turbos & Snaking (Phase 1)
+The classic two-stage mini-turbo (Blue -> Orange) has been expanded! If you continue to hold your drift and pump the control stick, you will eventually reach a **Purple Sparks** stage. Releasing the drift at this stage grants a significantly longer mini-turbo boost.
+Additionally, the severe speed penalty for drifting side-to-side on straightaways has been reduced. You can now execute "Snaking" (rapidly chaining mini-turbos on straights, a la Mario Kart DS) to maintain high speeds.
 
-If timed correctly, your character will perform a trick. Upon landing, you will immediately receive a short "Mushroom-style" burst of speed. You can only trigger this once per jump.
+### Trick Jumps (Phase 1)
+When launching off of a ramp, jump pad, or any significant height, press the **R Button** right before or during your mid-air flight. If timed correctly, you will perform a trick and receive a mini-turbo boost upon landing!
 
-## 2. Drafting / Slipstreaming (Mario Kart DS/8)
-If you drive closely behind an opponent for approximately 1 second, you will enter their "slipstream."
-
-To trigger a draft, you must:
-1. Be within a short distance behind the opponent.
-2. Be driving in the same general direction as the opponent.
-3. Keep the opponent within a tight 25-degree cone directly in front of your kart.
-
-Once the draft timer fills, you will automatically receive a Mushroom speed boost, allowing you to sling-shot past them.
-
-## 3. Multi-Stage Mini-Turbos (Mario Kart DS)
-The classic MK64 drifting system (E/R colors) has been expanded.
-
-If you continue to hold a drift and rapidly shift your control stick back and forth after the standard red sparks appear, you will eventually trigger **Purple Sparks** (Stage 4).
-
-Releasing the R button while Purple Sparks are active will grant a mini-turbo boost that lasts roughly **twice as long** as a standard boost.
-
-## 4. Snaking Mechanics (Mario Kart DS)
-In vanilla MK64, drifting for long periods causes you to bleed speed.
-
-With Snaking Mechanics enabled, if you are actively charging a mini-turbo (switching your stick left and right), the drift deceleration penalty is heavily reduced. This allows skilled players to "snake" back and forth on straightaways, chaining purple mini-turbos together without losing their top speed.
+### Item Holding & Swapping (Phase 2)
+In standard Mario Kart 64, players can only hold one item. With the new Retro-Modern update, Double Dash mechanics have been introduced.
+If you hit an item box while already holding an item (or dragging it behind you with Z), the new item will be stored in your **Reserve**.
+Press **L** to swap your active item with your reserve item.

@@ -9,7 +9,7 @@ This document outlines all the major features and functionalities from every ver
 *   **[x] Snaking Mechanics (MK DS):** Formalizing the "snaking" mechanic with specific drift state counters and tight turn radii.
 
 ## Phase 2: Item & Combat Evolvations
-*   **Item Holding (MK Double Dash+):** Allowing players to hold two items at once, or drag items behind them defensively while still holding another item in reserve.
+*   **[x] Item Holding (MK Double Dash+):** Allowing players to hold two items at once, or drag items behind them defensively while still holding another item in reserve.
 *   **Special Items (MK Double Dash):** Character-specific special items (Bowser Shell, Chain Chomp, Giant Banana).
 *   **Coin Mechanic (Super Mario Kart / MK 7 / 8):** Collecting coins to increase top speed, with a maximum of 10 coins. Losing coins when hit.
 *   **The Crazy Eight (MK 8):** Orbiting 8 different items around the player.

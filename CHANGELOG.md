@@ -15,3 +15,8 @@ All notable changes to this project will be documented in this file.
 ## [8.107.2] - 2026-05-19
 ### Updated
 - Synced `tools/torch` and `tools/blender/fast64` submodules to latest upstream commits.
+
+## [1.7.2] - Phase 2 Modern Mechanics
+### Added
+- **Item Holding (Double Dash):** Players can now carry a secondary reserve item (`sReserveItems`). If the active item slot is occupied, new items from boxes are placed in reserve.
+- **Item Swapping:** Pressing `L_TRIG` swaps the currently active item with the reserve item, allowing for tactical item holding and defensive dragging.
