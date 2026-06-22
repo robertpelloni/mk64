@@ -15,7 +15,7 @@ This document outlines all the major features and functionalities from every ver
 *   **The Crazy Eight (MK 8):** Orbiting 8 different items around the player.
 
 ## Phase 3: Vehicle & Physics Dynamics
-*   **Bikes & Wheelies (MK Wii):** Implementing two-wheeled vehicles with tighter inside drifting and the ability to "wheelie" on straightaways for a speed boost (at the cost of handling).
+*   **[x] Bikes & Wheelies (MK Wii):** Implementing two-wheeled vehicles with tighter inside drifting and the ability to "wheelie" on straightaways for a speed boost (at the cost of handling).
 *   **Gliders (MK 7 / 8):** Deploying a glider when launching off blue ramps, altering physics to allow aerial control, drafting in mid-air, and choosing different landing paths.
 *   **Anti-Gravity (MK 8):** Driving on walls and ceilings with altered physics. Bumping into other racers or specific obstacles during anti-gravity triggers a "Spin Boost".
 *   **Underwater Driving (MK 7 / 8):** Modified physics and handling when submerged, with unique propeller animations.

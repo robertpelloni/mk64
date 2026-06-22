@@ -28,6 +28,8 @@ static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sPurpleTurboState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sHasTricked[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sCoins[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsBike[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsWheelie[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
@@ -1165,6 +1167,13 @@ void func_8002A79C(Player* player, s8 playerIndex) {
 }
 
 void update_drift_state_counter(Player* player, s8 playerIndex) {
+    // Inside Drifting: Bikes build drift instantly but only inward
+    if (sIsBike[playerIndex]) {
+        if (player->driftState < 3) {
+            player->driftState++;
+        }
+        return;
+    }
     if (((s16) player->unk_0C0 / DEGREES(1)) > 0) {
         if (((s32) player->steerPosition >> 16) <= -10) {
             if (player->driftStateCounter <= 100) {
@@ -2472,6 +2481,8 @@ void reset_retro_modern_state(void) {
         sReserveItems[i] = 0;
         sSwapCooldown[i] = 0;
         sCoins[i] = 0;
+        sIsBike[i] = 0;
+        sIsWheelie[i] = 0;
     }
 }
 
@@ -3748,37 +3759,51 @@ void player_decelerate_during_start_sequence(Player* player, f32 speedReduction)
 }
 
 void player_accelerate(Player* player) {
+    f32 topSpeed = player->topSpeed;
+    s8 playerIndex = get_player_index_for_player(player);
+
+    // Wheelie Speed Boost
+    if (sIsBike[playerIndex] && sIsWheelie[playerIndex]) {
+        topSpeed += 15.0f; // Significant speed boost on straights
+    }
+    f32 topSpeed = topSpeed;
+    s8 playerIndex = get_player_index_for_player(player);
+
+    // Wheelie Speed Boost
+    if (sIsBike[playerIndex] && sIsWheelie[playerIndex]) {
+        topSpeed += 15.0f; // Significant speed boost on straights
+    }
     UNUSED s32 player_index;
 
     player_index = get_player_index_for_player(player);
-    if ((0.0 <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.1))) {
+    if ((0.0 <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.1))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][0] * 3.2;
     }
-    if (((player->topSpeed * 0.1) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.2))) {
+    if (((topSpeed * 0.1) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.2))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][1] * 3.2;
     }
-    if (((player->topSpeed * 0.2) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.3))) {
+    if (((topSpeed * 0.2) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.3))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][2] * 3.2;
     }
-    if (((player->topSpeed * 0.3) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.4))) {
+    if (((topSpeed * 0.3) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.4))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][3] * 3.2;
     }
-    if (((player->topSpeed * 0.4) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.5))) {
+    if (((topSpeed * 0.4) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.5))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][4] * 3.2;
     }
-    if (((player->topSpeed * 0.5) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.6))) {
+    if (((topSpeed * 0.5) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.6))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][5] * 3.2;
     }
-    if (((player->topSpeed * 0.6) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.7))) {
+    if (((topSpeed * 0.6) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.7))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][6] * 3.2;
     }
-    if (((player->topSpeed * 0.7) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.8))) {
+    if (((topSpeed * 0.7) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.8))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][7] * 2.8;
     }
-    if (((player->topSpeed * 0.8) <= player->currentSpeed) && (player->currentSpeed < (player->topSpeed * 0.9))) {
+    if (((topSpeed * 0.8) <= player->currentSpeed) && (player->currentSpeed < (topSpeed * 0.9))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][8] * 2.8;
     }
-    if (((player->topSpeed * 0.9) <= player->currentSpeed) && (player->currentSpeed <= (player->topSpeed * 1.0))) {
+    if (((topSpeed * 0.9) <= player->currentSpeed) && (player->currentSpeed <= (topSpeed * 1.0))) {
         player->currentSpeed += gKartAccelerationTables[player->characterId][9] * 2.8;
     }
     if (player->currentSpeed < 0.0f) {
@@ -3922,6 +3947,12 @@ UNUSED void func_800339C4(Player* player, s32* arg1, s32 arg2, s32 arg3, f32 arg
 
 void update_steering_small(Player* player, s32* desired_steering_change, s32* current_steering, s32 desired_steering, s32 steering_change_threshold, s32 steering_change_minimum, f32 arg6) {
     s32 current_steering_change_increment;
+    s8 playerIndex = get_player_index_for_player(player);
+    if (sIsBike[playerIndex] && sIsWheelie[playerIndex]) {
+        // Severely limit steering capability while doing a wheelie
+        desired_steering /= 3;
+        steering_change_threshold /= 3;
+    }
 
     if ((*desired_steering_change >= steering_change_threshold) || (-steering_change_threshold >= *desired_steering_change)) {
         current_steering_change_increment = player->steerChangeIncrement;
@@ -4769,6 +4800,18 @@ void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex
             func_80033AE0(player, controller, playerIndex);
         } else {
             // Trick Jump mechanic: if in midair and hit R trigger, grant a mini-turbo boost.
+            // Wheelie Mechanics for Bikes
+            if (sIsBike[playerIndex]) {
+                // Start wheelie if pressing up on D-pad or pulling back slightly on stick
+                if (!sIsWheelie[playerIndex] && ((controller->buttonPressed & U_JPAD) || get_clamped_stickY_with_deadzone(controller) < -40)) {
+                    sIsWheelie[playerIndex] = 1;
+                }
+                // End wheelie if drifting, braking, or pressing down/B
+                if (sIsWheelie[playerIndex] && (player->driftState != 0 || (controller->button & B_BUTTON) || (controller->buttonPressed & D_JPAD) || get_clamped_stickY_with_deadzone(controller) > 40)) {
+                    sIsWheelie[playerIndex] = 0;
+                }
+            }
+
             if ((controller->buttonPressed & R_TRIG) && !sHasTricked[playerIndex]) {
                 // Grant a mini-turbo style boost
                 trigger_wood_ramp_boost(player, playerIndex);
