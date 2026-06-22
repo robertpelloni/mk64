@@ -264,17 +264,6 @@ void actor_init(struct Actor* actor, Vec3f startingPos, Vec3s startingRot, Vec3f
             actor->state = 5;
             actor->boundingBoxSize = 5.5f;
             break;
-        case ACTOR_COIN:
-            if (query_collision_player_vs_actor_item(player, actor) == COLLISION) {
-                actor->flags = -0x8000;
-                if (player->type & PLAYER_HUMAN) {
-                    extern s16 sCoins[8];
-                    sCoins[player - gPlayerOne] += 1;
-                    if (sCoins[player - gPlayerOne] > 10) sCoins[player - gPlayerOne] = 10;
-                    func_800C90F4(player - gPlayerOne, SOUND_ACTION_COUNT_SCORE);
-                }
-            }
-            break;
         case ACTOR_ITEM_BOX:
             actor->flags |= 0x4000;
             actor->unk_04 = 0;

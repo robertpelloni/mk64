@@ -19,7 +19,3 @@ Press **L** to swap your active item with your reserve item.
 
 ### Coin Mechanics (Phase 2)
 Collecting coins increases your kart's maximum top speed! Every coin grants a minor +1.5 top speed boost. A maximum of 10 coins can be held at once.
-
-### Bikes & Wheelies (Phase 3)
-In addition to Karts, characters can now ride Bikes! Bikes have "inside drifting" meaning they turn sharply inward when drifting, instead of slipping outward like Karts.
-Bikes can also perform a **Wheelie** on straightaways. Press **D-Pad Up** (or pull straight back on the analog stick) to pop a wheelie. This gives you a significant boost to your top speed, but drastically reduces your ability to steer. Wheelies automatically end if you try to brake, hop, drift, or press D-Pad Down.
