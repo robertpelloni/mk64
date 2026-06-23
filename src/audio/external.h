@@ -302,7 +302,7 @@ void func_800CA288(u8, s8);
 void func_800CA2B8(u8);
 void func_800CA2E4(u8, s8);
 void func_800CA30C(u8);
-void func_800CA330(u8);
+void play_sound_global(u8);
 void fade_all_channel_volume_scale(u8);
 void play_sequences(u16, u16);
 void func_800CA49C(u8);

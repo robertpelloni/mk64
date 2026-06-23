@@ -3304,7 +3304,7 @@ void func_800CA30C(u8 arg0) {
     D_800EA06C[arg0].unk0C = 0;
 }
 
-void func_800CA330(u8 arg0) {
+void play_sound_global(u8 arg0) {
     func_800C3448(arg0 << 0x10 | 0x100000FF);
     func_800C3448(arg0 << 0x10 | 0x110000FF);
 }
