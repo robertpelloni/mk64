@@ -16,3 +16,10 @@
 ## Phase 4: Decentralized Racing Mesh
 - Implement P2P Multiplayer using `libp2p`.
 - Transition UI overlays to modern WebGL/WASM environments.
+
+## Phase 5: Modern Mario Kart Mechanics (In Progress)
+- [x] Phase 1: Trick jumps, Drafting, Multi-stage Mini-Turbos.
+- [x] Phase 2: Double Dash item swaps, MK8 Coins.
+- [x] Phase 3: Bikes, Inside Drifting, Wheelies.
+- [x] Phase 4: Gliders, Flight Physics.
+- [x] Phase 5: Anti-Gravity, Spin Boosts.

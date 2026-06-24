@@ -30,6 +30,7 @@ static s16 sHasTricked[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sCoins[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sIsBike[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 static s16 sIsWheelie[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsAntiGravity[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
@@ -1269,6 +1270,7 @@ void func_8002AAC0(Player* player) {
 }
 
 void func_8002AB70(Player* player) {
+    s8 playerIndex = get_player_index_for_player(player);
     UNUSED s32 pad[2];
     if (((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) && (player->unk_08C > 0.0f)) {
         if (((player->slopeAccel / DEGREES(1)) < -1) && ((player->slopeAccel / DEGREES(1)) >= -0x14) &&
@@ -1300,6 +1302,12 @@ void func_8002AB70(Player* player) {
     }
     if ((player->effects & HIT_BY_GREEN_SHELL_EFFECT) == HIT_BY_GREEN_SHELL_EFFECT) {
         player->kartGravity = 1100.0f;
+    }
+    if (player->surfaceType == ANTI_GRAVITY_WALL) {
+        sIsAntiGravity[playerIndex] = 1;
+        player->kartGravity = 3000.0f; // Simulate strong wall-sticking gravity
+    } else {
+        sIsAntiGravity[playerIndex] = 0;
     }
     if (player->effects & UNKNOWN_EFFECT_0x80000) {
         player->kartGravity = 1500.0f;
@@ -1560,6 +1568,16 @@ void func_8002B830(Player* player, s8 playerId, s8 screenId) {
 }
 
 UNUSED void func_8002B8A4(Player* player_one, Player* player_two) {
+    s8 p1_index = get_player_index_for_player(player_one);
+    s8 p2_index = get_player_index_for_player(player_two);
+    // MK8 Anti-Gravity Spin Boost Mechanic
+    if (sIsAntiGravity[p1_index] || sIsAntiGravity[p2_index]) {
+        player_one->currentSpeed += 20.0f;
+        player_two->currentSpeed += 20.0f;
+        func_800C9060(p1_index, 0x19008000); // generic boost sound
+        func_800C9060(p2_index, 0x19008000);
+        return; // Skip normal crash penalty
+    }
     s32 var_v1;
 
     // clang-format off
@@ -2483,6 +2501,7 @@ void reset_retro_modern_state(void) {
         sCoins[i] = 0;
         sIsBike[i] = 0;
         sIsWheelie[i] = 0;
+        sIsAntiGravity[i] = 0;
     }
 }
 
