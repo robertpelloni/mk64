@@ -29,3 +29,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Phase 5 Dynamics:** Anti-Gravity. `ANTI_GRAVITY_WALL` surface modifier allows karts to stick to walls. Spin Boosts occur on player collisions instead of standard crashing.
 - **Phase 6 Dynamics:** Half-Pipes. `HALF_PIPE` surface modifier pulls kart to walls and forces an auto-trick pop at the apex.
+
+## [8.110.0] - 2026-06-23
+### Added
+- **Phase 2 Engine Port:** Initialized the `sovereign_core` Rust library (`src/core_engine`) targeting `no_std` for Zero-Latency collision computation.
+- **FFI Bridge:** Implemented `rust_query_collision_actor_vs_actor` in Rust and re-wired `src/racing/actors.c` to route bounding box logic through the external bridge.

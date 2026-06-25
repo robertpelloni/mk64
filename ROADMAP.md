@@ -6,7 +6,7 @@
 - Finalize documentation on basic mechanics, course structure, and actors.
 
 ## Phase 2: High-Performance Engine Port
-- Implement the "Zero-Latency" Rust bridge for core item/collision physics.
+- [x] Implement the "Zero-Latency" Rust bridge for core item/collision physics.
 - Cross-compile core loops to WASM.
 
 ## Phase 3: The Autonomous Sandbox

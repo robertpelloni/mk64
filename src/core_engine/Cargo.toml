@@ -1,0 +1,18 @@
+[package]
+name = "sovereign_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "sovereign_core"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+# Dependencies for zero-latency WASM and collision math
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true
