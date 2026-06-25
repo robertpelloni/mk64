@@ -1303,9 +1303,19 @@ void func_8002AB70(Player* player) {
     if ((player->effects & HIT_BY_GREEN_SHELL_EFFECT) == HIT_BY_GREEN_SHELL_EFFECT) {
         player->kartGravity = 1100.0f;
     }
+    // MK8 Anti-Gravity & MK Wii Half-Pipe Physics
     if (player->surfaceType == ANTI_GRAVITY_WALL) {
         sIsAntiGravity[playerIndex] = 1;
         player->kartGravity = 3000.0f; // Simulate strong wall-sticking gravity
+    } else if (player->surfaceType == HALF_PIPE) {
+        sIsAntiGravity[playerIndex] = 0;
+        player->kartGravity = 4500.0f; // Pull kart extremely hard into the curved wall to prevent detachment
+        // If approaching the top edge (approximated by high slope vector), auto-trick
+        if (player->collision.orientationVector[1] > 0.85f && !sHasTricked[playerIndex]) {
+            trigger_wood_ramp_boost(player, playerIndex);
+            sHasTricked[playerIndex] = 1;
+            player->velocity[1] += 12.0f; // Launch off lip
+        }
     } else {
         sIsAntiGravity[playerIndex] = 0;
     }

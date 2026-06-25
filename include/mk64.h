@@ -72,7 +72,8 @@ enum SURFACE_TYPE {
     /* 0x0F */ CAVE,         // DK Jungle cave
     /* 0x10 */ ROPE_BRIDGE,  // Bowser's Castle bridge 2, DK Jungle bridge
     /* 0x11 */ WOOD_BRIDGE,  // Frappe Snowland bridge, Bowser's Castle bridge 1,3, Yoshi Valley bridge 2
-    /* 0xFB */ ANTI_GRAVITY_WALL,
+    /* 0xFA */ ANTI_GRAVITY_WALL,
+    /* 0xFB */ HALF_PIPE,
     /* 0xFC */ BOOST_RAMP_WOOD = 0xFC, // DK Jungle
     /* 0xFD */ OUT_OF_BOUNDS,          // DK Jungle river island
     /* 0xFE */ BOOST_RAMP_ASPHALT,     // Royal Raceway

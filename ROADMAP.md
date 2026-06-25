@@ -23,3 +23,4 @@
 - [x] Phase 3: Bikes, Inside Drifting, Wheelies.
 - [x] Phase 4: Gliders, Flight Physics.
 - [x] Phase 5: Anti-Gravity, Spin Boosts.
+- [x] Phase 6: Half-Pipes.

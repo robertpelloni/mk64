@@ -17,10 +17,10 @@ This document outlines all the major features and functionalities from every ver
 ## Phase 3: Vehicle & Physics Dynamics
 *   **Bikes & Wheelies (MK Wii):** Implementing two-wheeled vehicles with tighter inside drifting and the ability to "wheelie" on straightaways for a speed boost (at the cost of handling).
 *   **Gliders (MK 7 / 8):** Deploying a glider when launching off blue ramps, altering physics to allow aerial control, drafting in mid-air, and choosing different landing paths.
-*   **[x] Anti-Gravity (MK 8):** Driving on walls and ceilings with altered physics. Bumping into other racers or specific obstacles during anti-gravity triggers a "Spin Boost".
+*   **Anti-Gravity (MK 8):** Driving on walls and ceilings with altered physics. Bumping into other racers or specific obstacles during anti-gravity triggers a "Spin Boost".
 *   **Underwater Driving (MK 7 / 8):** Modified physics and handling when submerged, with unique propeller animations.
 
 ## Phase 4: Track & Environment Interaction
-*   **Half-Pipes (MK Wii):** Driving up the side of half-pipes to execute tricks and gain boosts, seamlessly returning to the track.
+*   **[x] Half-Pipes (MK Wii):** Driving up the side of half-pipes to execute tricks and gain boosts, seamlessly returning to the track.
 *   **Dynamic Environments:** Objects that change state during the race (e.g., trains moving, water levels rising/falling).
 *   **Multiple Routes:** Expanding course logic to handle completely divergent track paths dynamically.

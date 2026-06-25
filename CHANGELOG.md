@@ -24,3 +24,8 @@ All notable changes to this project will be documented in this file.
 ## [1.7.3] - Phase 2 Coin Mechanics
 ### Added
 - **Coin Speed Boost:** The physics engine (`player_controller.c`, `spawn_players.c`) now calculates `topSpeed` using a modifier based on the player's active coin count (`sCoins`), giving a 1.5f maximum velocity boost per coin.
+
+## [8.109.0] - 2026-06-23
+### Added
+- **Phase 5 Dynamics:** Anti-Gravity. `ANTI_GRAVITY_WALL` surface modifier allows karts to stick to walls. Spin Boosts occur on player collisions instead of standard crashing.
+- **Phase 6 Dynamics:** Half-Pipes. `HALF_PIPE` surface modifier pulls kart to walls and forces an auto-trick pop at the apex.

@@ -20,6 +20,5 @@ Press **L** to swap your active item with your reserve item.
 ### Coin Mechanics (Phase 2)
 Collecting coins increases your kart's maximum top speed! Every coin grants a minor +1.5 top speed boost. A maximum of 10 coins can be held at once.
 
-### Anti-Gravity & Spin Boosts (Phase 5)
-Courses can now feature Anti-Gravity panels! When driving along an Anti-Gravity wall, your kart will stick to the surface regardless of the angle.
-If you collide with another racer while either of you are in Anti-Gravity mode, instead of slowing down and bouncing away, you will both trigger a **Spin Boost**, gaining a burst of forward speed and a mini-turbo sound!
+### Half-Pipes (Phase 6)
+Tracks can now feature MK Wii style Half-Pipes. When you drive up a half-pipe surface, your kart will stick to the wall and continue upward. Once you reach the top edge of the half-pipe, your kart will automatically launch into the air and perform a trick jump, granting a boost upon landing!
