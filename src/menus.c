@@ -1535,7 +1535,7 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
             
                 if ((btnAndStick & A_BUTTON) && (gCharacterGridIsSelected[controllerIdx] == 0)) {
                     gCharacterGridIsSelected[controllerIdx] = true;
-                    play_character_sound_by_player_index(controllerIdx, ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) + 0x2900800E);
+                    func_800C90F4(controllerIdx, ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) + 0x2900800E);
                 }
 
                 selected = false;
@@ -1986,7 +1986,7 @@ void set_sound_mode(void) {
 
     pack = sSoundMenuPack;
     if ((gSoundMode == SOUND_STEREO) || (gSoundMode == SOUND_HEADPHONES) || (gSoundMode == SOUND_MONO)) {
-        issue_audio_command(pack.modes[gSoundMode] | 0xE0000000);
+        func_800C3448(pack.modes[gSoundMode] | 0xE0000000);
     }
 }
 

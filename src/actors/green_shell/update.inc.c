@@ -71,8 +71,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                         shell->velocity[1] = somePosVel[1];
                         shell->velocity[2] = somePosVel[2];
                         shell->state = 2;
-                        play_sound_by_player_index(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                        play_character_sound_by_player_index(shell->playerId,
+                        func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                        func_800C90F4(shell->playerId,
                                       (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                         add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                         return;
@@ -95,8 +95,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                 if (shell->rotAngle < 0) {
                     shell->state = 2;
                     shell->someTimer = 0x001E;
-                    play_sound_by_player_index(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    play_character_sound_by_player_index(shell->playerId,
+                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    func_800C90F4(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                 }
@@ -105,8 +105,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                 if (shell->rotAngle > 0) {
                     shell->state = 2;
                     shell->someTimer = 0x001E;
-                    play_sound_by_player_index(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    play_character_sound_by_player_index(shell->playerId,
+                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    func_800C90F4(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                 }

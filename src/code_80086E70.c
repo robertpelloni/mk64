@@ -1071,7 +1071,7 @@ void func_80089474(s32 objectIndex, s32 playerId, f32 arg2, f32 arg3, u32 soundB
         func_80072180();
     }
     if ((func_8008933C(player, objectIndex, arg2, arg3) >= 4.0) && ((player->type & PLAYER_CPU) != PLAYER_CPU)) {
-        play_sound_by_player_index(playerId, soundBits);
+        func_800C9060(playerId, soundBits);
     }
 }
 
@@ -1081,7 +1081,7 @@ void func_80089538(s32 objectIndex, s32 playerId, f32 arg2, f32 arg3, u32 soundB
 
     player = &gPlayerOne[playerId];
     if ((func_8008933C(player, objectIndex, arg2, arg3) >= 4.0) && ((player->type & PLAYER_CPU) != PLAYER_CPU)) {
-        play_sound_by_player_index((u8) playerId, soundBits);
+        func_800C9060((u8) playerId, soundBits);
     }
 }
 
@@ -1143,7 +1143,7 @@ void func_80089820(s32 objectIndex, f32 arg1, f32 arg2, u32 arg3) {
                         }
                         if ((func_8008933C(player, objectIndex, arg1, arg2 * 1.1) >= 4.0) &&
                             ((player->type & PLAYER_CPU) != PLAYER_CPU)) {
-                            play_sound_by_player_index(playerIndex, arg3);
+                            func_800C9060(playerIndex, arg3);
                         }
                     }
                 }
@@ -1190,7 +1190,7 @@ s32 func_80089B50(s32 objectIndex) {
                         func_80072180();
                     }
                 } else {
-                    play_sound_by_player_index(test, 0x19018010U);
+                    func_800C9060(test, 0x19018010U);
                 }
                 sp40 = 1;
             }
