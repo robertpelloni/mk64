@@ -711,13 +711,13 @@ void play_sound_trophy(UNUSED CinematicCamera* camera) {
 
 void func_80283B6C(UNUSED CinematicCamera* camera) {
     func_800CA0B8();
-    func_800C9060(0, SOUND_ACTION_EXPLOSION);
+    play_sound_by_player_index(0, SOUND_ACTION_EXPLOSION);
     func_800CA0A0();
 }
 
 void func_80283BA4(UNUSED CinematicCamera* camera) {
     func_800CA0B8();
-    func_800C90F4(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
+    play_character_sound_by_player_index(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
     func_800CA0A0();
 }
 

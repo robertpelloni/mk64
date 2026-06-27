@@ -1,5 +1,10 @@
 # Changelog
 
+## [8.107.6] - 2026-06-27
+
+### Refactored
+- Continued decompilation and renaming of `func_800...` audio and core logic routines (e.g., `fade_and_issue_audio_command`, `issue_audio_command`) across multiple modules to support Phase 1 perfect decompilation goals.
+
 All notable changes to this project will be documented in this file.
 
 ## [8.107.4] - 2026-05-20

@@ -1,9 +1,10 @@
-# Session Handoff - 2026-06-23 (v8.109.0)
+# Session Handoff - 2026-06-27 (v8.107.6)
 
 ## Executive Summary
 Successfully navigated through the remaining Retro-Modern physics mechanics for Phase 5 (Anti-Gravity) and Phase 6 (Half-Pipes).
 
 ### Noteworthy Modifications & Fixes
+- **Phase 1 Decompilation:** Replaced multiple unnamed `func_800*` audio and action references across `src/audio/`, `src/menus.c`, and actors/items with descriptive, context-aware names.
 - **Anti-Gravity:** Added `ANTI_GRAVITY_WALL` (`0xFA`) to `SURFACE_TYPE`. `sIsAntiGravity` array tracks state. Replaced standard crashing with Spin Boosts (+20 velocity) when interacting during anti-gravity in `func_8002B8A4`.
 - **Half-Pipes:** Added `HALF_PIPE` (`0xFB`) to `SURFACE_TYPE`. Increases stickiness dramatically on vertical planes. Pops a `trigger_wood_ramp_boost` jump with upward vertical velocity upon reaching an orientation threshold representing the "lip".
 - All `player_controller.c` AST fixes were managed manually to bypass duplicate/parsing errors via awk.

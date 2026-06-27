@@ -1341,7 +1341,7 @@ void func_80091B78(void) {
     setup_menus();
 
     for (i = 0; i < 4; i++) {
-        func_800C97C4((u8) i);
+        play_player_win_sound((u8) i);
     }
 
     for (i = 1; i < 8; i++) {
@@ -4693,7 +4693,7 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
 
 void func_8009CE1C(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
-        func_800C3448(0xE0000002);
+        issue_audio_command(0xE0000002);
     }
 }
 
@@ -11050,7 +11050,7 @@ void func_800ACF40(MenuItem* arg0) {
                                       segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_a1]));
                         arg0->state = 3;
                         func_800CA24C(somePlayerIndex);
-                        func_800C90F4(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
+                        play_character_sound_by_player_index(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
                     }
                 }
             }
@@ -11818,7 +11818,7 @@ void func_800AEC54(MenuItem* arg0) {
             arg0->column = (get_string_width(gTextMenuAnnounceGhost) / 2) + 0x140;
             arg0->row = 0x000000DA;
             arg0->state = 1;
-            func_800C90F4(0U, (D_80162DE4 * 0x10) + 0x29008001);
+            play_character_sound_by_player_index(0U, (D_80162DE4 * 0x10) + 0x29008001);
             break;
         case 1:
             func_800A9208(arg0, 0x000000A0);
@@ -12024,14 +12024,14 @@ void func_800AF270(MenuItem* arg0) {
                 if (D_802874D8.unk1D >= 3) {
                     arg0->state = 4;
                     func_800CA0B8();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
+                    play_character_sound_by_player_index(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
                     func_800CA0A0();
                 } else {
                     arg0->state = 3;
                     func_8009A640(arg0->D_8018DEE0_index, 0, sp30,
                                   segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_v0]));
                     func_800CA0B8();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
+                    play_character_sound_by_player_index(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
                     func_800CA0A0();
                 }
             }
