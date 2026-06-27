@@ -1808,8 +1808,42 @@ bool query_collision_player_vs_actor_item(Player* arg0, struct Actor* arg1) {
 }
 
 bool query_collision_actor_vs_actor(struct Actor* arg0, struct Actor* arg1) {
-    // Bridge logic to Rust Zero-Latency Engine
-    return rust_query_collision_actor_vs_actor(arg0, arg1);
+    f32 temp_f0;
+    f32 dist;
+    f32 dist_y;
+    f32 dist_z;
+    f32 dist_x;
+
+    temp_f0 = arg0->boundingBoxSize + arg1->boundingBoxSize;
+    dist_x = arg0->pos[0] - arg1->pos[0];
+    if (temp_f0 < dist_x) {
+        return NO_COLLISION;
+    }
+    if (dist_x < -temp_f0) {
+        return NO_COLLISION;
+    }
+    dist_y = arg0->pos[1] - arg1->pos[1];
+    if (temp_f0 < dist_y) {
+        return NO_COLLISION;
+    }
+    if (dist_y < -temp_f0) {
+        return NO_COLLISION;
+    }
+    dist_z = arg0->pos[2] - arg1->pos[2];
+    if (temp_f0 < dist_z) {
+        return NO_COLLISION;
+    }
+    if (dist_z < -temp_f0) {
+        return NO_COLLISION;
+    }
+    dist = (dist_x * dist_x) + (dist_y * dist_y) + (dist_z * dist_z);
+    if (dist < 0.1f) {
+        return NO_COLLISION;
+    }
+    if ((temp_f0 * temp_f0) < dist) {
+        return NO_COLLISION;
+    }
+    return COLLISION;
 }
 
 void destroy_destructable_actor(struct Actor* actor) {

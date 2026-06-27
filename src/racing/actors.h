@@ -180,6 +180,3 @@ extern s8 D_802B8864[];
 /** @endcond */
 
 #endif // ACTORS_H
-
-// FFI to Rust Zero-Latency Engine
-extern bool rust_query_collision_actor_vs_actor(struct Actor* arg0, struct Actor* arg1);
