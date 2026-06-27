@@ -1,10 +1,5 @@
 # Changelog
 
-## [8.107.6] - 2026-06-27
-
-### Refactored
-- Renamed various `func_800CA...` and `func_800CB...` audio routines in `src/audio/` to descriptive names such as `play_sequences`, `play_star_music`, and `issue_audio_command_3` to improve readability and matching decompilation.
-
 All notable changes to this project will be documented in this file.
 
 ## [8.107.4] - 2026-05-20
