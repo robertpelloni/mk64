@@ -217,7 +217,7 @@ void func_800C29B4(u8, u16);
 
 void func_800C3724(void);
 void func_800C2A2C(u32);
-void func_800C3448(u32);
+void issue_audio_command(u32);
 void func_800C3478(void);
 u16 func_800C3508(u8);
 void func_800C3608(u8, u8);

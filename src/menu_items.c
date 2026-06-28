@@ -4693,7 +4693,7 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
 
 void func_8009CE1C(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
-        func_800C3448(0xE0000002);
+        issue_audio_command(0xE0000002);
     }
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [8.107.8] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C3448` to `issue_audio_command` across the codebase.
+
 ## [8.107.7] - 2026-06-28
 
 ### Fixed

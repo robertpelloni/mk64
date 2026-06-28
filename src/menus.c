@@ -1986,7 +1986,7 @@ void set_sound_mode(void) {
 
     pack = sSoundMenuPack;
     if ((gSoundMode == SOUND_STEREO) || (gSoundMode == SOUND_HEADPHONES) || (gSoundMode == SOUND_MONO)) {
-        func_800C3448(pack.modes[gSoundMode] | 0xE0000000);
+        issue_audio_command(pack.modes[gSoundMode] | 0xE0000000);
     }
 }
 
