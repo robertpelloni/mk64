@@ -101,7 +101,7 @@ void destroy_banana_in_banana_bunch(struct BananaActor* banana) {
     func_802B0464(banana->youngerIndex);
     func_802B04E8(banana, banana->elderIndex);
     if ((gPlayers[banana->playerId].type & PLAYER_HUMAN) != 0) {
-        play_sound_by_player_index(banana->playerId, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+        func_800C9060(banana->playerId, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
     }
     banana->flags = -0x8000;
     banana->unk_04 = 0x003C;
@@ -298,7 +298,7 @@ void update_actor_banana_bunch(struct BananaBunchParent* banana_bunch) {
                 controller = &gControllers[banana_bunch->playerId];
                 if ((controller->buttonPressed & Z_TRIG) != 0) {
                     controller->buttonPressed &= ~Z_TRIG;
-                    play_sound_by_player_index(owner - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                    func_800C9060(owner - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                     if ((controller->rawStickY >= 0x1F) &&
                         ((controller->rawStickX < 0x28) && (controller->rawStickX >= -0x27))) {
                         func_802B0788(controller->rawStickY, banana_bunch, owner);
@@ -349,7 +349,7 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
     switch (parent->state) {
         case SPAWN_FIRST_SHELL:
             if (init_triple_shell(parent, &gPlayers[playerId], shellType, 0U) != -1) {
-                play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                 parent->shellsAvailable += 1;
             }
             parent->state = SPAWN_SECOND_SHELL;
@@ -358,7 +358,7 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
             if (parent->rotVelocity > 0) {
                 if (someRotAngle > DEGREES(300)) {
                     if (init_triple_shell(parent, &gPlayers[playerId], shellType, 1U) != -1) {
-                        play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                        func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                         parent->shellsAvailable += 1;
                     }
                     parent->state = SPAWN_THIRD_SHELL;
@@ -366,7 +366,7 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
             } else {
                 if (someRotAngle < DEGREES(60)) {
                     if (init_triple_shell(parent, &gPlayers[playerId], shellType, 1U) != -1) {
-                        play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                        func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                         parent->shellsAvailable += 1;
                     }
                     parent->state = SPAWN_THIRD_SHELL;
@@ -377,14 +377,14 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
             if (parent->rotVelocity > 0) {
                 if ((someRotAngle > DEGREES(60)) && (someRotAngle < DEGREES(70))) {
                     if (init_triple_shell(parent, &gPlayers[playerId], shellType, 2U) != -1) {
-                        play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                        func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                         parent->shellsAvailable += 1;
                     }
                     parent->state = 3;
                 }
             } else if ((someRotAngle < DEGREES(300)) && (someRotAngle > DEGREES(290))) {
                 if (init_triple_shell(parent, &gPlayers[playerId], shellType, 2U) != -1) {
-                    play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                    func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                     parent->shellsAvailable += 1;
                 }
                 parent->state = 3;
@@ -437,8 +437,8 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
                         shell->velocity[2] = someVelocity[2];
                         shell->state = MOVING_SHELL;
                         shell->someTimer = 0x001E;
-                        play_sound_by_player_index(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                        play_character_sound_by_player_index(parent->playerId,
+                        func_800C9060(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                        func_800C90F4(parent->playerId,
                                       (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                         if (parent->type == ACTOR_TRIPLE_RED_SHELL) {
                             add_red_shell_in_unexpired_actor_list(parent->shellIndices[0]);
@@ -464,9 +464,9 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
                         shell->velocity[2] = someVelocity[2];
                         shell->state = MOVING_SHELL;
                         shell->someTimer = 0x001E;
-                        play_character_sound_by_player_index(parent->playerId,
+                        func_800C90F4(parent->playerId,
                                       (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
-                        play_sound_by_player_index(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                        func_800C9060(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
                         if (parent->type == ACTOR_TRIPLE_RED_SHELL) {
                             add_red_shell_in_unexpired_actor_list(parent->shellIndices[1]);
                         } else {
@@ -490,8 +490,8 @@ void update_actor_triple_shell(TripleShellParent* parent, s16 shellType) {
                         shell->velocity[2] = someVelocity[2];
                         shell->state = MOVING_SHELL;
                         shell->someTimer = 0x001E;
-                        play_sound_by_player_index(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                        play_character_sound_by_player_index(parent->playerId,
+                        func_800C9060(parent->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                        func_800C90F4(parent->playerId,
                                       (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                         if (parent->type == ACTOR_TRIPLE_RED_SHELL) {
                             add_red_shell_in_unexpired_actor_list(parent->shellIndices[2]);
@@ -761,7 +761,7 @@ void func_802B2914(struct BananaBunchParent* banana_bunch, Player* player, s16 b
                 break;
         }
         if ((player->type & PLAYER_HUMAN) != 0) {
-            play_sound_by_player_index(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+            func_800C9060(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
         }
     }
 }

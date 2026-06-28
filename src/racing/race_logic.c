@@ -1153,17 +1153,17 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
             func_8008FC1C(playerOne);
             func_8008FC1C(playerTwo);
-            play_sound_by_player_index((playerTwo - gPlayerOne), 0x19008001U);
+            func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
             return;
         } else {
             playerTwo->triggers |= VERTICAL_TUMBLE_TRIGGER;
             func_8008FC1C(playerOne);
-            play_sound_by_player_index((playerTwo - gPlayerOne), 0x19008001U);
+            func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
         }
     } else if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
         playerOne->triggers |= VERTICAL_TUMBLE_TRIGGER;
         func_8008FC1C(playerTwo);
-        play_sound_by_player_index(playerOne - gPlayerOne, 0x19008001U);
+        func_800C9060(playerOne - gPlayerOne, 0x19008001U);
         return;
     }
     if (playerOne->effects & STAR_EFFECT) {
@@ -1212,11 +1212,11 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         playerTwo->pos[2] += sp60[2] * sp74 * 0.5f;
     }
     if (playerOne->type & PLAYER_HUMAN) {
-        play_sound_by_player_index((playerOne - gPlayerOne), 0x19008001U);
+        func_800C9060((playerOne - gPlayerOne), 0x19008001U);
         return;
     }
     if (playerTwo->type & PLAYER_HUMAN) {
-        play_sound_by_player_index((playerTwo - gPlayerOne), 0x19008001U);
+        func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
     }
 }
 

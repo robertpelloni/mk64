@@ -3514,14 +3514,14 @@ void func_80019C50(s32 playerIndex) {
         case 0:
             if (D_80164608[playerIndex] == 1) {
                 D_80164678[playerIndex] = 1;
-                play_sound_by_player_index(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x4F));
+                func_800C9060(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x4F));
                 D_80164670[playerIndex] = D_80164678[playerIndex];
             }
             break;
         case 1:
             if (D_80164608[playerIndex] == 1) {
                 D_80164678[playerIndex] = 0;
-                play_sound_by_player_index(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x50));
+                func_800C9060(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x50));
                 D_80164670[playerIndex] = D_80164678[playerIndex];
             }
             break;

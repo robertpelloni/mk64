@@ -61,7 +61,7 @@ void update_actor_banana(struct BananaActor* banana) {
                     banana->state = DROPPED_BANANA;
                     banana->unk_04 = 0x00B4;
                     player->triggers &= ~DRAG_ITEM_EFFECT;
-                    play_sound_by_player_index(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
+                    func_800C9060(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x12));
                     pad3 = controller->rawStickY;
                     if ((pad3 > 30.0f) && (controller->rawStickX < 10) && (controller->rawStickX >= -9)) {
                         pad3 = pad3 - ((f32) 30);

@@ -1,19 +1,14 @@
 # Changelog
 
-## [8.107.8] - 2026-06-28
-
-### Refactored
-- Continued decompilation: Renamed `func_800C3508` and `func_800C357C` to `get_sequence_player_state` and `check_sequence_player_state` in audio module.
-
 ## [8.107.7] - 2026-06-28
 
-### Refactored
-- Continued decompilation: Renamed the remaining top unnamed `func_800` audio routines in `src/audio/external.c` and `src/menus.c` to descriptive names based on their usage (e.g. `issue_audio_command`, `stop_sound_by_player_index`, `play_player_win_sound`).
+### Fixed
+- Applied fixed-point math clamps to `guMtxF2L` in `src/os/guMtxF2L.c` to resolve floating-point overflow "PU crashes" on strict target environments when `-DAvoid_UB=1` is active.
 
 ## [8.107.6] - 2026-06-28
 
 ### Refactored
-- Continued decompilation: Renamed `func_800C36C4` to `set_channel_volume_scale` and `func_800CA008` to `fade_and_issue_audio_command`.
+- Continued decompilation: Renamed `func_800C284C` to `sequence_player_play_sequence` and `func_800C29B4` to `sequence_player_fade_out` in the audio engine.
 
 All notable changes to this project will be documented in this file.
 
