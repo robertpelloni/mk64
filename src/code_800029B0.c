@@ -227,7 +227,7 @@ void setup_race(void) {
         }
     }
     if (!gDemoMode) {
-        func_800CA008(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
+        fade_and_issue_audio_command(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
         func_800CB2C4();
     }
 

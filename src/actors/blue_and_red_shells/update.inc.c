@@ -290,8 +290,8 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                 shell->rotAngle -= DEGREES(10);
                 if (shell->rotAngle < 0) {
                     shell->state = MOVING_SHELL;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    play_sound_by_player_index(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    play_character_sound_by_player_index(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     if (pad13 == ACTOR_RED_SHELL) {
                         add_red_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
@@ -304,8 +304,8 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                 shell->rotAngle += DEGREES(10);
                 if (shell->rotAngle > 0) {
                     shell->state = MOVING_SHELL;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    play_sound_by_player_index(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    play_character_sound_by_player_index(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     if (pad13 == ACTOR_RED_SHELL) {
                         add_red_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);

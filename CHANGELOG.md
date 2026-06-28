@@ -1,5 +1,15 @@
 # Changelog
 
+## [8.107.7] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed the remaining top unnamed `func_800` audio routines in `src/audio/external.c` and `src/menus.c` to descriptive names based on their usage (e.g. `issue_audio_command`, `stop_sound_by_player_index`, `play_player_win_sound`).
+
+## [8.107.6] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C36C4` to `set_channel_volume_scale` and `func_800CA008` to `fade_and_issue_audio_command`.
+
 All notable changes to this project will be documented in this file.
 
 ## [8.107.4] - 2026-05-20

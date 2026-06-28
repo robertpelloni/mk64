@@ -2577,7 +2577,7 @@ void func_8005CB60(s32 playerId, s32 lapCount) {
                     if (D_80165638 != playerHUD[playerId].someTimer1) {
                         D_80165658[0] = D_80165658[1] = 0;
                     }
-                    func_800C90F4(0U, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
+                    play_character_sound_by_player_index(0U, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                     D_80165638 = playerHUD[playerId].someTimer1;
                     D_80165658[lapCount - 1] = 1;
                     D_801657E3 = 1;
@@ -2597,7 +2597,7 @@ void func_8005CB60(s32 playerId, s32 lapCount) {
                     break;
                 case 1: /* switch 1 */
                     func_80079084(playerId);
-                    func_800C9060(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0xF0, 0x15));
+                    play_sound_by_player_index(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0xF0, 0x15));
                     if ((gCurrentCourseId == COURSE_LUIGI_RACEWAY) && (D_80165898 == 0) &&
                         (gModeSelection != (s32) 1)) {
                         D_80165898 = 1;
@@ -6027,7 +6027,7 @@ void pop_player_balloon(Player* player, s8 playerIndex) {
         gPlayerBalloonStatus[playerIndex][gPlayerBalloonCount[playerIndex]] &= ~BALLOON_STATUS_PRESENT;
         gPlayerBalloonStatus[playerIndex][gPlayerBalloonCount[playerIndex]] |= BALLOON_STATUS_DEPARTING;
         gPlayerBalloonCount[playerIndex]--;
-        func_800C9060(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x51));
+        play_sound_by_player_index(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x51));
         if (gPlayerBalloonCount[playerIndex] < 0) {
             func_8008FD4C(player, playerIndex);
         }

@@ -244,15 +244,15 @@ void func_800CBB48(s32 arg0, s32* arg1) {
     D_800EA3A0[0]++;
 }
 
-void func_800CBB88(u32 arg0, f32 arg1) {
+void issue_audio_command_2(u32 arg0, f32 arg1) {
     func_800CBB48(arg0, (s32*) &arg1);
 }
 
-void func_800CBBB8(u32 arg0, u32 arg1) {
+void issue_audio_command_4(u32 arg0, u32 arg1) {
     func_800CBB48(arg0, (s32*) &arg1);
 }
 
-void func_800CBBE8(u32 arg0, s8 arg1) {
+void issue_audio_command_3(u32 arg0, s8 arg1) {
     s32 sp34 = arg1 << 24;
     func_800CBB48(arg0, &sp34);
 }
