@@ -1,9 +1,10 @@
-# Session Handoff - 2026-06-28 (v8.107.7)
+# Session Handoff - 2026-06-28 (v8.107.8)
 
 ## Executive Summary
 Successfully navigated through the remaining Retro-Modern physics mechanics for Phase 5 (Anti-Gravity) and Phase 6 (Half-Pipes).
 
 ### Noteworthy Modifications & Fixes
+- **Phase 1 Decompilation:** Identified and mapped sequence player state routines `func_800C3508` and `func_800C357C` in audio engine.
 - **Phase 1 Decompilation:** Identified and mapped the vast majority of the top unknown `func_800*` audio routines across the codebase to descriptive, context-aware names.
 - **Phase 1 Decompilation:** Identified and mapped `func_800C36C4` to `set_channel_volume_scale` and `func_800CA008` to `fade_and_issue_audio_command`.
 - **Phase 1 Decompilation:** Identified and mapped `func_800C9A88` to `play_race_finish_sound`.

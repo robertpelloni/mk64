@@ -1,5 +1,10 @@
 # Changelog
 
+## [8.107.8] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C3508` and `func_800C357C` to `get_sequence_player_state` and `check_sequence_player_state` in audio module.
+
 ## [8.107.7] - 2026-06-28
 
 ### Refactored
