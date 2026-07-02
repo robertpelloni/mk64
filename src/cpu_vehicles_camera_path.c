@@ -1355,7 +1355,7 @@ void play_cpu_sound_effect(s32 arg0, Player* player) {
     if (D_80163398[arg0] >= 0xB) {
         if ((player->effects & BANANA_SPINOUT_EFFECT) || (player->effects & DRIVING_SPINOUT_EFFECT) ||
             (player->effects & LIGHTNING_STRIKE_EFFECT)) {
-            func_800C92CC(arg0, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0A));
+            audio_play_character_sound_with_effects(arg0, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0A));
             D_80163398[arg0] = 0;
         }
     }
@@ -1363,7 +1363,7 @@ void play_cpu_sound_effect(s32 arg0, Player* player) {
         if ((player->triggers & VERTICAL_TUMBLE_TRIGGER) || (player->triggers & HIT_BY_STAR_TRIGGER) ||
             (player->triggers & HIGH_TUMBLE_TRIGGER) || (player->triggers & LOW_TUMBLE_TRIGGER) ||
             (player->effects & SQUISH_EFFECT)) {
-            func_800C92CC(arg0, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0B));
+            audio_play_character_sound_with_effects(arg0, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0B));
             D_801633B0[arg0] = 0;
         }
     }
@@ -1378,7 +1378,7 @@ void update_player_timer_sound(s32 playerId, UNUSED Player* unused) {
             if ((gGPCurrentRaceRankByPlayerId[playerId] < gGPCurrentRaceRankByPlayerId[otherPlayerId]) &&
                 (gGPCurrentRaceRankByPlayerId[playerId] == gPreviousGPCurrentRaceRankByPlayerId[otherPlayerId]) &&
                 (gGPCurrentRaceRankByPlayerId[otherPlayerId] == gPreviousGPCurrentRaceRankByPlayerId[playerId])) {
-                func_800C92CC(playerId, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
+                audio_play_character_sound_with_effects(playerId, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                 gPositionSwapTimer[playerId] = 0;
             }
         }
@@ -1925,7 +1925,7 @@ void func_8000B140(s32 playerId) {
 
 #include "cpu_vehicles_camera_path/actor_utils.inc.c"
 
-void func_8000F0E0(void) {
+void reset_cpu_vehicles_camera_path_data(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
         D_80164670[i] = 0;
@@ -1933,7 +1933,7 @@ void func_8000F0E0(void) {
     }
 }
 
-void func_8000F124(void) {
+void init_cpu_vehicles_camera_path_data(void) {
     s32 shouldContinue;
     s32 i, j;
 
@@ -3514,14 +3514,14 @@ void func_80019C50(s32 playerIndex) {
         case 0:
             if (D_80164608[playerIndex] == 1) {
                 D_80164678[playerIndex] = 1;
-                func_800C9060(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x4F));
+                audio_play_sound_by_player_id(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x4F));
                 D_80164670[playerIndex] = D_80164678[playerIndex];
             }
             break;
         case 1:
             if (D_80164608[playerIndex] == 1) {
                 D_80164678[playerIndex] = 0;
-                func_800C9060(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x50));
+                audio_play_sound_by_player_id(playerIndex, SOUND_ARG_LOAD(0x19, 0x00, 0x90, 0x50));
                 D_80164670[playerIndex] = D_80164678[playerIndex];
             }
             break;
@@ -3634,7 +3634,7 @@ void func_8001A124(s32 arg0, s32 arg1) {
             } else {
                 D_80164680[arg1] = 0x000D;
             }
-            func_800CA270();
+            audio_set_flag_800EA0F4_true();
             break;
         case 1:
         case 2:
@@ -3866,7 +3866,7 @@ void func_8001A588(UNUSED u16* localD_80152300, Camera* camera, Player* player, 
     }
 }
 
-void func_8001AAAC(s16 arg0, s16 arg1, s16 arg2) {
+void init_camera_path_audio(s16 arg0, s16 arg1, s16 arg2) {
     if (D_801646D0[arg0].unk0 == 0) {
         D_801646D0[arg0].unk0 = 1;
         D_801646D0[arg0].unk2 = arg1;
@@ -4021,8 +4021,8 @@ void cpu_use_item_strategy(s32 playerId) {
                 BANANA_ACTOR(actor)->velocity[1] = ((pathPoint->posY - player->pos[1]) / 20.0) + 4.0;
                 BANANA_ACTOR(actor)->velocity[2] = (pathPoint->posZ - player->pos[2]) / 20.0;
                 BANANA_ACTOR(actor)->pos[1] = player->pos[1];
-                func_800C92CC(playerId, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x09));
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x14));
+                audio_play_character_sound_with_effects(playerId, SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x09));
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x14));
             } else {
                 cpuStrategy->timer = 0;
                 cpuStrategy->branch = CPU_STRATEGY_WAIT_NEXT_ITEM;

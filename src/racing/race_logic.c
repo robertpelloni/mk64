@@ -80,7 +80,7 @@ void func_8028E028(void) {
             *(gNmiUnknown6 + gPlayerWinningIndex) += 1;
             break;
     }
-    func_800CA118((u8) gPlayerWinningIndex);
+    audio_set_player_finished((u8) gPlayerWinningIndex);
     D_800DC510 = 5;
     gDemoTimer = 10;
 }
@@ -106,7 +106,7 @@ void update_player_battle_status(void) {
             player->type |= PLAYER_CINEMATIC_MODE;
             playersDead[deadCounter] = (s16) (player - gPlayerOne);
             deadCounter++;
-            func_800CA118((u8) playerIndex); // play sad character sound?
+            audio_set_player_finished((u8) playerIndex); // play sad character sound?
         } else {
             playersAlive[aliveCounter] = (s16) (player - gPlayerOne);
             aliveCounter++;
@@ -408,7 +408,7 @@ void func_8028E678(void) {
 UNUSED void func_8028EC38(s32 arg0) {
     gGotoMode = arg0;
     D_800DC510 = 6;
-    func_800CA330(25);
+    audio_push_volume_cmd(25);
     fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;
@@ -553,7 +553,7 @@ void func_8028EF28(void) {
                         D_80150120 = 1;
                     }
 
-                    func_800CA118((u8) i);
+                    audio_set_player_finished((u8) i);
                     if ((D_802BA032 & PLAYER_EXISTS) == 0) {
                         D_802BA032 |= PLAYER_EXISTS;
                     }
@@ -565,7 +565,7 @@ void func_8028EF28(void) {
                         D_800DC510 = 4;
                     }
                     if (gModeSelection == TIME_TRIALS) {
-                        func_80005AE8(player);
+                        init_ghost_player(player);
                     }
 
                     if (gModeSelection == VERSUS) {
@@ -585,7 +585,7 @@ void func_8028EF28(void) {
                                 i = gPlayerPositionLUT[1];
                                 gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                 gPlayers[i].type |= PLAYER_CPU;
-                                func_800CA118((u8) i);
+                                audio_set_player_finished((u8) i);
                                 break;
                             case 3:
                                 if (currentPosition < 3) {
@@ -603,7 +603,7 @@ void func_8028EF28(void) {
                                     }
                                     gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                     gPlayers[i].type |= PLAYER_CPU;
-                                    func_800CA118((u8) i);
+                                    audio_set_player_finished((u8) i);
                                 }
                                 break;
                             case 4:
@@ -618,7 +618,7 @@ void func_8028EF28(void) {
                                     i = gPlayerPositionLUT[3];
                                     gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                     gPlayers[i].type |= PLAYER_CPU;
-                                    func_800CA118((u8) i);
+                                    audio_set_player_finished((u8) i);
                                 }
                                 break;
                         }
@@ -630,13 +630,13 @@ void func_8028EF28(void) {
                     }
                     if ((D_802BA032 & 0x4000) == 0) {
                         D_802BA032 |= 0x4000;
-                        func_800CA49C((u8) i);
+                        audio_play_final_lap_music((u8) i);
                     }
                 }
             } else if (gPlayers[i].lapCount == 3) {
                 func_8028EEF0(i);
                 if (gModeSelection == TIME_TRIALS) {
-                    func_80005AE8(player);
+                    init_ghost_player(player);
                 }
             }
         }
@@ -688,7 +688,7 @@ void func_8028F4E8(void) {
         if (((gControllerFive->button & R_TRIG) != 0) && ((gControllerFive->button & L_TRIG) != 0) &&
             ((gControllerFive->button & A_BUTTON) != 0) && ((gControllerFive->button & B_BUTTON) != 0)) {
 
-            func_800CA330(0x19);
+            audio_push_volume_cmd(0x19);
             fade_all_channel_volume_scale(0x19);
             gGotoMode = START_MENU_FROM_QUIT;
             D_800DC510 = 6;
@@ -830,17 +830,17 @@ void func_8028F970(void) {
             func_8028DF00();
             gIsGamePaused = (controller - gControllerOne) + 1;
             controller->buttonPressed = 0;
-            func_800C9F90(1);
+            audio_play_menu_sound(1);
             gPauseTriggered = 1;
             if (gModeSelection == TIME_TRIALS) {
                 if (gPlayerOne->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerOne);
+                    init_ghost_player(gPlayerOne);
                 }
                 if (gPlayerTwo->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerTwo);
+                    init_ghost_player(gPlayerTwo);
                 }
                 if (gPlayerThree->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerThree);
+                    init_ghost_player(gPlayerThree);
                 }
             }
             return;
@@ -875,7 +875,7 @@ void func_8028F970(void) {
 void func_8028FBD4(void) {
     gGotoMode = START_MENU_FROM_QUIT;
     D_800DC510 = 6;
-    func_800CA330(25);
+    audio_push_volume_cmd(25);
     fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;
@@ -906,7 +906,7 @@ void end_demo_update(void) {
     }
 }
 
-void func_8028FCBC(void) {
+void update_race_state_machine(void) {
     Player* ply = &gPlayers[0];
     s32 i;
     u32 phi_v0_4;
@@ -1085,37 +1085,37 @@ void func_8028FCBC(void) {
     }
 }
 
-UNUSED void func_80290314(void) {
+UNUSED void quit_to_start_menu(void) {
     gIsInQuitToMenuTransition = 1;
     gQuitToMenuTransitionCounter = 5;
     gGotoMode = START_MENU_FROM_QUIT;
 }
 
-void func_80290338(void) {
+void quit_to_main_menu(void) {
     gIsInQuitToMenuTransition = 1;
     gQuitToMenuTransitionCounter = 5;
     gGotoMode = MAIN_MENU_FROM_QUIT;
 }
 
-void func_80290360(void) {
+void quit_to_player_select_menu(void) {
     gIsInQuitToMenuTransition = 1;
     gQuitToMenuTransitionCounter = 5;
     gGotoMode = PLAYER_SELECT_MENU_FROM_QUIT;
 }
 
-void func_80290388(void) {
+void quit_to_course_select_menu(void) {
     gIsInQuitToMenuTransition = 1;
     gQuitToMenuTransitionCounter = 5;
     gGotoMode = COURSE_SELECT_MENU_FROM_QUIT;
 }
 
-void func_802903B0(void) {
+void trigger_restart_race(void) {
     gIsInQuitToMenuTransition = 1;
     gQuitToMenuTransitionCounter = 5;
     gGotoMode = RACING;
 }
 
-void func_802903D8(Player* playerOne, Player* playerTwo) {
+void check_player_player_collision(Player* playerOne, Player* playerTwo) {
     f32 sp70 = (playerOne->boundingBoxSize + playerTwo->boundingBoxSize) - 5.0f;
     f32 temp_f0;
     f32 sp74;
@@ -1153,17 +1153,17 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
             func_8008FC1C(playerOne);
             func_8008FC1C(playerTwo);
-            func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
+            audio_play_sound_by_player_id((playerTwo - gPlayerOne), 0x19008001U);
             return;
         } else {
             playerTwo->triggers |= VERTICAL_TUMBLE_TRIGGER;
             func_8008FC1C(playerOne);
-            func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
+            audio_play_sound_by_player_id((playerTwo - gPlayerOne), 0x19008001U);
         }
     } else if (playerTwo->type & PLAYER_UNKNOWN_0x40) {
         playerOne->triggers |= VERTICAL_TUMBLE_TRIGGER;
         func_8008FC1C(playerTwo);
-        func_800C9060(playerOne - gPlayerOne, 0x19008001U);
+        audio_play_sound_by_player_id(playerOne - gPlayerOne, 0x19008001U);
         return;
     }
     if (playerOne->effects & STAR_EFFECT) {
@@ -1212,15 +1212,15 @@ void func_802903D8(Player* playerOne, Player* playerTwo) {
         playerTwo->pos[2] += sp60[2] * sp74 * 0.5f;
     }
     if (playerOne->type & PLAYER_HUMAN) {
-        func_800C9060((playerOne - gPlayerOne), 0x19008001U);
+        audio_play_sound_by_player_id((playerOne - gPlayerOne), 0x19008001U);
         return;
     }
     if (playerTwo->type & PLAYER_HUMAN) {
-        func_800C9060((playerTwo - gPlayerOne), 0x19008001U);
+        audio_play_sound_by_player_id((playerTwo - gPlayerOne), 0x19008001U);
     }
 }
 
-void func_802909F0(void) {
+void evaluate_all_player_collisions(void) {
     Player* ply;
     Player* ply2;
     s32 i;
@@ -1238,14 +1238,14 @@ void func_802909F0(void) {
                 if ((ply2->type & PLAYER_EXISTS) && (!(ply2->effects & BOO_EFFECT)) &&
                     (!(ply2->type & PLAYER_INVISIBLE_OR_BOMB)) && (!(ply2->effects & SQUISH_EFFECT))) {
 
-                    func_802903D8(ply, ply2);
+                    check_player_player_collision(ply, ply2);
                 }
             }
         }
     }
 }
 
-void func_80290B14(void) {
+void update_all_cameras(void) {
 
     func_80059C50();
 

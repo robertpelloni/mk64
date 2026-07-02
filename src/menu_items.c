@@ -1341,11 +1341,11 @@ void func_80091B78(void) {
     setup_menus();
 
     for (i = 0; i < 4; i++) {
-        func_800C97C4((u8) i);
+        audio_stop_character_sounds((u8) i);
     }
 
     for (i = 1; i < 8; i++) {
-        func_800C9D0C((u8) i);
+        audio_stop_race_finish_sound((u8) i);
     }
 
     set_sound_mode();
@@ -1396,15 +1396,15 @@ void func_80091EE4(void) {
     s32 tmp;
 
     gControllerPak1State = BAD;
-    tmp = func_800B5F30();
+    tmp = check_and_init_controller_pak_1();
 
     if ((gGhostPlayerInit != 0) && (tmp == 0)) {
         temp_s2 = (gCupSelection * 4) + gCourseIndexInCup;
-        func_800B6708();
+        read_controller_pak_1_ghost_headers();
 
         for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
             if ((D_8018EE10[temp_s0].ghostDataSaved != 0) && (temp_s2 == D_8018EE10[temp_s0].courseIndex)) {
-                func_800B64EC(temp_s0);
+                load_ghost_data_and_verify_checksum(temp_s0);
                 temp_s0 = 2;
                 gGhostPlayerInit = 0;
             }
@@ -1447,7 +1447,7 @@ void func_80091FA4(void) {
     if (!(gControllerBits & 1) && (gDemoUseController != 0)) {
         add_menu_item(MENU_ITEM_UI_NO_CONTROLLER, 0, 0, MENU_ITEM_PRIORITY_2);
     }
-    func_800B5F30();
+    check_and_init_controller_pak_1();
 }
 
 void func_80092148(void) {
@@ -2356,7 +2356,7 @@ void render_checkered_flag(struct GfxPool* arg0, UNUSED s32 arg1) {
     gSPMatrix(gDisplayListHead++, &arg0->mtxObject[3], G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);
     gSPMatrix(gDisplayListHead++, &arg0->mtxObject[4], G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);
     gSPDisplayList(gDisplayListHead++, D_02007FC8);
-    func_800B0004();
+    render_course_selection_menu();
     gSPDisplayList(gDisplayListHead++, D_02007650);
 }
 
@@ -2403,8 +2403,8 @@ void setup_menus(void) {
         clear_menus();
         func_8009B938();
         func_80092258();
-        func_800B5F30();
-        func_800B6014();
+        check_and_init_controller_pak_1();
+        check_and_init_controller_pak_2();
         load_menu_states(gMenuSelection);
         switch (gMenuSelection) {
             case OPTIONS_MENU:
@@ -2618,8 +2618,8 @@ void func_80095574(void) {
         play_sound2(SOUND_INTRO_WELCOME);
     }
     if (gMenuTimingCounter > 300) {
-        func_8009E230();
-        func_800CA0A0();
+        menu_fade_in_demo();
+        audio_set_flag_800EA108_true();
     }
     gSPDisplayList(gDisplayListHead++, D_020076E0);
 }
@@ -4693,7 +4693,7 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
 
 void func_8009CE1C(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
-        func_800C3448(0xE0000002);
+        audio_push_cmd(0xE0000002);
     }
 }
 
@@ -4734,17 +4734,17 @@ void func_8009CE64(s32 arg0) {
                 if (temp_v0 != NULL) {
                     switch (temp_v0->state) { /* switch 8; irregular */
                         case 10:              /* switch 8 */
-                            func_802903B0();
+                            trigger_restart_race();
                             break;
                         case 11: /* switch 8 */
-                            func_80290388();
+                            quit_to_course_select_menu();
                             break;
                         case 12: /* switch 8 */
-                            func_80290360();
+                            quit_to_player_select_menu();
                             break;
                         default: /* switch 8 */
                         case 13: /* switch 8 */
-                            func_80290338();
+                            quit_to_main_menu();
                             break;
                     }
                 } else {
@@ -4753,12 +4753,12 @@ void func_8009CE64(s32 arg0) {
                     if (temp_v0 != NULL) {
                         switch (temp_v0->state) { /* switch 7; irregular */
                             case 11:              /* switch 7 */
-                                func_802903B0();
+                                trigger_restart_race();
                                 D_8016556E = 1;
                                 break;
                             default: /* switch 7 */
                             case 12: /* switch 7 */
-                                func_80290338();
+                                quit_to_main_menu();
                                 break;
                         }
                     } else {
@@ -4767,26 +4767,26 @@ void func_8009CE64(s32 arg0) {
                         if (temp_v0 != NULL) {
                             switch (temp_v0->state) {
                                 case 12:
-                                    func_802903B0();
+                                    trigger_restart_race();
                                     var_a1 = 1;
                                     break;
                                 case 13:
                                 case 22:
                                 case 42:
-                                    func_80290388();
+                                    quit_to_course_select_menu();
                                     var_a1 = 1;
                                     break;
                                 case 14:
                                 case 23:
                                 case 43:
-                                    func_80290360();
+                                    quit_to_player_select_menu();
                                     var_a1 = 1;
                                     break;
                                 case 15:
                                 case 24:
                                 case 32:
                                 case 44:
-                                    func_80290338();
+                                    quit_to_main_menu();
                                     var_a1 = 1;
                                     break;
                                 default:
@@ -4803,27 +4803,27 @@ void func_8009CE64(s32 arg0) {
                                 case 11:              /* switch 2 */
                                     D_8015F892 = 1;
                                     D_8015F890 = 0;
-                                    func_802903B0();
+                                    trigger_restart_race();
                                     break;
                                 case 12: /* switch 2 */
                                     D_8015F892 = 0;
                                     D_8015F890 = 0;
-                                    func_80290388();
+                                    quit_to_course_select_menu();
                                     break;
                                 case 13: /* switch 2 */
                                     D_8015F892 = 0;
                                     D_8015F890 = 0;
-                                    func_80290360();
+                                    quit_to_player_select_menu();
                                     break;
                                 case 14: /* switch 2 */
                                     D_8015F892 = 0;
                                     D_8015F890 = 0;
-                                    func_80290338();
+                                    quit_to_main_menu();
                                     break;
                                 case 15: /* switch 2 */
                                     D_8015F892 = 0;
                                     D_8015F890 = 1;
-                                    func_802903B0();
+                                    trigger_restart_race();
                                     break;
                                 default: /* switch 2 */
                                     break;
@@ -4970,7 +4970,7 @@ void func_8009CE64(s32 arg0) {
                     }
                     break;
             }
-            func_8000F124();
+            init_cpu_vehicles_camera_path_data();
             if (gScreenModeSelection == 3) {
                 switch (gModeSelection) {
                     case 0:
@@ -5222,11 +5222,11 @@ void func_8009DF8C(u32 arg0, u32 arg1) {
     }
 }
 
-void func_8009DFE0(s32 arg0) {
+void init_menu_fade_out(s32 arg0) {
     func_8009DF8C(arg0, 2);
 }
 
-void func_8009E000(s32 arg0) {
+void init_menu_fade_in(s32 arg0) {
     func_8009DF8C(arg0, 7);
 }
 
@@ -5266,7 +5266,7 @@ void func_8009E088(s32 arg0, s32 arg1) {
     }
 }
 
-void func_8009E0F0(s32 arg0) {
+void menu_start_transition_type_3(s32 arg0) {
     s32 var_v0;
 
     if (gTransitionType[4] != 3) {
@@ -5293,33 +5293,33 @@ void func_8009E17C(u32 arg0) {
     }
 }
 
-void func_8009E1C0(void) {
-    func_8009DFE0(10);
+void menu_fade_in_main(void) {
+    init_menu_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E1E4(void) {
-    func_8009E000(10);
+void menu_fade_out_main(void) {
+    init_menu_fade_in(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E208(void) {
-    func_8009DFE0(10);
+void menu_fade_in_back(void) {
+    init_menu_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_BACK;
 }
 
-void func_8009E230(void) {
-    func_8009DFE0(10);
+void menu_fade_in_demo(void) {
+    init_menu_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DEMO;
 }
 
-void func_8009E258(void) {
-    func_8009DFE0(10);
+void menu_fade_in_data(void) {
+    init_menu_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DATA;
 }
 
-void func_8009E280(void) {
-    func_8009DFE0(10);
+void menu_fade_in_option(void) {
+    init_menu_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_OPTION;
 }
 
@@ -5605,7 +5605,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             break;
         case MENU_ITEM_TYPE_067:
             menuItem->param1 = (s32) gCupSelection;
-            menuItem->param2 = func_800B54C0(gCupSelection, gCCSelection);
+            menuItem->param2 = save_get_grand_prix_points(gCupSelection, gCCSelection);
             menuItem->D_8018DEE0_index = animate_character_select_menu(
                 segmented_to_virtual_dupe_2(D_800E7E20[((gCCSelection / 2) * 4) - menuItem->param2]));
             menuItem->column = D_800E7268[0].column;
@@ -5619,7 +5619,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
         case MENU_ITEM_TYPE_069:
             load_menu_img_comp_type(segmented_to_virtual_dupe(D_02004A0C), LOAD_MENU_IMG_TKMK00_ONCE);
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                read_controller_pak_1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -5634,7 +5634,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
         case MENU_ITEM_TYPE_08C:
             load_menu_img_comp_type(segmented_to_virtual_dupe(seg2_data_texture), LOAD_MENU_IMG_TKMK00_ONCE);
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                read_controller_pak_1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -5704,15 +5704,15 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             break;
         }
         case MENU_ITEM_TYPE_0BB:
-            menuItem->param1 = func_800B5020(playerHUD[0].someTimer, gCharacterSelections[0]);
-            menuItem->param2 = func_800B5218();
+            menuItem->param1 = save_update_course_time_trial_records(playerHUD[0].someTimer, gCharacterSelections[0]);
+            menuItem->param2 = save_update_course_single_lap_record();
             if (bPlayerGhostDisabled != 1) {
-                if (func_800051C4() > 0x3C00) {
+                if (encode_ghost_data() > 0x3C00) {
                     bPlayerGhostDisabled = 1;
                 }
             }
             if ((menuItem->param1 == 0) || (menuItem->param2 != 0)) {
-                func_800B559C((gCupSelection * 4) + gCourseIndexInCup);
+                save_update_best_time_trial_records((gCupSelection * 4) + gCourseIndexInCup);
             }
             break;
         case MENU_ITEM_DATA_COURSE_IMAGE:
@@ -5722,7 +5722,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             load_menu_img_comp_type(segmented_to_virtual_dupe(D_02004A0C), LOAD_MENU_IMG_TKMK00_ONCE);
             func_8006EF60();
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                read_controller_pak_1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -5903,7 +5903,7 @@ void render_menus(MenuItem* arg0) {
                                             0, 0, 0, 0x00000096);
                 set_text_color(TEXT_GREEN);
                 print_text1_center_mode_1(0x0000009B, 0x0000008C, gCourseNamesDup[0], 0, 0.9f, 0.9f);
-                temp_v1 = func_800B4EB4(0, 7) & 0xFFFFF;
+                temp_v1 = save_get_time_trial_record_by_course(0, 7) & 0xFFFFF;
                 if (temp_v1 < 0x1EAA) {
                     set_text_color((s32) gGlobalTimer % 2);
                 } else if (temp_v1 < 0x2329) {
@@ -6670,7 +6670,7 @@ void func_800A15EC(MenuItem* arg0) {
                                 0, 0, 0, 0xFF);
     gDisplayListHead = func_8009C204(gDisplayListHead, segmented_to_virtual_dupe(D_800E7DC4[courseId]), arg0->column,
                                      arg0->row + 0x27, 3);
-    if (func_800B639C(arg0->type - 0x7C) >= 0) {
+    if (get_ghost_data_index_for_course(arg0->type - 0x7C) >= 0) {
         // The "^ 0" is required to force the use of v1 instead of a 4th s* register
         gDisplayListHead = draw_flash_select_case_slow(gDisplayListHead, arg0->column + 0x20, arg0->row ^ 0,
                                                        arg0->column + 0x3F, arg0->row + 9);
@@ -6703,7 +6703,7 @@ void func_800A1780(MenuItem* arg0) {
 void render_menu_item_data_course_image(MenuItem* arg0) {
     // render course preview
     func_8009A76C(arg0->D_8018DEE0_index, 0x17, 0x84, -1);
-    if (func_800B639C(gTimeTrialDataCourseIndex) >= TIME_TRIAL_DATA_LUIGI_RACEWAY) {
+    if (get_ghost_data_index_for_course(gTimeTrialDataCourseIndex) >= TIME_TRIAL_DATA_LUIGI_RACEWAY) {
         gDisplayListHead = draw_flash_select_case_slow(gDisplayListHead, 0x57, 0x84, 0x96, 0x95);
         gDisplayListHead = render_menu_textures(gDisplayListHead, D_02004A0C, 0x57, 0x84);
     }
@@ -6772,7 +6772,7 @@ void menu_item_data_course_selectable(MenuItem* arg0) {
                     }
                     break;
                 case COURSE_RECORDS_MENU_ERASE_GHOST:
-                    if (func_800B639C((s32) gTimeTrialDataCourseIndex) < 0) {
+                    if (get_ghost_data_index_for_course((s32) gTimeTrialDataCourseIndex) < 0) {
                         var_s1 = 1;
                     }
                     break;
@@ -7598,16 +7598,16 @@ void render_lap_times(s32 recordType, s32 column, s32 row) {
     }
     if (recordType < 5) {
         if (sp30 == 0) {
-            timeRecord = func_800B4E24(recordType);
+            timeRecord = save_get_course_time_trial_record(recordType);
         } else {
-            timeRecord = func_800B4EB4(recordType, gTimeTrialDataCourseIndex);
+            timeRecord = save_get_time_trial_record_by_course(recordType, gTimeTrialDataCourseIndex);
         }
         set_text_color(TEXT_GREEN);
     } else {
         if (sp30 == 0) {
-            timeRecord = func_800B4F2C();
+            timeRecord = save_get_course_single_lap_record();
         } else {
-            timeRecord = func_800B4FB0(gTimeTrialDataCourseIndex);
+            timeRecord = save_get_single_lap_record_by_course(gTimeTrialDataCourseIndex);
         }
     }
     func_800939C8(column + 0x14, row, D_800E7744[recordType], 2, 0.65f, 0.65f);
@@ -7696,7 +7696,7 @@ void render_pause_menu_time_trials(MenuItem* arg0) {
                               gCourseNamesDup[gCupCourseOrder[gCupSelection][gCourseIndexInCup]], 0, 1.0f, 1.0f);
     set_text_color(TEXT_RED);
     print_text1_center_mode_1(0x0000009D, 0x00000060, gBestTimeText[0], 0, 0.8f, 0.8f);
-    temp_a0 = func_800B4E24(TIME_TRIAL_3LAP_RECORD_1);
+    temp_a0 = save_get_course_time_trial_record(TIME_TRIAL_3LAP_RECORD_1);
     temp_a0 &= 0xFFFFF;
     get_time_record_minutes(temp_a0, sp68);
     func_800939C8(0x0000007F, 0x0000006D, sp68, 0, 0.8f, 0.8f);
@@ -7707,7 +7707,7 @@ void render_pause_menu_time_trials(MenuItem* arg0) {
     get_time_record_centiseconds(temp_a0, sp68);
     func_800939C8(0x000000B3, 0x0000006D, sp68, 0, 0.8f, 0.8f);
     print_text1_center_mode_1(0x0000009D, 0x0000007C, gBestTimeText[1], 0, 0.8f, 0.8f);
-    temp_a0 = func_800B4F2C();
+    temp_a0 = save_get_course_single_lap_record();
     temp_a0 &= 0xFFFFF;
     get_time_record_minutes(temp_a0, sp68);
     func_800939C8(0x0000007F, 0x00000089, sp68, 0, 0.8f, 0.8f);
@@ -7907,7 +7907,7 @@ void render_menu_item_end_course_option(MenuItem* arg0) {
             case 16:
                 set_text_color(TEXT_RED);
                 print_text1_center_mode_2(0x0000009D, 0x00000060, gBestTimeText[0], 0, 0.8f, 0.8f);
-                temp_a0 = func_800B4E24(0);
+                temp_a0 = save_get_course_time_trial_record(0);
                 temp_a0 &= 0xFFFFF;
                 get_time_record_minutes(temp_a0, sp84);
                 text_draw(0x0000007F, 0x0000006D, sp84, 0, 0.8f, 0.8f);
@@ -7918,7 +7918,7 @@ void render_menu_item_end_course_option(MenuItem* arg0) {
                 get_time_record_centiseconds(temp_a0, sp84);
                 text_draw(0x000000B3, 0x0000006D, sp84, 0, 0.8f, 0.8f);
                 print_text1_center_mode_2(0x0000009D, 0x0000007C, gBestTimeText[1], 0, 0.8f, 0.8f);
-                temp_a0 = func_800B4F2C();
+                temp_a0 = save_get_course_single_lap_record();
                 temp_a0 &= 0xFFFFF;
                 get_time_record_minutes(temp_a0, sp84);
                 text_draw(0x0000007F, 0x00000089, sp84, 0, 0.8f, 0.8f);
@@ -8532,7 +8532,7 @@ void handle_menus_with_pri_arg(s32 priSpecial) {
                 }
                 entry->param1++;
                 if (entry->param1 == 0x000000B4) {
-                    func_8009E000(0x00000028);
+                    init_menu_fade_in(0x00000028);
                     fade_all_channel_volume_scale(0x64U);
                     gMenuFadeType = MENU_FADE_TYPE_MAIN;
                 }
@@ -9015,7 +9015,7 @@ void func_800A874C(MenuItem* arg0) {
     UNUSED u32 var_v0;
     u32 var_s2;
     set_text_color(TEXT_GREEN);
-    var_s2 = arg0->type == MENU_ITEM_TYPE_065 ? func_800B4E24(0) : func_800B4F2C();
+    var_s2 = arg0->type == MENU_ITEM_TYPE_065 ? save_get_course_time_trial_record(0) : save_get_course_single_lap_record();
     temp_s1 = var_s2 & 0xFFFFF;
     get_time_record_minutes((temp_s1 ^ 0), buffer);
     text_draw(arg0->column + 5, arg0->row + 0x21, buffer, 0, 0.6f, 0.65f);
@@ -9142,7 +9142,7 @@ void func_800A8F48(UNUSED MenuItem* arg0) {
     switch (gSubMenuSelection) { /* irregular */
         case SUB_MENU_MAP_SELECT_CUP:
             for (var_s1 = 0; var_s1 < 4; var_s1++) {
-                if (func_800B639C((gCupSelection * 4) + var_s1) >= 0) {
+                if (get_ghost_data_index_for_course((gCupSelection * 4) + var_s1) >= 0) {
                     temp_v0 = &D_800E7168[var_s1];
                     temp_v1 = temp_v0->column;
                     temp_s0 = temp_v0->row;
@@ -9156,7 +9156,7 @@ void func_800A8F48(UNUSED MenuItem* arg0) {
             break;
         case SUB_MENU_MAP_SELECT_COURSE:
         default:
-            if (func_800B639C((gCupSelection * 4) + gCourseIndexInCup) >= 0) {
+            if (get_ghost_data_index_for_course((gCupSelection * 4) + gCourseIndexInCup) >= 0) {
                 gDisplayListHead = func_80098FC8(gDisplayListHead, 0x00000057, 0x00000070, 0x00000096, 0x00000081);
                 gDisplayListHead = render_menu_textures(gDisplayListHead, D_02004A0C, 0x00000057, 0x00000070);
             }
@@ -10447,7 +10447,7 @@ void func_800AB9B0(MenuItem* arg0) {
 
     if (arg0->param1 != gCupSelection) {
         arg0->param1 = gCupSelection;
-        arg0->param2 = func_800B54C0((s32) gCupSelection, gCCSelection);
+        arg0->param2 = save_get_grand_prix_points((s32) gCupSelection, gCCSelection);
         func_8009A594(arg0->D_8018DEE0_index, 0,
                       segmented_to_virtual_dupe_2(D_800E7E20[((gCCSelection / 2) * 4) - arg0->param2]));
         arg0->column = (s32) D_800E7268->column;
@@ -10809,7 +10809,7 @@ void func_800AC458(MenuItem* arg0) {
                 if (gCourseIndexInCup == 3) {
                     for (var_a1 = 0; var_a1 < 8; var_a1++) {
                         if (gGetPlayerByCharacterId[gCharacterIdByGPOverallRank[var_a1]] < gPlayerCount) {
-                            func_800B536C(var_a1);
+                            save_update_grand_prix_points(var_a1);
                             break;
                         }
                     }
@@ -10844,7 +10844,7 @@ void func_800AC458(MenuItem* arg0) {
                 D_800DC5EC->screenStartY = 0x012C;
                 D_800DC5F0->screenStartY = -0x003C;
                 D_8015F894 = 4;
-                func_800CA330(0x19U);
+                audio_push_volume_cmd(0x19U);
             }
             break;
         case 13:
@@ -10914,8 +10914,8 @@ void func_800ACA14(MenuItem* arg0) {
                 }
             }
             if (gControllerFive->buttonPressed & (A_BUTTON | START_BUTTON)) {
-                func_8009DFE0(0x0000001E);
-                func_800CA330(0x19U);
+                init_menu_fade_out(0x0000001E);
+                audio_push_volume_cmd(0x19U);
                 play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
                 if (arg0->paramf < 4.2) {
                     arg0->paramf += 4.0;
@@ -10986,7 +10986,7 @@ void func_800ACC50(MenuItem* arg0) {
                     }
                 }
                 if (gControllerFive->buttonPressed & (START_BUTTON | A_BUTTON)) {
-                    func_8009DFE0(0x0000001E);
+                    init_menu_fade_out(0x0000001E);
                     play_sound2(SOUND_MENU_OK_CLICKED);
                     if (gModeSelection == VERSUS) {
                         gVersusResultCursorSelection = (s8) arg0->state;
@@ -11049,8 +11049,8 @@ void func_800ACF40(MenuItem* arg0) {
                         func_8009A640(arg0->D_8018DEE0_index, 0, somePlayerIndex,
                                       segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_a1]));
                         arg0->state = 3;
-                        func_800CA24C(somePlayerIndex);
-                        func_800C90F4(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
+                        audio_set_player_finished_2(somePlayerIndex);
+                        audio_play_character_sound(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
                     }
                 }
             }
@@ -11201,8 +11201,8 @@ void func_800AD2E8(MenuItem* arg0) {
                                 case 5:                                                        /* switch 4 */
                                     break;
                                 case 0: /* switch 4 */
-                                    func_800B6708();
-                                    arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
+                                    read_controller_pak_1_ghost_headers();
+                                    arg0->state = save_get_ghost_data_controller_pak_index((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
                                     var_v1 = 1;
                                     play_sound2(SOUND_MENU_SELECT);
                                     break;
@@ -11216,7 +11216,7 @@ void func_800AD2E8(MenuItem* arg0) {
                         }
                         if (var_v1 == 0) {
                             if (gControllerPak1State == 0) {
-                                switch (func_800B5F30()) { /* switch 2 */
+                                switch (check_and_init_controller_pak_1()) { /* switch 2 */
                                     case -1:               /* switch 2 */
                                         arg0->state = 0x0000000B;
                                         var_v1 = 1;
@@ -11248,8 +11248,8 @@ void func_800AD2E8(MenuItem* arg0) {
                                 }
                                 if (osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                                   (u8*) gExtCode, &gControllerPak1FileNote) == 0) {
-                                    func_800B6708();
-                                    arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
+                                    read_controller_pak_1_ghost_headers();
+                                    arg0->state = save_get_ghost_data_controller_pak_index((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
                                     play_sound2(SOUND_MENU_SELECT);
                                     return;
                                 }
@@ -11299,7 +11299,7 @@ void func_800AD2E8(MenuItem* arg0) {
         case 17:
         case 18:
             arg0->param2 = arg0->state - 0x11;
-            if (func_800B639C((gCupSelection * 4) + gCourseIndexInCup) != arg0->param2) {
+            if (get_ghost_data_index_for_course((gCupSelection * 4) + gCourseIndexInCup) != arg0->param2) {
                 if ((gControllerOne->buttonPressed | gControllerOne->stickPressed) & U_JPAD) {
                     if (arg0->state >= 0x12) {
                         arg0->state--;
@@ -11331,7 +11331,7 @@ void func_800AD2E8(MenuItem* arg0) {
                 if (thing->ghostDataSaved == 0) {
                     arg0->state = 0x00000019;
                     arg0->param1 = 0;
-                } else if (func_800B63F0(arg0->param2) == 0) {
+                } else if (save_check_ghost_data_validity(arg0->param2) == 0) {
                     arg0->state = 0x00000010;
                 } else {
                     arg0->state = 0x00000014;
@@ -11343,7 +11343,7 @@ void func_800AD2E8(MenuItem* arg0) {
             }
             break;
         case 19:
-            if ((arg0->param1 == 1) && (func_800B6A68() != 0)) {
+            if ((arg0->param1 == 1) && (allocate_controller_pak_1_file() != 0)) {
                 arg0->state = 0x0000000F;
                 return;
             } else {
@@ -11401,7 +11401,7 @@ void func_800AD2E8(MenuItem* arg0) {
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
                 }
-                if (func_800B6178(arg0->param2) != 0) {
+                if (load_ghost_data_from_controller_pak(arg0->param2) != 0) {
                     arg0->state = 0x0000001A;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
@@ -11425,21 +11425,21 @@ void func_800AD2E8(MenuItem* arg0) {
                 case 5:             /* switch 3 */
                     D_8015F890 = 0;
                     D_8015F892 = 1;
-                    func_802903B0();
+                    trigger_restart_race();
                     break;
                 case 6: /* switch 3 */
-                    func_80290388();
+                    quit_to_course_select_menu();
                     break;
                 case 7: /* switch 3 */
-                    func_80290360();
+                    quit_to_player_select_menu();
                     break;
                 case 8: /* switch 3 */
-                    func_80290338();
+                    quit_to_main_menu();
                     break;
                 case 9: /* switch 3 */
                     D_8015F890 = 1;
                     D_8015F892 = 0;
-                    func_802903B0();
+                    trigger_restart_race();
                     break;
             }
             arg0->param2 = 0;
@@ -11447,7 +11447,7 @@ void func_800AD2E8(MenuItem* arg0) {
             D_800DC5EC->screenStartY = 0x012C;
             D_800DC5F0->screenStartY = -0x003C;
             D_8015F894 = 4;
-            func_800CA330(0x19U);
+            audio_push_volume_cmd(0x19U);
             break;
         case 31:
             arg0->type = 0;
@@ -11516,12 +11516,12 @@ void func_800ADF48(MenuItem* arg0) {
                         if (arg0->state == D_800F0B50[gModeSelection]) {
                             arg0->state = 0;
                             gIsGamePaused = 0;
-                            func_8028DF38();
-                            func_800C9F90(0U);
+                            restore_controller_input();
+                            audio_play_menu_sound(0U);
                         } else {
-                            func_8009DFE0(30);
+                            init_menu_fade_out(30);
                             play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
-                            func_800CA330(FUNC_800ADF48DEF);
+                            audio_push_volume_cmd(FUNC_800ADF48DEF);
                             if (arg0->paramf < 4.2) {
                                 arg0->paramf += 4.0;
                             }
@@ -11605,8 +11605,8 @@ void func_800AE218(MenuItem* arg0) {
                                 case PFS_ERR_INVALID:                                          /* switch 3 */
                                     break;
                                 case PFS_NO_ERROR: /* switch 3 */
-                                    func_800B6708();
-                                    arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
+                                    read_controller_pak_1_ghost_headers();
+                                    arg0->state = save_get_ghost_data_controller_pak_index((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
                                     var_v1 = 1;
                                     break;
                                 case PFS_ERR_NEW_PACK: /* switch 3 */
@@ -11622,7 +11622,7 @@ void func_800AE218(MenuItem* arg0) {
                             return;
                         }
                         if (gControllerPak1State == 0) {
-                            switch (func_800B5F30()) { /* switch 2 */
+                            switch (check_and_init_controller_pak_1()) { /* switch 2 */
                                 case PFS_INVALID_DATA: /* switch 2 */
                                     arg0->state = 0x00000015;
                                     var_v1 = 1;
@@ -11654,8 +11654,8 @@ void func_800AE218(MenuItem* arg0) {
                             }
                             if (osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                               (u8*) gExtCode, &gControllerPak1FileNote) == 0) {
-                                func_800B6708();
-                                arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
+                                read_controller_pak_1_ghost_headers();
+                                arg0->state = save_get_ghost_data_controller_pak_index((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
                                 play_sound2(SOUND_MENU_SELECT);
                                 return;
                             }
@@ -11672,9 +11672,9 @@ void func_800AE218(MenuItem* arg0) {
                             play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                         }
                     } else {
-                        func_8009DFE0(0x0000001E);
+                        init_menu_fade_out(0x0000001E);
                         play_sound2(SOUND_MENU_OK_CLICKED);
-                        func_800CA330(0x19U);
+                        audio_push_volume_cmd(0x19U);
                         fade_all_channel_volume_scale(0x19U);
                         if (arg0->paramf < 4.2) {
                             arg0->paramf += 4.0;
@@ -11701,7 +11701,7 @@ void func_800AE218(MenuItem* arg0) {
         case 30:
         case 31:
             arg0->param2 = (u32) arg0->state - 0x1E;
-            if (func_800B639C((gCupSelection * 4) + gCourseIndexInCup) != arg0->param2) {
+            if (get_ghost_data_index_for_course((gCupSelection * 4) + gCourseIndexInCup) != arg0->param2) {
                 if ((gControllerOne->buttonPressed | gControllerOne->stickPressed) & U_JPAD) {
                     if (arg0->state >= 0x1F) {
                         arg0->state--;
@@ -11731,7 +11731,7 @@ void func_800AE218(MenuItem* arg0) {
                 if (thing->ghostDataSaved == 0) {
                     arg0->state = 0x00000028;
                     arg0->param1 = 0;
-                } else if (func_800B63F0(arg0->param2) == 0) {
+                } else if (save_check_ghost_data_validity(arg0->param2) == 0) {
                     arg0->state = 0x0000001A;
                 } else {
                     arg0->state = 0x00000023;
@@ -11743,7 +11743,7 @@ void func_800AE218(MenuItem* arg0) {
             }
             break;
         case 32:
-            if ((arg0->param1 == 1) && (func_800B6A68() != 0)) {
+            if ((arg0->param1 == 1) && (allocate_controller_pak_1_file() != 0)) {
                 arg0->state = 0x00000019;
             } else {
                 arg0->param1++;
@@ -11798,7 +11798,7 @@ void func_800AE218(MenuItem* arg0) {
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
                 }
-                if (func_800B6178(arg0->param2) != 0) {
+                if (load_ghost_data_from_controller_pak(arg0->param2) != 0) {
                     arg0->state = 0x00000029;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
@@ -11818,7 +11818,7 @@ void func_800AEC54(MenuItem* arg0) {
             arg0->column = (get_string_width(gTextMenuAnnounceGhost) / 2) + 0x140;
             arg0->row = 0x000000DA;
             arg0->state = 1;
-            func_800C90F4(0U, (D_80162DE4 * 0x10) + 0x29008001);
+            audio_play_character_sound(0U, (D_80162DE4 * 0x10) + 0x29008001);
             break;
         case 1:
             func_800A9208(arg0, 0x000000A0);
@@ -11859,7 +11859,7 @@ void func_800AEDBC(MenuItem* arg0) {
                       segmented_to_virtual_dupe_2(
                           D_800E7E34[gCupCourseOrder[gTimeTrialDataCourseIndex / 4][gTimeTrialDataCourseIndex % 4]]));
         if (controller_pak_1_status() == PFS_NO_ERROR) {
-            func_800B6708();
+            read_controller_pak_1_ghost_headers();
         } else {
             D_8018EE10[0].ghostDataSaved = 0;
             D_8018EE10[1].ghostDataSaved = 0;
@@ -11893,7 +11893,7 @@ void func_800AEEE8(MenuItem* arg0) {
 
 void func_800AEF14(MenuItem* arg0) {
     if (playerHUD[PLAYER_ONE].raceCompleteBool != 0) {
-        if ((u32) playerHUD[PLAYER_ONE].someTimer < (u32) (func_800B4E24(4) & 0xFFFFF)) {
+        if ((u32) playerHUD[PLAYER_ONE].someTimer < (u32) (save_get_course_time_trial_record(4) & 0xFFFFF)) {
             D_8018ED90 = 1;
         }
         arg0->type = 0;
@@ -11960,8 +11960,8 @@ void func_800AF004(MenuItem* arg0) {
             }
             break;
         case 6:
-            func_8009DFE0(0x0000001E);
-            func_800CA330(0x19U);
+            init_menu_fade_out(0x0000001E);
+            audio_push_volume_cmd(0x19U);
             fade_all_channel_volume_scale(0x19U);
             arg0->state = 7;
             break;
@@ -12023,16 +12023,16 @@ void func_800AF270(MenuItem* arg0) {
             if (arg0->param2 >= 0x1F) {
                 if (D_802874D8.unk1D >= 3) {
                     arg0->state = 4;
-                    func_800CA0B8();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
-                    func_800CA0A0();
+                    audio_set_flag_800EA108_false();
+                    audio_play_character_sound(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
+                    audio_set_flag_800EA108_true();
                 } else {
                     arg0->state = 3;
                     func_8009A640(arg0->D_8018DEE0_index, 0, sp30,
                                   segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_v0]));
-                    func_800CA0B8();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
-                    func_800CA0A0();
+                    audio_set_flag_800EA108_false();
+                    audio_play_character_sound(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
+                    audio_set_flag_800EA108_true();
                 }
             }
             break;

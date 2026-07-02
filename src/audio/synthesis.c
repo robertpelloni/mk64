@@ -121,7 +121,7 @@ Acmd* synthesis_save_reverb_ring_buffer(Acmd* acmd, u16 addr, u16 destOffset, s3
     return acmd;
 }
 
-void func_800B6FB4(s32 updateIndexStart, s32 noteIndex) {
+void audio_disable_note_subs(s32 updateIndexStart, s32 noteIndex) {
     s32 i;
 
     for (i = updateIndexStart + 1; i < gAudioBufferParameters.updatesPerFrame; i++) {
@@ -523,7 +523,7 @@ Acmd* synthesis_process_note(s32 noteIndex, struct NoteSubEu* noteSubEu, struct 
                     noteSubEu->finished = 1;
                     note->noteSubEu.finished = 1;
                     note->noteSubEu.enabled = 0;
-                    func_800B6FB4(updateIndex, noteIndex);
+                    audio_disable_note_subs(updateIndex, noteIndex);
                     break;
                 }
 
@@ -576,7 +576,7 @@ Acmd* synthesis_process_note(s32 noteIndex, struct NoteSubEu* noteSubEu, struct 
     } else {
         leftRight = 0;
     }
-    cmd = func_800B86A0(cmd, noteSubEu, synthesisState, inBuf, 0, leftRight, flags);
+    cmd = synthesis_apply_pan_and_volume(cmd, noteSubEu, synthesisState, inBuf, 0, leftRight, flags);
     if (noteSubEu->usesHeadsetPanEffects) {
         cmd = note_apply_headset_pan_effects(cmd, noteSubEu, synthesisState, inBuf * 2, flags, leftRight);
     }
@@ -607,7 +607,7 @@ Acmd* final_resample(Acmd* acmd, struct NoteSynthesisState* synthesisState, s32 
     return acmd;
 }
 
-Acmd* func_800B86A0(Acmd* cmd, struct NoteSubEu* note, struct NoteSynthesisState* synthesisState, s32 nSamples,
+Acmd* synthesis_apply_pan_and_volume(Acmd* cmd, struct NoteSubEu* note, struct NoteSynthesisState* synthesisState, s32 nSamples,
                     u16 inBuf, s32 headsetPanSettings, UNUSED u32 flags) {
     UNUSED s32 pad[2];
     u16 sourceRight;

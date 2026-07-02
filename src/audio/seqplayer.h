@@ -23,7 +23,6 @@ void sequence_player_init_channels(struct SequencePlayer* seqPlayer, u16 channel
 void sequence_player_disable_channels(struct SequencePlayer* seqPlayer, u16 channelBits);
 void sequence_channel_enable(struct SequencePlayer* seqPlayer, u8 channelIndex, void* script);
 void sequence_player_disable(struct SequencePlayer* seqPlayer);
-void func_800BEF2C(struct SequencePlayer* seqPlayer);
 void audio_list_push_back(struct AudioListItem* list, struct AudioListItem* item);
 void* audio_list_pop_back(struct AudioListItem* list);
 void init_layer_freelist(void);

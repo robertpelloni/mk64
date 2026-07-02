@@ -4,21 +4,20 @@
 #include <PR/os.h>
 #include <common_structs.h>
 
-void func_80005B18(void);
+void check_and_finalize_ghost_data(void);
 void load_course_ghost(void);
 void load_post_time_trial_replay(void);
 void load_player_ghost(void);
 void set_staff_ghost(void);
-s32 func_800051C4(void);
-void func_8000522C(void);
-void func_800052A4(void);
-void func_80005310(void);
+s32 encode_ghost_data(void);
+void decode_ghost_data(void);
+void swap_ghost_buffer_index(void);
+void init_ghost_data(void);
 void process_post_time_trial_replay(void);
 void process_course_ghost_replay(void);
 void process_player_ghost_replay(void);
-void func_8000599C(void);
-void func_80005AE8(Player*);
-void func_80005E6C(void);
+void init_ghost_player(Player*);
+void update_ghost_replays(void);
 void replays_loop(void);
 
 // mi0decode

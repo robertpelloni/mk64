@@ -653,7 +653,7 @@ void note_init_for_layer(struct Note* note, struct SequenceChannelLayer* seqLaye
     sub->reverbIndex = seqLayer->seqChannel->reverbIndex & 3;
 }
 
-void func_800BD8F4(struct Note* note, struct SequenceChannelLayer* seqLayer) {
+void audio_note_release_and_take_ownership(struct Note* note, struct SequenceChannelLayer* seqLayer) {
     seq_channel_layer_note_release(note->parentLayer);
     note->wantedParentLayer = seqLayer;
 }
@@ -691,7 +691,7 @@ struct Note* alloc_note_from_active(struct NotePool* pool, struct SequenceChanne
     if (aNote == NULL) {
         eu_stubbed_printf_0("Audio: C-Alloc : lowerPrio is NULL\n");
     } else {
-        func_800BD8F4(aNote, seqLayer);
+        audio_note_release_and_take_ownership(aNote, seqLayer);
         audio_list_push_back(&pool->releasing, &aNote->listItem);
     }
 

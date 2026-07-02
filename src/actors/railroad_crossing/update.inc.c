@@ -18,7 +18,7 @@ void update_actor_railroad_crossing(struct RailroadCrossing* crossing) {
         }
         // Play Bell sound when timer hits 20 or 1.
         if ((crossing->someTimer == 1) || (crossing->someTimer == 20)) {
-            func_800C98B8(crossing->pos, crossing->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x70, 0x16));
+            audio_play_sound_by_pos(crossing->pos, crossing->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x70, 0x16));
         }
     }
 }

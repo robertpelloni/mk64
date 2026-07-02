@@ -99,21 +99,21 @@ void* soundAlloc(struct SoundAllocPool* pool, u32 size);
 void sound_alloc_pool_init(struct SoundAllocPool* pool, void* memAddr, u32 size);
 void persistent_pool_clear(struct PersistentPool* persistent);
 void temporary_pool_clear(struct TemporaryPool* temporary);
-void func_800B90E0(struct SoundAllocPool* pool);
+void audio_reset_alloc_pool(struct SoundAllocPool* pool);
 void sound_init_main_pools(s32);
-void func_800B914C(struct PoolSplit*);
+void audio_init_session_pools(struct PoolSplit*);
 void seq_and_bank_pool_init(struct PoolSplit2* a);
 void persistent_pools_init(struct PoolSplit* a);
 void temporary_pools_init(struct PoolSplit* a);
 void* alloc_bank_or_seq(struct SoundMultiPool*, s32, s32, s32, s32);
 void* get_bank_or_seq(s32 poolIdx, s32 arg1, s32 id);
 void* get_bank_or_seq_inner(s32 poolIdx, s32 arg1, s32 bankId);
-void func_800B9BE4(f32, f32, u16*);
+void audio_generate_resampling_filter(f32, f32, u16*);
 void decrease_reverb_gain(void);
 s32 audio_shut_down_and_reset_step(void);
 void audio_reset_session(void);
 void* unk_pool1_lookup(s32 poolIdx, s32 id);
-void func_800BA8B0(s32, s32);
+void audio_load_seq_to_pool(s32, s32);
 
 extern s32 D_800EA5D0;
 

@@ -39,7 +39,7 @@ const u8 gGameName[] = {
 const u8 gExtCode[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // new file start?
-void func_800B45E0(s32 arg0) {
+void write_time_trial_records_to_eeprom(s32 arg0) {
     CourseTimeTrialRecords* courseTimeTrialRecordsPtr =
         &gSaveData.allCourseTimeTrialRecords.cupRecords[arg0 / 4].courseRecords[arg0 % 4];
 
@@ -55,19 +55,19 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
-void func_800B46D0(void) {
+void reset_all_save_data(void) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
-        func_800B4728(i);
-        func_800B559C(i);
+        reset_time_trial_records_for_course(i);
+        save_update_best_time_trial_records(i);
     }
 
     reset_save_data_grand_prix_points_and_sound_mode();
     update_save_data_backup();
 }
 
-void func_800B4728(s32 arg0) {
+void reset_time_trial_records_for_course(s32 arg0) {
     s32 i, j;
     CourseTimeTrialRecords* courseTimeTrialRecords;
 
@@ -85,7 +85,7 @@ void func_800B4728(s32 arg0) {
 
     courseTimeTrialRecords->unknownBytes[0] = 0;
     courseTimeTrialRecords->checksum = checksum_time_trial_records(arg0);
-    func_800B45E0(arg0);
+    write_time_trial_records_to_eeprom(arg0);
 }
 
 void reset_save_data_grand_prix_points_and_sound_mode(void) {
@@ -140,7 +140,7 @@ void load_save_data(void) {
     osEepromLongRead(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData), (u8*) &gSaveData, sizeof(SaveData));
     // 16: 4 cup records * 4 course records?
     for (i = 0; i < 16; i++) {
-        func_800B4A9C(i);
+        save_check_and_recover_time_trial_records(i);
     }
 
     validate_save_data();
@@ -151,22 +151,22 @@ void load_save_data(void) {
     }
 }
 
-void func_800B4A9C(s32 course) {
+void save_check_and_recover_time_trial_records(s32 course) {
     OnlyBestTimeTrialRecords* test;
     CourseTimeTrialRecords* sp24;
     s32 i;
 
-    if ((func_800B4EB4(0, course) & 0xFFFFF) < 0x927C0U) {
+    if ((save_get_time_trial_record_by_course(0, course) & 0xFFFFF) < 0x927C0U) {
         gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4].unknownBytes[0] = 1;
     }
     sp24 = &gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4];
 
-    func_800B4FB0(course);
+    save_get_single_lap_record_by_course(course);
     if (sp24) {}
 
     if (sp24->checksum != checksum_time_trial_records(course)) {
-        func_800B4728(course);
-        if (func_800B58C4(course) == 0) {
+        reset_time_trial_records_for_course(course);
+        if (save_is_best_records_checksum_invalid(course) == 0) {
             s32 a3 = 0;
 
             test = &gSaveData.onlyBestTimeTrialRecords[course / 8];
@@ -188,13 +188,13 @@ void func_800B4A9C(s32 course) {
             } else {
                 sp24->unknownBytes[0] = 1;
             }
-            func_800B45E0(course);
+            write_time_trial_records_to_eeprom(course);
         }
         // L800B4C78
-        func_800B559C(course);
-    } else if (func_800B58C4(course)) {
+        save_update_best_time_trial_records(course);
+    } else if (save_is_best_records_checksum_invalid(course)) {
         // L800B4C88
-        func_800B559C(course);
+        save_update_best_time_trial_records(course);
     }
 }
 
@@ -239,7 +239,7 @@ void populate_time_trial_record(u8* timeTrialRecord, u32 time, s32 characterId) 
 }
 
 // combine time trial record u8[3] into the lower 24 bits of a word [xx221100]
-u32 func_800B4DF4(u8* arr) {
+u32 save_unpack_time_trial_record(u8* arr) {
     s32 a, b, c;
     a = arr[0];
     b = arr[1];
@@ -249,34 +249,34 @@ u32 func_800B4DF4(u8* arr) {
 }
 
 // Get a time trial record, infer course index
-s32 func_800B4E24(s32 recordIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 save_get_course_time_trial_record(s32 recordIndex) {
+    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[recordIndex]);
 }
 
 // Get a time trial record, but take the course index as an argument
-u32 func_800B4EB4(s32 recordIndex, s32 courseIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+u32 save_get_time_trial_record_by_course(s32 recordIndex, s32 courseIndex) {
+    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[recordIndex]);
 }
 
 // Get Best Lap record of the inferred course index
-s32 func_800B4F2C(void) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 save_get_course_single_lap_record(void) {
+    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
 // Get the best single lap time record of the given course index
-s32 func_800B4FB0(s32 courseIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+s32 save_get_single_lap_record_by_course(s32 courseIndex) {
+    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
-s32 func_800B5020(u32 time, s32 charId) {
+s32 save_update_course_time_trial_records(u32 time, s32 charId) {
     UNUSED s32 stackPadding[3];
     s32 course; // sp30
     s32 i;
@@ -288,7 +288,7 @@ s32 func_800B5020(u32 time, s32 charId) {
 
     i = 0;
     for (; i < 5; i++) {
-        if (time < (func_800B4DF4(tt->records[i]) & 0x000FFFFF)) {
+        if (time < (save_unpack_time_trial_record(tt->records[i]) & 0x000FFFFF)) {
             break;
         }
     }
@@ -309,12 +309,12 @@ s32 func_800B5020(u32 time, s32 charId) {
 
     populate_time_trial_record(tt->records[i], time, charId);
     tt->unknownBytes[0] = 1;
-    func_800B45E0(course);
+    write_time_trial_records_to_eeprom(course);
 
     return i;
 }
 
-s32 func_800B5218(void) {
+s32 save_update_course_single_lap_record(void) {
     u8* recordPointer;
     UNUSED s32 pad;
     s32 fastestLapIndex;
@@ -338,34 +338,34 @@ s32 func_800B5218(void) {
         }
     }
 
-    if (playerHUD->lapDurations[fastestLapIndex] < (func_800B4F2C() & 0xFFFFF)) {
+    if (playerHUD->lapDurations[fastestLapIndex] < (save_get_course_single_lap_record() & 0xFFFFF)) {
         populate_time_trial_record(recordPointer + 0xF, playerHUD->lapDurations[fastestLapIndex], character);
         recordPointer[0x12] = 1;
-        func_800B45E0(recordIndex);
+        write_time_trial_records_to_eeprom(recordIndex);
         return lapBitmask;
     } else {
         return 0;
     }
 }
 
-void func_800B536C(s32 arg0) {
+void save_update_grand_prix_points(s32 arg0) {
     u8* points;
     u8 tmp;
     s32 tmp2;
 
     if (arg0 >= 0) {
         points = &gSaveData.main.saveInfo.grandPrixPoints[gCCSelection];
-        tmp = func_800B54EC(gCupSelection, *points);
+        tmp = save_get_grand_prix_points_for_cup(gCupSelection, *points);
         tmp2 = 3 - arg0;
         if ((arg0 < 3) && (tmp < (3 - arg0))) {
-            *points = func_800B5508(gCupSelection, *points, tmp2);
+            *points = save_calculate_grand_prix_points(gCupSelection, *points, tmp2);
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
         }
     }
 }
 
-void func_800B5404(s32 arg0, s32 arg1) {
+void save_set_grand_prix_points(s32 arg0, s32 arg1) {
     u8* points;
     s32 temp_a0;
     s32 temp;
@@ -375,10 +375,10 @@ void func_800B5404(s32 arg0, s32 arg1) {
     if (arg0 >= 0) {
         temp2 = arg1 / 4;
         points = &gSaveData.main.saveInfo.grandPrixPoints[arg1 % 4];
-        temp = func_800B54EC(temp2, *points);
+        temp = save_get_grand_prix_points_for_cup(temp2, *points);
 
         if ((arg0 < 3) && (temp < (temp_a0 = 3 - arg0))) {
-            *points = func_800B5508(temp2, *points, temp_a0);
+            *points = save_calculate_grand_prix_points(temp2, *points, temp_a0);
 
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
@@ -387,12 +387,12 @@ void func_800B5404(s32 arg0, s32 arg1) {
 }
 
 // Get Grand Prix points for a given cup and CC mode
-u8 func_800B54C0(s32 cup, s32 cc_mode) {
-    return func_800B54EC(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
+u8 save_get_grand_prix_points(s32 cup, s32 cc_mode) {
+    return save_get_grand_prix_points_for_cup(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
 }
 
 // Get Grand Prix points scored for a given cup
-u8 func_800B54EC(s32 cup, s32 ccGrandPrixPoints) {
+u8 save_get_grand_prix_points_for_cup(s32 cup, s32 ccGrandPrixPoints) {
     s32 cup_index = cup * 2;
     u32 cup_points = ccGrandPrixPoints;
 
@@ -405,7 +405,7 @@ u8 func_800B54EC(s32 cup, s32 ccGrandPrixPoints) {
 
 // Generate a new CC Grand Prix Points entry with points_scored
 // placed in the given cup's location
-u8 func_800B5508(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
+u8 save_calculate_grand_prix_points(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
     s32 cup_index = cup * 2;
 
     points_scored <<= cup_index;
@@ -433,7 +433,7 @@ s32 has_completed_extra_mode(void) {
     return is_cc_mode_complete(CC_EXTRA);
 }
 
-void func_800B559C(s32 arg0) {
+void save_update_best_time_trial_records(s32 arg0) {
     CourseTimeTrialRecords* courseRecord;
     OnlyBestTimeTrialRecords* bestRecord;
     s32 x = arg0 / 8;
@@ -455,8 +455,8 @@ void func_800B559C(s32 arg0) {
         }
     }
     bestRecord = &gSaveData.onlyBestTimeTrialRecords[x];
-    bestRecord->unknownBytes[6] = func_800B578C(x);
-    bestRecord->unknownBytes[7] = func_800B5888(x);
+    bestRecord->unknownBytes[6] = save_calc_best_records_checksum(x);
+    bestRecord->unknownBytes[7] = save_calc_best_records_checksum_2(x);
     osEepromLongWrite(&gSIEventMesgQueue, ((u32) (((u8*) bestRecord) - ((u8*) (&gSaveData)))) >> 3,
                       bestRecord->bestThreelaps[0], 0x38);
 }
@@ -470,7 +470,7 @@ void func_800B559C(s32 arg0) {
  *
  * But only unknown bytes 7 and 8 ever get set, so why the extra 3, and why in chunks of 17?
  **/
-u8 func_800B578C(s32 arg0) {
+u8 save_calc_best_records_checksum(s32 arg0) {
     u8* times = (u8*)&gSaveData.onlyBestTimeTrialRecords[arg0];
     s32 checksum = 0;
     s32 i;
@@ -484,20 +484,20 @@ u8 func_800B578C(s32 arg0) {
     return (checksum % 256);
 }
 
-s32 func_800B5888(s32 arg0) {
+s32 save_calc_best_records_checksum_2(s32 arg0) {
     s32 tmp = gSaveData.onlyBestTimeTrialRecords[arg0].unknownBytes[6] + 90;
     return (tmp % 256) & 0xFF;
 }
 
-s32 func_800B58C4(s32 arg0) {
+s32 save_is_best_records_checksum_invalid(s32 arg0) {
     UNUSED s32 pad1;
     OnlyBestTimeTrialRecords* temp_v1;
     UNUSED s32 pad2;
     UNUSED s32 pad3;
 
     temp_v1 = &gSaveData.onlyBestTimeTrialRecords[arg0 / 8];
-    if ((temp_v1->unknownBytes[6] != (func_800B578C(arg0 / 8) ^ 0)) ||
-        (temp_v1->unknownBytes[7] != (func_800B5888(arg0 / 8) ^ 0))) {
+    if ((temp_v1->unknownBytes[6] != (save_calc_best_records_checksum(arg0 / 8) ^ 0)) ||
+        (temp_v1->unknownBytes[7] != (save_calc_best_records_checksum_2(arg0 / 8) ^ 0))) {
         return 1;
     }
 
@@ -677,7 +677,7 @@ s32 controller_pak_2_status(void) {
     }
 }
 
-s32 func_800B5F30(void) {
+s32 check_and_init_controller_pak_1(void) {
     s32 errorCode;
 
     if (gControllerPak1State) {
@@ -703,7 +703,7 @@ s32 func_800B5F30(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 func_800B6014(void) {
+s32 check_and_init_controller_pak_2(void) {
     s32 errorCode;
 
     if (sControllerPak2State) {
@@ -719,17 +719,17 @@ s32 func_800B6014(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 func_800B6088(s32 arg0) {
+s32 update_and_write_controller_pak_1_ghost_header(s32 arg0) {
     struct_8018EE10_entry* temp_v1;
 
     temp_v1 = &D_8018EE10[arg0];
-    temp_v1->checksum = func_800B6828(arg0);
+    temp_v1->checksum = save_compute_ghost_header_checksum(arg0);
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               arg0 * 0x80 /* 0x80 == sizeof(struct_8018EE10_entry) */, sizeof(struct_8018EE10_entry),
                               (u8*) temp_v1);
 }
 
-u8 func_800B60E8(s32 page) {
+u8 compute_ghost_data_page_checksum(s32 page) {
     s32 i;
     u32 checksum = 0;
     u8* addr;
@@ -740,7 +740,7 @@ u8 func_800B60E8(s32 page) {
     return checksum;
 }
 
-s32 func_800B6178(s32 arg0) {
+s32 load_ghost_data_from_controller_pak(s32 arg0) {
     s32 var_v0;
     s32 var_s0;
     struct_8018EE10_entry* temp_s3;
@@ -753,11 +753,11 @@ s32 func_800B6178(s32 arg0) {
             return -1;
     }
     if (gGamestate == RACING) {
-        func_800051C4();
+        encode_ghost_data();
     }
     temp_s3 = &D_8018EE10[arg0];
     temp_s3->ghostDataSaved = 0;
-    var_v0 = func_800B6088(arg0);
+    var_v0 = update_and_write_controller_pak_1_ghost_header(arg0);
     if (var_v0 != 0) {
         temp_s3->ghostDataSaved = 0;
         for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
@@ -774,9 +774,9 @@ s32 func_800B6178(s32 arg0) {
             temp_s3->unk_00 = D_80162DFC;
             temp_s3->characterId = (u8) D_80162DE0;
             for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
-                temp_s3->unk_07[var_s0] = func_800B60E8(var_s0);
+                temp_s3->unk_07[var_s0] = compute_ghost_data_page_checksum(var_s0);
             }
-            var_v0 = func_800B6088(arg0);
+            var_v0 = update_and_write_controller_pak_1_ghost_header(arg0);
         }
         if (var_v0 != 0) {
             temp_s3->ghostDataSaved = 0;
@@ -788,7 +788,7 @@ s32 func_800B6178(s32 arg0) {
     return var_v0;
 }
 
-s32 func_800B6348(s32 arg0) {
+s32 save_get_ghost_data_controller_pak_index(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -798,7 +798,7 @@ s32 func_800B6348(s32 arg0) {
     return 0;
 }
 
-s32 func_800B639C(s32 arg0) {
+s32 get_ghost_data_index_for_course(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -808,14 +808,14 @@ s32 func_800B639C(s32 arg0) {
     return -1;
 }
 
-s32 func_800B63F0(s32 arg0) {
+s32 save_check_ghost_data_validity(s32 arg0) {
     s32 temp_s0;
     u8* phi_s1;
     s32 phi_s3;
 
-    func_800051C4();
+    encode_ghost_data();
     bCourseGhostDisabled = 1;
-    func_80005AE8(gPlayerThree);
+    init_ghost_player(gPlayerThree);
 
     phi_s3 = 0;
     if (((gCupSelection * 4) + gCourseIndexInCup) != D_8018EE10[arg0].courseIndex) {
@@ -830,7 +830,7 @@ s32 func_800B63F0(s32 arg0) {
             phi_s1 = (u8*) &D_8018EE10[arg0];
 
             while (temp_s0 < 0x3C) {
-                if (phi_s1[7] != func_800B60E8(temp_s0)) {
+                if (phi_s1[7] != compute_ghost_data_page_checksum(temp_s0)) {
                     phi_s3 = 1;
                     break;
                 }
@@ -844,7 +844,7 @@ s32 func_800B63F0(s32 arg0) {
     return phi_s3;
 }
 
-s32 func_800B64EC(s32 arg0) {
+s32 load_ghost_data_and_verify_checksum(s32 arg0) {
     s32 temp_s0;
     s32 temp_v0;
     u8* phi_s1;
@@ -860,14 +860,14 @@ s32 func_800B64EC(s32 arg0) {
         phi_s1 = (u8 *) &D_8018EE10[arg0]; temp_s0 = 0; while (1) {
             // clang-format on
 
-            if (phi_s1[7] != func_800B60E8(temp_s0)) {
+            if (phi_s1[7] != compute_ghost_data_page_checksum(temp_s0)) {
                 D_8018EE10[arg0].ghostDataSaved = 0;
                 return -2;
             }
 
             ++phi_s1;
             if ((++temp_s0) == 0x3C) {
-                func_8000522C();
+                decode_ghost_data();
                 bPlayerGhostDisabled = 0;
                 D_80162DE0 = (s32) D_8018EE10[arg0].characterId;
                 D_80162DFC = D_8018EE10[arg0].unk_00;
@@ -879,7 +879,7 @@ s32 func_800B64EC(s32 arg0) {
     return temp_v0;
 }
 
-s32 func_800B65F4(s32 arg0, s32 arg1) {
+s32 save_ghost_data_to_controller_pak(s32 arg0, s32 arg1) {
     UNUSED s32 stackPadding;
     s32 i;
     s32 writeStatus;
@@ -896,7 +896,7 @@ s32 func_800B65F4(s32 arg0, s32 arg1) {
     if (writeStatus == 0) {
         temp_s3 = &((struct_8018EE10_entry*) gSomeDLBuffer)[arg0];
         for (i = 0; i < 0x3C; i++) {
-            if (temp_s3->unk_07[i] != func_800B60E8(i)) {
+            if (temp_s3->unk_07[i] != compute_ghost_data_page_checksum(i)) {
                 temp_s3->ghostDataSaved = 0;
                 return -2;
             }
@@ -908,20 +908,20 @@ s32 func_800B65F4(s32 arg0, s32 arg1) {
     return writeStatus;
 }
 
-void func_800B6708(void) {
+void read_controller_pak_1_ghost_headers(void) {
     s32 temp_s0;
 
     osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_READ, 0,
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, (u8*) &D_8018EE10);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        if (D_8018EE10[temp_s0].checksum != func_800B6828(temp_s0)) {
+        if (D_8018EE10[temp_s0].checksum != save_compute_ghost_header_checksum(temp_s0)) {
             D_8018EE10[temp_s0].ghostDataSaved = 0;
         }
     }
 }
 
-void func_800B6798(void) {
+void read_controller_pak_2_ghost_headers(void) {
     s32 temp_s0;
     u8* tmp;
 
@@ -931,16 +931,16 @@ void func_800B6798(void) {
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, tmp);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        // if (gSomeDLBuffer[temp_s0]->checksum != func_800B68F4(temp_s0)) {
+        // if (gSomeDLBuffer[temp_s0]->checksum != save_compute_ghost_header_checksum_dl_buffer(temp_s0)) {
         //     gSomeDLBuffer[temp_s0]->ghostDataSaved = 0;
         // }
-        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != func_800B68F4(temp_s0)) {
+        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != save_compute_ghost_header_checksum_dl_buffer(temp_s0)) {
             ((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->ghostDataSaved = 0;
         }
     }
 }
 
-u8 func_800B6828(s32 arg0) {
+u8 save_compute_ghost_header_checksum(s32 arg0) {
     u32 checksum = 0;
     u8* addr = (u8*) &D_8018EE10[arg0];
     s32 i;
@@ -950,7 +950,7 @@ u8 func_800B6828(s32 arg0) {
     return checksum;
 }
 
-u8 func_800B68F4(s32 arg0) {
+u8 save_compute_ghost_header_checksum_dl_buffer(s32 arg0) {
     struct_8018EE10_entry* var_v0 = gSomeDLBuffer;
     u8 *addr = (u8*)(var_v0 + arg0);
     s32 i = 0;
@@ -963,7 +963,7 @@ u8 func_800B68F4(s32 arg0) {
     return checksum;
 }
 
-s32 func_800B69BC(s32 arg0) {
+s32 reset_controller_pak_1_ghost_header(s32 arg0) {
     u32 i;
     struct_8018EE10_entry* plz = &D_8018EE10[arg0];
 
@@ -973,13 +973,13 @@ s32 func_800B69BC(s32 arg0) {
     for (i = 0; i < sizeof(plz->unk_07); i++) {
         plz->unk_07[i] = i;
     }
-    plz->checksum = func_800B6828(arg0);
+    plz->checksum = save_compute_ghost_header_checksum(arg0);
 
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               (s32) sizeof(struct_8018EE10_entry) * arg0, sizeof(struct_8018EE10_entry), (u8*) plz);
 }
 
-s32 func_800B6A68(void) {
+s32 allocate_controller_pak_1_file(void) {
     UNUSED s32 pad;
     s32 ret;
     s32 i;
@@ -988,7 +988,7 @@ s32 func_800B6A68(void) {
                             0x7900, &gControllerPak1FileNote);
     if (ret == 0) {
         for (i = 0; i < 2; i++) {
-            func_800B69BC(i);
+            reset_controller_pak_1_ghost_header(i);
         }
     }
 
@@ -1005,7 +1005,7 @@ void func_8800B6AF8(void) {
         osPfsFreeBlocks(&gControllerPak1FileHandle, &gControllerPak1NumPagesFree) == 0) {
         gControllerPak1NumPagesFree >>= 8;
         if (gControllerPak1NumPagesFree >= 0x79) {
-            func_800B6A68();
+            allocate_controller_pak_1_file();
         }
     }
 }
