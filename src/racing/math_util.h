@@ -14,12 +14,11 @@
 // Here to appease the pragma gods
 double fabs(double x);
 
-void unused_func_802B5794(Mat4, Vec3f, Vec3f);       // Unused
-s32 unused_func_802B4F60(s32, Vec3f, s32, f32, f32); // Unused
+s32 math_util_transform_vec3f_mat4_skybox(s32, Vec3f, s32, f32, f32); // Unused
 s32 render_set_position(Mat4, s32);
 f32 dist_squared_bugged(Vec3f, Vec3f);
 s32 get_xz_angle_between_points(Vec3f, Vec3f);
-u32 unused_func_802B5258(Vec3f, Vec3s); // Unused
+u32 math_util_get_xz_angle_between_points_2(Vec3f, Vec3s); // Unused
 void vec3f_set(Vec3f, f32, f32, f32);
 void vec3s_set(Vec3s, s16, s16, s16);
 void* vec3f_copy_return(Vec3f, Vec3f);
@@ -36,9 +35,8 @@ void mtxf_lookat(Mat4, Vec3f, Vec3f);
 void mtxf_rotate_x(Mat4, s16);
 void mtxf_rotate_y(Mat4, s16);
 void mtxf_s16_rotate_z(Mat4, s16);
-void unused_func_802B5B14(Vec3f b, Vec3s rotate); // Unused
-void unused_func_802B5CAC(s16, s16, Vec3f);       // Unused
-void unused_func_802B5D30(s16, s16, s32);         // Unused
+void math_util_rotate_vec3f_by_vec3s(Vec3f b, Vec3s rotate); // Unused
+void math_util_set_course_lighting_2(s16, s16, s32);         // Unused
 void set_course_lighting(Lights1*, s16, s16, s32);
 void mtxf_scale(Mat4, f32);
 void mtxf_rotate_zxy_translate(Mat4, Vec3f, Vec3s);
@@ -47,8 +45,8 @@ void mtxf_transform_vec3f_mat4(Vec3f, Mat4);
 void vec3f_rotate_y(Vec3f, s16);
 void calculate_orientation_matrix(Mat3, f32, f32, f32, s16);
 void calculate_rotation_matrix(Mat3, s16, f32, f32, f32);
-void unused_func_802B6BC0(Mat4, s16, f32, f32, f32); // Unused
-void unused_func_802B6D58(Mat4, Vec3f, Vec3f);       // Unused
+void math_util_create_mat4_from_axis_angle(Mat4, s16, f32, f32, f32); // Unused
+void math_util_create_mat4_translation_rotation(Mat4, Vec3f, Vec3f);       // Unused
 void mtxf_multiplication(Mat4, Mat4, Mat4);
 void mtxf_to_mtx(Mtx*, Mat4);
 u16 atan2_lookup(f32, f32);

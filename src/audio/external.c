@@ -150,7 +150,7 @@ char external_unused_string_eu_03[] = "SE FADE OUT TIME %d\n";
 #endif
 
 // Requires void in the argument list to match properly.
-}
+void func_800C13F0(void) {}
 
 void audio_reset_session_eu(OSMesg presetId) {
     OSMesg mesg;
