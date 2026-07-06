@@ -15,7 +15,7 @@ UNUSED s32 D_802B91C0[2] = { 13, 13 };
 Vec3f D_802B91C8 = { 0.0f, 0.0f, 0.0f };
 
 // This functions looks similar to a segment of code from render_skybox in skybox_and_splitscreen.c
-UNUSED s32 math_util_transform_vec3f_mat4_skybox(UNUSED s32 arg0, Vec3f arg1, UNUSED s32 arg2, UNUSED f32 arg3, UNUSED f32 arg4) {
+UNUSED s32 unused_func_802B4F60(UNUSED s32 arg0, Vec3f arg1, UNUSED s32 arg2, UNUSED f32 arg3, UNUSED f32 arg4) {
     Mat4 sp30;
     f32 sp2C;
     f32 sp28;
@@ -36,7 +36,7 @@ UNUSED s32 math_util_transform_vec3f_mat4_skybox(UNUSED s32 arg0, Vec3f arg1, UN
     }
 }
 
-UNUSED void math_util_empty_func() {
+UNUSED void unused_func_802B4FF0() {
 }
 
 /**
@@ -104,7 +104,7 @@ s32 get_xz_angle_between_points(Vec3f pointFrom, Vec3f pointTo) {
 }
 
 // copy of get_xz_angle_between_points
-UNUSED u32 math_util_get_xz_angle_between_points_2(Vec3f arg0, Vec3s arg1) {
+UNUSED u32 unused_func_802B5258(Vec3f arg0, Vec3s arg1) {
     f32 temp_v1;
     f32 temp_v2;
     temp_v1 = arg1[0] - arg0[0];
@@ -474,7 +474,7 @@ void mtxf_s16_rotate_z(Mat4 mtx, s16 angle) {
      */
 }
 
-UNUSED void math_util_rotate_vec3f_by_vec3s(Vec3f b, Vec3s rotate) {
+UNUSED void unused_func_802B5B14(Vec3f b, Vec3s rotate) {
     Mat4 mtx;
     Vec3f copy;
 
@@ -520,7 +520,7 @@ void vec_unit_z_rotX_rotY(s16 rotY, s16 rotX, Vec3f arg2) {
     // (0, 0, -1) -> (0, sinX, -cosX) -> (cosX * sinY, sinX, -(cosX * cosY))
 }
 
-UNUSED void math_util_set_course_lighting_2(s16 arg0, s16 arg1, s32 arg2) {
+UNUSED void unused_func_802B5D30(s16 arg0, s16 arg1, s32 arg2) {
     set_course_lighting((Lights1*) 0x9000000, arg0, arg1, arg2);
 }
 
@@ -625,7 +625,7 @@ void mtxf_rotate_zxy_translate(Mat4 dest, Vec3f translate, Vec3s orientation) {
   =|-CySz + SxSyCz         CxCz  SySz + SxCyCz              0|
    |          CxSy          -Sx           CxCy              0|
    |            V0           V1             V2              1|*/
-UNUSED void math_util_create_mat4_from_vec3s(Mat4 arg0, Vec3s arg1, Vec3s arg2) {
+UNUSED void unused_func_802B60B4(Mat4 arg0, Vec3s arg1, Vec3s arg2) {
     f32 sine1;
     f32 cosine1;
     f32 sine2;
@@ -657,7 +657,7 @@ UNUSED void math_util_create_mat4_from_vec3s(Mat4 arg0, Vec3s arg1, Vec3s arg2) 
     arg0[3][3] = 1.0f;
 }
 
-UNUSED void math_util_create_mat4_from_vec3s_2(Mat4 arg0, Vec3s arg1, Vec3s arg2) {
+UNUSED void unused_func_802B6214(Mat4 arg0, Vec3s arg1, Vec3s arg2) {
     f32 sine1;
     f32 cosine1;
     f32 sine2;
@@ -690,7 +690,7 @@ UNUSED void math_util_create_mat4_from_vec3s_2(Mat4 arg0, Vec3s arg1, Vec3s arg2
 }
 
 // look like to normalise vector
-UNUSED void math_util_normalize_vec3f(Vec3f arg0) {
+UNUSED void unused_func_802B6374(Vec3f arg0) {
     f32 temp_f0;
     temp_f0 = sqrtf((arg0[0] * arg0[0]) + (arg0[1] * arg0[1]) + (arg0[2] * arg0[2]));
     arg0[0] /= temp_f0;
@@ -736,7 +736,7 @@ void mtxf_transform_vec3f_mat4(Vec3f vec, Mat4 mat) {
     vec[2] = newZ;
 }
 
-UNUSED void math_util_empty_func_2(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2, UNUSED s32 arg3) {
+UNUSED void unused_func_802B64B0(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2, UNUSED s32 arg3) {
 }
 
 /*
@@ -842,7 +842,7 @@ void calculate_orientation_matrix(Mat3 dest, f32 axisZ, f32 cosAxisY, f32 axisX,
 }
 
 // include in calculate_orientation_matrix
-UNUSED void math_util_calculate_orientation_matrix_2(Mat3 matrix, f32 arg1, f32 arg2, f32 arg3) {
+UNUSED void unused_func_802B68F8(Mat3 matrix, f32 arg1, f32 arg2, f32 arg3) {
     s32 i, j;
     f32 a;
     f32 b;
@@ -915,7 +915,7 @@ void calculate_rotation_matrix(Mat3 destMatrix, s16 rotationAngle, f32 axisX, f3
     destMatrix[0][1] = valueXY + (axisZ * sinValue);
 }
 
-UNUSED void math_util_create_mat4_from_axis_angle(Mat4 arg0, s16 arg1, f32 arg2, f32 arg3, f32 arg4) {
+UNUSED void unused_func_802B6BC0(Mat4 arg0, s16 arg1, f32 arg2, f32 arg3, f32 arg4) {
     f32 sine;
     f32 cosine;
     f32 temp_f0;
@@ -953,7 +953,7 @@ UNUSED void math_util_create_mat4_from_axis_angle(Mat4 arg0, s16 arg1, f32 arg2,
 }
 
 // look like create a translation and rotation matrix with arg1 position and arg2 rotation
-UNUSED void math_util_create_mat4_translation_rotation(Mat4 arg0, Vec3f arg1, Vec3f arg2) {
+UNUSED void unused_func_802B6D58(Mat4 arg0, Vec3f arg1, Vec3f arg2) {
     f32 sine1;
     f32 cosine1;
     f32 sine2;
@@ -1142,7 +1142,7 @@ f32 atan2f(f32 y, f32 x) {
 }
 
 #ifndef NON_MATCHING // The decomp does not support fabs
-UNUSED f32 math_util_fabs_unused(f32 arg0, f32 arg1) {
+UNUSED f32 unused_func_802B79F0(f32 arg0, f32 arg1) {
     f64 halfpi;
     f32 temp_f0;
     UNUSED f32 pad;
@@ -1184,11 +1184,11 @@ UNUSED f32 math_util_fabs_unused(f32 arg0, f32 arg1) {
 }
 #endif
 
-UNUSED u16 math_util_atan2s_unused(f32 arg0, f32 arg1) {
+UNUSED u16 unused_func_802B7B50(f32 arg0, f32 arg1) {
     return ((atan2f(arg0, arg1) * 32768.0f) / M_PI);
 }
 
-UNUSED void math_util_atan2s_1(f32 arg0) {
+UNUSED void unused_func_802B7C18(f32 arg0) {
     atan2f(arg0, 1.0f);
 }
 /*
@@ -1200,7 +1200,7 @@ s16 atan1s(f32 tan) {
     return atan2s(tan, 1.0f);
 }
 
-UNUSED void math_util_arcsin_unused(f32 arg0) {
+UNUSED void unused_func_802B7C6C(f32 arg0) {
     atan2f(arg0, sqrtf(1.0 - (arg0 * arg0)));
 }
 
@@ -1234,7 +1234,7 @@ f32 acos1f(f32 value) {
     = Angle */
 }
 
-UNUSED s16 math_util_arccos_unused(f32 arg0) {
+UNUSED s16 unused_func_802B7D28(f32 arg0) {
     return atan2f(sqrtf(1.0 - (f64) (arg0 * arg0)), arg0) * 32768.0f / M_PI;
 }
 
@@ -1426,7 +1426,7 @@ f32 distance_if_visible(Vec3f cameraPos, Vec3f objectPos, u16 orientationY, f32 
 
 // No idea if arg1 is actually a Mat4 or not, but since this function is unused
 // its impossible to know with certainty either way, very close of set_course_lighting
-UNUSED void math_util_set_course_lighting_mat4(uintptr_t addr, Mat4 arg1, s16 arg2, s16 arg3, s32 arg4) {
+UNUSED void unused_func_802B8414(uintptr_t addr, Mat4 arg1, s16 arg2, s16 arg3, s32 arg4) {
     u32 segment = SEGMENT_NUMBER2(addr);
     u32 offset = SEGMENT_OFFSET(addr);
     UNUSED s32 pad;
@@ -1454,7 +1454,7 @@ UNUSED void math_util_set_course_lighting_mat4(uintptr_t addr, Mat4 arg1, s16 ar
     }
 }
 
-UNUSED void math_util_calculate_player_normal_unused(Player* arg0) {
+UNUSED void unused_func_802B8614(Player* arg0) {
     UNUSED f64 pad[4];
     f64 corner1PosX = arg0->tyres[FRONT_RIGHT].pos[0];
     f64 corner1PosY = arg0->tyres[FRONT_RIGHT].baseHeight;

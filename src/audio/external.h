@@ -430,6 +430,4 @@ extern OSMesgQueue* gAudioResetQueue2Ptr;
 
 /** @endcond */
 
-void func_800C13F0(void);
-
 #endif
