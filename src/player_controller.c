@@ -24,6 +24,15 @@
 
 extern s32 D_8018D168;
 
+static s16 sDraftingTimers[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sPurpleTurboState[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sHasTricked[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sCoins[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsBike[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsWheelie[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static s16 sIsAntiGravity[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+
 s16 cpu_forMario[] = { LUIGI, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
 
 s16 cpu_forLuigi[] = { MARIO, YOSHI, TOAD, DK, WARIO, PEACH, BOWSER, 0 };
@@ -223,7 +232,7 @@ void func_80027DA8(Player* player, s8 playerId) {
                 func_800C94A4(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-                func_800C9A88(playerId);
+                play_race_finish_sound(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             }
         }
@@ -232,7 +241,7 @@ void func_80027DA8(Player* player, s8 playerId) {
             func_800C94A4(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-            func_800C9A88(playerId);
+            play_race_finish_sound(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         }
     }
@@ -1124,6 +1133,14 @@ void func_8002A79C(Player* player, s8 playerIndex) {
     if (((player->effects & MINI_TURBO_EFFECT) != MINI_TURBO_EFFECT) &&
         ((player->effects & DRIFTING_EFFECT) != DRIFTING_EFFECT) && (player->driftState >= 2)) {
         player->effects |= MINI_TURBO_EFFECT;
+
+        // Check if we hit the new Purple Stage (driftState == 4)
+        if (player->driftState >= 4) {
+            sPurpleTurboState[playerIndex] = 1;
+        } else {
+            sPurpleTurboState[playerIndex] = 0;
+        }
+
         player->unk_23A = 0;
         player->driftState = 0;
         player->driftStateCounter = 0;
@@ -1136,16 +1153,28 @@ void func_8002A79C(Player* player, s8 playerIndex) {
         }
     } else if ((player->effects & MINI_TURBO_EFFECT) == MINI_TURBO_EFFECT) {
         player->unk_23A += 1;
-        if (player->unk_23A >= 0x1F) {
+
+        // Standard Mini-Turbo lasts 0x1F frames. Purple lasts 0x3F frames.
+        s16 turboDuration = sPurpleTurboState[playerIndex] ? 0x3F : 0x1F;
+
+        if (player->unk_23A >= turboDuration) {
             player->unk_23A = 0;
             player->effects &= ~MINI_TURBO_EFFECT;
             player->driftState = 0;
             player->driftStateCounter = 0;
+            sPurpleTurboState[playerIndex] = 0; // Reset
         }
     }
 }
 
 void update_drift_state_counter(Player* player, s8 playerIndex) {
+    // Inside Drifting: Bikes build drift instantly but only inward
+    if (sIsBike[playerIndex]) {
+        if (player->driftState < 3) {
+            player->driftState++;
+        }
+        return;
+    }
     if (((s16) player->unk_0C0 / DEGREES(1)) > 0) {
         if (((s32) player->steerPosition >> 16) <= -10) {
             if (player->driftStateCounter <= 100) {
@@ -1156,7 +1185,8 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
             }
         } else {
             if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
-                if (player->driftState < 3) {
+                // Allow driftState to hit 4 (Stage 3 Purple Turbo)
+                if (player->driftState < 4) {
                     player->driftState++;
                 }
             }
@@ -1176,7 +1206,8 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
         }
     } else {
         if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
-            if (player->driftState < 3) {
+            // Allow driftState to hit 4 (Stage 3 Purple Turbo)
+            if (player->driftState < 4) {
                 player->driftState++;
             }
         }
@@ -1239,6 +1270,7 @@ void func_8002AAC0(Player* player) {
 }
 
 void func_8002AB70(Player* player) {
+    s8 playerIndex = get_player_index_for_player(player);
     UNUSED s32 pad[2];
     if (((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) && (player->unk_08C > 0.0f)) {
         if (((player->slopeAccel / DEGREES(1)) < -1) && ((player->slopeAccel / DEGREES(1)) >= -0x14) &&
@@ -1270,6 +1302,22 @@ void func_8002AB70(Player* player) {
     }
     if ((player->effects & HIT_BY_GREEN_SHELL_EFFECT) == HIT_BY_GREEN_SHELL_EFFECT) {
         player->kartGravity = 1100.0f;
+    }
+    // MK8 Anti-Gravity & MK Wii Half-Pipe Physics
+    if (player->surfaceType == ANTI_GRAVITY_WALL) {
+        sIsAntiGravity[playerIndex] = 1;
+        player->kartGravity = 3000.0f; // Simulate strong wall-sticking gravity
+    } else if (player->surfaceType == HALF_PIPE) {
+        sIsAntiGravity[playerIndex] = 0;
+        player->kartGravity = 4500.0f; // Pull kart extremely hard into the curved wall to prevent detachment
+        // If approaching the top edge (approximated by high slope vector), auto-trick
+        if (player->collision.orientationVector[1] > 0.85f && !sHasTricked[playerIndex]) {
+            trigger_wood_ramp_boost(player, playerIndex);
+            sHasTricked[playerIndex] = 1;
+            player->velocity[1] += 12.0f; // Launch off lip
+        }
+    } else {
+        sIsAntiGravity[playerIndex] = 0;
     }
     if (player->effects & UNKNOWN_EFFECT_0x80000) {
         player->kartGravity = 1500.0f;
@@ -1530,6 +1578,16 @@ void func_8002B830(Player* player, s8 playerId, s8 screenId) {
 }
 
 UNUSED void func_8002B8A4(Player* player_one, Player* player_two) {
+    s8 p1_index = get_player_index_for_player(player_one);
+    s8 p2_index = get_player_index_for_player(player_two);
+    // MK8 Anti-Gravity Spin Boost Mechanic
+    if (sIsAntiGravity[p1_index] || sIsAntiGravity[p2_index]) {
+        player_one->currentSpeed += 20.0f;
+        player_two->currentSpeed += 20.0f;
+        func_800C9060(p1_index, 0x19008000); // generic boost sound
+        func_800C9060(p2_index, 0x19008000);
+        return; // Skip normal crash penalty
+    }
     s32 var_v1;
 
     // clang-format off
@@ -2013,8 +2071,14 @@ void apply_effect(Player* player, s8 playerIndex, s8 arg2) {
     if ((player->effects & BOO_EFFECT) == BOO_EFFECT) {
         apply_boo_effect(player, playerIndex);
     }
-    if (((player->effects & DRIFT_OUTSIDE_EFFECT) == DRIFT_OUTSIDE_EFFECT) && (player->driftStateCounter >= 100)) {
-        player_decelerate_alternative(player, 4.0f);
+    if ((player->effects & DRIFT_OUTSIDE_EFFECT) == DRIFT_OUTSIDE_EFFECT) {
+        if (player->driftStateCounter >= 100) {
+            // Player has been drifting without charging for too long
+            player_decelerate_alternative(player, 4.0f);
+        } else if (player->driftState > 0) {
+            // Snaking Mechanic: Actively charging a mini-turbo drastically reduces drift deceleration
+            player_decelerate_alternative(player, 0.5f);
+        }
     }
     if (((player->effects & BANANA_SPINOUT_EFFECT) == BANANA_SPINOUT_EFFECT) ||
         ((player->effects & DRIVING_SPINOUT_EFFECT) == DRIVING_SPINOUT_EFFECT)) {
@@ -2415,7 +2479,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= temp;
             player->velocity[1] *= temp;
             player->velocity[2] *= temp;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     if ((player->kartProps & BACK_UP) == BACK_UP) {
@@ -2431,6 +2495,24 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
         player->unk_078 = (s16) (((s16) player->unk_078) / 2);
     }
     func_8002C4F8(player, playerId);
+}
+extern s16 sReserveItems[8];
+extern s16 sSwapCooldown[8];
+
+
+void reset_retro_modern_state(void) {
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        sDraftingTimers[i] = 0;
+        sPurpleTurboState[i] = 0;
+        sHasTricked[i] = 0;
+        sReserveItems[i] = 0;
+        sSwapCooldown[i] = 0;
+        sCoins[i] = 0;
+        sIsBike[i] = 0;
+        sIsWheelie[i] = 0;
+        sIsAntiGravity[i] = 0;
+    }
 }
 
 void func_8002E4C4(Player* player) {
@@ -2703,7 +2785,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= topSpeedMultiplier;
             player->velocity[1] *= topSpeedMultiplier;
             player->velocity[2] *= topSpeedMultiplier;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     func_8002C4F8(player, playerId);
@@ -2781,7 +2863,7 @@ void control_cpu_movement(Player* player, UNUSED Camera* camera, s8 screenId, s8
         player->velocity[0] *= topSpeedMultiplier;
         player->velocity[1] *= topSpeedMultiplier;
         player->velocity[2] *= topSpeedMultiplier;
-        player->speed = gKartTopSpeedTable[player->characterId];
+        player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
     }
 }
 
@@ -2891,7 +2973,7 @@ void func_8002F730(Player* player, UNUSED Camera* camera, UNUSED s8 screenId, s8
             player->velocity[0] *= topSpeedMultiplier;
             player->velocity[1] *= topSpeedMultiplier;
             player->velocity[2] *= topSpeedMultiplier;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
 }
@@ -4632,6 +4714,76 @@ void func_80037BB4(Player* player, Vec3f arg1) {
 }
 
 void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex) {
+    s32 i;
+    f32 distSq;
+    s32 isDrafting = 0;
+
+    // Drafting / Slipstream Mechanic
+    // Loop through all opponents to see if we are closely following them and if they are mostly in front of us.
+    for (i = 0; i < 8; i++) {
+        if (i != playerIndex && (gPlayers[i].type & PLAYER_EXISTS)) {
+            // Calculate distance vector (including Y axis to prevent drafting off bridges above/below)
+            f32 dx = gPlayers[i].pos[0] - player->pos[0];
+            f32 dy = gPlayers[i].pos[1] - player->pos[1];
+            f32 dz = gPlayers[i].pos[2] - player->pos[2];
+
+            // Fast Y check
+            if (dy > 30.0f || dy < -30.0f) continue;
+
+            distSq = dx * dx + dz * dz;
+
+            // If we are close enough (within 300 units)
+            if (distSq < 90000.0f && distSq > 400.0f) {
+                f32 dist = sqrtf(distSq);
+                // Normalize relative vector
+                f32 nx = dx / dist;
+                f32 nz = dz / dist;
+
+                // Calculate current player's velocity vector and normalize it
+                f32 vx = player->velocity[0];
+                f32 vz = player->velocity[2];
+                f32 vMag = sqrtf(vx * vx + vz * vz);
+
+                // Calculate opponent's velocity vector to ensure they are moving in the same direction
+                f32 opp_vx = gPlayers[i].velocity[0];
+                f32 opp_vz = gPlayers[i].velocity[2];
+                f32 opp_vMag = sqrtf(opp_vx * opp_vx + opp_vz * opp_vz);
+
+                if (vMag > 5.0f && opp_vMag > 5.0f) { // Only draft if both moving reasonably fast
+                    vx /= vMag;
+                    vz /= vMag;
+
+                    opp_vx /= opp_vMag;
+                    opp_vz /= opp_vMag;
+
+                    // Dot product to see if opponent is directly in front
+                    f32 dotPos = (nx * vx) + (nz * vz);
+
+                    // Dot product to see if opponent is moving in the same direction
+                    f32 dotDir = (opp_vx * vx) + (opp_vz * vz);
+
+                    if (dotPos > 0.9f && dotDir > 0.8f) { // ~25 degree cone in front, and driving same direction
+                        isDrafting = 1;
+                        break; // Found an opponent to draft off of, no need to check others
+                    }
+                }
+            }
+        }
+    }
+
+    if (isDrafting && player->boostTimer == 0) { // Don't stack drafts while already boosting
+        sDraftingTimers[playerIndex] += 1;
+        if (sDraftingTimers[playerIndex] > 60) { // Approx 1 second of drafting
+            player->effects |= MUSHROOM_EFFECT;
+            player->boostTimer = 0x50; // Standard mushroom duration
+            sDraftingTimers[playerIndex] = 0; // Reset
+        }
+    } else {
+        if (sDraftingTimers[playerIndex] > 0) {
+            sDraftingTimers[playerIndex] -= 1;
+        }
+    }
+
     if (((player->effects & BANANA_SPINOUT_EFFECT) != BANANA_SPINOUT_EFFECT) &&
         ((player->effects & DRIVING_SPINOUT_EFFECT) != DRIVING_SPINOUT_EFFECT) &&
         ((player->effects & HIT_BY_GREEN_SHELL_EFFECT) != HIT_BY_GREEN_SHELL_EFFECT) &&
@@ -4650,9 +4802,18 @@ void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex
             }
         }
         if ((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) {
+            sHasTricked[playerIndex] = 0; // Reset trick state when grounded
             func_80033AE0(player, controller, playerIndex);
         } else if (((player->effects & HOP_EFFECT) == HOP_EFFECT) && (player->collision.surfaceDistance[2] <= 5.0f)) {
+            sHasTricked[playerIndex] = 0; // Reset trick state when grounded from a hop
             func_80033AE0(player, controller, playerIndex);
+        } else {
+            // Trick Jump mechanic: if in midair and hit R trigger, grant a mini-turbo boost.
+            if ((controller->buttonPressed & R_TRIG) && !sHasTricked[playerIndex]) {
+                // Grant a mini-turbo style boost
+                trigger_wood_ramp_boost(player, playerIndex);
+                sHasTricked[playerIndex] = 1; // Prevent infinite trick exploit
+            }
         }
         player->effects &= ~BRAKING_EFFECT;
         if ((!(player->effects & BOOST_RAMP_ASPHALT_EFFECT)) && (!(player->effects & BOOST_RAMP_WOOD_EFFECT))) {
@@ -5078,7 +5239,7 @@ void func_80038C6C(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->velocity[0] *= divOptimize;
             player->velocity[1] *= divOptimize;
             player->velocity[2] *= divOptimize;
-            player->speed = gKartTopSpeedTable[player->characterId];
+            player->speed = gKartTopSpeedTable[player->characterId] + (sCoins[playerId] * 1.5f);
         }
     }
     if ((player->kartProps & BACK_UP) == BACK_UP) {

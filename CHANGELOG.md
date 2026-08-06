@@ -1,5 +1,20 @@
 # Changelog
 
+## [8.107.8] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C3448` to `issue_audio_command` across the codebase.
+
+## [8.107.7] - 2026-06-28
+
+### Fixed
+- Applied fixed-point math clamps to `guMtxF2L` in `src/os/guMtxF2L.c` to resolve floating-point overflow "PU crashes" on strict target environments when `-DAvoid_UB=1` is active.
+
+## [8.107.6] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C284C` to `sequence_player_play_sequence` and `func_800C29B4` to `sequence_player_fade_out` in the audio engine.
+
 All notable changes to this project will be documented in this file.
 
 ## [8.107.4] - 2026-05-20
@@ -15,3 +30,17 @@ All notable changes to this project will be documented in this file.
 ## [8.107.2] - 2026-05-19
 ### Updated
 - Synced `tools/torch` and `tools/blender/fast64` submodules to latest upstream commits.
+
+## [1.7.2] - Phase 2 Modern Mechanics
+### Added
+- **Item Holding (Double Dash):** Players can now carry a secondary reserve item (`sReserveItems`). If the active item slot is occupied, new items from boxes are placed in reserve.
+- **Item Swapping:** Pressing `L_TRIG` swaps the currently active item with the reserve item, allowing for tactical item holding and defensive dragging.
+
+## [1.7.3] - Phase 2 Coin Mechanics
+### Added
+- **Coin Speed Boost:** The physics engine (`player_controller.c`, `spawn_players.c`) now calculates `topSpeed` using a modifier based on the player's active coin count (`sCoins`), giving a 1.5f maximum velocity boost per coin.
+
+## [8.109.0] - 2026-06-23
+### Added
+- **Phase 5 Dynamics:** Anti-Gravity. `ANTI_GRAVITY_WALL` surface modifier allows karts to stick to walls. Spin Boosts occur on player collisions instead of standard crashing.
+- **Phase 6 Dynamics:** Half-Pipes. `HALF_PIPE` surface modifier pulls kart to walls and forces an auto-trick pop at the apex.
