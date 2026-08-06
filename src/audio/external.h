@@ -55,7 +55,7 @@ struct Sound {
     /* 0x14 */ s8* unk14;
 }; // size = 0x18
 
-struct Unk_800E9F7C {
+struct AudioCharacterState {
     /* 0x00 */ Vec3f pos;
     /* 0x0C */ f32 unk_0C;
     /* 0x10 */ f32 unk_10;
@@ -85,7 +85,7 @@ struct Unk_8018EFD8 {
     /* 0x14 */ f32* velZ;
     /* 0x18 */ Vec3f unk18;
     /* 0x24 */ f32* unk24;  // Some type of multiplier/scalar
-                            // Indexes in D_8018EFD8, not really sure what they're for though
+                            // Indexes in gSoundSources, not really sure what they're for though
     /* 0x28 */ u8 cameraId; // playerId? some indicator of "who" the sound is desitned for
     /* 0x29 */ u8 prev;
     /* 0x2A */ u8 next;
@@ -118,7 +118,7 @@ struct SoundCharacteristics {
     /* 0x2C */ u8 unk2C;
 }; // size = 0x30
 
-struct Unk_800EA06C {
+struct AudioCameraState {
     /* 0x00 */ Vec3f unk00;
     /* 0x0C */ u8 unk0C;
     /* 0x0D */ // u8 compilerPadding0[3];
@@ -191,135 +191,134 @@ typedef struct {
 typedef struct {
     u8 thing0;
     u8 thing1;
-} struct_D_80192CA8_entry;
+} SequenceQueueItem;
 
 /** @cond */
 
-void func_800C94A4(u8);
-void func_800CADD0(u8, f32);
-void func_800C13F0(void);
+void audio_play_character_engine_sound(u8);
+void audio_update_drift_sound_pitch(u8, f32);
 void audio_reset_session_eu(OSMesg);
-f32 func_800C1480(u8, u8);
-s8 func_800C15D0(u8, u8, u8);
-s8 func_800C16E8(f32, f32, u8);
-f32 func_800C1934(u8, u8);
-void func_800C19D0(u8, u8, u8);
-struct Unk_8018EFD8* func_800C1C88(u8, Vec3f, Vec3f, f32*, u8, u32);
-void func_800C1DA4(Camera*, Vec3s, struct Unk_8018EFD8*);
-void func_800C1E2C(Camera*, Vec3f, struct Unk_8018EFD8*);
-void func_800C1F8C(void);
+f32 audio_calculate_distance_volume(u8, u8);
+s8 audio_calculate_doppler(u8, u8, u8);
+s8 audio_calculate_pan(f32, f32, u8);
+f32 audio_calculate_pitch(u8, u8);
+void audio_update_sound_params(u8, u8, u8);
+struct Unk_8018EFD8* audio_alloc_sound_source(u8, Vec3f, Vec3f, f32*, u8, u32);
+void audio_update_sound_pos(Camera*, Vec3s, struct Unk_8018EFD8*);
+void audio_update_doppler_effect(Camera*, Vec3f, struct Unk_8018EFD8*);
+void audio_update_sound_source_cameras(void);
 
-Vec3f* func_800C21E8(Vec3f, u32);
-void func_800C2274(u8);
-void func_800C2474(void);
-void func_800C284C(u8, u8, u8, u16);
-void func_800C29B4(u8, u16);
+Vec3f* audio_get_sound_source_pos(Vec3f, u32);
+void audio_process_sfx_script(u8);
+void audio_init_cameras_and_state(void);
+void audio_cmd_play_sequence(u8, u8, u8, u16);
+void audio_cmd_stop_sequence(u8, u16);
 
-void func_800C3724(void);
-void func_800C2A2C(u32);
-void func_800C3448(u32);
-void func_800C3478(void);
-u16 func_800C3508(u8);
-void func_800C3608(u8, u8);
-u8 func_800C357C(s32);
-void func_800C35E8(u8);
-void func_800C36C4(u8, u8, u8, u8);
-void func_800C3F70(void);
+void audio_update_sequences(void);
+void audio_execute_cmd(u32);
+void audio_push_cmd(u32);
+void audio_process_cmd_buffer(void);
+u16 audio_get_sequence_id(u8);
+void audio_clear_sequence_mask(u8, u8);
+u8 audio_is_cmd_not_in_queue(s32);
+void audio_clear_sequence_timer(u8);
+void audio_set_sequence_volume(u8, u8, u8, u8);
+void audio_reset_sequence_data(void);
 
-void func_800C400C(void);
-void func_800C4084(u16);
-void func_800C40F0(u8);
+void audio_reset_sequence_data_partial(void);
+void audio_set_bank_disabled_mask(u16);
+void audio_clear_sequence_mask_bit(u8);
 void play_sound(u32, Vec3f*, u8, f32*, f32*, s8*);
-void func_800C41CC(u8, struct SoundCharacteristics*);
-void func_800C4398(void);
+void audio_cancel_sound_requests(u8, struct SoundCharacteristics*);
+void audio_process_sound_requests(void);
 void delete_sound_from_bank(u8, u8);
-void func_800C4888(u8);
-void func_800C4FE4(u8);
+void audio_process_sound_requests_for_bank(u8);
+void audio_play_sound_requests(u8);
 
-void func_800C5278(u8);
-void func_800C5384(u8, Vec3f*);
-void func_800C54B8(u8, Vec3f*);
-void func_800C550C(Vec3f*);
-void func_800C5578(Vec3f*, u32);
-void func_800C56F0(u32);
-void func_800C5848(void);
+void audio_stop_all_sounds_in_bank(u8);
+void audio_stop_sounds_in_bank_by_pos(u8, Vec3f*);
+void audio_stop_sounds_and_requests_in_bank_by_pos(u8, Vec3f*);
+void audio_stop_all_sounds_and_requests_by_pos(Vec3f*);
+void audio_stop_sound_and_request_by_pos_and_id(Vec3f*, u32);
+void audio_stop_sound_and_request_by_id(u32);
+void audio_process_all_sound_requests(void);
 void fade_channel_volume_scale(u8, u8, u16);
-void func_800C5968(u8);
-void func_800C59C4(void);
+void audio_process_channel_volume_fade(u8);
+void audio_process_sound_banks(void);
 void sound_init(void);
-void func_800C5BD0(void);
-void func_800C5C40(void);
-void func_800C5CB8(void);
-void func_800C5D04(u8);
-void func_800C5E38(u8);
+void audio_send_character_voice_cmd(void);
+void audio_reset_session(void);
+void audio_init(void);
+void audio_update_throttle_state(u8);
+void audio_update_throttle_sound_state(u8);
 
-void func_800C6108(u8);
-void func_800C64A0(u8);
-void func_800C6758(u8);
-void func_800C683C(u8);
+void audio_update_throttle_sound_pitch(u8);
+void audio_update_throttle_sound_volume(u8);
+void audio_update_throttle_sound_speed(u8);
+void audio_update_throttle_sound_type(u8);
 
-void func_800C70A8(u8);
-void func_800C76C0(u8);
+void audio_update_surface_sound(u8);
+void audio_handle_race_finish(u8);
 
-void func_800C847C(u8);
-void func_800C86D8(u8);
-void func_800C8770(u8);
-void func_800C8920(void);
-void func_800C89E4(void);
-void func_800C8AE4(void);
-void func_800C8C7C(u8);
-void func_800C8CCC(void);
+void audio_update_water_sound(u8);
+void audio_update_lightning_effect_sound(u8);
+void audio_update_lightning_effect_pitch(u8);
+void audio_check_lightning_effect_end(void);
+void audio_update_star_effect_volume(void);
+void audio_update_luigi_raceway_tunnel_sound(void);
+void audio_update_camera_sound_volume(u8);
+void audio_update_all_player_sounds(void);
 void play_sound2(s32);
 void play_sequence(u16);
 void play_sequence2(u16);
-void func_800C8F44(u8);
-void func_800C8F80(u8, u32);
+void audio_set_sequence_volume_0(u8);
+void audio_play_sound_by_player_id_and_pos(u8, u32);
 
-void func_800C9018(u8, u32);
-void func_800C9060(u8, u32);
-void func_800C90F4(u8, u32);
-void func_800C9250(u8);
-void func_800C92CC(u8, u32);
-void func_800C94A4(u8);
-void func_800C97C4(u8);
-void func_800C98B8(Vec3f, Vec3f, u32);
-void func_800C99E0(Vec3f, s32);
-void func_800C9A88(u8);
-void func_800C9D0C(u8);
-void func_800C9D80(Vec3f, Vec3f, u32);
-void func_800C9EF4(Vec3f, u32);
-void func_800C9F90(u8);
+void audio_stop_player_sound(u8, u32);
+void audio_play_sound_by_player_id(u8, u32);
+void audio_play_character_sound(u8, u32);
+void audio_play_character_sound_2901(u8);
+void audio_play_character_sound_with_effects(u8, u32);
+void audio_play_character_engine_sound(u8);
+void audio_stop_character_sounds(u8);
+void audio_play_sound_by_pos(Vec3f, Vec3f, u32);
+void audio_stop_sound_by_pos_and_id_all_cameras(Vec3f, s32);
+void audio_play_race_finish_sound(u8);
+void audio_stop_race_finish_sound(u8);
+void audio_play_sound_by_pos_with_effects(Vec3f, Vec3f, u32);
+void audio_stop_sound_by_pos_all_cameras(Vec3f, u32);
+void audio_play_menu_sound(u8);
 
-void func_800CA008(u8, u8);
-void func_800CA0A0(void);
-void func_800CA0B8(void);
-void func_800CA0CC(void);
-void func_800CA0E4(void);
-void func_800CA118(u8);
-void func_800CA24C(u8);
-void func_800CA270(void);
-void func_800CA288(u8, s8);
-void func_800CA2B8(u8);
-void func_800CA2E4(u8, s8);
-void func_800CA30C(u8);
-void func_800CA330(u8);
+void audio_set_sequence_and_volume(u8, u8);
+void audio_set_flag_800EA108_true(void);
+void audio_set_flag_800EA108_false(void);
+void audio_set_flag_800EA108_true2(void);
+void audio_stop_banks_3_and_5(void);
+void audio_set_player_finished(u8);
+void audio_set_player_finished_2(u8);
+void audio_set_flag_800EA0F4_true(void);
+void audio_set_sound_param_14(u8, s8);
+void audio_clear_sound_param_14(u8);
+void audio_set_sound_param_0C(u8, s8);
+void audio_clear_sound_param_0C(u8);
+void audio_push_volume_cmd(u8);
 void fade_all_channel_volume_scale(u8);
 void play_sequences(u16, u16);
-void func_800CA49C(u8);
+void audio_play_final_lap_music(u8);
 void play_star_music(u8);
 void play_star_sound_effect(u8);
 void play_star_music_stop_effect(u8);
 void play_star_sound_effect_stop(u8);
-void func_800CAC08(void);
+void audio_stop_thunder_sound_effect(void);
 void play_thunder_sound_effect(u8);
 void play_thunder_sound_effect_stop(s32);
 void set_player_sound_effect_volume(u8, f32);
 void play_boo_sound_effect(u8);
 
-void func_800CB134(void);
+void audio_trigger_losing_ceremony_sequence(void);
 void begin_losing_ceremony_sequence(void);
-void func_800CB2C4(void);
-void func_800CBC24(void);
+void audio_game_loop_tick(void);
+void eu_audio_cmd_flush(void);
 
 // This is some from other file, its definitely not part of audio's data/bss
 extern s8 D_801657E5;
@@ -328,11 +327,11 @@ extern s8 D_801657E5;
 extern s32 gAudioErrorFlags;
 
 extern s8 D_8018EF10;
-extern UnkStruct8018EF18 D_8018EF18[16];
-extern struct Unk_8018EFD8 D_8018EFD8[];
-// These are indexes for D_8018EFD8, but their purpose is unknown
-extern u8 D_8018FB90;
-extern u8 D_8018FB91;
+extern UnkStruct8018EF18 gSoundSourceStates[16];
+extern struct Unk_8018EFD8 gSoundSources[];
+// These are indexes for gSoundSources, but their purpose is unknown
+extern u8 gSoundSourceHead;
+extern u8 gSoundSourceTail;
 extern Camera* gCopyCamera[4];
 extern Vec3f gVelocityCamera[4];
 extern Vec3f gCameraLastPos[4];
@@ -343,20 +342,20 @@ extern struct SoundCharacteristics sSoundBanks[SOUND_BANK_COUNT][20];
 extern u8 sSoundBankUsedListBack[SOUND_BANK_COUNT];
 extern u8 sSoundBankFreeListFront[SOUND_BANK_COUNT];
 extern u8 sNumSoundsInBank[SOUND_BANK_COUNT];
-extern u8 D_80192AB8[SOUND_BANK_COUNT][8][8];
-extern u8 D_80192C38;
+extern u8 gActiveSfx[SOUND_BANK_COUNT][8][8];
+extern u8 gSfxChannelIndex;
 extern u8 sSoundBankDisabled[SOUND_BANK_COUNT];
-extern struct ChannelVolumeScaleFade D_80192C48[SOUND_BANK_COUNT];
-extern struct_D_80192CA8_entry D_80192CA8[3][5];
-extern u8 D_80192CC6[3];
-extern u32 D_80192CD0[256];
-extern struct_D_801930D0_entry D_801930D0[3];
+extern struct ChannelVolumeScaleFade gChannelVolumeScaleFade[SOUND_BANK_COUNT];
+extern SequenceQueueItem gSequenceQueue[3][5];
+extern u8 gSequenceQueueSize[3];
+extern u32 gAudioCmdBuffer[256];
+extern struct_D_801930D0_entry gSequenceState[3];
 extern u8 sNumProcessedSoundRequests;
 extern u8 sSoundRequestCount;
 extern struct Sound sSoundRequests[0x100];
 
 // Data entries
-extern u8 D_800E9DA0;
+extern u8 gHasAudioInitialized;
 extern s32 D_800E9DB4[];
 extern f32 D_800E9DC4[4]; // = { 1.0f, 1.0f, 1.0f, 1.0f };
 extern f32 D_800E9DD4[4]; // = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -384,9 +383,9 @@ extern f32 D_800E9F34[8]; // = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f 
 extern f32 D_800E9F54[8]; // = { 1.0f, 1.0f, 1.0f, 1.0f }; /* const */
 extern u8 D_800E9F74[4];
 extern u8 D_800E9F78[4];
-extern struct Unk_800E9F7C D_800E9F7C[4];
+extern struct AudioCharacterState gAudioCharacterStates[4];
 extern u8 D_800E9F90[];
-extern struct Unk_800EA06C D_800EA06C[8];
+extern struct AudioCameraState gAudioCameraStates[8];
 extern u8 D_800EA0EC[];
 extern u8 D_800EA0F0; // = 0;
 extern u8 D_800EA0F4;
@@ -408,26 +407,26 @@ extern f32 D_800EA178;
 extern f32 D_800EA17C;
 extern u16 D_800EA180; // = 0;                          /* const */
 extern u16 D_800EA184;
-extern u8 D_800EA188[][6];
+extern u8 gAudioNumChannelsPerBank[][6];
 extern u8 D_800EA1A0[][6];
-extern u8 D_800EA1C0; // = 0;
+extern u8 gAudioNumCameras; // = 0;
 extern u16 D_800EA1C4;
 // Most similar to gGlobalSoundSource from SM64, but I don't know if its really
 // a sound source, its usage makes it look like a 0'd Vec3f for general usage
-extern Vec3f D_800EA1C8; // = {0.0f, 0.0f, 0.0f}
-extern f32 D_800EA1D4;
-extern s8 D_800EA1DC; // = 0;
-extern u8 D_800EA1E4;
-extern u8 D_800EA1E8;
-extern u8 D_800EA1EC;
-extern u8 D_800EA1F0[];
-extern u8 D_800EA1F4[];
+extern Vec3f gAudioDefaultPos; // = {0.0f, 0.0f, 0.0f}
+extern f32 gAudioOneFloat;
+extern s8 gAudioZeroS8; // = 0;
+extern u8 gAudioCmdWritePos;
+extern u8 gAudioCmdReadPos;
+extern u8 gAudioMuteMusic;
+extern u8 gSoundModes[];
+extern u8 gAudioActiveSequence[];
 extern u8 D_800EA244;
 
 extern s8 D_800EA16C;
 
-extern OSMesgQueue* D_800EA3B0;
-extern OSMesgQueue* D_800EA3B4;
+extern OSMesgQueue* gAudioResetQueuePtr;
+extern OSMesgQueue* gAudioResetQueue2Ptr;
 
 /** @endcond */
 

@@ -162,13 +162,13 @@ f32 D_801625FC;
 void func_800029B0(void) {
     switch (D_800DC5A8) {
         case 0:
-            func_800C8F44(127);
+            audio_set_sequence_volume_0(127);
             break;
         case 1:
-            func_800C8F44(75);
+            audio_set_sequence_volume_0(75);
             break;
         case 2:
-            func_800C8F44(0);
+            audio_set_sequence_volume_0(0);
             break;
     }
 }
@@ -201,7 +201,7 @@ void setup_race(void) {
         gNextFreeMemoryAddress = D_8015F730;
     }
     func_802969F8();
-    func_80005310();
+    init_ghost_data();
     func_8003D080();
     init_hud();
     D_800DC510 = 0;
@@ -227,8 +227,8 @@ void setup_race(void) {
         }
     }
     if (!gDemoMode) {
-        func_800CA008(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
-        func_800CB2C4();
+        audio_set_sequence_and_volume(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
+        audio_game_loop_tick();
     }
 
     controller = gControllerOne;
@@ -248,33 +248,33 @@ void func_80002DAC(void) {
     switch (gCurrentCourseId) {
         case COURSE_MARIO_RACEWAY:
             vec3f_set(D_8015F748, -223.0f, 94.0f, -155.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_ROYAL_RACEWAY:
             vec3f_set(D_8015F748, 177.0f, 87.0f, -393.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_LUIGI_RACEWAY:
             vec3f_set(D_8015F748, 85.0f, 21.0f, -219.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_WARIO_STADIUM:
             vec3f_set(D_8015F748, 298.0f, 202.0f, -850.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F748, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F758, -1600.0f, 202.0f, -2430.0f);
-            func_800C9D80(D_8015F758, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F758, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F768, -2708.0f, 202.0f, 1762.0f);
-            func_800C9D80(D_8015F768, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F768, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F778, -775.0f, 202.0f, 1930.0f);
-            func_800C9D80(D_8015F778, D_802B91C8, 0x5103700B);
+            audio_play_sound_by_pos_with_effects(D_8015F778, D_802B91C8, 0x5103700B);
             break;
         case COURSE_KOOPA_BEACH:
             vec3f_set(D_8015F738, 153.0f, 0.0f, 2319.0f);
-            func_800C9D80(D_8015F738, D_802B91C8, 0x51028001);
+            audio_play_sound_by_pos_with_effects(D_8015F738, D_802B91C8, 0x51028001);
             break;
         case COURSE_DK_JUNGLE:
             vec3f_set(D_8015F738, -790.0f, -255.0f, -447.0f);
-            func_800C9D80(D_8015F738, D_802B91C8, 0x51028001);
+            audio_play_sound_by_pos_with_effects(D_8015F738, D_802B91C8, 0x51028001);
             break;
         default:
             break;

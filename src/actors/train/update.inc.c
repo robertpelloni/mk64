@@ -12,7 +12,7 @@ void update_actor_train_engine(struct TrainCar* arg0) {
 
     if (arg0->unk_08 != 0.0f) {
         arg0->unk_08 = 0.0f;
-        func_800C9D80(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x00));
+        audio_play_sound_by_pos_with_effects(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x00));
     }
 }
 

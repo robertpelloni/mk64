@@ -188,12 +188,12 @@ void func_802B4104(struct ShellActor* shell) {
     if ((shell->unk30.surfaceDistance[0] < 0.0f) &&
         ((shell->unk30.unk48[1] < 0.25f) || (shell->unk30.unk48[1] > -0.25f))) {
         destroy_destructable_actor((struct Actor*) shell);
-        func_800C98B8(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
+        audio_play_sound_by_pos(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
         shell->flags |= 0x80;
     } else if ((shell->unk30.surfaceDistance[1] < 0.0f) &&
                ((shell->unk30.unk54[1] < 0.25f) || (shell->unk30.unk54[1] < -0.25f))) {
         destroy_destructable_actor((struct Actor*) shell);
-        func_800C98B8(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
+        audio_play_sound_by_pos(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
         shell->flags |= 0x80;
     }
 }
@@ -290,28 +290,28 @@ void update_actor_red_blue_shell(struct ShellActor* shell) {
                 shell->rotAngle -= DEGREES(10);
                 if (shell->rotAngle < 0) {
                     shell->state = MOVING_SHELL;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    audio_play_sound_by_player_id(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    audio_play_character_sound(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     if (pad13 == ACTOR_RED_SHELL) {
                         add_red_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                     } else {
                         add_blue_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
-                        func_800C9D80(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
+                        audio_play_sound_by_pos_with_effects(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
                     }
                 }
             } else {
                 shell->rotAngle += DEGREES(10);
                 if (shell->rotAngle > 0) {
                     shell->state = MOVING_SHELL;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    audio_play_sound_by_player_id(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    audio_play_character_sound(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     if (pad13 == ACTOR_RED_SHELL) {
                         add_red_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                     } else {
                         add_blue_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
-                        func_800C9D80(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
+                        audio_play_sound_by_pos_with_effects(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
                     }
                 }
             }

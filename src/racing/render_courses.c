@@ -322,7 +322,7 @@ void func_8029122C(struct UnkStruct_800DC5EC* arg0, s32 playerId) {
             render_course_segments((uintptr_t) sherbet_land_dls_2, arg0);
 
             gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
-            if ((func_80290C20(arg0->camera) == 1) && (func_802AAB4C(player) < player->pos[1])) {
+            if ((func_80290C20(arg0->camera) == 1) && (get_course_water_level(player) < player->pos[1])) {
                 gSPSetGeometryMode(gDisplayListHead++, G_ZBUFFER);
                 gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
                 gDPSetRenderMode(gDisplayListHead++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
@@ -1411,7 +1411,7 @@ void render_course(struct UnkStruct_800DC5EC* arg0) {
 
 void func_80295BF8(s32 playerIndex) {
     Player* player = &gPlayers[playerIndex];
-    func_802AAAAC(&player->collision);
+    init_collision_struct(&player->collision);
     player->tyres[FRONT_RIGHT].surfaceFlags = 0;
     player->tyres[FRONT_LEFT].surfaceFlags = 0;
     player->tyres[BACK_RIGHT].surfaceFlags = 0;

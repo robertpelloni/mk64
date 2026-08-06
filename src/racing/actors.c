@@ -126,7 +126,7 @@ void actor_init(struct Actor* actor, Vec3f startingPos, Vec3s startingRot, Vec3f
     actor->state = 0;
     actor->unk_08 = 0.0f;
     actor->boundingBoxSize = 0.0f;
-    func_802AAAAC(&actor->unk30);
+    init_collision_struct(&actor->unk30);
     switch (actorType) {
         case ACTOR_BOX_TRUCK:
             if ((s32) D_802BA260 >= 3) {
@@ -314,7 +314,7 @@ void actor_rendered(Camera* arg0, struct Actor* arg1) {
     }
 }
 
-void func_80297340(Camera* arg0) {
+void render_credits_actors(Camera* arg0) {
     Mat4 sp38;
     s16 temp = D_8015F8D0[2];
     s32 maxObjectsReached;
@@ -353,17 +353,17 @@ UNUSED void func_80297524(uintptr_t addr, s32 width, s32 height) {
                         G_TX_NOLOD);
 }
 
-void func_802976D8(Vec3s arg0) {
+void reset_actor_rotation(Vec3s arg0) {
     arg0[0] = 0x4000;
     arg0[1] = 0;
     arg0[2] = 0;
 }
 
-void func_802976EC(Collision* arg0, Vec3s arg1) {
+void update_actor_rotation_from_collision(Collision* arg0, Vec3s arg1) {
     f32 x, y, z;
 
     if (arg0->unk34 == 0) {
-        func_802976D8(arg1);
+        reset_actor_rotation(arg1);
         return;
     }
     // sp1C = arg0->unk30;
@@ -377,21 +377,21 @@ void func_802976EC(Collision* arg0, Vec3s arg1) {
     arg1[2] = atan2s(x, y);
 }
 
-void func_80297760(struct Actor* arg0, Vec3f arg1) {
+void snap_actor_to_surface(struct Actor* arg0, Vec3f arg1) {
     arg1[0] = arg0->pos[0];
     arg1[1] = arg0->pos[1];
     arg1[2] = arg0->pos[2];
     arg1[1] = calculate_surface_height(arg1[0], arg1[1], arg1[2], arg0->unk30.meshIndexZX);
 }
 
-void func_802977B0(Player* arg0) {
+void set_player_tyres_active(Player* arg0) {
     arg0->tyres[FRONT_RIGHT].unk_14 |= 2;
     arg0->tyres[FRONT_LEFT].unk_14 |= 2;
     arg0->tyres[BACK_RIGHT].unk_14 |= 2;
     arg0->tyres[BACK_LEFT].unk_14 |= 2;
 }
 
-void func_802977E4(Player* arg0) {
+void set_player_tyres_inactive(Player* arg0) {
     arg0->tyres[FRONT_RIGHT].unk_14 &= ~2 & 0xFFFF;
     arg0->tyres[FRONT_LEFT].unk_14 &= ~2 & 0xFFFF;
     arg0->tyres[BACK_RIGHT].unk_14 &= ~2 & 0xFFFF;
@@ -420,7 +420,7 @@ void init_red_shell_texture(void) {
 
 UNUSED void func_80297944(void) {};
 
-void func_8029794C(Vec3f pos, Vec3s rot, f32 scale) {
+void render_actor_with_scale(Vec3f pos, Vec3s rot, f32 scale) {
     Mat4 sp20;
     pos[1] += 2.0f;
 
@@ -432,15 +432,15 @@ void func_8029794C(Vec3f pos, Vec3s rot, f32 scale) {
     }
 }
 
-void func_802979F8(struct Actor* arg0, UNUSED f32 arg1) {
+void update_and_render_actor_if_valid(struct Actor* arg0, UNUSED f32 arg1) {
     Vec3f pos;
     Vec3s rot;
 
     if (arg0->unk30.unk34 != 0) {
 
-        func_802976EC(&arg0->unk30, rot); // arg0 + 0x30
-        func_80297760(arg0, pos);
-        func_8029794C(pos, rot, 0.45f);
+        update_actor_rotation_from_collision(&arg0->unk30, rot); // arg0 + 0x30
+        snap_actor_to_surface(arg0, pos);
+        render_actor_with_scale(pos, rot, 0.45f);
     }
 }
 
@@ -528,12 +528,12 @@ void render_cows(Camera* camera, Mat4 arg1, UNUSED struct Actor* actor) {
         if (D_8015F700 == 0) {
             temp_s1 = var_s5 - var_t1;
             if ((temp_s1 != D_8015F702) && (D_8015F704 < 160000.0f)) {
-                func_800C99E0(D_8015F708, soundThing);
+                audio_stop_sound_by_pos_and_id_all_cameras(D_8015F708, soundThing);
                 D_8015F708[0] = var_s5->pos[0] * gCourseDirection;
                 D_8015F708[1] = var_s5->pos[1];
                 D_8015F708[2] = var_s5->pos[2];
                 D_8015F702 = temp_s1;
-                func_800C98B8(D_8015F708, D_802B91C8, soundThing);
+                audio_play_sound_by_pos(D_8015F708, D_802B91C8, soundThing);
                 D_8015F700 = 0x00F0;
             }
         } else {
@@ -554,13 +554,13 @@ void evaluate_collision_player_palm_trees(Player* player) {
         pos[2] = data->pos[2];
         if (query_and_resolve_collision_player_actor(player, pos, 5.0f, 40.0f, 0.8f) == COLLISION) {
             if ((player->effects & STAR_EFFECT) != 0) {
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
-                func_800C90F4((u8) (player - gPlayerOne),
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+                audio_play_character_sound((u8) (player - gPlayerOne),
                               (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                 data->someId |= 0x400;
             }
             if ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0) {
-                func_800C9060((u8) (player - gPlayerOne), SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x18));
+                audio_play_sound_by_player_id((u8) (player - gPlayerOne), SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x18));
             }
             break;
         }
@@ -579,7 +579,7 @@ void evaluate_collision_players_palm_trees(void) {
     }
 }
 
-void func_80298D10(void) {
+void init_dk_parkway_tree_spawns(void) {
     s32 segment = SEGMENT_NUMBER2(d_course_dks_jungle_parkway_tree_spawn);
     s32 offset = SEGMENT_OFFSET(d_course_dks_jungle_parkway_tree_spawn);
     struct UnkActorSpawnData* temp_v1 =
@@ -701,7 +701,7 @@ void render_actor_shell(Camera* camera, Mat4 matrix, struct ShellActor* shell) {
 
     actor_rendered(camera, (struct Actor*) shell);
     if (temp_f0 < 40000.0f) {
-        func_802979F8((struct Actor*) shell, 3.4f);
+        update_and_render_actor_if_valid((struct Actor*) shell, 3.4f);
     }
     if (shell->type == ACTOR_BLUE_SPINY_SHELL) {
         phi_t3 = (uintptr_t) D_802BA054;
@@ -749,12 +749,12 @@ UNUSED s16 D_802B8810[] = { 0x0fc0, 0x0000, 0xffff, 0xffff, 0x0014, 0x0000, 0x00
 
 #include "actors/mario_sign/update.inc.c"
 
-UNUSED void func_8029ABD4(f32* pos, s16 state) {
+UNUSED void spawn_coin_actor(f32* pos, s16 state) {
     gNumActors = 0;
     gActorList[spawn_actor_at_pos(pos, ACTOR_UNKNOWN_0x14)].state = state;
 }
 
-void func_8029AC18(Camera* camera, Mat4 arg1, struct Actor* arg2) {
+void render_mario_sign(Camera* camera, Mat4 arg1, struct Actor* arg2) {
     if (distance_if_visible(camera->pos, arg2->pos, camera->rot[1], 0, gCameraZoom[camera - camera1], 4000000.0f) <
         0) {
         return;
@@ -867,7 +867,7 @@ void spawn_palm_trees(struct ActorSpawnData* spawnData) {
 
         temp_v1->variant = temp_s0->someId;
         check_bounding_collision((Collision*) &temp_v1->unk30, 5.0f, temp_v1->pos[0], temp_v1->pos[1], temp_v1->pos[2]);
-        func_802976EC((Collision*) &temp_v1->unk30, temp_v1->rot);
+        update_actor_rotation_from_collision((Collision*) &temp_v1->unk30, temp_v1->rot);
         temp_s0++;
     }
 }
@@ -944,14 +944,14 @@ void spawn_foliage(struct ActorSpawnData* arg0) {
 
         temp_s0 = &gActorList[add_actor_to_empty_slot(position, rotation, velocity, actorType)];
         if (gGamestate == CREDITS_SEQUENCE) {
-            func_802976D8(temp_s0->rot);
+            reset_actor_rotation(temp_s0->rot);
         } else {
             check_bounding_collision(&temp_s0->unk30, 5.0f, temp_s0->pos[0], temp_s0->pos[1], temp_s0->pos[2]);
             if (temp_s0->unk30.surfaceDistance[2] < 0.0f) {
                 temp_s0->pos[1] = calculate_surface_height(temp_s0->pos[0], temp_s0->pos[1], temp_s0->pos[2],
                                                            temp_s0->unk30.meshIndexZX);
             }
-            func_802976EC(&temp_s0->unk30, temp_s0->rot);
+            update_actor_rotation_from_collision(&temp_s0->unk30, temp_s0->rot);
         }
         var_s3++;
     }
@@ -1167,7 +1167,7 @@ void spawn_course_actors(void) {
         case COURSE_DK_JUNGLE:
             spawn_all_item_boxes(d_course_dks_jungle_parkway_item_box_spawns);
             init_kiwano_fruit();
-            func_80298D10();
+            init_dk_parkway_tree_spawns();
             break;
         case COURSE_BIG_DONUT:
             spawn_all_item_boxes(d_course_big_donut_item_box_spawns);
@@ -1293,15 +1293,15 @@ void play_sound_before_despawn(struct Actor* actor) {
     s16 flags = actor->flags;
 
     if ((flags & 0x200) != 0) {
-        func_800C99E0(actor->pos, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+        audio_stop_sound_by_pos_and_id_all_cameras(actor->pos, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
         return;
     }
     if ((flags & 0x100) != 0) {
-        func_800C99E0(actor->pos, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+        audio_stop_sound_by_pos_and_id_all_cameras(actor->pos, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
         return;
     }
     if ((flags & 0x80) != 0) {
-        func_800C99E0(actor->pos, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
+        audio_stop_sound_by_pos_and_id_all_cameras(actor->pos, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
     }
 }
 
@@ -1579,11 +1579,11 @@ bool collision_mario_sign(Player* player, struct Actor* marioRacewaySign) {
         if ((player->type & PLAYER_HUMAN) != 0) {
             if ((player->effects & STAR_EFFECT) != 0) {
                 marioRacewaySign->flags |= 0x400;
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
-                func_800C90F4(player - gPlayerOne,
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+                audio_play_character_sound(player - gPlayerOne,
                               (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
             } else if ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0) {
-                func_800C9060(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x1A));
+                audio_play_sound_by_player_id(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x1A));
             }
         }
         return true;
@@ -1597,11 +1597,11 @@ bool collision_piranha_plant(Player* player, struct PiranhaPlant* plant) {
         if ((player->type & PLAYER_HUMAN) != 0) {
             if ((player->effects & STAR_EFFECT) != 0) {
                 plant->flags |= 0x400;
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0xA2, 0x4A));
-                func_800C90F4(player - gPlayerOne,
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0xA2, 0x4A));
+                audio_play_character_sound(player - gPlayerOne,
                               (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
             } else if ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0) {
-                func_800C9060(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0xA0, 0x52));
+                audio_play_sound_by_player_id(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0xA0, 0x52));
             }
         }
         return true;
@@ -1639,7 +1639,7 @@ bool collision_yoshi_egg(Player* player, struct YoshiValleyEgg* egg) {
     if (xz_dist > maxDist) {
         return false;
     }
-    func_802977B0(player);
+    set_player_tyres_active(player);
 
     y_dist = player->pos[1] - egg->pos[1];
     if (y_dist < minDist) {
@@ -1655,8 +1655,8 @@ bool collision_yoshi_egg(Player* player, struct YoshiValleyEgg* egg) {
         if ((player->effects & STAR_EFFECT) != 0) {
             egg->flags |= 0x400;
             egg->pathCenter[1] = 8.0f;
-            func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
-            func_800C90F4(player - gPlayerOne, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
+            audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+            audio_play_character_sound(player - gPlayerOne, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
         } else {
             trigger_squish(player, player - gPlayerOne);
             if ((gModeSelection == TIME_TRIALS) && ((player->type & PLAYER_CPU) == 0)) {
@@ -1710,7 +1710,7 @@ bool collision_tree(Player* player, struct Actor* actor) {
     if (var_f16 < xz_dist) {
         return false;
     }
-    func_802977B0(player);
+    set_player_tyres_active(player);
     var_f16 = player->boundingBoxSize + actor->boundingBoxSize;
     if (var_f16 < xz_dist) {
         return false;
@@ -1720,12 +1720,12 @@ bool collision_tree(Player* player, struct Actor* actor) {
     if (player->type & PLAYER_HUMAN) {
         if (player->effects & STAR_EFFECT) {
             actor->flags |= 0x400;
-            func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
-            func_800C90F4(player - gPlayerOne, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
+            audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+            audio_play_character_sound(player - gPlayerOne, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
             return true;
         }
         if (!(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
-            func_800C9060(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x18));
+            audio_play_sound_by_player_id(player - gPlayerOne, SOUND_ARG_LOAD(0x19, 0x00, 0x70, 0x18));
         }
     }
     if (!(player->effects & STAR_EFFECT)) {
@@ -1909,7 +1909,7 @@ void destroy_destructable_actor(struct Actor* actor) {
                     case GREEN_SHELL_HIT_A_RACER:
                     case BLUE_SHELL_LOCK_ON:
                     case BLUE_SHELL_TARGET_ELIMINATED:
-                        func_800C9EF4(shell->pos, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
+                        audio_stop_sound_by_pos_all_cameras(shell->pos, SOUND_ARG_LOAD(0x51, 0x01, 0x80, 0x08));
                         delete_actor_in_unexpired_actor_list(actor - gActorList);
                         /* fallthrough */
                     case HELD_SHELL:
@@ -1971,28 +1971,28 @@ void play_sound_on_destructible_actor_collision(struct Actor* arg0, struct Actor
         case ACTOR_GREEN_SHELL:
             if ((arg0->state == HELD_SHELL) || (arg0->state == TRIPLE_GREEN_SHELL)) {
                 arg0->flags |= 0x200;
-                func_800C98B8(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_RED_SHELL:
             if ((arg0->state == HELD_SHELL) || (arg0->state == TRIPLE_RED_SHELL)) {
                 arg0->flags |= 0x200;
-                func_800C98B8(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_BLUE_SPINY_SHELL:
             if (arg0->state == HELD_SHELL) {
                 arg0->flags |= 0x200;
-                func_800C98B8(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_FAKE_ITEM_BOX:
             if (arg0->state == HELD_FAKE_ITEM_BOX) {
                 arg0->flags |= 0x200;
-                func_800C98B8(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
@@ -2002,35 +2002,35 @@ void play_sound_on_destructible_actor_collision(struct Actor* arg0, struct Actor
         case ACTOR_GREEN_SHELL:
             if ((arg1->state == HELD_SHELL) || (arg1->state == TRIPLE_GREEN_SHELL)) {
                 arg1->flags |= 0x200;
-                func_800C98B8(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_RED_SHELL:
             if ((arg1->state == HELD_SHELL) || (arg1->state == TRIPLE_RED_SHELL)) {
                 arg1->flags |= 0x200;
-                func_800C98B8(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_BLUE_SPINY_SHELL:
             if (arg1->state == HELD_SHELL) {
                 arg1->flags |= 0x200;
-                func_800C98B8(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
         case ACTOR_FAKE_ITEM_BOX:
             if (arg1->state == HELD_FAKE_ITEM_BOX) {
                 arg1->flags |= 0x200;
-                func_800C98B8(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
+                audio_play_sound_by_pos(arg1->pos, arg1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x90, 0x53));
                 return;
             }
             break;
     }
 
     arg0->flags |= 0x100;
-    func_800C98B8(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+    audio_play_sound_by_pos(arg0->pos, arg0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
 }
 
 void evaluate_actor_collision_between_two_destructible_actors(struct Actor* actor1, struct Actor* actor2) {
@@ -2039,7 +2039,7 @@ void evaluate_actor_collision_between_two_destructible_actors(struct Actor* acto
             destroy_destructable_actor(actor1);
             destroy_destructable_actor(actor2);
             actor1->flags |= 0x100;
-            func_800C98B8(actor1->pos, actor1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+            audio_play_sound_by_pos(actor1->pos, actor1->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             return;
         }
         if (actor1->type == ACTOR_BLUE_SPINY_SHELL) {
@@ -2094,13 +2094,13 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {
                     if (temp_lo != temp_v1) {
-                        func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                        audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
                     }
                 } else {
                     temp_f0 = actor->pos[0] - owner->pos[0];
                     temp_f2 = actor->pos[2] - owner->pos[2];
                     if ((((temp_f0 * temp_f0) + (temp_f2 * temp_f2)) < 360000.0f) && (temp_lo != temp_v1)) {
-                        func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                        audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
                     }
                 }
             }
@@ -2119,10 +2119,10 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
                 break;
             }
             player->triggers |= LOW_TUMBLE_TRIGGER;
-            func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+            audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             owner = &gPlayers[temp_v1];
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
-                func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
             destroy_destructable_actor(actor);
             break;
@@ -2137,11 +2137,11 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             if (!(player->effects & BOO_EFFECT)) {
                 player->triggers |= HIGH_TUMBLE_TRIGGER;
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             }
             owner = &gPlayers[temp_v1];
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
-                func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
             if (temp_lo == actor->unk_04) {
                 destroy_destructable_actor(actor);
@@ -2162,11 +2162,11 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             }
             if (!(player->effects & BOO_EFFECT)) {
                 player->triggers |= HIGH_TUMBLE_TRIGGER;
-                func_800C98B8(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
+                audio_play_sound_by_pos(player->pos, player->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x10));
             }
             owner = &gPlayers[temp_v1];
             if ((owner->type & PLAYER_HUMAN) && (temp_lo != temp_v1)) {
-                func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
             }
             destroy_destructable_actor(actor);
             break;
@@ -2199,7 +2199,7 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
         case ACTOR_FALLING_ROCK:
             if (!(player->effects & BOO_EFFECT) && !(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
                 if (query_collision_player_vs_actor_item(player, actor) == COLLISION) {
-                    func_800C98B8(actor->pos, actor->velocity, SOUND_ACTION_EXPLOSION);
+                    audio_play_sound_by_pos(actor->pos, actor->velocity, SOUND_ACTION_EXPLOSION);
                     if ((gModeSelection == TIME_TRIALS) && !(player->type & PLAYER_CPU)) {
                         gPostTimeTrialReplayCannotSave = 1;
                     }
@@ -2226,13 +2226,13 @@ void evaluate_collision_between_player_actor(Player* player, struct Actor* actor
             if (owner->type & PLAYER_HUMAN) {
                 if (actor->flags & 0xF) {
                     if (temp_lo != temp_v1) {
-                        func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                        audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
                     }
                 } else {
                     temp_f0 = actor->pos[0] - owner->pos[0];
                     temp_f2 = actor->pos[2] - owner->pos[2];
                     if ((((temp_f0 * temp_f0) + (temp_f2 * temp_f2)) < 360000.0f) && (temp_lo != temp_v1)) {
-                        func_800C90F4(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
+                        audio_play_character_sound(temp_v1, (owner->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x06));
                     }
                 }
                 if (actor->state == 0) {
@@ -2283,7 +2283,7 @@ void evaluate_collision_for_players_and_actors(void) {
         phi_s1 = &gPlayers[i];
 
         if (((phi_s1->type & PLAYER_EXISTS) != 0) && ((phi_s1->effects & SQUISH_EFFECT) == 0)) {
-            func_802977E4(phi_s1);
+            set_player_tyres_inactive(phi_s1);
             for (j = 0; j < ACTOR_LIST_SIZE; j++) {
                 temp_a1 = &gActorList[j];
 
@@ -2378,7 +2378,7 @@ void func_802A1064(struct FakeItemBox* fake_item_box) {
     if ((u32) (fake_item_box - (struct FakeItemBox*) gActorList) <= (u32) ACTOR_LIST_SIZE) {
         if (((fake_item_box->flags & 0x8000) != 0) && (fake_item_box->type == ACTOR_FAKE_ITEM_BOX)) {
             fake_item_box->state = FAKE_ITEM_BOX_ON_GROUND;
-            fake_item_box->targetY = func_802ABEAC(&fake_item_box->unk30, fake_item_box->pos) + 8.66f;
+            fake_item_box->targetY = collision_calculate_surface_height(&fake_item_box->unk30, fake_item_box->pos) + 8.66f;
             fake_item_box->someTimer = 100;
         }
     }
@@ -2478,7 +2478,7 @@ void render_course_actors(struct UnkStruct_800DC5EC* arg0) {
     gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_ON);
 
     if (gModeSelection != BATTLE) {
-        func_80297340(camera);
+        render_credits_actors(camera);
     }
     D_8015F8E0 = 0;
 
@@ -2556,7 +2556,7 @@ void render_course_actors(struct UnkStruct_800DC5EC* arg0) {
                 render_actor_cow(camera, D_801502C0, actor);
                 break;
             case ACTOR_UNKNOWN_0x14:
-                func_8029AC18(camera, D_801502C0, actor);
+                render_mario_sign(camera, D_801502C0, actor);
                 break;
             case ACTOR_MARIO_SIGN:
                 render_actor_mario_sign(camera, D_801502C0, actor);

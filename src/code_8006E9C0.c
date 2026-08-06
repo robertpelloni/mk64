@@ -1058,8 +1058,8 @@ void init_hud_one_player(void) {
             D_8018D158 = 8;
             break;
         case 1:
-            D_80165638 = (func_800B4F2C() & 0xFFFFF) - 1;
-            D_80165648 = func_800B4E24(0) & 0xFFFFF;
+            D_80165638 = (save_get_course_single_lap_record() & 0xFFFFF) - 1;
+            D_80165648 = save_get_course_time_trial_record(0) & 0xFFFFF;
             D_80165888 = 1;
             D_80165890 = 1;
             D_8018D158 = 1;

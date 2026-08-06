@@ -1,13 +1,17 @@
-# Session Handoff - 2026-05-20 (v8.107.4)
+# Session Handoff - 2026-07-01 (v8.107.5)
 
 ## Executive Summary
-Completed a massive repository re-initialization mapping out the MK64 documentation suite to comply with the Omni-Workspace monorepo guidelines. Synced tools submodules.
+Focused heavily on the Phase 1 goal of perfect decompilation by aggressively renaming internal audio, save, and menu routines to descriptive names based on structural context. Created and expanded `DASHBOARD.md` to map out the status of new mechanics and features per the `UNIVERSAL_LLM_INSTRUCTIONS.md`.
 
 ### Recent Fixes & Additions
-- **Documentation Overhaul:** Created and wired up `VISION.md`, `ROADMAP.md`, `TODO.md`, `DEPLOY.md`, `CHANGELOG.md`, `MEMORY.md`, `AGENTS.md`, and all model-specific LLM instructions (`CLAUDE.md`, `GEMINI.md`, `GPT.md`, `copilot-instructions.md`).
-- **Submodule Syncing:** Synced `tools/torch` and `tools/blender/fast64` and merged active main branches natively.
-- **Audio Labelling:** Renamed `func_800CA388` to `fade_all_channel_volume_scale` in the C source resolving a lingering `TODO`.
+- **Audio Subsystem Overhaul:** Extensively renamed functions and data arrays in `src/audio/external.c` and `src/audio/port_eu.c`. Mapped EU-specific port macros and queue processing functions. Labeled major structures like `gAudioCmdBuffer`, `gSequenceQueue`, and `gAudioCharacterStates`.
+- **Save & Replays:** Renamed functions dealing with ghost data and controller pak I/O in `src/save.c` and `src/menus.c` (e.g., `save_ghost_data_to_controller_pak`, `save_update_course_time_trial_records`). Also renamed the ghost indexing routines in `src/replays.c` (`encode_ghost_data`, `decode_ghost_data`).
+
+## Roadblocks
+- A known compilation constraint exists where `make` fails without `baserom.us.z64`. To verify code changes, we have to rely on `cc -fsyntax-only -I include -I src -D _LANGUAGE_C src/*.c` for static analysis.
 
 ## Next Steps for Implementor
-1. **Zero-Latency Rust Bridge:** Review the `TODO.md` backlog regarding the porting of collision logic (`src/racing/`) into native Rust routines to circumvent N64 physics limitations.
-2. **Continue C Renaming:** There are hundreds of `func_800...` references remaining across the `src/` tree, particularly in the actor and course logic segments. Contextual mapping of these functions is the primary short-term implementation priority.
+1. **Continue C Renaming:** Finish the `func_800B...` renaming in `src/audio/load.c`, `src/audio/synthesis.c`, and `src/audio/playback.c`. There are still many unnamed functions handling low-level sample DMA and envelope mixing.
+2. **Subsystem Pivot (Physics/Rust):** As `src/racing/collision.c` is nearly completely labeled, begin identifying the core physics loops in `src/racing/race_logic.c` or `src/racing/math_util.c` for extraction into the Rust bridge.
+- Renamed remaining func_800... routines in race_logic.c and actors.c.
+- Need to implement tkmk00 compressor/decompressor for menu textures (e.g. tkmk00decode) and map out the remaining menu and audio functions.

@@ -121,7 +121,7 @@ void set_staff_ghost(void) {
 #if !ENABLE_CUSTOM_COURSE_ENGINE
     switch (gCurrentCourseId) {
         case COURSE_MARIO_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_MARIO) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -133,7 +133,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 0;
             break;
         case COURSE_ROYAL_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_ROYAL) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -145,7 +145,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 6;
             break;
         case COURSE_LUIGI_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_LUIGI) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -165,7 +165,7 @@ void set_staff_ghost(void) {
 #endif
 }
 
-s32 func_800051C4(void) {
+s32 encode_ghost_data(void) {
     s32 phi_v0;
 
     if (sReplayGhostBufferSize != 0) {
@@ -177,7 +177,7 @@ s32 func_800051C4(void) {
     }
 }
 
-void func_8000522C(void) {
+void decode_ghost_data(void) {
     sPlayerGhostReplay = (u32*) &D_802BFB80.arraySize8[0][D_80162DC8][3];
     mio0decode((u8*) gReplayGhostCompressed, (u8*) sPlayerGhostReplay);
     sPlayerGhostFramesRemaining = (s32) (*sPlayerGhostReplay & REPLAY_FRAME_COUNTER);
@@ -185,7 +185,7 @@ void func_8000522C(void) {
     D_80162E00 = 1;
 }
 
-void func_800052A4(void) {
+void swap_ghost_buffer_index(void) {
     s16 temp_v0;
 
     if (D_80162DC8 == 1) {
@@ -201,7 +201,7 @@ void func_800052A4(void) {
     D_80162D86 = temp_v0;
 }
 
-void func_80005310(void) {
+void init_ghost_data(void) {
 
     if (gModeSelection == TIME_TRIALS) {
 
@@ -333,7 +333,7 @@ void process_course_ghost_replay(void) {
     s16 stickVal;
     s16 buttons = 0;
     if (sCourseGhostReplayIdx >= 0x1000) {
-        func_80005AE8(gPlayerThree);
+        init_ghost_player(gPlayerThree);
         return;
     }
 
@@ -392,7 +392,7 @@ void process_player_ghost_replay(void) {
     s16 buttons = 0;
 
     if (sPlayerGhostReplayIdx >= 0x1000) {
-        func_80005AE8(gPlayerTwo);
+        init_ghost_player(gPlayerTwo);
         return;
     }
     inputs = sPlayerGhostReplay[sPlayerGhostReplayIdx];
@@ -510,36 +510,36 @@ void save_player_replay(void) {
 }
 
 // sets player to AI? (unconfirmed)
-void func_80005AE8(Player* ply) {
+void init_ghost_player(Player* ply) {
     if (((ply->type & PLAYER_INVISIBLE_OR_BOMB) != 0) && (ply != gPlayerOne)) {
         ply->type = PLAYER_CINEMATIC_MODE | PLAYER_START_SEQUENCE | PLAYER_CPU;
     }
 }
 
-void func_80005B18(void) {
+void check_and_finalize_ghost_data(void) {
     if (gModeSelection == TIME_TRIALS) {
         if ((gLapCountByPlayerId[0] == 3) && (D_80162DDC == 0) && (gPostTimeTrialReplayCannotSave != 1)) {
             if (bPlayerGhostDisabled == 1) {
                 D_80162DD0 = D_80162DCC;
-                func_800052A4();
+                swap_ghost_buffer_index();
                 bPlayerGhostDisabled = 0;
                 D_80162DDC = 1;
                 D_80162DE0 = gPlayerOne->characterId;
                 D_80162DE8 = gPlayerOne->characterId;
                 D_80162E00 = 0;
                 D_80162DFC = playerHUD[PLAYER_ONE].someTimer;
-                func_80005AE8(gPlayerTwo);
-                func_80005AE8(gPlayerThree);
+                init_ghost_player(gPlayerTwo);
+                init_ghost_player(gPlayerThree);
             } else if (gLapCountByPlayerId[1] != 3) {
                 D_80162DD0 = D_80162DCC;
-                func_800052A4();
+                swap_ghost_buffer_index();
                 D_80162DDC = 1;
                 D_80162DE0 = gPlayerOne->characterId;
                 D_80162DFC = playerHUD[PLAYER_ONE].someTimer;
                 D_80162E00 = 0;
                 D_80162DE8 = gPlayerOne->characterId;
-                func_80005AE8(gPlayerTwo);
-                func_80005AE8(gPlayerThree);
+                init_ghost_player(gPlayerTwo);
+                init_ghost_player(gPlayerThree);
             } else {
                 sReplayGhostBuffer = D_802BFB80.arraySize8[0][D_80162DC8][3].pixel_index_array;
                 sReplayGhostBufferSize = D_80162D86;
@@ -548,8 +548,8 @@ void func_80005B18(void) {
                 D_80162DD8 = 0;
                 bPlayerGhostDisabled = 0;
                 D_80162DDC = 1;
-                func_80005AE8(gPlayerTwo);
-                func_80005AE8(gPlayerThree);
+                init_ghost_player(gPlayerTwo);
+                init_ghost_player(gPlayerThree);
             }
         } else {
             if ((gLapCountByPlayerId[0] == 3) && (D_80162DDC == 0) && (gPostTimeTrialReplayCannotSave == 1)) {
@@ -558,8 +558,8 @@ void func_80005B18(void) {
                 D_80162DDC = 1;
             }
             if ((gPlayerOne->type & PLAYER_CINEMATIC_MODE) == PLAYER_CINEMATIC_MODE) {
-                func_80005AE8(gPlayerTwo);
-                func_80005AE8(gPlayerThree);
+                init_ghost_player(gPlayerTwo);
+                init_ghost_player(gPlayerThree);
             } else {
                 sUnusedReplayCounter += 1;
                 if (sUnusedReplayCounter > 100) {
@@ -581,7 +581,7 @@ void func_80005B18(void) {
     }
 }
 
-void func_80005E6C(void) {
+void update_ghost_replays(void) {
     if ((gModeSelection == TIME_TRIALS) && (gModeSelection == TIME_TRIALS) && (gActiveScreenMode == SCREEN_MODE_1P)) {
         if ((D_80162DD8 == 0) && (gLapCountByPlayerId[1] != 3)) {
             process_player_ghost_replay(); // 3
@@ -593,18 +593,18 @@ void func_80005E6C(void) {
             process_post_time_trial_replay(); // 1
             return;
         }
-        func_80005AE8(gPlayerTwo);
-        func_80005AE8(gPlayerThree);
+        init_ghost_player(gPlayerTwo);
+        init_ghost_player(gPlayerThree);
     }
 }
 
 void replays_loop(void) {
     if (D_8015F890 == 1) {
-        func_80005E6C();
+        update_ghost_replays();
         return;
     }
     if (!gPauseTriggered) {
-        func_80005B18();
+        check_and_finalize_ghost_data();
         return;
     }
     /* This only gets triggered when the previous if-statements are not met
