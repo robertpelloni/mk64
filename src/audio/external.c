@@ -2763,8 +2763,8 @@ void func_800C8770(u8 playerId) {
     }
 }
 
-// Checks the same field for all players before doing something?
-void func_800C8920(void) {
+// Checks if any player still has the lightning effect; if not, resets thunder sound/volume state
+void check_and_reset_thunder_effect(void) {
     if (((u8) D_800EA168 != 0) && ((gPlayers[0].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[1].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[2].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
@@ -2773,7 +2773,7 @@ void func_800C8920(void) {
         ((gPlayers[5].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[6].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[7].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT)) {
-        func_800CAC08();
+        reset_thunder_sound_effect();
     }
 }
 
@@ -2873,7 +2873,7 @@ void func_800C8CCC() {
             func_800C8C7C(var_s0);
         }
     }
-    func_800C8920();
+    check_and_reset_thunder_effect();
     func_800C89E4();
     func_800C8AE4();
 }
@@ -3457,7 +3457,7 @@ void play_star_sound_effect_stop(u8 playerIndex) {
     }
 }
 
-void func_800CAC08() {
+void reset_thunder_sound_effect() {
     if (D_800EA108 == 0) {
         func_800C36C4(0, 1U, 0x7FU, 0x19);
         func_800C56F0(SOUND_ITEM_THUNDERBOLT);
@@ -3486,7 +3486,7 @@ void play_thunder_sound_effect_stop(UNUSED s32 arg0) {
     }
 }
 
-void func_800CADD0(u8 playerIndex, f32 arg1) {
+void play_kart_landing_sound_effect(u8 playerIndex, f32 arg1) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerIndex]) {
             case 2:
@@ -3563,7 +3563,7 @@ void stop_boo_sound_effect(u8 playerIndex) {
     }
 }
 
-void func_800CB134() {
+void trigger_losing_ceremony_sequence() {
     D_800EA174 = 1;
 }
 
@@ -3619,8 +3619,8 @@ void begin_losing_ceremony_sequence() {
     }
 }
 
-// run audio?
-void func_800CB2C4() {
+// Main audio update loop called per game tick
+void audio_game_loop_tick() {
     func_800C1F8C();
     func_800C3724();
     func_800C3478();

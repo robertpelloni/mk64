@@ -1192,7 +1192,7 @@ void thread5_game_loop(UNUSED void* arg) {
     func_800C5CB8();
 
     while (true) {
-        func_800CB2C4();
+        audio_game_loop_tick();
 
         // Update the gamestate if it has changed (racing, menus, credits, etc.).
         if (gGamestateNext != gGamestate) {

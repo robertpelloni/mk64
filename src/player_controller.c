@@ -2307,7 +2307,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 func_800C9060(playerId, 0x1900A60AU);
             } else if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                        ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
+                play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
             }
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                 player->kartProps |= POST_TUMBLE_GAS;
@@ -2318,7 +2318,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->unk_DB4.unk18 = 0;
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
+                play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
             }
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                 player->kartProps |= POST_TUMBLE_GAS;
@@ -2330,9 +2330,9 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
                 if (((player->unk_0C2 < 0xB) && (player->unk_0C2 >= 4)) && (gCurrentCourseId == COURSE_BOWSER_CASTLE)) {
-                    func_800CADD0((u8) playerId, player->unk_0C2 / 14.0f);
+                    play_kart_landing_sound_effect((u8) playerId, player->unk_0C2 / 14.0f);
                 } else {
-                    func_800CADD0((u8) playerId, player->unk_0C2 / 25.0f);
+                    play_kart_landing_sound_effect((u8) playerId, player->unk_0C2 / 25.0f);
                 }
             }
         }
@@ -2581,7 +2581,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 player->unk_DB4.unkC = 3.0f;
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
                 }
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                     player->kartProps |= POST_TUMBLE_GAS;
@@ -2593,7 +2593,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 player->unk_DB4.unk18 = 0;
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
                 }
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                     player->kartProps |= POST_TUMBLE_GAS;
@@ -2607,7 +2607,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 }
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 20.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 20.0f);
                 }
                 if (player->unk_0C2 >= 0x28) {
                     player->unk_0C2 = 0x0014;

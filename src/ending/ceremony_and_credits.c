@@ -729,8 +729,8 @@ void play_winning_ceremony_sequence_part2(UNUSED CinematicCamera* camera) {
     play_sequence2(SEQ_EVENT_CEREMONY_PRESENTATION_PART2_WIN);
 }
 
-void wrap_func_800CB134(UNUSED CinematicCamera* camera) {
-    func_800CB134();
+void wrap_trigger_losing_ceremony_sequence(UNUSED CinematicCamera* camera) {
+    trigger_losing_ceremony_sequence();
 }
 
 void play_losing_ceremony_sequence(UNUSED CinematicCamera* camera) {
@@ -1184,7 +1184,7 @@ void func_802844FC(CinematicCamera* camera) {
 void func_8028454C(CinematicCamera* camera) {
     cutscene_event(func_80283CA8, camera, 0, 0);
     cutscene_event(wrap_func_800CA0CC, camera, 1, 1);
-    cutscene_event(wrap_func_800CB134, camera, 0, 0);
+    cutscene_event(wrap_trigger_losing_ceremony_sequence, camera, 0, 0);
     cutscene_event(wrap_func_80280FFC, camera, 0x3C, 0x3C);
     move_cinematic_camera_along_spline(camera, (struct struct_80286A04*) D_80285B18,
                                        (struct struct_80286A04*) D_80285B54, 0);

@@ -196,7 +196,7 @@ typedef struct {
 /** @cond */
 
 void func_800C94A4(u8);
-void func_800CADD0(u8, f32);
+void play_kart_landing_sound_effect(u8, f32);
 void func_800C13F0(void);
 void audio_reset_session_eu(OSMesg);
 f32 func_800C1480(u8, u8);
@@ -264,7 +264,7 @@ void func_800C76C0(u8);
 void func_800C847C(u8);
 void func_800C86D8(u8);
 void func_800C8770(u8);
-void func_800C8920(void);
+void check_and_reset_thunder_effect(void);
 void func_800C89E4(void);
 void func_800C8AE4(void);
 void func_800C8C7C(u8);
@@ -310,15 +310,15 @@ void play_star_music(u8);
 void play_star_sound_effect(u8);
 void play_star_music_stop_effect(u8);
 void play_star_sound_effect_stop(u8);
-void func_800CAC08(void);
+void reset_thunder_sound_effect(void);
 void play_thunder_sound_effect(u8);
 void play_thunder_sound_effect_stop(s32);
 void set_player_sound_effect_volume(u8, f32);
 void play_boo_sound_effect(u8);
 
-void func_800CB134(void);
+void trigger_losing_ceremony_sequence(void);
 void begin_losing_ceremony_sequence(void);
-void func_800CB2C4(void);
+void audio_game_loop_tick(void);
 void func_800CBC24(void);
 
 // This is some from other file, its definitely not part of audio's data/bss

@@ -166,7 +166,7 @@ void func_80283B6C(CinematicCamera*);
 void func_80283BA4(CinematicCamera*);
 void play_winning_ceremony_sequence_part1(CinematicCamera*);
 void play_winning_ceremony_sequence_part2(CinematicCamera*);
-void wrap_func_800CB134(CinematicCamera*);
+void wrap_trigger_losing_ceremony_sequence(CinematicCamera*);
 void play_losing_ceremony_sequence(CinematicCamera*);
 void play_winning_ceremony_credits_sequence(CinematicCamera*);
 void func_80283CA8(CinematicCamera*);

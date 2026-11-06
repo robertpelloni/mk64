@@ -1854,7 +1854,7 @@ void load_menu_states(s32 menuSelection) {
 
             if (gGamestate != 0) {
                 func_800CA008(0, 0);
-                func_800CB2C4();
+                audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;
                 play_sequence(SEQ_MENU_MAIN_MENU);
@@ -1912,7 +1912,7 @@ void load_menu_states(s32 menuSelection) {
                         play_sound2(SOUND_MENU_SELECT_PLAYER);
                     } else {
                         func_800CA008(0, 0);
-                        func_800CB2C4();
+                        audio_game_loop_tick();
                         gGamestate = 0;
                         gGamestateNext = 0;
                         play_sequence(SEQ_MENU_MAIN_MENU);
@@ -1950,7 +1950,7 @@ void load_menu_states(s32 menuSelection) {
             }
             if (gGamestate != 0) {
                 func_800CA008(0, 0);
-                func_800CB2C4();
+                audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;
                 play_sequence(SEQ_MENU_MAIN_MENU);

@@ -8,3 +8,6 @@
 ## Recent Audits
 - The `bobcoin` submodule was completely removed to reflect the cleanup phase of the monorepo sync. All `.gitmodule` linkages and reference documentation have been purged.
 - Several audio routines in `src/menus.c` and `src/audio/external.c` (`func_800CA388`) were recently mapped to `fade_all_channel_volume_scale`.
+- Audio engine tick function (`func_800CB2C4`) labeled as `audio_game_loop_tick`.
+- Thunder state handlers (`func_800CAC08` -> `reset_thunder_sound_effect`, `func_800C8920` -> `check_and_reset_thunder_effect`) and landing sound (`func_800CADD0` -> `play_kart_landing_sound_effect`) documented and labeled.
+- Cutscene losing ceremony trigger (`func_800CB134`) labeled as `trigger_losing_ceremony_sequence`.
