@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.8] - 2026-05-24
+### Changed
+- Labeled audio mute and sound bank cleanup routines:
+  - `func_800C9F90` -> `audio_set_pause_mute`: Mutes/unmutes audio sequences and tracks pause mute state in `D_800EA16C`.
+  - `func_800CA0A0` -> `audio_mute_sfx_enable`: Enables SFX mute flag (`D_800EA108 = 1`).
+  - `func_800CA0B8` -> `audio_mute_sfx_disable`: Disables SFX mute flag (`D_800EA108 = 0`).
+  - `func_800CA0CC` -> `audio_mute_sfx_enable_cutscene`: Cutscene-specific wrapper to activate SFX mute.
+  - `func_800CA0E4` -> `audio_clear_sound_banks`: Purges audio banks 3 and 5 during sequence transitions.
+- Updated all call sites and prototypes across `src/audio/external.c`, `src/audio/external.h`, `src/racing/race_logic.c`, `src/menu_items.c`, and `src/ending/ceremony_and_credits.c`.
+
 ## [8.107.7] - 2026-05-23
 ### Changed
 - Labeled audio command queue and sequence fade routines in `src/audio/port_eu.c` and `src/audio/port_eu.h`:

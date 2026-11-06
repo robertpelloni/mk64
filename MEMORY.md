@@ -12,3 +12,4 @@
 - Thunder state handlers (`func_800CAC08` -> `reset_thunder_sound_effect`, `func_800C8920` -> `check_and_reset_thunder_effect`) and landing sound (`func_800CADD0` -> `play_kart_landing_sound_effect`) documented and labeled.
 - Cutscene losing ceremony trigger (`func_800CB134`) labeled as `trigger_losing_ceremony_sequence`.
 - Audio command queue in `src/audio/port_eu.c` dispatches commands via ring buffer `sAudioCmd` using `audio_cmd_queue_push_*`, flushes to the audio thread via `audio_cmd_queue_flush`, and unpacks in the RSP task runner via `audio_cmd_queue_process`. Sequence fade-in handled via `seq_player_fade_in`.
+- Global audio mute and pause behaviors: `audio_set_pause_mute` triggers mute on game pause and unmutes on resume, setting `D_800EA16C`. `audio_mute_sfx_enable` and `audio_mute_sfx_disable` control sound effects during award ceremonies and sequence intros via `D_800EA108`. `audio_clear_sound_banks` clears channels 3 and 5.

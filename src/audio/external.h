@@ -288,13 +288,13 @@ void func_800C9A88(u8);
 void func_800C9D0C(u8);
 void func_800C9D80(Vec3f, Vec3f, u32);
 void func_800C9EF4(Vec3f, u32);
-void func_800C9F90(u8);
+void audio_set_pause_mute(u8);
 
 void func_800CA008(u8, u8);
-void func_800CA0A0(void);
-void func_800CA0B8(void);
-void func_800CA0CC(void);
-void func_800CA0E4(void);
+void audio_mute_sfx_enable(void);
+void audio_mute_sfx_disable(void);
+void audio_mute_sfx_enable_cutscene(void);
+void audio_clear_sound_banks(void);
 void func_800CA118(u8);
 void func_800CA24C(u8);
 void func_800CA270(void);

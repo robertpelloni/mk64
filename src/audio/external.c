@@ -3205,7 +3205,7 @@ void func_800C9EF4(Vec3f arg0, u32 soundBits) {
     }
 }
 
-void func_800C9F90(u8 arg0) {
+void audio_set_pause_mute(u8 arg0) {
     if ((arg0) != 0) {
         play_sound2(SOUND_ACTION_GO_BACK_2);
         audio_cmd_queue_push_u32(0xF1000000, 0);
@@ -3233,19 +3233,19 @@ void func_800CA008(u8 arg0, u8 arg1) {
 
 // With -framepointer active, you CANNOT put void
 // in the argument list, causes a minor stack difference
-void func_800CA0A0() {
+void audio_mute_sfx_enable() {
     D_800EA108 = 1;
 }
 
-void func_800CA0B8() {
+void audio_mute_sfx_disable() {
     D_800EA108 = 0;
 }
 
-void func_800CA0CC() {
+void audio_mute_sfx_enable_cutscene() {
     D_800EA108 = 1;
 }
 
-void func_800CA0E4(void) {
+void audio_clear_sound_banks(void) {
     func_800C5278(3);
     func_800C5278(5);
 }
@@ -3256,25 +3256,25 @@ void func_800CA118(u8 arg0) {
     switch (D_800EA1C0) { /* irregular */
         case 0:
             D_800EA0F0 = 1;
-            func_800CA0E4();
+            audio_clear_sound_banks();
             break;
         case 1:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                func_800CA0E4();
+                audio_clear_sound_banks();
             }
             break;
         case 2:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1) && (D_800EA0EC[2] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                func_800CA0E4();
+                audio_clear_sound_banks();
             }
             break;
         case 3:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1) && (D_800EA0EC[2] == (u8) 1) &&
                 (D_800EA0EC[3] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                func_800CA0E4();
+                audio_clear_sound_banks();
             }
             break;
     }

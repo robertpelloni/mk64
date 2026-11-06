@@ -667,8 +667,8 @@ void play_sound_welcome(UNUSED CinematicCamera* camera) {
     }
 }
 
-void wrap_func_800CA0CC(UNUSED CinematicCamera* camera) {
-    func_800CA0CC();
+void wrap_audio_mute_sfx_enable_cutscene(UNUSED CinematicCamera* camera) {
+    audio_mute_sfx_enable_cutscene();
 }
 
 /**
@@ -710,15 +710,15 @@ void play_sound_trophy(UNUSED CinematicCamera* camera) {
 }
 
 void func_80283B6C(UNUSED CinematicCamera* camera) {
-    func_800CA0B8();
+    audio_mute_sfx_disable();
     func_800C9060(0, SOUND_ACTION_EXPLOSION);
-    func_800CA0A0();
+    audio_mute_sfx_enable();
 }
 
 void func_80283BA4(UNUSED CinematicCamera* camera) {
-    func_800CA0B8();
+    audio_mute_sfx_disable();
     func_800C90F4(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
-    func_800CA0A0();
+    audio_mute_sfx_enable();
 }
 
 void play_winning_ceremony_sequence_part1(UNUSED CinematicCamera* camera) {
@@ -919,7 +919,7 @@ struct struct_80282C40 D_80285940[] = {
 void func_80283D2C(CinematicCamera* camera) {
     gOrderedSizeSlidingBorders = 120.0f;
     cutscene_event(func_80283CA8, camera, 0, 0);
-    cutscene_event(wrap_func_800CA0CC, camera, 1, 1);
+    cutscene_event(wrap_audio_mute_sfx_enable_cutscene, camera, 1, 1);
     cutscene_event(play_winning_ceremony_sequence_part1, camera, 0, 0);
     cutscene_event(play_sound_balloon_pop, camera, 45, 45);
     cutscene_event(play_sound_balloon_pop, camera, 65, 65);
@@ -1183,7 +1183,7 @@ void func_802844FC(CinematicCamera* camera) {
 
 void func_8028454C(CinematicCamera* camera) {
     cutscene_event(func_80283CA8, camera, 0, 0);
-    cutscene_event(wrap_func_800CA0CC, camera, 1, 1);
+    cutscene_event(wrap_audio_mute_sfx_enable_cutscene, camera, 1, 1);
     cutscene_event(wrap_trigger_losing_ceremony_sequence, camera, 0, 0);
     cutscene_event(wrap_func_80280FFC, camera, 0x3C, 0x3C);
     move_cinematic_camera_along_spline(camera, (struct struct_80286A04*) D_80285B18,

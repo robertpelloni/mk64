@@ -2619,7 +2619,7 @@ void func_80095574(void) {
     }
     if (gMenuTimingCounter > 300) {
         func_8009E230();
-        func_800CA0A0();
+        audio_mute_sfx_enable();
     }
     gSPDisplayList(gDisplayListHead++, D_020076E0);
 }
@@ -11517,7 +11517,7 @@ void func_800ADF48(MenuItem* arg0) {
                             arg0->state = 0;
                             gIsGamePaused = 0;
                             func_8028DF38();
-                            func_800C9F90(0U);
+                            audio_set_pause_mute(0U);
                         } else {
                             func_8009DFE0(30);
                             play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
@@ -12023,16 +12023,16 @@ void func_800AF270(MenuItem* arg0) {
             if (arg0->param2 >= 0x1F) {
                 if (D_802874D8.unk1D >= 3) {
                     arg0->state = 4;
-                    func_800CA0B8();
+                    audio_mute_sfx_disable();
                     func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
-                    func_800CA0A0();
+                    audio_mute_sfx_enable();
                 } else {
                     arg0->state = 3;
                     func_8009A640(arg0->D_8018DEE0_index, 0, sp30,
                                   segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_v0]));
-                    func_800CA0B8();
+                    audio_mute_sfx_disable();
                     func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
-                    func_800CA0A0();
+                    audio_mute_sfx_enable();
                 }
             }
             break;

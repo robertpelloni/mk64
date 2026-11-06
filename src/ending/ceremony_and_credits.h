@@ -152,7 +152,7 @@ void animation_apears_sliding_borders(CinematicCamera*);
 void animation_disapears_sliding_borders(CinematicCamera*);
 void wrap_func_80092C80(CinematicCamera*);
 void play_sound_welcome(CinematicCamera*);
-void wrap_func_800CA0CC(CinematicCamera*);
+void wrap_audio_mute_sfx_enable_cutscene(CinematicCamera*);
 void play_sound_congratulation(CinematicCamera*);
 void play_sound_balloon_pop(CinematicCamera*);
 void play_sound_fish(CinematicCamera*);

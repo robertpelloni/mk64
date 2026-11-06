@@ -1,27 +1,22 @@
-# Session Handoff - 2026-05-23 (v8.107.7)
+# Session Handoff - 2026-05-24 (v8.107.8)
 
 ## Executive Summary
-Advanced the decompilation labeling across the port_eu command queue subsystem, verified all modified files with static C compilation syntax validation, and bumped the project version to `8.107.7`.
+Further advanced the audio subsystem decompilation labeling, focusing on pause mute handling, SFX mute control flags, and sequence sound bank clearing. Successfully verified all modified code with static C syntax compilation, and bumped the project version to `8.107.8`.
 
 ### Recent Fixes & Additions
-- **Audio Port EU Command Queue Renaming:**
-  - `func_800CBB48` -> `audio_cmd_queue_push`: Pushes an audio command into ring buffer `sAudioCmd`.
-  - `func_800CBB88` -> `audio_cmd_queue_push_f32`: Enqueues commands with 32-bit float parameters.
-  - `func_800CBBB8` -> `audio_cmd_queue_push_u32`: Enqueues commands with 32-bit unsigned integers.
-  - `func_800CBBE8` -> `audio_cmd_queue_push_s8`: Enqueues commands with 8-bit signed values.
-  - `func_800CBC24` -> `audio_cmd_queue_flush`: Flushes queued audio commands across threads.
-  - `func_800CBCB0` -> `audio_cmd_queue_process`: Processes commands in the RSP audio task runner.
-  - `func_800CBA64` -> `seq_player_fade_in`: Handles sequence player fade-in configurations.
-- **Audio Labelling & Decompilation:**
-  - `func_800CB2C4` -> `audio_game_loop_tick`: The core per-frame audio processing tick invoked in `main.c`, `code_800029B0.c`, and `menus.c`.
-  - `func_800CAC08` -> `reset_thunder_sound_effect`: Restores audio master volume and clears active lightning sound state.
-  - `func_800C8920` -> `check_and_reset_thunder_effect`: Iterates over players checking for `LIGHTNING_EFFECT` to reset sound state once expired.
-  - `func_800CB134` -> `trigger_losing_ceremony_sequence`: Arms the cutscene losing sequence timer in podium ceremonies.
-  - `func_800CADD0` -> `play_kart_landing_sound_effect`: Plays landing sound with dynamic volume/pitch proportional to vertical velocity in `player_controller.c`.
+- **Audio Mute & Sound Bank Routine Renaming:**
+  - `func_800C9F90` -> `audio_set_pause_mute`: Mutes/unmutes audio playback and tracks pause state in `D_800EA16C`.
+  - `func_800CA0A0` -> `audio_mute_sfx_enable`: Sets `D_800EA108 = 1` to disable sound effects during special sequences.
+  - `func_800CA0B8` -> `audio_mute_sfx_disable`: Clears `D_800EA108 = 0` restoring normal sound effect playback.
+  - `func_800CA0CC` -> `audio_mute_sfx_enable_cutscene`: Cutscene-specific mute enabler.
+  - `func_800CA0E4` -> `audio_clear_sound_banks`: Empties sound banks 3 and 5 during transitions.
+  - `wrap_func_800CA0CC` -> `wrap_audio_mute_sfx_enable_cutscene`: Wrapper function in `ceremony_and_credits.c`.
+- **Audio Port EU Command Queue Renaming (v8.107.7):**
+  - Labeled `audio_cmd_queue_push_*`, `audio_cmd_queue_flush`, `audio_cmd_queue_process`, and `seq_player_fade_in`.
 - **Environment & Build Infrastructure:**
-  - Installed MIPS cross-compilation toolchains (`binutils-mips-linux-gnu`, `gcc-mips-linux-gnu`) into the build environment.
-  - Verified Torch and recompilation tools build cleanly via `make -C tools`.
-  - Confirmed 0 syntax errors across modified files.
+  - Installed MIPS toolchains (`binutils-mips-linux-gnu`, `gcc-mips-linux-gnu`).
+  - Verified Torch and tools build cleanly (`make -C tools`).
+  - Zero syntax errors confirmed across all updated files.
 
 ## Next Steps for Implementor
 1. **Zero-Latency Rust Bridge:** Review the `TODO.md` backlog regarding the porting of collision logic (`src/racing/`) into native Rust routines to circumvent N64 physics limitations.
