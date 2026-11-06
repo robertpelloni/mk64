@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.7] - 2026-05-23
+### Changed
+- Labeled audio command queue and sequence fade routines in `src/audio/port_eu.c` and `src/audio/port_eu.h`:
+  - `func_800CBB48` -> `audio_cmd_queue_push`: Pushes an audio command into the command ring buffer `sAudioCmd`.
+  - `func_800CBB88` -> `audio_cmd_queue_push_f32`: Pushes command with 32-bit floating point payload (e.g. channel volumes).
+  - `func_800CBBB8` -> `audio_cmd_queue_push_u32`: Pushes command with 32-bit unsigned payload (e.g. sequence loading and sound modes).
+  - `func_800CBBE8` -> `audio_cmd_queue_push_s8`: Pushes command with 8-bit signed payload (e.g. panning/channel options).
+  - `func_800CBC24` -> `audio_cmd_queue_flush`: Flushes queued audio commands to the audio execution thread via message queue.
+  - `func_800CBCB0` -> `audio_cmd_queue_process`: Dispatches and executes queued commands in the audio synthesis loop.
+  - `func_800CBA64` -> `seq_player_fade_in`: Initiates volume fade-in sequence over specified frames.
+- Updated callsites across `src/audio/external.c` and `src/audio/external.h`.
+
 ## [8.107.6] - 2026-05-22
 ### Changed
 - Labeled audio subsystem engine functions:

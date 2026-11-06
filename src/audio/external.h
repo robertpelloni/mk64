@@ -319,7 +319,7 @@ void play_boo_sound_effect(u8);
 void trigger_losing_ceremony_sequence(void);
 void begin_losing_ceremony_sequence(void);
 void audio_game_loop_tick(void);
-void func_800CBC24(void);
+void audio_cmd_queue_flush(void);
 
 // This is some from other file, its definitely not part of audio's data/bss
 extern s8 D_801657E5;

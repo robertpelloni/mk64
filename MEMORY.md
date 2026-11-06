@@ -11,3 +11,4 @@
 - Audio engine tick function (`func_800CB2C4`) labeled as `audio_game_loop_tick`.
 - Thunder state handlers (`func_800CAC08` -> `reset_thunder_sound_effect`, `func_800C8920` -> `check_and_reset_thunder_effect`) and landing sound (`func_800CADD0` -> `play_kart_landing_sound_effect`) documented and labeled.
 - Cutscene losing ceremony trigger (`func_800CB134`) labeled as `trigger_losing_ceremony_sequence`.
+- Audio command queue in `src/audio/port_eu.c` dispatches commands via ring buffer `sAudioCmd` using `audio_cmd_queue_push_*`, flushes to the audio thread via `audio_cmd_queue_flush`, and unpacks in the RSP task runner via `audio_cmd_queue_process`. Sequence fade-in handled via `seq_player_fade_in`.
