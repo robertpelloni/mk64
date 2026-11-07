@@ -1,12 +1,15 @@
-# Session Handoff - 2026-05-28 (v8.107.12)
+# Session Handoff - 2026-05-29 (v8.107.13)
 
 ## Executive Summary
-Completed decompilation labeling of the race finish and results audio sequence pipeline, verified with static C compilation, and bumped the project version to `8.107.12`.
+Completed decompilation labeling of the audio sequence command buffer and universal sequence fade-out system, verified with static C compilation, and bumped project version to `8.107.13`.
 
 ### Recent Fixes & Additions
-- **Race Finish and Results Sequence Audio Labeling:**
-  - `func_800CA118` -> `audio_trigger_race_finish`: Arms finish sound states and initial timer `D_800E9EA4` upon race/battle victory or qualification in `src/racing/race_logic.c`.
-  - `func_800C76C0` -> `audio_update_race_finish_sequences`: Coordinates post-finish victory jingles, volume transitions, and podium results screen sequences.
+- **Audio Sequence Command Buffer & Fadeouts:**
+  - `func_800CA330` -> `audio_fade_out_all_sequences`: Triggers rapid or timed sequence fadeouts across sequence players 0 and 1 throughout menu navigation and race transitions.
+  - `func_800C3448` -> `audio_push_sequence_command`: Queues an encoded 32-bit sequence playback or volume command into `D_80192CD0`.
+  - `func_800C3478` -> `audio_process_sequence_commands`: Flushes and dispatches all buffered sequence commands during `audio_game_loop_tick`.
+- **Race Finish and Results Sequence Audio Labeling (v8.107.12):**
+  - `audio_trigger_race_finish` and `audio_update_race_finish_sequences`.
 - **Audio Initialization & State Resets (v8.107.11):**
   - `audio_init`, `audio_soft_reset`, and `audio_reset_state_and_cameras`.
 - **Tunnel Acoustics & Final Lap Audio Labeling (v8.107.10):**

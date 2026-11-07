@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.13] - 2026-05-29
+### Changed
+- Labeled audio sequence command buffer and universal fade-out routines:
+  - `func_800CA330` -> `audio_fade_out_all_sequences`: Triggers rapid or timed sequence fadeouts across sequence players 0 and 1 throughout menu navigation and race transitions.
+  - `func_800C3448` -> `audio_push_sequence_command`: Queues an encoded 32-bit sequence playback or volume command into `D_80192CD0`.
+  - `func_800C3478` -> `audio_process_sequence_commands`: Flushes and dispatches all buffered sequence commands during `audio_game_loop_tick`.
+- Updated prototypes and callsites in `src/audio/external.c`, `src/audio/external.h`, `src/menus.c`, `src/menu_items.c`, and `src/racing/race_logic.c`.
+
 ## [8.107.12] - 2026-05-28
 ### Changed
 - Labeled race finish and post-race sequence audio routines:

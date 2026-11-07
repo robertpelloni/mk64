@@ -181,7 +181,7 @@ void update_menus(void) {
                 // this is certainly a way to write these...
                 switch (gMenuSelection) {
                     case COURSE_SELECT_MENU:
-                        func_800CA330(0x19);
+                        audio_fade_out_all_sequences(0x19);
                         // deliberate (?) fallthru
                     case MAIN_MENU:
                     case CHARACTER_SELECT_MENU:
@@ -1040,7 +1040,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                 isDebug = false;
                 if ((gMenuDelayTimer >= 46) && (btnAndStick & (A_BUTTON | START_BUTTON))) {
                     func_8009E1C0();
-                    func_800CA330(0x19);
+                    audio_fade_out_all_sequences(0x19);
                     play_sound2(SOUND_INTRO_ENTER_MENU);
                 } else {
                     break;
@@ -1203,7 +1203,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
         if (isDebug) {
             if (btnAndStick & (A_BUTTON | START_BUTTON)) {
                 func_8009E1C0();
-                func_800CA330(0x19);
+                audio_fade_out_all_sequences(0x19);
                 gDebugMenuSelection = DEBUG_MENU_OPTION_SELECTED;
 
                 if (controller->button & L_TRIG) {
@@ -1222,7 +1222,7 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                 play_sound2(SOUND_MENU_OK_CLICKED);
             } else if ((btnAndStick & B_BUTTON) && (controller->button & Z_TRIG)) {
                 func_8009E1C0();
-                func_800CA330(0x19);
+                audio_fade_out_all_sequences(0x19);
                 gDebugMenuSelection = DEBUG_MENU_OPTION_SELECTED;
                 gDebugGotoScene = DEBUG_GOTO_CREDITS_SEQUENCE_DEFAULT;
                 play_sound2(SOUND_MENU_OK_CLICKED);
@@ -1308,7 +1308,7 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 if (btnAndStick & B_BUTTON) {
                     func_8009E0F0(0x14);
-                    func_800CA330(0x19);
+                    audio_fade_out_all_sequences(0x19);
                     gMenuFadeType = MENU_FADE_TYPE_BACK;
                     play_sound2(SOUND_MENU_GO_BACK);
                     break;
@@ -1778,7 +1778,7 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
                 }
                 if ((btnAndStick & A_BUTTON) != 0) {
                     func_8009E1C0();
-                    func_800CA330(0x19);
+                    audio_fade_out_all_sequences(0x19);
                     play_sound2(SOUND_MENU_OK_CLICKED);
                 }
                 break;
@@ -1986,7 +1986,7 @@ void set_sound_mode(void) {
 
     pack = sSoundMenuPack;
     if ((gSoundMode == SOUND_STEREO) || (gSoundMode == SOUND_HEADPHONES) || (gSoundMode == SOUND_MONO)) {
-        func_800C3448(pack.modes[gSoundMode] | 0xE0000000);
+        audio_push_sequence_command(pack.modes[gSoundMode] | 0xE0000000);
     }
 }
 

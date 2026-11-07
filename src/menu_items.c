@@ -4693,7 +4693,7 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
 
 void func_8009CE1C(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
-        func_800C3448(0xE0000002);
+        audio_push_sequence_command(0xE0000002);
     }
 }
 
@@ -10844,7 +10844,7 @@ void func_800AC458(MenuItem* arg0) {
                 D_800DC5EC->screenStartY = 0x012C;
                 D_800DC5F0->screenStartY = -0x003C;
                 D_8015F894 = 4;
-                func_800CA330(0x19U);
+                audio_fade_out_all_sequences(0x19U);
             }
             break;
         case 13:
@@ -10915,7 +10915,7 @@ void func_800ACA14(MenuItem* arg0) {
             }
             if (gControllerFive->buttonPressed & (A_BUTTON | START_BUTTON)) {
                 func_8009DFE0(0x0000001E);
-                func_800CA330(0x19U);
+                audio_fade_out_all_sequences(0x19U);
                 play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
                 if (arg0->paramf < 4.2) {
                     arg0->paramf += 4.0;
@@ -11447,7 +11447,7 @@ void func_800AD2E8(MenuItem* arg0) {
             D_800DC5EC->screenStartY = 0x012C;
             D_800DC5F0->screenStartY = -0x003C;
             D_8015F894 = 4;
-            func_800CA330(0x19U);
+            audio_fade_out_all_sequences(0x19U);
             break;
         case 31:
             arg0->type = 0;
@@ -11521,7 +11521,7 @@ void func_800ADF48(MenuItem* arg0) {
                         } else {
                             func_8009DFE0(30);
                             play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
-                            func_800CA330(FUNC_800ADF48DEF);
+                            audio_fade_out_all_sequences(FUNC_800ADF48DEF);
                             if (arg0->paramf < 4.2) {
                                 arg0->paramf += 4.0;
                             }
@@ -11674,7 +11674,7 @@ void func_800AE218(MenuItem* arg0) {
                     } else {
                         func_8009DFE0(0x0000001E);
                         play_sound2(SOUND_MENU_OK_CLICKED);
-                        func_800CA330(0x19U);
+                        audio_fade_out_all_sequences(0x19U);
                         fade_all_channel_volume_scale(0x19U);
                         if (arg0->paramf < 4.2) {
                             arg0->paramf += 4.0;
@@ -11961,7 +11961,7 @@ void func_800AF004(MenuItem* arg0) {
             break;
         case 6:
             func_8009DFE0(0x0000001E);
-            func_800CA330(0x19U);
+            audio_fade_out_all_sequences(0x19U);
             fade_all_channel_volume_scale(0x19U);
             arg0->state = 7;
             break;
