@@ -212,17 +212,17 @@ void func_800C1F8C(void);
 Vec3f* func_800C21E8(Vec3f, u32);
 void func_800C2274(u8);
 void audio_reset_state_and_cameras(void);
-void func_800C284C(u8, u8, u8, u16);
-void func_800C29B4(u8, u16);
+void seq_player_play_sequence(u8, u8, u8, u16);
+void seq_player_stop_sequence(u8, u16);
 
 void func_800C3724(void);
-void func_800C2A2C(u32);
+void audio_execute_sequence_command(u32);
 void audio_push_sequence_command(u32);
 void audio_process_sequence_commands(void);
-u16 func_800C3508(u8);
+u16 seq_player_get_active_sequence_id(u8);
 void func_800C3608(u8, u8);
-u8 func_800C357C(s32);
-void func_800C35E8(u8);
+u8 audio_is_sequence_command_pending(s32);
+void seq_player_clear_queued_count(u8);
 void func_800C36C4(u8, u8, u8, u8);
 void audio_reset_all_sequence_player_settings(void);
 

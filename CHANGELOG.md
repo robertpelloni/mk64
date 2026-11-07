@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.23] - 2026-06-02
+### Changed
+- Labeled sequence player dispatch, start, stop, and active state query routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C284C` -> `seq_player_play_sequence`: Dispatches sequence playback command `0x82000000`, initializes sequence ID and priority in `D_801930D0[seqPlayer].unk_248`, and sets default channel volume states.
+  - `func_800C29B4` -> `seq_player_stop_sequence`: Pushes sequence stop command `0x83000000` with fade duration and clears `unk_248`.
+  - `func_800C2A2C` -> `audio_execute_sequence_command`: Command dispatcher parsing opcode switches (0..15) for sequence volume fades, channel masks, session resets, and sequence playback.
+  - `func_800C3508` -> `seq_player_get_active_sequence_id`: Returns currently playing sequence ID for a given sequence player index, or -1 if inactive.
+  - `func_800C357C` -> `audio_is_sequence_command_pending`: Scans sequence command ring buffer for matching command.
+  - `func_800C35E8` -> `seq_player_clear_queued_count`: Resets the active queued sequence count in `D_80192CC6[player]`.
+
 ## [8.107.22] - 2026-06-02
 ### Changed
 - Labeled audio course sequence initialization and race finish status handlers in `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/menus.c`, `src/ending/ceremony_and_credits.c`, `src/effects.c`, `src/cpu_vehicles_camera_path.c`, and `src/menu_items.c`:
