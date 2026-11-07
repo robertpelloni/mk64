@@ -1341,7 +1341,7 @@ void func_80091B78(void) {
     setup_menus();
 
     for (i = 0; i < 4; i++) {
-        func_800C97C4((u8) i);
+        audio_stop_kart_engine_sound((u8) i);
     }
 
     for (i = 1; i < 8; i++) {

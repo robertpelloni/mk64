@@ -195,7 +195,7 @@ typedef struct {
 
 /** @cond */
 
-void func_800C94A4(u8);
+void audio_play_kart_engine_idle(u8);
 void play_kart_landing_sound_effect(u8, f32);
 void func_800C13F0(void);
 void audio_reset_session_eu(OSMesg);
@@ -261,9 +261,9 @@ void func_800C683C(u8);
 void func_800C70A8(u8);
 void func_800C76C0(u8);
 
-void func_800C847C(u8);
+void audio_update_player_submerged_sound(u8);
 void func_800C86D8(u8);
-void func_800C8770(u8);
+void audio_update_player_lightning_distortion(u8);
 void check_and_reset_thunder_effect(void);
 void func_800C89E4(void);
 void func_800C8AE4(void);
@@ -280,11 +280,11 @@ void func_800C9060(u8, u32);
 void func_800C90F4(u8, u32);
 void func_800C9250(u8);
 void func_800C92CC(u8, u32);
-void func_800C94A4(u8);
-void func_800C97C4(u8);
+void audio_play_kart_engine_idle(u8);
+void audio_stop_kart_engine_sound(u8);
 void func_800C98B8(Vec3f, Vec3f, u32);
 void func_800C99E0(Vec3f, s32);
-void func_800C9A88(u8);
+void audio_play_kart_engine_driving(u8);
 void func_800C9D0C(u8);
 void func_800C9D80(Vec3f, Vec3f, u32);
 void func_800C9EF4(Vec3f, u32);

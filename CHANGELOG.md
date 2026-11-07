@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.9] - 2026-05-25
+### Changed
+- Labeled player-specific audio events and kart engine sound loops:
+  - `func_800C847C` -> `audio_update_player_submerged_sound`: Handles player splash sounds, voicelines, and pitch modulation upon submerged fluid entry or falling out-of-bounds.
+  - `func_800C8770` -> `audio_update_player_lightning_distortion`: Adjusts audio distortion and channel volume ducking while shock status (`LIGHTNING_EFFECT`) is active.
+  - `func_800C94A4` -> `audio_play_kart_engine_idle`: Starts and parameterizes idle/rev engine sounds for character karts.
+  - `func_800C97C4` -> `audio_stop_kart_engine_sound`: Stops active engine audio channels for a player.
+  - `func_800C9A88` -> `audio_play_kart_engine_driving`: Initiates dynamic driving engine playback loop with velocity tracking.
+- Updated all call sites and prototypes across `src/audio/external.c`, `src/audio/external.h`, `src/player_controller.c`, and `src/menu_items.c`.
+
 ## [8.107.8] - 2026-05-24
 ### Changed
 - Labeled audio mute and sound bank cleanup routines:

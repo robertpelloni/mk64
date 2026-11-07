@@ -4,7 +4,7 @@
 - Port the core "Item & Collision" logic to Rust to enable the "Zero-Latency" Engine.
 - Cross-compile the decompiled code to WASM with Shared Memory for browser emulation.
 - Create missing specific documentation files required by universal instructions: `ROADMAP.md`, `CHANGELOG.md`, `HANDOFF.md`, `DEPLOY.md`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GPT.md`, `copilot-instructions.md`, `MEMORY.md`.
-- Label more functions in `src/audio` (ongoing: labeled mute/pause routines `audio_set_pause_mute`, `audio_mute_sfx_*`, `audio_clear_sound_banks`, and queue handlers).
+- Label more functions in `src/audio` (ongoing: labeled kart engine sound loops `audio_play_kart_engine_*`, `audio_stop_kart_engine_sound`, submerged/fluid audio, lightning distortion, and mute handlers).
 - Expand documentation around memory layout and `mk64.ld`.
 
 ## Backlog

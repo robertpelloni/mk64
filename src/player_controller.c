@@ -220,19 +220,19 @@ void func_80027DA8(Player* player, s8 playerId) {
         if ((player->type & PLAYER_UNKNOWN_0x10) != PLAYER_UNKNOWN_0x10) {
             if (((D_8018D168 == 1) && ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN)) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C94A4(playerId);
+                audio_play_kart_engine_idle(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-                func_800C9A88(playerId);
+                audio_play_kart_engine_driving(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             }
         }
     } else if ((player->type & PLAYER_UNKNOWN_0x10) != PLAYER_UNKNOWN_0x10) {
         if ((D_8018D168 == 1) && (player == gPlayerOne)) {
-            func_800C94A4(playerId);
+            audio_play_kart_engine_idle(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-            func_800C9A88(playerId);
+            audio_play_kart_engine_driving(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         }
     }

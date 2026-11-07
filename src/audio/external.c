@@ -1837,8 +1837,8 @@ void func_800C5D04(u8 playerId) {
                 case 2:
                     D_800EA0EC[playerId] = 1;
                 case 0:
-                    func_800C97C4(playerId);
-                    func_800C94A4(playerId);
+                    audio_stop_kart_engine_sound(playerId);
+                    audio_play_kart_engine_idle(playerId);
                     break;
                 default:
                     break;
@@ -2426,14 +2426,14 @@ void func_800C76C0(u8 playerId) {
                         func_800C3448(0x110100FF);
                         func_800C5278(5U);
                         if (gPlayers[playerId].currentRank == 0) {
-                            func_800C97C4(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            func_800C9A88(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (gPlayers[playerId].currentRank < 4) {
-                            func_800C97C4(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            func_800C9A88(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_OTHER, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else {
                             func_800C3448(-0x3E9F9C00);
@@ -2445,18 +2445,18 @@ void func_800C76C0(u8 playerId) {
                         if (gPlayers[playerId].currentRank == 0) {
                             func_800C3448(0x100100FF);
                             func_800C3448(0x110100FF);
-                            func_800C97C4(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            func_800C9A88(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (gPlayers[playerId].currentRank < 4) {
                             if (D_800EA104 == 0) {
                                 func_800C3448(0x100100FF);
                                 func_800C3448(0x110100FF);
                             }
-                            func_800C97C4(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            func_800C9A88(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_OTHER, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (D_800EA104 == 0) {
                             func_800C3448(0x100100FF);
@@ -2472,9 +2472,9 @@ void func_800C76C0(u8 playerId) {
                 case TIME_TRIALS:
                     func_800C3448(0x100100FF);
                     func_800C3448(0x110100FF);
-                    func_800C97C4(playerId);
+                    audio_stop_kart_engine_sound(playerId);
                     D_800EA0F0 = 2;
-                    func_800C9A88(0U);
+                    audio_play_kart_engine_driving(0U);
                     D_800EA0EC[playerId] = 2;
                     func_800C9060(playerId, 0x1900F103U);
                     if (D_801657E5 == 1) {
@@ -2492,9 +2492,9 @@ void func_800C76C0(u8 playerId) {
                         case 1:           /* switch 1 */
                             func_800C3448(0x100100FF);
                             func_800C3448(0x110100FF);
-                            func_800C97C4(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            func_800C9A88(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                             break;
                         case 2: /* switch 1 */
@@ -2643,7 +2643,7 @@ void func_800C76C0(u8 playerId) {
                     }
                 } else if (D_800E9EA4[playerId] >= 0x12D) {
                     if (D_800E9EA4[playerId] == 0x0000012D) {
-                        func_800C97C4(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 330.0f;
@@ -2660,7 +2660,7 @@ void func_800C76C0(u8 playerId) {
                     }
                 } else if (D_800E9EA4[playerId] >= 0x65) {
                     if (D_800E9EA4[playerId] == 0x00000065) {
-                        func_800C97C4(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
@@ -2678,7 +2678,7 @@ void func_800C76C0(u8 playerId) {
             case BATTLE: /* switch 4 */
                 if (D_800E9EA4[playerId] >= 0x65) {
                     if (D_800E9EA4[playerId] == 0x00000065) {
-                        func_800C97C4(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
@@ -2688,7 +2688,7 @@ void func_800C76C0(u8 playerId) {
     }
 }
 
-void func_800C847C(u8 playerId) {
+void audio_update_player_submerged_sound(u8 playerId) {
     if ((gPlayers[playerId].oobProps & UNDER_OOB_OR_FLUID_LEVEL) == UNDER_OOB_OR_FLUID_LEVEL) {
         if (D_800E9F74[playerId] == 0) {
             if ((s32) D_800EA1C0 < 2) {
@@ -2696,9 +2696,9 @@ void func_800C847C(u8 playerId) {
             } else {
                 func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
             }
-            func_800C97C4(playerId);
+            audio_stop_kart_engine_sound(playerId);
             D_800E9F74[playerId] = 1;
-            func_800C94A4(playerId);
+            audio_play_kart_engine_idle(playerId);
             if (((gCurrentCourseId == COURSE_CHOCO_MOUNTAIN) || (gCurrentCourseId == COURSE_BOWSER_CASTLE) ||
                  (gCurrentCourseId == COURSE_BANSHEE_BOARDWALK) || (gCurrentCourseId == COURSE_YOSHI_VALLEY) ||
                  (gCurrentCourseId == COURSE_FRAPPE_SNOWLAND) || (gCurrentCourseId == COURSE_KOOPA_BEACH) ||
@@ -2712,9 +2712,9 @@ void func_800C847C(u8 playerId) {
         }
     } else {
         if (D_800E9F74[playerId] == 1) {
-            func_800C97C4(playerId);
+            audio_stop_kart_engine_sound(playerId);
             D_800E9F74[playerId] = 2;
-            func_800C94A4(playerId);
+            audio_play_kart_engine_idle(playerId);
             D_800E9F74[playerId] = 0;
             if ((gCurrentCourseId == COURSE_KOOPA_BEACH) && (D_800EA0EC[playerId] == 0)) {
                 play_sound((gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08),
@@ -2731,7 +2731,7 @@ void func_800C86D8(u8 playerId) {
     }
 }
 
-void func_800C8770(u8 playerId) {
+void audio_update_player_lightning_distortion(u8 playerId) {
     if ((gPlayers[playerId].effects & LIGHTNING_EFFECT) == LIGHTNING_EFFECT) {
         D_800E9F24[playerId] = 1;
         if (D_800E9F2C[playerId] < 0xFA) {
@@ -2859,17 +2859,17 @@ void func_800C8CCC() {
         func_800C683C(var_s0);
         func_800C70A8(var_s0);
         func_800C76C0(var_s0);
-        func_800C847C(var_s0);
+        audio_update_player_submerged_sound(var_s0);
         func_800C86D8(var_s0);
     }
     if (gModeSelection == GRAND_PRIX) {
         for (var_s0 = 0; var_s0 < 8; var_s0++) {
-            func_800C8770(var_s0);
+            audio_update_player_lightning_distortion(var_s0);
             func_800C8C7C(var_s0);
         }
     } else {
         for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
-            func_800C8770(var_s0);
+            audio_update_player_lightning_distortion(var_s0);
             func_800C8C7C(var_s0);
         }
     }
@@ -2986,7 +2986,7 @@ void func_800C92CC(u8 playerId, u32 soundBits) {
     }
 }
 
-void func_800C94A4(u8 playerId) {
+void audio_play_kart_engine_idle(u8 playerId) {
     u32 var_a0;
 
     if (D_800EA108 == 0) {
@@ -3078,7 +3078,7 @@ void func_800C94A4(u8 playerId) {
     }
 }
 
-void func_800C97C4(u8 arg0) {
+void audio_stop_kart_engine_sound(u8 arg0) {
     func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x00));
     func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x14));
     func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x2E));
@@ -3115,7 +3115,7 @@ void func_800C99E0(Vec3f arg0, s32 soundBits) {
     }
 }
 
-void func_800C9A88(u8 playerId) {
+void audio_play_kart_engine_driving(u8 playerId) {
     u8 var_s0;
     u32 soundBits;
     struct Unk_8018EFD8* temp_v0_6;
