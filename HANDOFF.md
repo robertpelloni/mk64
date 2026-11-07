@@ -1,16 +1,21 @@
-# Session Handoff - 2026-06-01 (v8.107.16)
+# Session Handoff - 2026-06-02 (v8.107.17)
 
 ## Executive Summary
-Completed decompilation labeling of menu screen transition and fade routines in `src/menu_items.c`, `src/menu_items.h`, and `src/menus.c`. Verified with static C compilation, and bumped the project version to `8.107.16`.
+Completed decompilation labeling of screen transition visual faders in `src/menu_items.c`, `src/menu_items.h`, and `src/effects.c`. Verified with static C compilation, and bumped the project version to `8.107.17`.
 
 ### Recent Fixes & Additions
-- **Menu Screen Transition & Fade Handlers:**
-  - `func_8009E1C0` -> `set_menu_fade_main`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
-  - `func_8009E1E4` -> `set_menu_fade_main_alt`: Triggers alternative screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
-  - `func_8009E208` -> `set_menu_fade_back`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_BACK`.
-  - `func_8009E230` -> `set_menu_fade_demo`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DEMO`.
-  - `func_8009E258` -> `set_menu_fade_data`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DATA`.
-  - `func_8009E280` -> `set_menu_fade_option`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_OPTION`.
+- **Screen Transition Visual Faders:**
+  - `func_8009DEF8` -> `start_screen_fade_in_type`: Custom duration/type fade-in on transition channel 4.
+  - `func_8009DF4C` -> `start_screen_fade_in`: Default type 1 fade-in.
+  - `func_8009DF8C` -> `start_screen_fade_out_type`: Custom duration/type fade-out on transition channel 4.
+  - `func_8009DFE0` -> `start_screen_fade_out`: Default type 2 fade-out used across menus and transitions.
+  - `func_8009E000` -> `start_screen_fade_out_alt`: Alternate type 7 fade-out.
+  - `func_8009E020` -> `start_channel_fade_in`: Per-channel fade-in (used in `effects.c` for screen-specific player effects).
+  - `func_8009E088` -> `start_channel_fade_out`: Per-channel fade-out (used in `effects.c`).
+  - `func_8009E0F0` -> `start_screen_mosaic_fade_out`: Low-res mosaic pixelation fade-out in `sTKMK00_LowResBuffer`.
+  - `func_8009E17C` -> `start_screen_transition_type_4`.
+- **Menu Screen Transition & Fade Handlers (v8.107.16):**
+  - Labeled `set_menu_fade_main`, `set_menu_fade_main_alt`, `set_menu_fade_back`, `set_menu_fade_demo`, `set_menu_fade_data`, and `set_menu_fade_option`.
 - **Audio Sequence Player Settings & Bank Mask Routines (v8.107.15):**
   - Labeled `audio_reset_all_sequence_player_settings`, `audio_reset_soft_sequence_player_settings`, `audio_set_sound_banks_enabled_mask`, and `audio_clear_sound_channel_active_bit`.
 - **Submodule Inventory Alignment (v8.107.14):**

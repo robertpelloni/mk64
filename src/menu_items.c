@@ -2546,7 +2546,7 @@ void setup_menus(void) {
                 break;
         }
         if (gFadeModeSelection != FADE_MODE_LOGO) {
-            func_8009DF4C(0x00000014);
+            start_screen_fade_in(0x00000014);
         } else {
             func_8009DF6C(0x00000014);
         }
@@ -5186,7 +5186,7 @@ void func_8009DB8C(void) {
     gDisplayListHead = draw_box(gDisplayListHead, 0, 0, 0x00000140, 0x000000F0, 0, 0, 0, var_v1);
 }
 
-void func_8009DEF8(u32 arg0, u32 arg1) {
+void start_screen_fade_in_type(u32 arg0, u32 arg1) {
     if (arg0 == 0) {
         arg0 = 1;
     }
@@ -5200,15 +5200,15 @@ void func_8009DEF8(u32 arg0, u32 arg1) {
     }
 }
 
-void func_8009DF4C(s32 arg0) {
-    func_8009DEF8(arg0, 1);
+void start_screen_fade_in(s32 arg0) {
+    start_screen_fade_in_type(arg0, 1);
 }
 
 void func_8009DF6C(s32 arg0) {
-    func_8009DEF8(arg0, 8);
+    start_screen_fade_in_type(arg0, 8);
 }
 
-void func_8009DF8C(u32 arg0, u32 arg1) {
+void start_screen_fade_out_type(u32 arg0, u32 arg1) {
     if (arg0 == 0) {
         arg0 = 1;
     }
@@ -5222,15 +5222,15 @@ void func_8009DF8C(u32 arg0, u32 arg1) {
     }
 }
 
-void func_8009DFE0(s32 arg0) {
-    func_8009DF8C(arg0, 2);
+void start_screen_fade_out(s32 arg0) {
+    start_screen_fade_out_type(arg0, 2);
 }
 
-void func_8009E000(s32 arg0) {
-    func_8009DF8C(arg0, 7);
+void start_screen_fade_out_alt(s32 arg0) {
+    start_screen_fade_out_type(arg0, 7);
 }
 
-void func_8009E020(s32 arg0, s32 arg1) {
+void start_channel_fade_in(s32 arg0, s32 arg1) {
     s32 temp;
 
     if (arg1 == 0) {
@@ -5248,7 +5248,7 @@ void func_8009E020(s32 arg0, s32 arg1) {
     }
 }
 
-void func_8009E088(s32 arg0, s32 arg1) {
+void start_channel_fade_out(s32 arg0, s32 arg1) {
     s32 temp;
 
     if (arg1 == 0) {
@@ -5266,7 +5266,7 @@ void func_8009E088(s32 arg0, s32 arg1) {
     }
 }
 
-void func_8009E0F0(s32 arg0) {
+void start_screen_mosaic_fade_out(s32 arg0) {
     s32 var_v0;
 
     if (gTransitionType[4] != 3) {
@@ -5282,7 +5282,7 @@ void func_8009E0F0(s32 arg0) {
     }
 }
 
-void func_8009E17C(u32 arg0) {
+void start_screen_transition_type_4(u32 arg0) {
     if (gTransitionType[4] != 4) {
         gTransitionType[4] = 4;
         gTransitionDuration[4] = arg0;
@@ -5294,32 +5294,32 @@ void func_8009E17C(u32 arg0) {
 }
 
 void set_menu_fade_main(void) {
-    func_8009DFE0(10);
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
 void set_menu_fade_main_alt(void) {
-    func_8009E000(10);
+    start_screen_fade_out_alt(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
 void set_menu_fade_back(void) {
-    func_8009DFE0(10);
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_BACK;
 }
 
 void set_menu_fade_demo(void) {
-    func_8009DFE0(10);
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DEMO;
 }
 
 void set_menu_fade_data(void) {
-    func_8009DFE0(10);
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DATA;
 }
 
 void set_menu_fade_option(void) {
-    func_8009DFE0(10);
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_OPTION;
 }
 
@@ -8532,7 +8532,7 @@ void handle_menus_with_pri_arg(s32 priSpecial) {
                 }
                 entry->param1++;
                 if (entry->param1 == 0x000000B4) {
-                    func_8009E000(0x00000028);
+                    start_screen_fade_out_alt(0x00000028);
                     fade_all_channel_volume_scale(0x64U);
                     gMenuFadeType = MENU_FADE_TYPE_MAIN;
                 }
@@ -10914,7 +10914,7 @@ void func_800ACA14(MenuItem* arg0) {
                 }
             }
             if (gControllerFive->buttonPressed & (A_BUTTON | START_BUTTON)) {
-                func_8009DFE0(0x0000001E);
+                start_screen_fade_out(0x0000001E);
                 audio_fade_out_all_sequences(0x19U);
                 play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
                 if (arg0->paramf < 4.2) {
@@ -10986,7 +10986,7 @@ void func_800ACC50(MenuItem* arg0) {
                     }
                 }
                 if (gControllerFive->buttonPressed & (START_BUTTON | A_BUTTON)) {
-                    func_8009DFE0(0x0000001E);
+                    start_screen_fade_out(0x0000001E);
                     play_sound2(SOUND_MENU_OK_CLICKED);
                     if (gModeSelection == VERSUS) {
                         gVersusResultCursorSelection = (s8) arg0->state;
@@ -11519,7 +11519,7 @@ void func_800ADF48(MenuItem* arg0) {
                             func_8028DF38();
                             audio_set_pause_mute(0U);
                         } else {
-                            func_8009DFE0(30);
+                            start_screen_fade_out(30);
                             play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
                             audio_fade_out_all_sequences(FUNC_800ADF48DEF);
                             if (arg0->paramf < 4.2) {
@@ -11672,7 +11672,7 @@ void func_800AE218(MenuItem* arg0) {
                             play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                         }
                     } else {
-                        func_8009DFE0(0x0000001E);
+                        start_screen_fade_out(0x0000001E);
                         play_sound2(SOUND_MENU_OK_CLICKED);
                         audio_fade_out_all_sequences(0x19U);
                         fade_all_channel_volume_scale(0x19U);
@@ -11960,7 +11960,7 @@ void func_800AF004(MenuItem* arg0) {
             }
             break;
         case 6:
-            func_8009DFE0(0x0000001E);
+            start_screen_fade_out(0x0000001E);
             audio_fade_out_all_sequences(0x19U);
             fade_all_channel_volume_scale(0x19U);
             arg0->state = 7;

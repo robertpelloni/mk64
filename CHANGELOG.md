@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.17] - 2026-06-02
+### Changed
+- Labeled screen transition visual fader routines in `src/menu_items.c` and `src/menu_items.h`:
+  - `func_8009DEF8` -> `start_screen_fade_in_type`: Custom duration/type fade-in on transition channel 4.
+  - `func_8009DF4C` -> `start_screen_fade_in`: Default type 1 fade-in.
+  - `func_8009DF8C` -> `start_screen_fade_out_type`: Custom duration/type fade-out on transition channel 4.
+  - `func_8009DFE0` -> `start_screen_fade_out`: Default type 2 fade-out used across menus and transitions.
+  - `func_8009E000` -> `start_screen_fade_out_alt`: Alternate type 7 fade-out.
+  - `func_8009E020` -> `start_channel_fade_in`: Per-channel fade-in (used in `effects.c` for screen-specific player effects).
+  - `func_8009E088` -> `start_channel_fade_out`: Per-channel fade-out (used in `effects.c`).
+  - `func_8009E0F0` -> `start_screen_mosaic_fade_out`: Low-res mosaic pixelation fade-out in `sTKMK00_LowResBuffer`.
+  - `func_8009E17C` -> `start_screen_transition_type_4`.
+- Updated all callsites in `src/menus.c` and `src/effects.c`.
+
 ## [8.107.16] - 2026-06-01
 ### Changed
 - Labeled menu transition fade helper routines in `src/menu_items.c`, `src/menu_items.h`, and `src/menus.c`:

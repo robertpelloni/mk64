@@ -1307,7 +1307,7 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                         break;
                 }
                 if (btnAndStick & B_BUTTON) {
-                    func_8009E0F0(0x14);
+                    start_screen_mosaic_fade_out(0x14);
                     audio_fade_out_all_sequences(0x19);
                     gMenuFadeType = MENU_FADE_TYPE_BACK;
                     play_sound2(SOUND_MENU_GO_BACK);

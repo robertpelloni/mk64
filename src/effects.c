@@ -1888,7 +1888,7 @@ void func_80090970(Player* player, s8 playerId, s8 arg2) {
             break;
         case 1:
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && ((player->type & PLAYER_CPU) == 0)) {
-                func_8009E088(playerId, 0xA);
+                start_channel_fade_out(playerId, 0xA);
             }
             if ((player->lakituProps & LAKITU_RETRIEVAL) == LAKITU_RETRIEVAL) {
                 move_f32_towards(&player->pos[1], D_801652A0[playerId] + 40.0f, 0.02f);
@@ -1920,7 +1920,7 @@ void func_80090970(Player* player, s8 playerId, s8 arg2) {
         case 3:
             D_80165330[playerId] = 0;
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && ((player->type & PLAYER_CPU) == 0)) {
-                func_8009E020(playerId, 0x14);
+                start_channel_fade_in(playerId, 0x14);
             }
             func_80090178(player, playerId, sp44, sp38);
             player->pos[0] = sp44[0];
