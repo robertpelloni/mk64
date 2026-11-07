@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.12] - 2026-05-28
+### Changed
+- Labeled race finish and post-race sequence audio routines:
+  - `func_800CA118` -> `audio_trigger_race_finish`: Triggers finish state audio for winning/finishing karts across Grand Prix and Battle modes in `src/racing/race_logic.c`.
+  - `func_800C76C0` -> `audio_update_race_finish_sequences`: Progresses post-finish timer `D_800E9EA4`, plays character win/lose jingles, and transitions background music to results screens.
+- Updated prototypes and callsites in `src/audio/external.c`, `src/audio/external.h`, and `src/racing/race_logic.c`.
+
 ## [8.107.11] - 2026-05-27
 ### Changed
 - Labeled audio subsystem initialization and reset routines:

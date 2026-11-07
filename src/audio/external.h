@@ -259,7 +259,7 @@ void func_800C6758(u8);
 void func_800C683C(u8);
 
 void func_800C70A8(u8);
-void func_800C76C0(u8);
+void audio_update_race_finish_sequences(u8);
 
 void audio_update_player_submerged_sound(u8);
 void func_800C86D8(u8);
@@ -295,7 +295,7 @@ void audio_mute_sfx_enable(void);
 void audio_mute_sfx_disable(void);
 void audio_mute_sfx_enable_cutscene(void);
 void audio_clear_sound_banks(void);
-void func_800CA118(u8);
+void audio_trigger_race_finish(u8);
 void func_800CA24C(u8);
 void func_800CA270(void);
 void audio_set_player_tunnel_reverb(u8, s8);

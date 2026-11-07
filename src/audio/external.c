@@ -2406,7 +2406,7 @@ void func_800C70A8(u8 playerId) {
    Contains a LOT of inlined funcs. 
    Modify if you dare.
 */
-void func_800C76C0(u8 playerId) {
+void audio_update_race_finish_sequences(u8 playerId) {
     if (D_800E9EA4[playerId] != 0) {
         if (D_800E9EA4[playerId] < 0x2BC) {
             D_800E9EA4[playerId]++;
@@ -2858,7 +2858,7 @@ void func_800C8CCC() {
         func_800C6758(var_s0);
         func_800C683C(var_s0);
         func_800C70A8(var_s0);
-        func_800C76C0(var_s0);
+        audio_update_race_finish_sequences(var_s0);
         audio_update_player_submerged_sound(var_s0);
         func_800C86D8(var_s0);
     }
@@ -3250,7 +3250,7 @@ void audio_clear_sound_banks(void) {
     func_800C5278(5);
 }
 
-void func_800CA118(u8 arg0) {
+void audio_trigger_race_finish(u8 arg0) {
     D_800EA0EC[arg0] = 1;
     D_800E9EA4[arg0] = 1;
     switch (D_800EA1C0) { /* irregular */
