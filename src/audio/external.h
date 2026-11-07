@@ -211,7 +211,7 @@ void func_800C1F8C(void);
 
 Vec3f* func_800C21E8(Vec3f, u32);
 void func_800C2274(u8);
-void func_800C2474(void);
+void audio_reset_state_and_cameras(void);
 void func_800C284C(u8, u8, u8, u16);
 void func_800C29B4(u8, u16);
 
@@ -248,8 +248,8 @@ void func_800C5968(u8);
 void func_800C59C4(void);
 void sound_init(void);
 void func_800C5BD0(void);
-void func_800C5C40(void);
-void func_800C5CB8(void);
+void audio_soft_reset(void);
+void audio_init(void);
 void func_800C5D04(u8);
 void func_800C5E38(u8);
 

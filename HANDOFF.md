@@ -1,15 +1,15 @@
-# Session Handoff - 2026-05-26 (v8.107.10)
+# Session Handoff - 2026-05-27 (v8.107.11)
 
 ## Executive Summary
-Advanced the decompilation reverse-engineering and naming effort by labeling tunnel reverberation acoustic handling and race final-lap music speedup triggers. Verified all modifications with static C compilation syntax validation, and bumped the project version to `8.107.10`.
+Completed identification and renaming of core audio initialization and soft reset routines, validated all touched files with static C compilation, and bumped the project version to `8.107.11`.
 
 ### Recent Fixes & Additions
-- **Tunnel Acoustics & Final Lap Audio Labeling:**
-  - `func_800CA49C` -> `audio_play_final_lap_fanfare`: Initiates the final lap fanfare and speeds up race music upon lap 2 completion in `src/racing/race_logic.c`.
-  - `func_800CA288` -> `audio_set_player_tunnel_reverb`: Applies acoustic reverberation when human players enter tunnel sections across circuits.
-  - `func_800CA2B8` -> `audio_clear_player_tunnel_reverb`: Restores normal reverb upon exiting tunnel waypoints.
-  - `func_800CA2E4` -> `audio_set_cpu_tunnel_reverb`: Applies tunnel reverb parameters to CPU karts.
-  - `func_800CA30C` -> `audio_clear_cpu_tunnel_reverb`: Clears CPU tunnel reverb.
+- **Audio Initialization & State Resets:**
+  - `func_800C5CB8` -> `audio_init`: Master audio system startup function called prior to the main game loop in `src/main.c`.
+  - `func_800C5C40` -> `audio_soft_reset`: Resets audio states, camera orientation vectors, and sound channels during course restarts and scene loads.
+  - `func_800C2474` -> `audio_reset_state_and_cameras`: Resets audio camera copy structures (`gCopyCamera`), velocity vectors, and player tire surface state.
+- **Tunnel Acoustics & Final Lap Audio Labeling (v8.107.10):**
+  - Labeled `audio_play_final_lap_fanfare`, `audio_set_player_tunnel_reverb`, `audio_clear_player_tunnel_reverb`, `audio_set_cpu_tunnel_reverb`, and `audio_clear_cpu_tunnel_reverb`.
 - **Kart Engine & Player Physics Audio Labeling (v8.107.9):**
   - Labeled `audio_update_player_submerged_sound`, `audio_update_player_lightning_distortion`, `audio_play_kart_engine_idle`, `audio_stop_kart_engine_sound`, and `audio_play_kart_engine_driving`.
 - **Audio Mute & Sound Bank Routine Renaming (v8.107.8):**

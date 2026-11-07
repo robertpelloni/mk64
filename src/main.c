@@ -1189,7 +1189,7 @@ void thread5_game_loop(UNUSED void* arg) {
     gNmiUnknown6 = &pAppNmiBuffer[28]; // 4  u8's, tracking number of Battle mode wins by player 1/2/3/4
     rendering_init();
     read_controllers();
-    func_800C5CB8();
+    audio_init();
 
     while (true) {
         audio_game_loop_tick();

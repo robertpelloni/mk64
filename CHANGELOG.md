@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.11] - 2026-05-27
+### Changed
+- Labeled audio subsystem initialization and reset routines:
+  - `func_800C5CB8` -> `audio_init`: Master audio system startup function called prior to the main game loop in `src/main.c`.
+  - `func_800C5C40` -> `audio_soft_reset`: Resets audio states, camera orientation vectors, and sound channels during course restarts and scene loads.
+  - `func_800C2474` -> `audio_reset_state_and_cameras`: Resets audio camera copy structures (`gCopyCamera`), velocity vectors, and player tire surface state.
+- Updated prototypes and callsites in `src/audio/external.c`, `src/audio/external.h`, and `src/main.c`.
+
 ## [8.107.10] - 2026-05-26
 ### Changed
 - Labeled tunnel acoustics reverberation and final lap fanfare audio routines:

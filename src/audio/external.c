@@ -545,7 +545,7 @@ void func_800C2274(u8 player) {
     }
 }
 
-void func_800C2474(void) {
+void audio_reset_state_and_cameras(void) {
     u8 var_v0;
 
     D_8018EF10 = 0;
@@ -883,7 +883,7 @@ void func_800C2A2C(u32 cmd) {
             audio_reset_session_eu((void*) seqId);
             D_800EA1F4[0] = seqId;
             audio_cmd_queue_push_s8(0x46020000, subArgs);
-            func_800C5C40();
+            audio_soft_reset();
             break;
 
         default:
@@ -1803,8 +1803,8 @@ void func_800C5BD0(void) {
     }
 }
 
-void func_800C5C40(void) {
-    func_800C2474();
+void audio_soft_reset(void) {
+    audio_reset_state_and_cameras();
     if (D_800E9DA0 != 0) {
         func_800C400C();
     } else {
@@ -1817,8 +1817,8 @@ void func_800C5C40(void) {
 }
 
 // game_audio_init?
-void func_800C5CB8(void) {
-    func_800C2474();
+void audio_init(void) {
+    audio_reset_state_and_cameras();
     func_800C3F70();
     sound_init();
     func_800C284C(2, 0, 0xFF, 1);
