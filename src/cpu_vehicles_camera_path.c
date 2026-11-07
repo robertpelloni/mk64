@@ -1925,7 +1925,7 @@ void func_8000B140(s32 playerId) {
 
 #include "cpu_vehicles_camera_path/actor_utils.inc.c"
 
-void func_8000F0E0(void) {
+void reset_cpu_camera_path_indices(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
         D_80164670[i] = 0;
@@ -1933,7 +1933,7 @@ void func_8000F0E0(void) {
     }
 }
 
-void func_8000F124(void) {
+void select_grand_prix_rival_characters(void) {
     s32 shouldContinue;
     s32 i, j;
 

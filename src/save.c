@@ -677,7 +677,7 @@ s32 controller_pak_2_status(void) {
     }
 }
 
-s32 func_800B5F30(void) {
+s32 probe_controller_pak_1(void) {
     s32 errorCode;
 
     if (gControllerPak1State) {
@@ -703,7 +703,7 @@ s32 func_800B5F30(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 func_800B6014(void) {
+s32 probe_controller_pak_2(void) {
     s32 errorCode;
 
     if (sControllerPak2State) {
@@ -719,7 +719,7 @@ s32 func_800B6014(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 func_800B6088(s32 arg0) {
+s32 save_ghost_header_to_pak(s32 arg0) {
     struct_8018EE10_entry* temp_v1;
 
     temp_v1 = &D_8018EE10[arg0];
@@ -729,7 +729,7 @@ s32 func_800B6088(s32 arg0) {
                               (u8*) temp_v1);
 }
 
-u8 func_800B60E8(s32 page) {
+u8 calculate_ghost_page_checksum(s32 page) {
     s32 i;
     u32 checksum = 0;
     u8* addr;
@@ -757,7 +757,7 @@ s32 func_800B6178(s32 arg0) {
     }
     temp_s3 = &D_8018EE10[arg0];
     temp_s3->ghostDataSaved = 0;
-    var_v0 = func_800B6088(arg0);
+    var_v0 = save_ghost_header_to_pak(arg0);
     if (var_v0 != 0) {
         temp_s3->ghostDataSaved = 0;
         for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
@@ -774,9 +774,9 @@ s32 func_800B6178(s32 arg0) {
             temp_s3->unk_00 = D_80162DFC;
             temp_s3->characterId = (u8) D_80162DE0;
             for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
-                temp_s3->unk_07[var_s0] = func_800B60E8(var_s0);
+                temp_s3->unk_07[var_s0] = calculate_ghost_page_checksum(var_s0);
             }
-            var_v0 = func_800B6088(arg0);
+            var_v0 = save_ghost_header_to_pak(arg0);
         }
         if (var_v0 != 0) {
             temp_s3->ghostDataSaved = 0;
@@ -830,7 +830,7 @@ s32 func_800B63F0(s32 arg0) {
             phi_s1 = (u8*) &D_8018EE10[arg0];
 
             while (temp_s0 < 0x3C) {
-                if (phi_s1[7] != func_800B60E8(temp_s0)) {
+                if (phi_s1[7] != calculate_ghost_page_checksum(temp_s0)) {
                     phi_s3 = 1;
                     break;
                 }
@@ -860,7 +860,7 @@ s32 func_800B64EC(s32 arg0) {
         phi_s1 = (u8 *) &D_8018EE10[arg0]; temp_s0 = 0; while (1) {
             // clang-format on
 
-            if (phi_s1[7] != func_800B60E8(temp_s0)) {
+            if (phi_s1[7] != calculate_ghost_page_checksum(temp_s0)) {
                 D_8018EE10[arg0].ghostDataSaved = 0;
                 return -2;
             }
@@ -896,7 +896,7 @@ s32 func_800B65F4(s32 arg0, s32 arg1) {
     if (writeStatus == 0) {
         temp_s3 = &((struct_8018EE10_entry*) gSomeDLBuffer)[arg0];
         for (i = 0; i < 0x3C; i++) {
-            if (temp_s3->unk_07[i] != func_800B60E8(i)) {
+            if (temp_s3->unk_07[i] != calculate_ghost_page_checksum(i)) {
                 temp_s3->ghostDataSaved = 0;
                 return -2;
             }

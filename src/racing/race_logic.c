@@ -80,7 +80,7 @@ void func_8028E028(void) {
             *(gNmiUnknown6 + gPlayerWinningIndex) += 1;
             break;
     }
-    func_800CA118((u8) gPlayerWinningIndex);
+    audio_trigger_race_finish((u8) gPlayerWinningIndex);
     D_800DC510 = 5;
     gDemoTimer = 10;
 }
@@ -106,7 +106,7 @@ void update_player_battle_status(void) {
             player->type |= PLAYER_CINEMATIC_MODE;
             playersDead[deadCounter] = (s16) (player - gPlayerOne);
             deadCounter++;
-            func_800CA118((u8) playerIndex); // play sad character sound?
+            audio_trigger_race_finish((u8) playerIndex); // play sad character sound?
         } else {
             playersAlive[aliveCounter] = (s16) (player - gPlayerOne);
             aliveCounter++;
@@ -408,7 +408,7 @@ void func_8028E678(void) {
 UNUSED void func_8028EC38(s32 arg0) {
     gGotoMode = arg0;
     D_800DC510 = 6;
-    func_800CA330(25);
+    audio_fade_out_all_sequences(25);
     fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;
@@ -553,7 +553,7 @@ void func_8028EF28(void) {
                         D_80150120 = 1;
                     }
 
-                    func_800CA118((u8) i);
+                    audio_trigger_race_finish((u8) i);
                     if ((D_802BA032 & PLAYER_EXISTS) == 0) {
                         D_802BA032 |= PLAYER_EXISTS;
                     }
@@ -585,7 +585,7 @@ void func_8028EF28(void) {
                                 i = gPlayerPositionLUT[1];
                                 gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                 gPlayers[i].type |= PLAYER_CPU;
-                                func_800CA118((u8) i);
+                                audio_trigger_race_finish((u8) i);
                                 break;
                             case 3:
                                 if (currentPosition < 3) {
@@ -603,7 +603,7 @@ void func_8028EF28(void) {
                                     }
                                     gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                     gPlayers[i].type |= PLAYER_CPU;
-                                    func_800CA118((u8) i);
+                                    audio_trigger_race_finish((u8) i);
                                 }
                                 break;
                             case 4:
@@ -618,7 +618,7 @@ void func_8028EF28(void) {
                                     i = gPlayerPositionLUT[3];
                                     gPlayers[i].triggers |= SPINOUT_TRIGGER;
                                     gPlayers[i].type |= PLAYER_CPU;
-                                    func_800CA118((u8) i);
+                                    audio_trigger_race_finish((u8) i);
                                 }
                                 break;
                         }
@@ -630,7 +630,7 @@ void func_8028EF28(void) {
                     }
                     if ((D_802BA032 & 0x4000) == 0) {
                         D_802BA032 |= 0x4000;
-                        func_800CA49C((u8) i);
+                        audio_play_final_lap_fanfare((u8) i);
                     }
                 }
             } else if (gPlayers[i].lapCount == 3) {
@@ -688,7 +688,7 @@ void func_8028F4E8(void) {
         if (((gControllerFive->button & R_TRIG) != 0) && ((gControllerFive->button & L_TRIG) != 0) &&
             ((gControllerFive->button & A_BUTTON) != 0) && ((gControllerFive->button & B_BUTTON) != 0)) {
 
-            func_800CA330(0x19);
+            audio_fade_out_all_sequences(0x19);
             fade_all_channel_volume_scale(0x19);
             gGotoMode = START_MENU_FROM_QUIT;
             D_800DC510 = 6;
@@ -830,7 +830,7 @@ void func_8028F970(void) {
             func_8028DF00();
             gIsGamePaused = (controller - gControllerOne) + 1;
             controller->buttonPressed = 0;
-            func_800C9F90(1);
+            audio_set_pause_mute(1);
             gPauseTriggered = 1;
             if (gModeSelection == TIME_TRIALS) {
                 if (gPlayerOne->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
@@ -875,7 +875,7 @@ void func_8028F970(void) {
 void func_8028FBD4(void) {
     gGotoMode = START_MENU_FROM_QUIT;
     D_800DC510 = 6;
-    func_800CA330(25);
+    audio_fade_out_all_sequences(25);
     fade_all_channel_volume_scale(25);
     D_800DC5B4 = 1;
     D_800DC5B0 = 1;

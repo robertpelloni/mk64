@@ -1189,10 +1189,10 @@ void thread5_game_loop(UNUSED void* arg) {
     gNmiUnknown6 = &pAppNmiBuffer[28]; // 4  u8's, tracking number of Battle mode wins by player 1/2/3/4
     rendering_init();
     read_controllers();
-    func_800C5CB8();
+    audio_init();
 
     while (true) {
-        func_800CB2C4();
+        audio_game_loop_tick();
 
         // Update the gamestate if it has changed (racing, menus, credits, etc.).
         if (gGamestateNext != gGamestate) {

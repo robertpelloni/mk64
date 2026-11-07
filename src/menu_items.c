@@ -1341,7 +1341,7 @@ void func_80091B78(void) {
     setup_menus();
 
     for (i = 0; i < 4; i++) {
-        func_800C97C4((u8) i);
+        audio_stop_kart_engine_sound((u8) i);
     }
 
     for (i = 1; i < 8; i++) {
@@ -1396,7 +1396,7 @@ void func_80091EE4(void) {
     s32 tmp;
 
     gControllerPak1State = BAD;
-    tmp = func_800B5F30();
+    tmp = probe_controller_pak_1();
 
     if ((gGhostPlayerInit != 0) && (tmp == 0)) {
         temp_s2 = (gCupSelection * 4) + gCourseIndexInCup;
@@ -1447,7 +1447,7 @@ void func_80091FA4(void) {
     if (!(gControllerBits & 1) && (gDemoUseController != 0)) {
         add_menu_item(MENU_ITEM_UI_NO_CONTROLLER, 0, 0, MENU_ITEM_PRIORITY_2);
     }
-    func_800B5F30();
+    probe_controller_pak_1();
 }
 
 void func_80092148(void) {
@@ -2403,8 +2403,8 @@ void setup_menus(void) {
         clear_menus();
         func_8009B938();
         func_80092258();
-        func_800B5F30();
-        func_800B6014();
+        probe_controller_pak_1();
+        probe_controller_pak_2();
         load_menu_states(gMenuSelection);
         switch (gMenuSelection) {
             case OPTIONS_MENU:
@@ -2546,7 +2546,7 @@ void setup_menus(void) {
                 break;
         }
         if (gFadeModeSelection != FADE_MODE_LOGO) {
-            func_8009DF4C(0x00000014);
+            start_screen_fade_in(0x00000014);
         } else {
             func_8009DF6C(0x00000014);
         }
@@ -2618,8 +2618,8 @@ void func_80095574(void) {
         play_sound2(SOUND_INTRO_WELCOME);
     }
     if (gMenuTimingCounter > 300) {
-        func_8009E230();
-        func_800CA0A0();
+        set_menu_fade_demo();
+        audio_mute_sfx_enable();
     }
     gSPDisplayList(gDisplayListHead++, D_020076E0);
 }
@@ -4693,7 +4693,7 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
 
 void func_8009CE1C(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
-        func_800C3448(0xE0000002);
+        audio_push_sequence_command(0xE0000002);
     }
 }
 
@@ -4970,7 +4970,7 @@ void func_8009CE64(s32 arg0) {
                     }
                     break;
             }
-            func_8000F124();
+            select_grand_prix_rival_characters();
             if (gScreenModeSelection == 3) {
                 switch (gModeSelection) {
                     case 0:
@@ -5186,7 +5186,7 @@ void func_8009DB8C(void) {
     gDisplayListHead = draw_box(gDisplayListHead, 0, 0, 0x00000140, 0x000000F0, 0, 0, 0, var_v1);
 }
 
-void func_8009DEF8(u32 arg0, u32 arg1) {
+void start_screen_fade_in_type(u32 arg0, u32 arg1) {
     if (arg0 == 0) {
         arg0 = 1;
     }
@@ -5200,15 +5200,15 @@ void func_8009DEF8(u32 arg0, u32 arg1) {
     }
 }
 
-void func_8009DF4C(s32 arg0) {
-    func_8009DEF8(arg0, 1);
+void start_screen_fade_in(s32 arg0) {
+    start_screen_fade_in_type(arg0, 1);
 }
 
 void func_8009DF6C(s32 arg0) {
-    func_8009DEF8(arg0, 8);
+    start_screen_fade_in_type(arg0, 8);
 }
 
-void func_8009DF8C(u32 arg0, u32 arg1) {
+void start_screen_fade_out_type(u32 arg0, u32 arg1) {
     if (arg0 == 0) {
         arg0 = 1;
     }
@@ -5222,15 +5222,15 @@ void func_8009DF8C(u32 arg0, u32 arg1) {
     }
 }
 
-void func_8009DFE0(s32 arg0) {
-    func_8009DF8C(arg0, 2);
+void start_screen_fade_out(s32 arg0) {
+    start_screen_fade_out_type(arg0, 2);
 }
 
-void func_8009E000(s32 arg0) {
-    func_8009DF8C(arg0, 7);
+void start_screen_fade_out_alt(s32 arg0) {
+    start_screen_fade_out_type(arg0, 7);
 }
 
-void func_8009E020(s32 arg0, s32 arg1) {
+void start_channel_fade_in(s32 arg0, s32 arg1) {
     s32 temp;
 
     if (arg1 == 0) {
@@ -5248,7 +5248,7 @@ void func_8009E020(s32 arg0, s32 arg1) {
     }
 }
 
-void func_8009E088(s32 arg0, s32 arg1) {
+void start_channel_fade_out(s32 arg0, s32 arg1) {
     s32 temp;
 
     if (arg1 == 0) {
@@ -5266,7 +5266,7 @@ void func_8009E088(s32 arg0, s32 arg1) {
     }
 }
 
-void func_8009E0F0(s32 arg0) {
+void start_screen_mosaic_fade_out(s32 arg0) {
     s32 var_v0;
 
     if (gTransitionType[4] != 3) {
@@ -5282,7 +5282,7 @@ void func_8009E0F0(s32 arg0) {
     }
 }
 
-void func_8009E17C(u32 arg0) {
+void start_screen_transition_type_4(u32 arg0) {
     if (gTransitionType[4] != 4) {
         gTransitionType[4] = 4;
         gTransitionDuration[4] = arg0;
@@ -5293,33 +5293,33 @@ void func_8009E17C(u32 arg0) {
     }
 }
 
-void func_8009E1C0(void) {
-    func_8009DFE0(10);
+void set_menu_fade_main(void) {
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E1E4(void) {
-    func_8009E000(10);
+void set_menu_fade_main_alt(void) {
+    start_screen_fade_out_alt(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E208(void) {
-    func_8009DFE0(10);
+void set_menu_fade_back(void) {
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_BACK;
 }
 
-void func_8009E230(void) {
-    func_8009DFE0(10);
+void set_menu_fade_demo(void) {
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DEMO;
 }
 
-void func_8009E258(void) {
-    func_8009DFE0(10);
+void set_menu_fade_data(void) {
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_DATA;
 }
 
-void func_8009E280(void) {
-    func_8009DFE0(10);
+void set_menu_fade_option(void) {
+    start_screen_fade_out(10);
     gMenuFadeType = MENU_FADE_TYPE_OPTION;
 }
 
@@ -8532,7 +8532,7 @@ void handle_menus_with_pri_arg(s32 priSpecial) {
                 }
                 entry->param1++;
                 if (entry->param1 == 0x000000B4) {
-                    func_8009E000(0x00000028);
+                    start_screen_fade_out_alt(0x00000028);
                     fade_all_channel_volume_scale(0x64U);
                     gMenuFadeType = MENU_FADE_TYPE_MAIN;
                 }
@@ -10844,7 +10844,7 @@ void func_800AC458(MenuItem* arg0) {
                 D_800DC5EC->screenStartY = 0x012C;
                 D_800DC5F0->screenStartY = -0x003C;
                 D_8015F894 = 4;
-                func_800CA330(0x19U);
+                audio_fade_out_all_sequences(0x19U);
             }
             break;
         case 13:
@@ -10914,8 +10914,8 @@ void func_800ACA14(MenuItem* arg0) {
                 }
             }
             if (gControllerFive->buttonPressed & (A_BUTTON | START_BUTTON)) {
-                func_8009DFE0(0x0000001E);
-                func_800CA330(0x19U);
+                start_screen_fade_out(0x0000001E);
+                audio_fade_out_all_sequences(0x19U);
                 play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
                 if (arg0->paramf < 4.2) {
                     arg0->paramf += 4.0;
@@ -10986,7 +10986,7 @@ void func_800ACC50(MenuItem* arg0) {
                     }
                 }
                 if (gControllerFive->buttonPressed & (START_BUTTON | A_BUTTON)) {
-                    func_8009DFE0(0x0000001E);
+                    start_screen_fade_out(0x0000001E);
                     play_sound2(SOUND_MENU_OK_CLICKED);
                     if (gModeSelection == VERSUS) {
                         gVersusResultCursorSelection = (s8) arg0->state;
@@ -11216,7 +11216,7 @@ void func_800AD2E8(MenuItem* arg0) {
                         }
                         if (var_v1 == 0) {
                             if (gControllerPak1State == 0) {
-                                switch (func_800B5F30()) { /* switch 2 */
+                                switch (probe_controller_pak_1()) { /* switch 2 */
                                     case -1:               /* switch 2 */
                                         arg0->state = 0x0000000B;
                                         var_v1 = 1;
@@ -11447,7 +11447,7 @@ void func_800AD2E8(MenuItem* arg0) {
             D_800DC5EC->screenStartY = 0x012C;
             D_800DC5F0->screenStartY = -0x003C;
             D_8015F894 = 4;
-            func_800CA330(0x19U);
+            audio_fade_out_all_sequences(0x19U);
             break;
         case 31:
             arg0->type = 0;
@@ -11517,11 +11517,11 @@ void func_800ADF48(MenuItem* arg0) {
                             arg0->state = 0;
                             gIsGamePaused = 0;
                             func_8028DF38();
-                            func_800C9F90(0U);
+                            audio_set_pause_mute(0U);
                         } else {
-                            func_8009DFE0(30);
+                            start_screen_fade_out(30);
                             play_sound2(SOUND_ACTION_CONTINUE_UNKNOWN);
-                            func_800CA330(FUNC_800ADF48DEF);
+                            audio_fade_out_all_sequences(FUNC_800ADF48DEF);
                             if (arg0->paramf < 4.2) {
                                 arg0->paramf += 4.0;
                             }
@@ -11622,7 +11622,7 @@ void func_800AE218(MenuItem* arg0) {
                             return;
                         }
                         if (gControllerPak1State == 0) {
-                            switch (func_800B5F30()) { /* switch 2 */
+                            switch (probe_controller_pak_1()) { /* switch 2 */
                                 case PFS_INVALID_DATA: /* switch 2 */
                                     arg0->state = 0x00000015;
                                     var_v1 = 1;
@@ -11672,9 +11672,9 @@ void func_800AE218(MenuItem* arg0) {
                             play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                         }
                     } else {
-                        func_8009DFE0(0x0000001E);
+                        start_screen_fade_out(0x0000001E);
                         play_sound2(SOUND_MENU_OK_CLICKED);
-                        func_800CA330(0x19U);
+                        audio_fade_out_all_sequences(0x19U);
                         fade_all_channel_volume_scale(0x19U);
                         if (arg0->paramf < 4.2) {
                             arg0->paramf += 4.0;
@@ -11960,8 +11960,8 @@ void func_800AF004(MenuItem* arg0) {
             }
             break;
         case 6:
-            func_8009DFE0(0x0000001E);
-            func_800CA330(0x19U);
+            start_screen_fade_out(0x0000001E);
+            audio_fade_out_all_sequences(0x19U);
             fade_all_channel_volume_scale(0x19U);
             arg0->state = 7;
             break;
@@ -12023,16 +12023,16 @@ void func_800AF270(MenuItem* arg0) {
             if (arg0->param2 >= 0x1F) {
                 if (D_802874D8.unk1D >= 3) {
                     arg0->state = 4;
-                    func_800CA0B8();
+                    audio_mute_sfx_disable();
                     func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
-                    func_800CA0A0();
+                    audio_mute_sfx_enable();
                 } else {
                     arg0->state = 3;
                     func_8009A640(arg0->D_8018DEE0_index, 0, sp30,
                                   segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_v0]));
-                    func_800CA0B8();
+                    audio_mute_sfx_disable();
                     func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
-                    func_800CA0A0();
+                    audio_mute_sfx_enable();
                 }
             }
             break;

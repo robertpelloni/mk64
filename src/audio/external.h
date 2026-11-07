@@ -195,8 +195,8 @@ typedef struct {
 
 /** @cond */
 
-void func_800C94A4(u8);
-void func_800CADD0(u8, f32);
+void audio_play_kart_engine_idle(u8);
+void play_kart_landing_sound_effect(u8, f32);
 void func_800C13F0(void);
 void audio_reset_session_eu(OSMesg);
 f32 func_800C1480(u8, u8);
@@ -211,24 +211,24 @@ void func_800C1F8C(void);
 
 Vec3f* func_800C21E8(Vec3f, u32);
 void func_800C2274(u8);
-void func_800C2474(void);
+void audio_reset_state_and_cameras(void);
 void func_800C284C(u8, u8, u8, u16);
 void func_800C29B4(u8, u16);
 
 void func_800C3724(void);
 void func_800C2A2C(u32);
-void func_800C3448(u32);
-void func_800C3478(void);
+void audio_push_sequence_command(u32);
+void audio_process_sequence_commands(void);
 u16 func_800C3508(u8);
 void func_800C3608(u8, u8);
 u8 func_800C357C(s32);
 void func_800C35E8(u8);
 void func_800C36C4(u8, u8, u8, u8);
-void func_800C3F70(void);
+void audio_reset_all_sequence_player_settings(void);
 
-void func_800C400C(void);
-void func_800C4084(u16);
-void func_800C40F0(u8);
+void audio_reset_soft_sequence_player_settings(void);
+void audio_set_sound_banks_enabled_mask(u16);
+void audio_clear_sound_channel_active_bit(u8);
 void play_sound(u32, Vec3f*, u8, f32*, f32*, s8*);
 void func_800C41CC(u8, struct SoundCharacteristics*);
 void func_800C4398(void);
@@ -248,8 +248,8 @@ void func_800C5968(u8);
 void func_800C59C4(void);
 void sound_init(void);
 void func_800C5BD0(void);
-void func_800C5C40(void);
-void func_800C5CB8(void);
+void audio_soft_reset(void);
+void audio_init(void);
 void func_800C5D04(u8);
 void func_800C5E38(u8);
 
@@ -259,12 +259,12 @@ void func_800C6758(u8);
 void func_800C683C(u8);
 
 void func_800C70A8(u8);
-void func_800C76C0(u8);
+void audio_update_race_finish_sequences(u8);
 
-void func_800C847C(u8);
+void audio_update_player_submerged_sound(u8);
 void func_800C86D8(u8);
-void func_800C8770(u8);
-void func_800C8920(void);
+void audio_update_player_lightning_distortion(u8);
+void check_and_reset_thunder_effect(void);
 void func_800C89E4(void);
 void func_800C8AE4(void);
 void func_800C8C7C(u8);
@@ -280,46 +280,46 @@ void func_800C9060(u8, u32);
 void func_800C90F4(u8, u32);
 void func_800C9250(u8);
 void func_800C92CC(u8, u32);
-void func_800C94A4(u8);
-void func_800C97C4(u8);
+void audio_play_kart_engine_idle(u8);
+void audio_stop_kart_engine_sound(u8);
 void func_800C98B8(Vec3f, Vec3f, u32);
 void func_800C99E0(Vec3f, s32);
-void func_800C9A88(u8);
+void audio_play_kart_engine_driving(u8);
 void func_800C9D0C(u8);
 void func_800C9D80(Vec3f, Vec3f, u32);
 void func_800C9EF4(Vec3f, u32);
-void func_800C9F90(u8);
+void audio_set_pause_mute(u8);
 
 void func_800CA008(u8, u8);
-void func_800CA0A0(void);
-void func_800CA0B8(void);
-void func_800CA0CC(void);
-void func_800CA0E4(void);
-void func_800CA118(u8);
+void audio_mute_sfx_enable(void);
+void audio_mute_sfx_disable(void);
+void audio_mute_sfx_enable_cutscene(void);
+void audio_clear_sound_banks(void);
+void audio_trigger_race_finish(u8);
 void func_800CA24C(u8);
 void func_800CA270(void);
-void func_800CA288(u8, s8);
-void func_800CA2B8(u8);
-void func_800CA2E4(u8, s8);
-void func_800CA30C(u8);
-void func_800CA330(u8);
+void audio_set_player_tunnel_reverb(u8, s8);
+void audio_clear_player_tunnel_reverb(u8);
+void audio_set_cpu_tunnel_reverb(u8, s8);
+void audio_clear_cpu_tunnel_reverb(u8);
+void audio_fade_out_all_sequences(u8);
 void fade_all_channel_volume_scale(u8);
 void play_sequences(u16, u16);
-void func_800CA49C(u8);
+void audio_play_final_lap_fanfare(u8);
 void play_star_music(u8);
 void play_star_sound_effect(u8);
 void play_star_music_stop_effect(u8);
 void play_star_sound_effect_stop(u8);
-void func_800CAC08(void);
+void reset_thunder_sound_effect(void);
 void play_thunder_sound_effect(u8);
 void play_thunder_sound_effect_stop(s32);
 void set_player_sound_effect_volume(u8, f32);
 void play_boo_sound_effect(u8);
 
-void func_800CB134(void);
+void trigger_losing_ceremony_sequence(void);
 void begin_losing_ceremony_sequence(void);
-void func_800CB2C4(void);
-void func_800CBC24(void);
+void audio_game_loop_tick(void);
+void audio_cmd_queue_flush(void);
 
 // This is some from other file, its definitely not part of audio's data/bss
 extern s8 D_801657E5;
