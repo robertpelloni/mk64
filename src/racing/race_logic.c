@@ -630,7 +630,7 @@ void func_8028EF28(void) {
                     }
                     if ((D_802BA032 & 0x4000) == 0) {
                         D_802BA032 |= 0x4000;
-                        func_800CA49C((u8) i);
+                        audio_play_final_lap_fanfare((u8) i);
                     }
                 }
             } else if (gPlayers[i].lapCount == 3) {

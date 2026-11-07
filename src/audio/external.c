@@ -3288,19 +3288,19 @@ void func_800CA270() {
     D_800EA0F4 = 1;
 }
 
-void func_800CA288(u8 arg0, s8 arg1) {
+void audio_set_player_tunnel_reverb(u8 arg0, s8 arg1) {
     D_800E9F7C[arg0].unk_14 = arg1;
 }
 
-void func_800CA2B8(u8 arg0) {
+void audio_clear_player_tunnel_reverb(u8 arg0) {
     D_800E9F7C[arg0].unk_14 = 0;
 }
 
-void func_800CA2E4(u8 arg0, s8 arg1) {
+void audio_set_cpu_tunnel_reverb(u8 arg0, s8 arg1) {
     D_800EA06C[arg0].unk0C = arg1;
 }
 
-void func_800CA30C(u8 arg0) {
+void audio_clear_cpu_tunnel_reverb(u8 arg0) {
     D_800EA06C[arg0].unk0C = 0;
 }
 
@@ -3328,7 +3328,7 @@ void play_sequences(u16 first, u16 second) {
     D_800EA104 = 1;
 }
 
-void func_800CA49C(u8 playerIndex) {
+void audio_play_final_lap_fanfare(u8 playerIndex) {
     if (D_800EA108 == 0) {
         if (D_800EA1C0 >= 2) {
             func_800C9060(playerIndex, 0x1900FF3A);

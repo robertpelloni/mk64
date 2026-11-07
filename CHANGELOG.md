@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.10] - 2026-05-26
+### Changed
+- Labeled tunnel acoustics reverberation and final lap fanfare audio routines:
+  - `func_800CA49C` -> `audio_play_final_lap_fanfare`: Plays the final lap sequence fanfare and speeds up race music upon lap 2 completion in `src/racing/race_logic.c`.
+  - `func_800CA288` -> `audio_set_player_tunnel_reverb`: Applies wet reverberation parameters to human player audio inside enclosed tunnel waypoints (e.g. Mario Raceway, Choco Mountain, Koopa Beach, Yoshi Valley).
+  - `func_800CA2B8` -> `audio_clear_player_tunnel_reverb`: Restores dry acoustics upon exiting tunnel segments.
+  - `func_800CA2E4` -> `audio_set_cpu_tunnel_reverb`: Sets tunnel reverberation for CPU karts in `D_800EA06C`.
+  - `func_800CA30C` -> `audio_clear_cpu_tunnel_reverb`: Clears CPU tunnel reverberation.
+- Updated all callsites and declarations in `src/audio/external.c`, `src/audio/external.h`, `src/player_controller.c`, and `src/racing/race_logic.c`.
+
 ## [8.107.9] - 2026-05-25
 ### Changed
 - Labeled player-specific audio events and kart engine sound loops:
