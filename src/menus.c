@@ -329,7 +329,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                                     return;
                                 case PFS_NO_ERROR:
-                                    func_800B6798();
+                                    load_and_validate_pak2_ghost_headers();
                                     tempVar = controller_pak_1_status();
                                     switch (tempVar) {
                                         case PFS_INVALID_DATA:
@@ -338,7 +338,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                             play_sound2(SOUND_MENU_SELECT);
                                             break;
                                         case PFS_NO_ERROR:
-                                            func_800B6708();
+                                            load_and_validate_pak1_ghost_headers();
                                             break;
                                         case PFS_NO_PAK_INSERTED:
                                             gSubMenuSelection = SUB_MENU_COPY_PAK_ERROR_NO_PAK_1P;

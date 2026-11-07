@@ -77,10 +77,10 @@ u8 calculate_ghost_page_checksum(s32);
 s32 func_800B6178(s32);
 s32 func_800B64EC(s32);
 s32 func_800B65F4(s32, s32);
-void func_800B6708(void);
-void func_800B6798(void);
-u8 func_800B6828(s32);
-u8 func_800B68F4(s32);
+void load_and_validate_pak1_ghost_headers(void);
+void load_and_validate_pak2_ghost_headers(void);
+u8 calculate_pak1_ghost_header_checksum(s32);
+u8 calculate_pak2_ghost_header_checksum(s32);
 s32 func_800B69BC(s32);
 s32 func_800B6A68(void);
 

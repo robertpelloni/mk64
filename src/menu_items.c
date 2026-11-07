@@ -1400,7 +1400,7 @@ void func_80091EE4(void) {
 
     if ((gGhostPlayerInit != 0) && (tmp == 0)) {
         temp_s2 = (gCupSelection * 4) + gCourseIndexInCup;
-        func_800B6708();
+        load_and_validate_pak1_ghost_headers();
 
         for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
             if ((D_8018EE10[temp_s0].ghostDataSaved != 0) && (temp_s2 == D_8018EE10[temp_s0].courseIndex)) {
@@ -5619,7 +5619,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
         case MENU_ITEM_TYPE_069:
             load_menu_img_comp_type(segmented_to_virtual_dupe(D_02004A0C), LOAD_MENU_IMG_TKMK00_ONCE);
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                load_and_validate_pak1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -5634,7 +5634,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
         case MENU_ITEM_TYPE_08C:
             load_menu_img_comp_type(segmented_to_virtual_dupe(seg2_data_texture), LOAD_MENU_IMG_TKMK00_ONCE);
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                load_and_validate_pak1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -5722,7 +5722,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             load_menu_img_comp_type(segmented_to_virtual_dupe(D_02004A0C), LOAD_MENU_IMG_TKMK00_ONCE);
             func_8006EF60();
             if (controller_pak_1_status() == 0) {
-                func_800B6708();
+                load_and_validate_pak1_ghost_headers();
             } else {
                 D_8018EE10[0].ghostDataSaved = 0;
                 D_8018EE10[1].ghostDataSaved = 0;
@@ -11201,7 +11201,7 @@ void func_800AD2E8(MenuItem* arg0) {
                                 case 5:                                                        /* switch 4 */
                                     break;
                                 case 0: /* switch 4 */
-                                    func_800B6708();
+                                    load_and_validate_pak1_ghost_headers();
                                     arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
                                     var_v1 = 1;
                                     play_sound2(SOUND_MENU_SELECT);
@@ -11248,7 +11248,7 @@ void func_800AD2E8(MenuItem* arg0) {
                                 }
                                 if (osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                                   (u8*) gExtCode, &gControllerPak1FileNote) == 0) {
-                                    func_800B6708();
+                                    load_and_validate_pak1_ghost_headers();
                                     arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x11;
                                     play_sound2(SOUND_MENU_SELECT);
                                     return;
@@ -11605,7 +11605,7 @@ void func_800AE218(MenuItem* arg0) {
                                 case PFS_ERR_INVALID:                                          /* switch 3 */
                                     break;
                                 case PFS_NO_ERROR: /* switch 3 */
-                                    func_800B6708();
+                                    load_and_validate_pak1_ghost_headers();
                                     arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
                                     var_v1 = 1;
                                     break;
@@ -11654,7 +11654,7 @@ void func_800AE218(MenuItem* arg0) {
                             }
                             if (osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                               (u8*) gExtCode, &gControllerPak1FileNote) == 0) {
-                                func_800B6708();
+                                load_and_validate_pak1_ghost_headers();
                                 arg0->state = func_800B6348((gCupSelection * 4) + gCourseIndexInCup) + 0x1E;
                                 play_sound2(SOUND_MENU_SELECT);
                                 return;
@@ -11859,7 +11859,7 @@ void func_800AEDBC(MenuItem* arg0) {
                       segmented_to_virtual_dupe_2(
                           D_800E7E34[gCupCourseOrder[gTimeTrialDataCourseIndex / 4][gTimeTrialDataCourseIndex % 4]]));
         if (controller_pak_1_status() == PFS_NO_ERROR) {
-            func_800B6708();
+            load_and_validate_pak1_ghost_headers();
         } else {
             D_8018EE10[0].ghostDataSaved = 0;
             D_8018EE10[1].ghostDataSaved = 0;

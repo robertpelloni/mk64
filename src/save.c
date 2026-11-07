@@ -723,7 +723,7 @@ s32 save_ghost_header_to_pak(s32 arg0) {
     struct_8018EE10_entry* temp_v1;
 
     temp_v1 = &D_8018EE10[arg0];
-    temp_v1->checksum = func_800B6828(arg0);
+    temp_v1->checksum = calculate_pak1_ghost_header_checksum(arg0);
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               arg0 * 0x80 /* 0x80 == sizeof(struct_8018EE10_entry) */, sizeof(struct_8018EE10_entry),
                               (u8*) temp_v1);
@@ -908,20 +908,20 @@ s32 func_800B65F4(s32 arg0, s32 arg1) {
     return writeStatus;
 }
 
-void func_800B6708(void) {
+void load_and_validate_pak1_ghost_headers(void) {
     s32 temp_s0;
 
     osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_READ, 0,
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, (u8*) &D_8018EE10);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        if (D_8018EE10[temp_s0].checksum != func_800B6828(temp_s0)) {
+        if (D_8018EE10[temp_s0].checksum != calculate_pak1_ghost_header_checksum(temp_s0)) {
             D_8018EE10[temp_s0].ghostDataSaved = 0;
         }
     }
 }
 
-void func_800B6798(void) {
+void load_and_validate_pak2_ghost_headers(void) {
     s32 temp_s0;
     u8* tmp;
 
@@ -931,16 +931,16 @@ void func_800B6798(void) {
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, tmp);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        // if (gSomeDLBuffer[temp_s0]->checksum != func_800B68F4(temp_s0)) {
+        // if (gSomeDLBuffer[temp_s0]->checksum != calculate_pak2_ghost_header_checksum(temp_s0)) {
         //     gSomeDLBuffer[temp_s0]->ghostDataSaved = 0;
         // }
-        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != func_800B68F4(temp_s0)) {
+        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != calculate_pak2_ghost_header_checksum(temp_s0)) {
             ((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->ghostDataSaved = 0;
         }
     }
 }
 
-u8 func_800B6828(s32 arg0) {
+u8 calculate_pak1_ghost_header_checksum(s32 arg0) {
     u32 checksum = 0;
     u8* addr = (u8*) &D_8018EE10[arg0];
     s32 i;
@@ -950,7 +950,7 @@ u8 func_800B6828(s32 arg0) {
     return checksum;
 }
 
-u8 func_800B68F4(s32 arg0) {
+u8 calculate_pak2_ghost_header_checksum(s32 arg0) {
     struct_8018EE10_entry* var_v0 = gSomeDLBuffer;
     u8 *addr = (u8*)(var_v0 + arg0);
     s32 i = 0;
@@ -973,7 +973,7 @@ s32 func_800B69BC(s32 arg0) {
     for (i = 0; i < sizeof(plz->unk_07); i++) {
         plz->unk_07[i] = i;
     }
-    plz->checksum = func_800B6828(arg0);
+    plz->checksum = calculate_pak1_ghost_header_checksum(arg0);
 
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               (s32) sizeof(struct_8018EE10_entry) * arg0, sizeof(struct_8018EE10_entry), (u8*) plz);

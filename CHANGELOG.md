@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.20] - 2026-06-02
+### Changed
+- Labeled Controller Pak ghost header validation and checksum functions in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B6708` -> `load_and_validate_pak1_ghost_headers`: Reads ghost headers from Controller Pak 1 into `D_8018EE10` via `osPfsReadWriteFile` and verifies checksums.
+  - `func_800B6798` -> `load_and_validate_pak2_ghost_headers`: Reads ghost headers from Controller Pak 2 into `gSomeDLBuffer` and verifies checksums.
+  - `func_800B6828` -> `calculate_pak1_ghost_header_checksum`: Calculates checksum for Pak 1 ghost header entry `D_8018EE10[arg0]`.
+  - `func_800B68F4` -> `calculate_pak2_ghost_header_checksum`: Calculates checksum for Pak 2 ghost header entry in `gSomeDLBuffer`.
+- Updated all callsites across options menu pak copy logic and time trial ghost menus.
+
 ## [8.107.19] - 2026-06-02
 ### Changed
 - Labeled Controller Pak 2 probe and ghost save/checksum routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
