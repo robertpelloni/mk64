@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.22] - 2026-06-02
+### Changed
+- Labeled audio course sequence initialization and race finish status handlers in `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/menus.c`, `src/ending/ceremony_and_credits.c`, `src/effects.c`, `src/cpu_vehicles_camera_path.c`, and `src/menu_items.c`:
+  - `func_800CA008` -> `audio_init_course_sequence`: Adjusts volume channels, determines sequence index by course ID/game mode, and dispatches the corresponding sequence command.
+  - `func_800CA24C` -> `audio_set_player_finish_state`: Updates `D_800EA0EC[playerIndex] = 2` to signal that player has completed their race.
+  - `func_800CA270` -> `audio_set_race_finish_flag`: Sets global finish flag `D_800EA0F4 = 1`.
+- Cleaned up obsolete symbol declarations and updated callsites across racing, awards, and menu logic.
+
 ## [8.107.21] - 2026-06-02
 ### Changed
 - Labeled Controller Pak ghost file allocation and entry clearing routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:

@@ -744,12 +744,12 @@ void play_winning_ceremony_credits_sequence(UNUSED CinematicCamera* arg0) {
 }
 
 void func_80283CA8(UNUSED CinematicCamera* camera) {
-    func_800CA008(0, 3);
+    audio_init_course_sequence(0, 3);
 }
 
 void func_80283CD0(UNUSED CinematicCamera* camera) {
     if (D_800DC5E4 == 0) {
-        func_800CA008(0, 2);
+        audio_init_course_sequence(0, 2);
     }
 }
 

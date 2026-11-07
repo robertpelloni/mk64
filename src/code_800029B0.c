@@ -227,7 +227,7 @@ void setup_race(void) {
         }
     }
     if (!gDemoMode) {
-        func_800CA008(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
+        audio_init_course_sequence(gPlayerCountSelection1 - 1, gCurrentCourseId + 4);
         audio_game_loop_tick();
     }
 

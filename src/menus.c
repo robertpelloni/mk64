@@ -1818,11 +1818,11 @@ void load_menu_states(s32 menuSelection) {
             gSubMenuSelection = SUB_MENU_DATA_OPTIONS;
             break;
         case LOGO_INTRO_MENU:
-            func_800CA008(0, 0);
+            audio_init_course_sequence(0, 0);
             break;
         case CONTROLLER_PAK_MENU: {
             gControllerPakMenuSelection = CONTROLLER_PAK_MENU_SELECT_RECORD;
-            func_800CA008(0, 0);
+            audio_init_course_sequence(0, 0);
             break;
         }
         case 0:
@@ -1839,7 +1839,7 @@ void load_menu_states(s32 menuSelection) {
                 gPlayerCount = 4;
             }
             gScreenModeListIndex = sScreenModeIdxFromPlayerMode[gPlayerCount - 1];
-            func_800CA008(0, 0);
+            audio_init_course_sequence(0, 0);
             play_sequence(SEQ_MENU_TITLE_SCREEN);
             gCourseMapInit = 0;
             break;
@@ -1853,7 +1853,7 @@ void load_menu_states(s32 menuSelection) {
             reset_cpu_camera_path_indices();
 
             if (gGamestate != 0) {
-                func_800CA008(0, 0);
+                audio_init_course_sequence(0, 0);
                 audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;
@@ -1911,7 +1911,7 @@ void load_menu_states(s32 menuSelection) {
                         }
                         play_sound2(SOUND_MENU_SELECT_PLAYER);
                     } else {
-                        func_800CA008(0, 0);
+                        audio_init_course_sequence(0, 0);
                         audio_game_loop_tick();
                         gGamestate = 0;
                         gGamestateNext = 0;
@@ -1949,7 +1949,7 @@ void load_menu_states(s32 menuSelection) {
                 gSubMenuSelection = SUB_MENU_MAP_SELECT_CUP;
             }
             if (gGamestate != 0) {
-                func_800CA008(0, 0);
+                audio_init_course_sequence(0, 0);
                 audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;

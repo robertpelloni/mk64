@@ -3634,7 +3634,7 @@ void func_8001A124(s32 arg0, s32 arg1) {
             } else {
                 D_80164680[arg1] = 0x000D;
             }
-            func_800CA270();
+            audio_set_race_finish_flag();
             break;
         case 1:
         case 2:

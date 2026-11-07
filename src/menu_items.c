@@ -11049,7 +11049,7 @@ void func_800ACF40(MenuItem* arg0) {
                         func_8009A640(arg0->D_8018DEE0_index, 0, somePlayerIndex,
                                       segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_a1]));
                         arg0->state = 3;
-                        func_800CA24C(somePlayerIndex);
+                        audio_set_player_finish_state(somePlayerIndex);
                         func_800C90F4(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
                     }
                 }

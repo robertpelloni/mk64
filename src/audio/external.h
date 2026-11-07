@@ -290,14 +290,14 @@ void func_800C9D80(Vec3f, Vec3f, u32);
 void func_800C9EF4(Vec3f, u32);
 void audio_set_pause_mute(u8);
 
-void func_800CA008(u8, u8);
+void audio_init_course_sequence(u8, u8);
 void audio_mute_sfx_enable(void);
 void audio_mute_sfx_disable(void);
 void audio_mute_sfx_enable_cutscene(void);
 void audio_clear_sound_banks(void);
 void audio_trigger_race_finish(u8);
-void func_800CA24C(u8);
-void func_800CA270(void);
+void audio_set_player_finish_state(u8);
+void audio_set_race_finish_flag(void);
 void audio_set_player_tunnel_reverb(u8, s8);
 void audio_clear_player_tunnel_reverb(u8);
 void audio_set_cpu_tunnel_reverb(u8, s8);

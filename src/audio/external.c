@@ -3217,7 +3217,7 @@ void audio_set_pause_mute(u8 arg0) {
     }
 }
 
-void func_800CA008(u8 arg0, u8 arg1) {
+void audio_init_course_sequence(u8 arg0, u8 arg1) {
     func_800C36C4(0, 0, 0x7F, 1);
     func_800C36C4(1, 0, 0x7F, 1);
 
@@ -3280,11 +3280,11 @@ void audio_trigger_race_finish(u8 arg0) {
     }
 }
 
-void func_800CA24C(u8 playerIndex) {
+void audio_set_player_finish_state(u8 playerIndex) {
     D_800EA0EC[playerIndex] = 2;
 }
 
-void func_800CA270() {
+void audio_set_race_finish_flag() {
     D_800EA0F4 = 1;
 }
 

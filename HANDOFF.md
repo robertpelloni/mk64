@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.21)
+# Session Handoff - 2026-06-02 (v8.107.22)
 
 ## Executive Summary
-Completed decompilation labeling of Controller Pak ghost file allocation and entry clearing routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.21`.
+Completed decompilation labeling of course sequence initialization and race finish status handlers across `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/menus.c`, `src/ending/ceremony_and_credits.c`, `src/effects.c`, `src/cpu_vehicles_camera_path.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.22`.
 
 ### Recent Fixes & Additions
+- **Audio Course Sequence & Race Finish Status Routines (v8.107.22):**
+  - `func_800CA008` -> `audio_init_course_sequence`: Adjusts volume channels, determines sequence index by course ID/game mode, and dispatches the corresponding sequence command.
+  - `func_800CA24C` -> `audio_set_player_finish_state`: Updates `D_800EA0EC[playerIndex] = 2` to signal that player has completed their race.
+  - `func_800CA270` -> `audio_set_race_finish_flag`: Sets global finish flag `D_800EA0F4 = 1`.
 - **Controller Pak Ghost File Allocation & Entry Clearing Routines (v8.107.21):**
   - `func_800B69BC` -> `clear_and_write_pak1_ghost_header`: Clears a ghost header slot in `D_8018EE10[arg0]`, computes header checksum, and writes to Controller Pak 1 via `osPfsReadWriteFile`.
   - `func_800B6A68` -> `allocate_pak1_ghost_file`: Allocates the 0x7900 byte ghost note on Controller Pak 1 using `osPfsAllocateFile` and clears both ghost header slots.

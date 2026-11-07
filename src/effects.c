@@ -1026,14 +1026,14 @@ void trigger_vertical_tumble(Player* player, s8 playerIndex) {
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
         if (((gModeSelection == VERSUS) && ((player->type & PLAYER_CPU) != 0)) && (!gDemoMode)) {
-            func_800CA24C(playerIndex);
+            audio_set_player_finish_state(playerIndex);
         }
 
         if (1) {}
 
         func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008005);
         if (((gModeSelection == VERSUS) && ((player->type & PLAYER_CPU) != 0)) && (!gDemoMode)) {
-            func_800CA24C(playerIndex);
+            audio_set_player_finish_state(playerIndex);
         }
         func_800C9060(playerIndex, SOUND_ACTION_EXPLOSION);
     } else {
