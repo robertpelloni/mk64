@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.16] - 2026-06-01
+### Changed
+- Labeled menu transition fade helper routines in `src/menu_items.c`, `src/menu_items.h`, and `src/menus.c`:
+  - `func_8009E1C0` -> `set_menu_fade_main`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
+  - `func_8009E1E4` -> `set_menu_fade_main_alt`: Triggers alternative screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
+  - `func_8009E208` -> `set_menu_fade_back`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_BACK`.
+  - `func_8009E230` -> `set_menu_fade_demo`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DEMO`.
+  - `func_8009E258` -> `set_menu_fade_data`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DATA`.
+  - `func_8009E280` -> `set_menu_fade_option`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_OPTION`.
+- Updated all declarations and call sites across `src/menu_items.c`, `src/menu_items.h`, and `src/menus.c`.
+
 ## [8.107.15] - 2026-05-31
 ### Changed
 - Labeled sequence player settings and bank mask routines in `src/audio/external.c`:

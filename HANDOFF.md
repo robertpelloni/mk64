@@ -1,14 +1,18 @@
-# Session Handoff - 2026-05-31 (v8.107.15)
+# Session Handoff - 2026-06-01 (v8.107.16)
 
 ## Executive Summary
-Completed decompilation labeling of sequence player settings resets, sound bank mask enable controls, and sound channel active bit clearing in `src/audio/external.c`. Verified with static C compilation, and bumped the project version to `8.107.15`.
+Completed decompilation labeling of menu screen transition and fade routines in `src/menu_items.c`, `src/menu_items.h`, and `src/menus.c`. Verified with static C compilation, and bumped the project version to `8.107.16`.
 
 ### Recent Fixes & Additions
-- **Audio Sequence Player Settings & Bank Mask Routines:**
-  - `func_800C3F70` -> `audio_reset_all_sequence_player_settings`: Resets sequence player structures, volumes, tempo scales, and channel masks across players 0..2.
-  - `func_800C400C` -> `audio_reset_soft_sequence_player_settings`: Performs lightweight reset preserving volume scales while zeroing pending command queues and tempo states.
-  - `func_800C4084` -> `audio_set_sound_banks_enabled_mask`: Enables/disables sound banks according to provided bitmask in `sSoundBankDisabled`.
-  - `func_800C40F0` -> `audio_clear_sound_channel_active_bit`: Clears channel bit in `D_800EA1C4` and restores sequence player volume when all channels are inactive.
+- **Menu Screen Transition & Fade Handlers:**
+  - `func_8009E1C0` -> `set_menu_fade_main`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
+  - `func_8009E1E4` -> `set_menu_fade_main_alt`: Triggers alternative screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_MAIN`.
+  - `func_8009E208` -> `set_menu_fade_back`: Triggers a 10-frame screen fade and sets `gMenuFadeType = MENU_FADE_TYPE_BACK`.
+  - `func_8009E230` -> `set_menu_fade_demo`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DEMO`.
+  - `func_8009E258` -> `set_menu_fade_data`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_DATA`.
+  - `func_8009E280` -> `set_menu_fade_option`: Triggers fade and sets `gMenuFadeType = MENU_FADE_TYPE_OPTION`.
+- **Audio Sequence Player Settings & Bank Mask Routines (v8.107.15):**
+  - Labeled `audio_reset_all_sequence_player_settings`, `audio_reset_soft_sequence_player_settings`, `audio_set_sound_banks_enabled_mask`, and `audio_clear_sound_channel_active_bit`.
 - **Submodule Inventory Alignment (v8.107.14):**
   - Synchronized `SUBMODULE_INVENTORY.md` across all submodules.
 - **Audio Sequence Command Buffer & Fadeouts (v8.107.13):**

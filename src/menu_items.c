@@ -2618,7 +2618,7 @@ void func_80095574(void) {
         play_sound2(SOUND_INTRO_WELCOME);
     }
     if (gMenuTimingCounter > 300) {
-        func_8009E230();
+        set_menu_fade_demo();
         audio_mute_sfx_enable();
     }
     gSPDisplayList(gDisplayListHead++, D_020076E0);
@@ -5293,32 +5293,32 @@ void func_8009E17C(u32 arg0) {
     }
 }
 
-void func_8009E1C0(void) {
+void set_menu_fade_main(void) {
     func_8009DFE0(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E1E4(void) {
+void set_menu_fade_main_alt(void) {
     func_8009E000(10);
     gMenuFadeType = MENU_FADE_TYPE_MAIN;
 }
 
-void func_8009E208(void) {
+void set_menu_fade_back(void) {
     func_8009DFE0(10);
     gMenuFadeType = MENU_FADE_TYPE_BACK;
 }
 
-void func_8009E230(void) {
+void set_menu_fade_demo(void) {
     func_8009DFE0(10);
     gMenuFadeType = MENU_FADE_TYPE_DEMO;
 }
 
-void func_8009E258(void) {
+void set_menu_fade_data(void) {
     func_8009DFE0(10);
     gMenuFadeType = MENU_FADE_TYPE_DATA;
 }
 
-void func_8009E280(void) {
+void set_menu_fade_option(void) {
     func_8009DFE0(10);
     gMenuFadeType = MENU_FADE_TYPE_OPTION;
 }
