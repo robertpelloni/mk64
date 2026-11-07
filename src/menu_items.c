@@ -2404,7 +2404,7 @@ void setup_menus(void) {
         func_8009B938();
         func_80092258();
         probe_controller_pak_1();
-        func_800B6014();
+        probe_controller_pak_2();
         load_menu_states(gMenuSelection);
         switch (gMenuSelection) {
             case OPTIONS_MENU:

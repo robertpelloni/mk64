@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.19] - 2026-06-02
+### Changed
+- Labeled Controller Pak 2 probe and ghost save/checksum routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B6014` -> `probe_controller_pak_2`: Probes controller pak 2 insertion state (`sControllerPak2State`) and initialises `&gControllerPak2FileHandle` using `osPfsInit`.
+  - `func_800B6088` -> `save_ghost_header_to_pak`: Computes header checksum via `func_800B6828` and writes the 128-byte `struct_8018EE10_entry` header into Controller Pak 1.
+  - `func_800B60E8` -> `calculate_ghost_page_checksum`: Calculates rolling checksum for a 256-byte page of compressed ghost data in `gReplayGhostCompressed`.
+- Cleaned up call sites across time-trial ghost saving and menu pak management.
+
 ## [8.107.18] - 2026-06-02
 ### Changed
 - Labeled Controller Pak 1 status probe function in `src/save.c`, `src/save.h`, `src/menu_items.c`, and `src/menus.c`:

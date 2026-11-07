@@ -604,7 +604,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 gSubMenuSelection = SUB_MENU_COPY_PAK_COMPLETED;
                 D_8018EE10[sp38->param1].courseIndex = (sp30 + sp38->param2)->courseIndex;
-                func_800B6088(sp38->param1);
+                save_ghost_header_to_pak(sp38->param1);
                 break;
             }
             case SUB_MENU_COPY_PAK_CREATE_GAME_DATA_INIT: {

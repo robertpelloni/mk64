@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.18)
+# Session Handoff - 2026-06-02 (v8.107.19)
 
 ## Executive Summary
-Completed decompilation labeling of Controller Pak 1 status probe and Grand Prix rival character selection routines across `src/save.c`, `src/save.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/menu_items.c`, and `src/menus.c`. Verified with static C syntax checking, and bumped the project version to `8.107.18`.
+Completed decompilation labeling of Controller Pak 2 probe and ghost save/checksum routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.19`.
 
 ### Recent Fixes & Additions
+- **Controller Pak 2 Probe & Ghost Checksum Routines (v8.107.19):**
+  - `func_800B6014` -> `probe_controller_pak_2`: Probes controller pak 2 insertion state (`sControllerPak2State`) and initialises `&gControllerPak2FileHandle` using `osPfsInit`.
+  - `func_800B6088` -> `save_ghost_header_to_pak`: Computes header checksum via `func_800B6828` and writes the 128-byte `struct_8018EE10_entry` header into Controller Pak 1.
+  - `func_800B60E8` -> `calculate_ghost_page_checksum`: Calculates rolling checksum for a 256-byte page of compressed ghost data in `gReplayGhostCompressed`.
 - **Controller Pak & Grand Prix Selection Routines (v8.107.18):**
   - `func_800B5F30` -> `probe_controller_pak_1`: Checks controller pak 1 initialization status (`gControllerPak1State`), initialises PFS via `osPfsInitPak`, checks file state, and sets `gControllerPak1Files`.
   - `func_8000F0E0` -> `reset_cpu_camera_path_indices`: Clears CPU vehicle waypoint and camera path tracking indices.
