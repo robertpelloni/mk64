@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.14] - 2026-05-30
+### Changed
+- Synchronized `SUBMODULE_INVENTORY.md` with active pinned submodule commits across `doxygen-awesome-css` (v2.5.0, `46483f1`), `tools/asm-differ` (`0dd09af`), `tools/blender/fast64` (`b130109`), `tools/decomp-permuter` (`8556c81`), and `tools/torch` (`7f5d55f`).
+- Verified full tool compilation (`make -C tools`) for Torch asset pipeline.
+
 ## [8.107.13] - 2026-05-29
 ### Changed
 - Labeled audio sequence command buffer and universal fade-out routines:

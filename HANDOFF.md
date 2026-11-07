@@ -1,13 +1,17 @@
-# Session Handoff - 2026-05-29 (v8.107.13)
+# Session Handoff - 2026-05-30 (v8.107.14)
 
 ## Executive Summary
-Completed decompilation labeling of the audio sequence command buffer and universal sequence fade-out system, verified with static C compilation, and bumped project version to `8.107.13`.
+Synchronized the submodule inventory documentation (`SUBMODULE_INVENTORY.md`) with the exact pinned commits and branch references across all submodules in the tree. Verified clean compilation of Torch and supporting tools, and bumped project version to `8.107.14`.
 
 ### Recent Fixes & Additions
-- **Audio Sequence Command Buffer & Fadeouts:**
-  - `func_800CA330` -> `audio_fade_out_all_sequences`: Triggers rapid or timed sequence fadeouts across sequence players 0 and 1 throughout menu navigation and race transitions.
-  - `func_800C3448` -> `audio_push_sequence_command`: Queues an encoded 32-bit sequence playback or volume command into `D_80192CD0`.
-  - `func_800C3478` -> `audio_process_sequence_commands`: Flushes and dispatches all buffered sequence commands during `audio_game_loop_tick`.
+- **Submodule Inventory Alignment:**
+  - `doxygen-awesome-css`: Updated to `v2.5.0` (`46483f1`).
+  - `tools/asm-differ`: Synced with `main` (`0dd09af`).
+  - `tools/blender/fast64`: Synced with `main` (`b130109`).
+  - `tools/decomp-permuter`: Synced with `main` (`8556c81`).
+  - `tools/torch`: Synced with `main` (`7f5d55f`).
+- **Audio Sequence Command Buffer & Fadeouts (v8.107.13):**
+  - Labeled `audio_fade_out_all_sequences`, `audio_push_sequence_command`, and `audio_process_sequence_commands`.
 - **Race Finish and Results Sequence Audio Labeling (v8.107.12):**
   - `audio_trigger_race_finish` and `audio_update_race_finish_sequences`.
 - **Audio Initialization & State Resets (v8.107.11):**
