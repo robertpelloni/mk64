@@ -11343,7 +11343,7 @@ void func_800AD2E8(MenuItem* arg0) {
             }
             break;
         case 19:
-            if ((arg0->param1 == 1) && (func_800B6A68() != 0)) {
+            if ((arg0->param1 == 1) && (allocate_pak1_ghost_file() != 0)) {
                 arg0->state = 0x0000000F;
                 return;
             } else {
@@ -11743,7 +11743,7 @@ void func_800AE218(MenuItem* arg0) {
             }
             break;
         case 32:
-            if ((arg0->param1 == 1) && (func_800B6A68() != 0)) {
+            if ((arg0->param1 == 1) && (allocate_pak1_ghost_file() != 0)) {
                 arg0->state = 0x00000019;
             } else {
                 arg0->param1++;

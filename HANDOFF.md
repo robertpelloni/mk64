@@ -1,9 +1,12 @@
-# Session Handoff - 2026-06-02 (v8.107.20)
+# Session Handoff - 2026-06-02 (v8.107.21)
 
 ## Executive Summary
-Completed decompilation labeling of Controller Pak ghost header validation and checksum routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.20`.
+Completed decompilation labeling of Controller Pak ghost file allocation and entry clearing routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.21`.
 
 ### Recent Fixes & Additions
+- **Controller Pak Ghost File Allocation & Entry Clearing Routines (v8.107.21):**
+  - `func_800B69BC` -> `clear_and_write_pak1_ghost_header`: Clears a ghost header slot in `D_8018EE10[arg0]`, computes header checksum, and writes to Controller Pak 1 via `osPfsReadWriteFile`.
+  - `func_800B6A68` -> `allocate_pak1_ghost_file`: Allocates the 0x7900 byte ghost note on Controller Pak 1 using `osPfsAllocateFile` and clears both ghost header slots.
 - **Controller Pak Ghost Header Validation & Checksum Routines (v8.107.20):**
   - `func_800B6708` -> `load_and_validate_pak1_ghost_headers`: Reads ghost headers from Pak 1 into `D_8018EE10` and validates checksums.
   - `func_800B6798` -> `load_and_validate_pak2_ghost_headers`: Reads ghost headers from Pak 2 into `gSomeDLBuffer` and validates checksums.

@@ -81,8 +81,8 @@ void load_and_validate_pak1_ghost_headers(void);
 void load_and_validate_pak2_ghost_headers(void);
 u8 calculate_pak1_ghost_header_checksum(s32);
 u8 calculate_pak2_ghost_header_checksum(s32);
-s32 func_800B69BC(s32);
-s32 func_800B6A68(void);
+s32 clear_and_write_pak1_ghost_header(s32);
+s32 allocate_pak1_ghost_file(void);
 
 /* data */
 // these might not be in this file, but for now...

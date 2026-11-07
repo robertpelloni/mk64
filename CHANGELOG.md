@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.21] - 2026-06-02
+### Changed
+- Labeled Controller Pak ghost file allocation and entry clearing routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B69BC` -> `clear_and_write_pak1_ghost_header`: Clears a ghost header slot in `D_8018EE10[arg0]`, computes header checksum, and writes to Controller Pak 1 via `osPfsReadWriteFile`.
+  - `func_800B6A68` -> `allocate_pak1_ghost_file`: Allocates the 0x7900 byte ghost note on Controller Pak 1 using `osPfsAllocateFile` and clears both ghost header slots.
+- Updated all callsites in file management menus (`options_menu_act`, `course_data_menu_act`) and menu item handlers.
+
 ## [8.107.20] - 2026-06-02
 ### Changed
 - Labeled Controller Pak ghost header validation and checksum functions in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:

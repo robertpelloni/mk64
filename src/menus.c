@@ -617,7 +617,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 break;
             }
             case SUB_MENU_COPY_PAK_CREATE_GAME_DATA_DONE: {
-                if (func_800B6A68()) {
+                if (allocate_pak1_ghost_file()) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_ERROR_CANT_CREATE_1P;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                 } else if (sp30[0].ghostDataSaved) {
@@ -826,7 +826,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                             case COURSE_RECORDS_MENU_ERASE_GHOST: {
                                 res = func_800B639C(gTimeTrialDataCourseIndex);
                                 if (res >= 0) {
-                                    if (func_800B69BC(res) != 0) {
+                                    if (clear_and_write_pak1_ghost_header(res) != 0) {
                                         gSubMenuSelection = SUB_MENU_DATA_CANT_ERASE;
                                         play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                                     } else {

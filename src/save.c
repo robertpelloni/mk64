@@ -963,7 +963,7 @@ u8 calculate_pak2_ghost_header_checksum(s32 arg0) {
     return checksum;
 }
 
-s32 func_800B69BC(s32 arg0) {
+s32 clear_and_write_pak1_ghost_header(s32 arg0) {
     u32 i;
     struct_8018EE10_entry* plz = &D_8018EE10[arg0];
 
@@ -979,7 +979,7 @@ s32 func_800B69BC(s32 arg0) {
                               (s32) sizeof(struct_8018EE10_entry) * arg0, sizeof(struct_8018EE10_entry), (u8*) plz);
 }
 
-s32 func_800B6A68(void) {
+s32 allocate_pak1_ghost_file(void) {
     UNUSED s32 pad;
     s32 ret;
     s32 i;
@@ -988,7 +988,7 @@ s32 func_800B6A68(void) {
                             0x7900, &gControllerPak1FileNote);
     if (ret == 0) {
         for (i = 0; i < 2; i++) {
-            func_800B69BC(i);
+            clear_and_write_pak1_ghost_header(i);
         }
     }
 
@@ -1005,7 +1005,7 @@ void func_8800B6AF8(void) {
         osPfsFreeBlocks(&gControllerPak1FileHandle, &gControllerPak1NumPagesFree) == 0) {
         gControllerPak1NumPagesFree >>= 8;
         if (gControllerPak1NumPagesFree >= 0x79) {
-            func_800B6A68();
+            allocate_pak1_ghost_file();
         }
     }
 }
