@@ -159,8 +159,8 @@ void delete_actor_in_unexpired_actor_list(s32);
 void func_8000EEDC(void);
 void generate_player_smoke(void);
 
-void func_8000F0E0(void);
-void func_8000F124(void);
+void reset_cpu_camera_path_indices(void);
+void select_grand_prix_rival_characters(void);
 void clear_path_point(TrackPathPoint*, size_t);
 void init_course_path_point(void);
 void init_players(void);

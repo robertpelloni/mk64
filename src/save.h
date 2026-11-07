@@ -70,7 +70,7 @@ s32 check_for_controller_pak(s32);
 s32 func_800B5B2C(s32);
 s32 controller_pak_1_status(void);
 s32 controller_pak_2_status(void);
-s32 func_800B5F30(void);
+s32 probe_controller_pak_1(void);
 s32 func_800B6014(void);
 s32 func_800B6088(s32);
 u8 func_800B60E8(s32);

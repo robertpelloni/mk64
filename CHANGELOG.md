@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.18] - 2026-06-02
+### Changed
+- Labeled Controller Pak 1 status probe function in `src/save.c`, `src/save.h`, `src/menu_items.c`, and `src/menus.c`:
+  - `func_800B5F30` -> `probe_controller_pak_1`: Probes controller pak 1 status (`gControllerPak1State`), initialises PFS via `osPfsInitPak`, checks file state, and populates `gControllerPak1Files`.
+- Labeled Grand Prix CPU setup and rival character selection functions in `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/menu_items.c`, and `src/menus.c`:
+  - `func_8000F0E0` -> `reset_cpu_camera_path_indices`: Clears CPU vehicle waypoint and camera path tracking indices.
+  - `func_8000F124` -> `select_grand_prix_rival_characters`: Selects and assigns non-human rival racer characters for Grand Prix mode based on current character table rankings.
+- Cleaned up obsolete symbol declarations and updated all callsites across save and menu systems.
+
 ## [8.107.17] - 2026-06-02
 ### Changed
 - Labeled screen transition visual fader routines in `src/menu_items.c` and `src/menu_items.h`:

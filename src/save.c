@@ -677,7 +677,7 @@ s32 controller_pak_2_status(void) {
     }
 }
 
-s32 func_800B5F30(void) {
+s32 probe_controller_pak_1(void) {
     s32 errorCode;
 
     if (gControllerPak1State) {

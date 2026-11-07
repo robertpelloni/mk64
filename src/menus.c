@@ -1663,7 +1663,7 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
                 if (btnAndStick & A_BUTTON) {
                     set_menu_fade_main();
                     play_sound2(SOUND_MENU_OK_CLICKED);
-                    func_8000F124();
+                    select_grand_prix_rival_characters();
                 }
                 break;
             default:
@@ -1849,8 +1849,8 @@ void load_menu_states(s32 menuSelection) {
             gEnableDebugMode = DEBUG_MODE_TOGGLE;
             gIsMirrorMode = 0;
             gCourseMapInit = 0;
-            func_800B5F30();
-            func_8000F0E0();
+            probe_controller_pak_1();
+            reset_cpu_camera_path_indices();
 
             if (gGamestate != 0) {
                 func_800CA008(0, 0);

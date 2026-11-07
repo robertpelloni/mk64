@@ -1396,7 +1396,7 @@ void func_80091EE4(void) {
     s32 tmp;
 
     gControllerPak1State = BAD;
-    tmp = func_800B5F30();
+    tmp = probe_controller_pak_1();
 
     if ((gGhostPlayerInit != 0) && (tmp == 0)) {
         temp_s2 = (gCupSelection * 4) + gCourseIndexInCup;
@@ -1447,7 +1447,7 @@ void func_80091FA4(void) {
     if (!(gControllerBits & 1) && (gDemoUseController != 0)) {
         add_menu_item(MENU_ITEM_UI_NO_CONTROLLER, 0, 0, MENU_ITEM_PRIORITY_2);
     }
-    func_800B5F30();
+    probe_controller_pak_1();
 }
 
 void func_80092148(void) {
@@ -2403,7 +2403,7 @@ void setup_menus(void) {
         clear_menus();
         func_8009B938();
         func_80092258();
-        func_800B5F30();
+        probe_controller_pak_1();
         func_800B6014();
         load_menu_states(gMenuSelection);
         switch (gMenuSelection) {
@@ -4970,7 +4970,7 @@ void func_8009CE64(s32 arg0) {
                     }
                     break;
             }
-            func_8000F124();
+            select_grand_prix_rival_characters();
             if (gScreenModeSelection == 3) {
                 switch (gModeSelection) {
                     case 0:
@@ -11216,7 +11216,7 @@ void func_800AD2E8(MenuItem* arg0) {
                         }
                         if (var_v1 == 0) {
                             if (gControllerPak1State == 0) {
-                                switch (func_800B5F30()) { /* switch 2 */
+                                switch (probe_controller_pak_1()) { /* switch 2 */
                                     case -1:               /* switch 2 */
                                         arg0->state = 0x0000000B;
                                         var_v1 = 1;
@@ -11622,7 +11622,7 @@ void func_800AE218(MenuItem* arg0) {
                             return;
                         }
                         if (gControllerPak1State == 0) {
-                            switch (func_800B5F30()) { /* switch 2 */
+                            switch (probe_controller_pak_1()) { /* switch 2 */
                                 case PFS_INVALID_DATA: /* switch 2 */
                                     arg0->state = 0x00000015;
                                     var_v1 = 1;

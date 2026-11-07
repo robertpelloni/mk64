@@ -1,10 +1,14 @@
-# Session Handoff - 2026-06-02 (v8.107.17)
+# Session Handoff - 2026-06-02 (v8.107.18)
 
 ## Executive Summary
-Completed decompilation labeling of screen transition visual faders in `src/menu_items.c`, `src/menu_items.h`, and `src/effects.c`. Verified with static C compilation, and bumped the project version to `8.107.17`.
+Completed decompilation labeling of Controller Pak 1 status probe and Grand Prix rival character selection routines across `src/save.c`, `src/save.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/menu_items.c`, and `src/menus.c`. Verified with static C syntax checking, and bumped the project version to `8.107.18`.
 
 ### Recent Fixes & Additions
-- **Screen Transition Visual Faders:**
+- **Controller Pak & Grand Prix Selection Routines (v8.107.18):**
+  - `func_800B5F30` -> `probe_controller_pak_1`: Checks controller pak 1 initialization status (`gControllerPak1State`), initialises PFS via `osPfsInitPak`, checks file state, and sets `gControllerPak1Files`.
+  - `func_8000F0E0` -> `reset_cpu_camera_path_indices`: Clears CPU vehicle waypoint and camera path tracking indices.
+  - `func_8000F124` -> `select_grand_prix_rival_characters`: Selects and assigns non-human rival racer characters for Grand Prix mode based on current character table rankings.
+- **Screen Transition Visual Faders (v8.107.17):**
   - `func_8009DEF8` -> `start_screen_fade_in_type`: Custom duration/type fade-in on transition channel 4.
   - `func_8009DF4C` -> `start_screen_fade_in`: Default type 1 fade-in.
   - `func_8009DF8C` -> `start_screen_fade_out_type`: Custom duration/type fade-out on transition channel 4.
