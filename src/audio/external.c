@@ -1160,7 +1160,7 @@ void func_800C3724(void) {
     }
 }
 
-void func_800C3F70(void) {
+void audio_reset_all_sequence_player_settings(void) {
     u8 var_v0;
 
     for (var_v0 = 0; var_v0 < 3; var_v0++) {
@@ -1183,7 +1183,7 @@ void func_800C3F70(void) {
     }
 }
 
-void func_800C400C(void) {
+void audio_reset_soft_sequence_player_settings(void) {
     u8 var_v0;
 
     for (var_v0 = 0; var_v0 < 3; var_v0++) {
@@ -1201,7 +1201,7 @@ void func_800C400C(void) {
 }
 
 // Appears to be an unused combo of sound_banks_enable and sound_banks_disable
-void func_800C4084(u16 bankMask) {
+void audio_set_sound_banks_enabled_mask(u16 bankMask) {
     u8 bank;
 
     for (bank = 0; bank < SOUND_BANK_COUNT; bank++) {
@@ -1214,7 +1214,7 @@ void func_800C4084(u16 bankMask) {
     }
 }
 
-void func_800C40F0(u8 arg0) {
+void audio_clear_sound_channel_active_bit(u8 arg0) {
     D_800EA1C4 &= ((1 << (arg0)) ^ (u16) -1);
     if (!D_800EA1C4) {
         D_801930D0[0].unk_012 = 1;
@@ -1331,7 +1331,7 @@ void func_800C4398(void) {
                 if ((var_a2->soundBits & 0x08000000) || (var_a2->soundBits & 0x40000) || (soundIndex == var_t2)) {
                     if ((sSoundBanks[bank][soundIndex].soundBits & 0x80000) &&
                         (sSoundBanks[bank][soundIndex].soundStatus != 1)) {
-                        func_800C40F0(sSoundBanks[bank][soundIndex].unk2C);
+                        audio_clear_sound_channel_active_bit(sSoundBanks[bank][soundIndex].unk2C);
                     }
                     sSoundBanks[bank][soundIndex].cameraId = var_a2->cameraId;
                     sSoundBanks[bank][soundIndex].soundBits = var_a2->soundBits;
@@ -1380,7 +1380,7 @@ void delete_sound_from_bank(u8 bankId, u8 soundId) {
         *temp->unk04 = 100000.0f;
     }
     if (temp->soundBits & 0x80000) {
-        func_800C40F0(temp->unk2C);
+        audio_clear_sound_channel_active_bit(temp->unk2C);
     }
     if (soundId == sSoundBankUsedListBack[bankId]) {
         sSoundBankUsedListBack[bankId] = temp->prev;
@@ -1806,10 +1806,10 @@ void func_800C5BD0(void) {
 void audio_soft_reset(void) {
     audio_reset_state_and_cameras();
     if (D_800E9DA0 != 0) {
-        func_800C400C();
+        audio_reset_soft_sequence_player_settings();
     } else {
         D_800E9DA0++;
-        func_800C3F70();
+        audio_reset_all_sequence_player_settings();
     }
     sound_init();
     func_800C284C(2, 0, 0xFF, 1);
@@ -1819,7 +1819,7 @@ void audio_soft_reset(void) {
 // game_audio_init?
 void audio_init(void) {
     audio_reset_state_and_cameras();
-    func_800C3F70();
+    audio_reset_all_sequence_player_settings();
     sound_init();
     func_800C284C(2, 0, 0xFF, 1);
 }

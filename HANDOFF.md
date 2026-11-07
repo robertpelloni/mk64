@@ -1,15 +1,16 @@
-# Session Handoff - 2026-05-30 (v8.107.14)
+# Session Handoff - 2026-05-31 (v8.107.15)
 
 ## Executive Summary
-Synchronized the submodule inventory documentation (`SUBMODULE_INVENTORY.md`) with the exact pinned commits and branch references across all submodules in the tree. Verified clean compilation of Torch and supporting tools, and bumped project version to `8.107.14`.
+Completed decompilation labeling of sequence player settings resets, sound bank mask enable controls, and sound channel active bit clearing in `src/audio/external.c`. Verified with static C compilation, and bumped the project version to `8.107.15`.
 
 ### Recent Fixes & Additions
-- **Submodule Inventory Alignment:**
-  - `doxygen-awesome-css`: Updated to `v2.5.0` (`46483f1`).
-  - `tools/asm-differ`: Synced with `main` (`0dd09af`).
-  - `tools/blender/fast64`: Synced with `main` (`b130109`).
-  - `tools/decomp-permuter`: Synced with `main` (`8556c81`).
-  - `tools/torch`: Synced with `main` (`7f5d55f`).
+- **Audio Sequence Player Settings & Bank Mask Routines:**
+  - `func_800C3F70` -> `audio_reset_all_sequence_player_settings`: Resets sequence player structures, volumes, tempo scales, and channel masks across players 0..2.
+  - `func_800C400C` -> `audio_reset_soft_sequence_player_settings`: Performs lightweight reset preserving volume scales while zeroing pending command queues and tempo states.
+  - `func_800C4084` -> `audio_set_sound_banks_enabled_mask`: Enables/disables sound banks according to provided bitmask in `sSoundBankDisabled`.
+  - `func_800C40F0` -> `audio_clear_sound_channel_active_bit`: Clears channel bit in `D_800EA1C4` and restores sequence player volume when all channels are inactive.
+- **Submodule Inventory Alignment (v8.107.14):**
+  - Synchronized `SUBMODULE_INVENTORY.md` across all submodules.
 - **Audio Sequence Command Buffer & Fadeouts (v8.107.13):**
   - Labeled `audio_fade_out_all_sequences`, `audio_push_sequence_command`, and `audio_process_sequence_commands`.
 - **Race Finish and Results Sequence Audio Labeling (v8.107.12):**

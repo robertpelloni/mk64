@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.15] - 2026-05-31
+### Changed
+- Labeled sequence player settings and bank mask routines in `src/audio/external.c`:
+  - `func_800C3F70` -> `audio_reset_all_sequence_player_settings`: Resets sequence player structures, volumes, tempo scales, and channel masks across players 0..2.
+  - `func_800C400C` -> `audio_reset_soft_sequence_player_settings`: Performs lightweight reset preserving volume scales while zeroing pending command queues and tempo states.
+  - `func_800C4084` -> `audio_set_sound_banks_enabled_mask`: Enables/disables sound banks according to provided bitmask in `sSoundBankDisabled`.
+  - `func_800C40F0` -> `audio_clear_sound_channel_active_bit`: Clears channel bit in `D_800EA1C4` and restores sequence player volume when all channels are inactive.
+- Updated callsites across `src/audio/external.c` and prototypes in `src/audio/external.h`.
+
 ## [8.107.14] - 2026-05-30
 ### Changed
 - Synchronized `SUBMODULE_INVENTORY.md` with active pinned submodule commits across `doxygen-awesome-css` (v2.5.0, `46483f1`), `tools/asm-differ` (`0dd09af`), `tools/blender/fast64` (`b130109`), `tools/decomp-permuter` (`8556c81`), and `tools/torch` (`7f5d55f`).

@@ -224,11 +224,11 @@ void func_800C3608(u8, u8);
 u8 func_800C357C(s32);
 void func_800C35E8(u8);
 void func_800C36C4(u8, u8, u8, u8);
-void func_800C3F70(void);
+void audio_reset_all_sequence_player_settings(void);
 
-void func_800C400C(void);
-void func_800C4084(u16);
-void func_800C40F0(u8);
+void audio_reset_soft_sequence_player_settings(void);
+void audio_set_sound_banks_enabled_mask(u16);
+void audio_clear_sound_channel_active_bit(u8);
 void play_sound(u32, Vec3f*, u8, f32*, f32*, s8*);
 void func_800C41CC(u8, struct SoundCharacteristics*);
 void func_800C4398(void);
