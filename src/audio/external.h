@@ -204,10 +204,10 @@ s8 func_800C15D0(u8, u8, u8);
 s8 func_800C16E8(f32, f32, u8);
 f32 func_800C1934(u8, u8);
 void func_800C19D0(u8, u8, u8);
-struct Unk_8018EFD8* func_800C1C88(u8, Vec3f, Vec3f, f32*, u8, u32);
-void func_800C1DA4(Camera*, Vec3s, struct Unk_8018EFD8*);
-void func_800C1E2C(Camera*, Vec3f, struct Unk_8018EFD8*);
-void func_800C1F8C(void);
+struct Unk_8018EFD8* audio_allocate_3d_sound_node(u8, Vec3f, Vec3f, f32*, u8, u32);
+void audio_calculate_sound_relative_camera_position(Camera*, Vec3s, struct Unk_8018EFD8*);
+void audio_calculate_doppler_pitch_shift(Camera*, Vec3f, struct Unk_8018EFD8*);
+void audio_update_3d_spatial_sounds(void);
 
 Vec3f* func_800C21E8(Vec3f, u32);
 void func_800C2274(u8);

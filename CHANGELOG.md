@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.28] - 2026-06-02
+### Changed
+- Labeled 3D spatial audio node allocation, camera relative orientation, Doppler pitch calculation, and periodic spatial updates in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C1C88` -> `audio_allocate_3d_sound_node`: Allocates an available slot from the 3D spatial node linked list (`D_8018EFD8`), assigning 3D coordinates, velocity vectors, sound bits, and camera associations.
+  - `func_800C1DA4` -> `audio_calculate_sound_relative_camera_position`: Computes 3D relative positioning of a sound node rotated by camera yaw angle.
+  - `func_800C1E2C` -> `audio_calculate_doppler_pitch_shift`: Calculates Doppler pitch shift factor (`unk2C`) based on camera and sound source relative motion vectors and sound speed.
+  - `func_800C1F8C` -> `audio_update_3d_spatial_sounds`: Frame tick updater that recalculates camera velocities, updates active spatial node orientations/Doppler shifts, and frees inactive nodes back to the free list.
+
 ## [8.107.27] - 2026-06-02
 ### Changed
 - Labeled surface skid effect selector routine in `src/audio/external.c` and `src/audio/external.h`:

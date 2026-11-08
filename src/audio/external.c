@@ -338,7 +338,7 @@ void func_800C19D0(u8 arg0, u8 arg1, u8 arg2) {
     }
 }
 
-struct Unk_8018EFD8* func_800C1C88(u8 arg0, Vec3f position, f32* velocity, f32* arg3, u8 arg4, u32 soundBits) {
+struct Unk_8018EFD8* audio_allocate_3d_sound_node(u8 arg0, Vec3f position, f32* velocity, f32* arg3, u8 arg4, u32 soundBits) {
     struct Unk_8018EFD8* temp_a1;
     UNUSED struct Unk_8018EFD8* temp_v1;
     UNUSED u8 temp_t7;
@@ -370,7 +370,7 @@ struct Unk_8018EFD8* func_800C1C88(u8 arg0, Vec3f position, f32* velocity, f32* 
     return NULL;
 }
 
-void func_800C1DA4(Camera* arg0, Vec3s rot, struct Unk_8018EFD8* arg2) {
+void audio_calculate_sound_relative_camera_position(Camera* arg0, Vec3s rot, struct Unk_8018EFD8* arg2) {
     f32 x;
     f32 y;
 
@@ -380,7 +380,7 @@ void func_800C1DA4(Camera* arg0, Vec3s rot, struct Unk_8018EFD8* arg2) {
     arg2->unk18[2] = func_80041724(x, y, rot[1]);
 }
 
-void func_800C1E2C(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
+void audio_calculate_doppler_pitch_shift(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
     f32 sp44;
     f32 temp_f6;
     f32 x;
@@ -417,7 +417,7 @@ void func_800C1E2C(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
     }
 }
 
-void func_800C1F8C(void) {
+void audio_update_3d_spatial_sounds(void) {
     u8 var_s1;
     u8 var_a1;
     u8 cameraId;
@@ -449,9 +449,9 @@ void func_800C1F8C(void) {
             cameraId = D_8018EFD8[var_s1].cameraId;
             // Why? Why would you do it this way? For what possible reason?
             camera = &gCopyCamera[cameraId];
-            func_800C1DA4(*camera, (*camera)->rot, &D_8018EFD8[var_s1]);
+            audio_calculate_sound_relative_camera_position(*camera, (*camera)->rot, &D_8018EFD8[var_s1]);
             if (D_800EA1C8 != D_8018EFD8[var_s1].velX) {
-                func_800C1E2C(*camera, gVelocityCamera[0], &D_8018EFD8[var_s1]);
+                audio_calculate_doppler_pitch_shift(*camera, gVelocityCamera[0], &D_8018EFD8[var_s1]);
             }
             var_a1 = var_s1;
         }
@@ -2969,7 +2969,7 @@ void func_800C92CC(u8 playerId, u32 soundBits) {
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) D_800EA1C0 < 2)) {
         for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
-            temp_v0 = func_800C1C88(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity, D_800EA1C8,
+            temp_v0 = audio_allocate_3d_sound_node(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity, D_800EA1C8,
                                     (u8) var_s0, soundBits);
             if (temp_v0 != NULL) {
                 temp_v0->unk34 = 170.0f;
@@ -3092,7 +3092,7 @@ void func_800C98B8(Vec3f position, Vec3f velocity, u32 soundBits) {
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
         for (var_s0 = 0; var_s0 < (D_800EA1C0 + 1); var_s0++) {
-            temp_v0 = func_800C1C88(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
+            temp_v0 = audio_allocate_3d_sound_node(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
             if (temp_v0 != 0) {
                 temp_v0->unk34 = 170.0f;
                 play_sound(soundBits, &temp_v0->unk18, var_s0, &temp_v0->unk2C, &D_800EA1D4, &D_800EA1DC);
@@ -3153,7 +3153,7 @@ void audio_play_kart_engine_driving(u8 playerId) {
                 if (D_800EA1C0 < 2) {
                     for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
                         soundBits = gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00);
-                        temp_v0_6 = func_800C1C88(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity,
+                        temp_v0_6 = audio_allocate_3d_sound_node(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity,
                                                   &gPlayers[playerId].unk_098, var_s0, soundBits);
                         if (temp_v0_6 != NULL) {
                             temp_v0_6->unk34 = 40.0f;
@@ -3180,7 +3180,7 @@ void func_800C9D80(Vec3f position, Vec3f velocity, u32 soundBits) {
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) D_800EA1C0 < 4)) {
         for (var_s0 = 0; var_s0 < ((D_800EA1C0 + 1)); var_s0++) {
-            temp_v0 = func_800C1C88(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
+            temp_v0 = audio_allocate_3d_sound_node(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
             if (temp_v0 != 0) {
                 temp_v0->unk34 = 170.0f;
                 if (soundBits == SOUND_ARG_LOAD(0x51, 0x03, 0x70, 0x0B)) {
@@ -3422,7 +3422,7 @@ void play_star_sound_effect(u8 playerIndex) {
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
         for (i = 0; i < D_800EA1C0 + 1; i++) {
-            temp_v0_2 = func_800C1C88(playerIndex, gPlayers[playerIndex].pos, D_800EA1C8,
+            temp_v0_2 = audio_allocate_3d_sound_node(playerIndex, gPlayers[playerIndex].pos, D_800EA1C8,
                                       &gPlayers[playerIndex].unk_098, (u8) i, SOUND_ITEM_STAR);
             if (temp_v0_2) {
                 play_sound(SOUND_ITEM_STAR, &temp_v0_2->unk18, i, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
@@ -3621,7 +3621,7 @@ void begin_losing_ceremony_sequence() {
 
 // Main audio update loop called per game tick
 void audio_game_loop_tick() {
-    func_800C1F8C();
+    audio_update_3d_spatial_sounds();
     audio_update_sequence_players();
     audio_process_sequence_commands();
     func_800C5848();
