@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.30] - 2026-06-02
+### Changed
+- Labeled 3D active sound relative position query and sequence script IO sync routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C21E8` -> `audio_get_active_3d_sound_relative_pos`: Queries active 3D sound nodes in `D_8018EFD8` matching sound coordinates and soundBits, returning a pointer to the relative orientation vector.
+  - `func_800C2274` -> `audio_sync_sequence_script_io`: Reads sequence player channel script IO registers (`soundScriptIO[0..3]`) to synchronize music cues with camera cues and trigger gameplay sound sync events (`func_8001AAAC`).
+
 ## [8.107.29] - 2026-06-02
 ### Changed
 - Labeled 3D spatial sound characteristics calculation routines (attenuation, reverb, pan, pitch variation, and channel push) in `src/audio/external.c` and `src/audio/external.h`:

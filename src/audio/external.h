@@ -209,8 +209,8 @@ void audio_calculate_sound_relative_camera_position(Camera*, Vec3s, struct Unk_8
 void audio_calculate_doppler_pitch_shift(Camera*, Vec3f, struct Unk_8018EFD8*);
 void audio_update_3d_spatial_sounds(void);
 
-Vec3f* func_800C21E8(Vec3f, u32);
-void func_800C2274(u8);
+Vec3f* audio_get_active_3d_sound_relative_pos(Vec3f, u32);
+void audio_sync_sequence_script_io(u8);
 void audio_reset_state_and_cameras(void);
 void seq_player_play_sequence(u8, u8, u8, u16);
 void seq_player_stop_sequence(u8, u16);

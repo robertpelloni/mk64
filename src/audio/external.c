@@ -462,7 +462,7 @@ void audio_update_3d_spatial_sounds(void) {
     }
 }
 
-Vec3f* func_800C21E8(Vec3f pos, u32 soundBits) {
+Vec3f* audio_get_active_3d_sound_relative_pos(Vec3f pos, u32 soundBits) {
     u8 it; // iterator
     Vec3f* ret;
     // Only here to force a match
@@ -491,7 +491,7 @@ Vec3f* func_800C21E8(Vec3f pos, u32 soundBits) {
     return ret;
 }
 
-void func_800C2274(u8 player) {
+void audio_sync_sequence_script_io(u8 player) {
     s16 sp46;
     s16 var_s1;
     s16 sp42;
@@ -3107,7 +3107,7 @@ void func_800C99E0(Vec3f arg0, s32 soundBits) {
 
     if (D_800EA108 == 0) {
         for (temp_t9 = 0; temp_t9 < D_800EA1C0 + 1; temp_t9++) {
-            temp_v0 = func_800C21E8(arg0, soundBits);
+            temp_v0 = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
             if (temp_v0 != NULL) {
                 func_800C5578(temp_v0, soundBits);
             }
@@ -3171,7 +3171,7 @@ void audio_play_kart_engine_driving(u8 playerId) {
 
 void func_800C9D0C(u8 playerId) {
     func_800C550C(
-        func_800C21E8(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
+        audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
 }
 
 void func_800C9D80(Vec3f position, Vec3f velocity, u32 soundBits) {
@@ -3198,7 +3198,7 @@ void func_800C9EF4(Vec3f arg0, u32 soundBits) {
     u8 i;
 
     for (i = 0; i < D_800EA1C0 + 1; i++) {
-        temp = func_800C21E8(arg0, soundBits);
+        temp = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
         if (temp != NULL) {
             func_800C5578(temp, soundBits);
         }
@@ -3433,7 +3433,7 @@ void play_star_sound_effect(u8 playerIndex) {
 
 void play_star_music_stop_effect(u8 playerId) {
     if ((u8) D_800EA108 == 0) {
-        func_800C5578(func_800C21E8(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
+        func_800C5578(audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
     }
 }
 
@@ -3627,6 +3627,6 @@ void audio_game_loop_tick() {
     func_800C5848();
     func_800C59C4();
     func_800C8CCC();
-    func_800C2274(0);
+    audio_sync_sequence_script_io(0);
     audio_cmd_queue_flush();
 }
