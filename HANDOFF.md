@@ -1,9 +1,15 @@
-# Session Handoff - 2026-06-02 (v8.107.28)
+# Session Handoff - 2026-06-02 (v8.107.29)
 
 ## Executive Summary
-Completed decompilation labeling of 3D spatial audio node allocation, camera relative orientation, Doppler pitch calculation, and periodic spatial sound updates across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.28`.
+Completed decompilation labeling of 3D sound characteristics calculation routines (distance attenuation, reverb, stereo panning, random pitch variation, and channel parameter application) across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.29`.
 
 ### Recent Fixes & Additions
+- **3D Spatial Sound Characteristics Routines (v8.107.29):**
+  - `func_800C1480` -> `audio_calculate_distance_attenuation`: Computes distance-based volume attenuation factor 0.0f..1.0f.
+  - `func_800C15D0` -> `audio_calculate_sound_reverb`: Computes distance-dependent reverb level clamped to 0x7F.
+  - `func_800C16E8` -> `audio_calculate_sound_panning`: Computes stereo panning balance (0..127) based on sound relative X/Z coordinates.
+  - `func_800C1934` -> `audio_calculate_random_pitch_variation`: Applies small random pitch variation if flag 0x800000 is present.
+  - `func_800C19D0` -> `audio_apply_sound_characteristics_to_channel`: Combines volume attenuation, reverb, pitch, and pan, pushing updates to the audio channel queue.
 - **3D Spatial Audio & Doppler Routines (v8.107.28):**
   - `func_800C1C88` -> `audio_allocate_3d_sound_node`: Allocates an available slot from the 3D spatial node linked list (`D_8018EFD8`), assigning 3D coordinates, velocity vectors, sound bits, and camera associations.
   - `func_800C1DA4` -> `audio_calculate_sound_relative_camera_position`: Computes 3D relative positioning of a sound node rotated by camera yaw angle.

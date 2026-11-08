@@ -163,7 +163,7 @@ void audio_reset_session_eu(OSMesg presetId) {
     }
 }
 
-f32 func_800C1480(u8 bank, u8 soundId) {
+f32 audio_calculate_distance_attenuation(u8 bank, u8 soundId) {
     f32 temp_f0;
     f32 var_f2;
     s32 var_v0;
@@ -201,7 +201,7 @@ f32 func_800C1480(u8 bank, u8 soundId) {
     return var_f2;
 }
 
-s8 func_800C15D0(u8 bank, u8 soundId, u8 channel) {
+s8 audio_calculate_sound_reverb(u8 bank, u8 soundId, u8 channel) {
     s32 var_a0;
     s8 var_v0;
     s8 var_v1;
@@ -228,7 +228,7 @@ s8 func_800C15D0(u8 bank, u8 soundId, u8 channel) {
     return var_a0;
 }
 
-s8 func_800C16E8(f32 arg0, f32 arg1, u8 cameraId) {
+s8 audio_calculate_sound_panning(f32 arg0, f32 arg1, u8 cameraId) {
     f32 var_f0;
     f32 var_f14;
     f32 new_var;
@@ -283,7 +283,7 @@ s8 func_800C16E8(f32 arg0, f32 arg1, u8 cameraId) {
     return (cameraId & 1) * 0x7F;
 }
 
-f32 func_800C1934(u8 bank, u8 soundId) {
+f32 audio_calculate_random_pitch_variation(u8 bank, u8 soundId) {
     f32 phi_f2;
 
     phi_f2 = 1.0f;
@@ -293,7 +293,7 @@ f32 func_800C1934(u8 bank, u8 soundId) {
     return phi_f2;
 }
 
-void func_800C19D0(u8 arg0, u8 arg1, u8 arg2) {
+void audio_apply_sound_characteristics_to_channel(u8 arg0, u8 arg1, u8 arg2) {
     f32 sp3C;
     s8 sp3B;
     f32 sp34;
@@ -313,10 +313,10 @@ void func_800C19D0(u8 arg0, u8 arg1, u8 arg2) {
         case 5:
             temp_s0 = &sSoundBanks[arg0][arg1];
             temp_s0->distance = sqrtf(temp_s0->distance);
-            sp3C = (func_800C1480(arg0, arg1) * *temp_s0->unk14) * D_80192C48[arg0].current;
-            sp3B = func_800C15D0(arg0, arg1, arg2);
-            sp34 = func_800C1934(arg0, arg1) * *temp_s0->unk10;
-            sp33 = func_800C16E8(*temp_s0->unk00[0], *temp_s0->unk08, temp_s0->cameraId);
+            sp3C = (audio_calculate_distance_attenuation(arg0, arg1) * *temp_s0->unk14) * D_80192C48[arg0].current;
+            sp3B = audio_calculate_sound_reverb(arg0, arg1, arg2);
+            sp34 = audio_calculate_random_pitch_variation(arg0, arg1) * *temp_s0->unk10;
+            sp33 = audio_calculate_sound_panning(*temp_s0->unk00[0], *temp_s0->unk08, temp_s0->cameraId);
             break;
     }
     temp_s0_2 = &D_8018EF18[arg2];
@@ -1573,7 +1573,7 @@ void func_800C4FE4(u8 bankId) {
                     D_801930D0->unk_012 = 1;
                     D_801930D0->unk_00E[2] = 0x28;
                 }
-                func_800C19D0(bankId, soundId, D_80192C38);
+                audio_apply_sound_characteristics_to_channel(bankId, soundId, D_80192C38);
                 audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000, 1);
                 audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000 | 4, (u8) (temp_s0->soundBits & 0xFF));
                 temp_s0->soundStatus = 4U;
@@ -1581,7 +1581,7 @@ void func_800C4FE4(u8 bankId) {
                 audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000 | 7, 0);
                 delete_sound_from_bank(bankId, soundId);
             } else if (temp_s0->soundStatus == 3) {
-                func_800C19D0(bankId, soundId, D_80192C38);
+                audio_apply_sound_characteristics_to_channel(bankId, soundId, D_80192C38);
                 temp_s0->soundStatus = 4U;
             }
         }
