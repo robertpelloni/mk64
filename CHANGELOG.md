@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.32] - 2026-06-02
+### Changed
+- Labeled spatial sound cancellation, request processing, and channel volume scale updates in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C5384` -> `audio_stop_sounds_at_position_in_bank`: Stops active sound instances in target bank matching a specific position vector pointer.
+  - `func_800C54B8` -> `audio_stop_and_cancel_sounds_at_position_in_bank`: Stops active sounds and cancels queued sound requests matching position in bank.
+  - `func_800C550C` -> `audio_stop_all_sounds_at_position`: Stops all sound instances across all 6 sound banks associated with a given position vector.
+  - `func_800C5578` -> `audio_stop_sound_at_position`: Stops specific sound bits at a given position vector and cancels matching requests.
+  - `func_800C56F0` -> `audio_stop_sound_by_bits`: Stops specific sound bits across its bank and cancels matching requests.
+  - `func_800C5848` -> `audio_process_all_pending_sound_requests`: Processes all unhandled sound requests in queue up to `sSoundRequestCount`.
+  - `func_800C5968` -> `audio_update_channel_volume_scale_fade`: Ticks volume fade interpolation for a channel.
+  - `func_800C59C4` -> `audio_update_all_sound_banks`: Iterates all sound banks to sort priorities, dispatch voices, and tick volume fades.
+
 ## [8.107.31] - 2026-06-02
 ### Changed
 - Labeled sound request processing, sound bank priority sorting, and channel voice dispatch routines in `src/audio/external.c` and `src/audio/external.h`:

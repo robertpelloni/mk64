@@ -1612,7 +1612,7 @@ void audio_clear_sound_bank(u8 bankId) {
     audio_cancel_matching_sound_requests(0, &sp60);
 }
 
-void func_800C5384(u8 arg0, Vec3f* arg1) {
+void audio_stop_sounds_at_position_in_bank(u8 arg0, Vec3f* arg1) {
     u8 curr;
     u8 next;
 
@@ -1636,27 +1636,27 @@ void func_800C5384(u8 arg0, Vec3f* arg1) {
     }
 }
 
-void func_800C54B8(u8 arg0, Vec3f* arg1) {
+void audio_stop_and_cancel_sounds_at_position_in_bank(u8 arg0, Vec3f* arg1) {
     struct SoundCharacteristics unk;
-    func_800C5384(arg0, arg1);
+    audio_stop_sounds_at_position_in_bank(arg0, arg1);
     unk.soundBits = arg0 << 0x1C;
     unk.unk00 = arg1;
     audio_cancel_matching_sound_requests(1, &unk);
 }
 
-void func_800C550C(Vec3f* arg0) {
+void audio_stop_all_sounds_at_position(Vec3f* arg0) {
     u8 i;
     struct SoundCharacteristics sp3C;
 
     for (i = 0; i < 6; i++) {
-        func_800C5384(i, arg0);
+        audio_stop_sounds_at_position_in_bank(i, arg0);
     }
 
     sp3C.unk00 = arg0;
     audio_cancel_matching_sound_requests(2, &sp3C);
 }
 
-void func_800C5578(Vec3f* arg0, u32 soundBits) {
+void audio_stop_sound_at_position(Vec3f* arg0, u32 soundBits) {
     UNUSED s32 stackPadding0;
     u8 bankId;
     u8 next;
@@ -1687,7 +1687,7 @@ void func_800C5578(Vec3f* arg0, u32 soundBits) {
     audio_cancel_matching_sound_requests(3, &sp60);
 }
 
-void func_800C56F0(u32 soundBits) {
+void audio_stop_sound_by_bits(u32 soundBits) {
     UNUSED s32 stackPadding0;
     u8 bankId;
     u8 next;
@@ -1715,7 +1715,7 @@ void func_800C56F0(u32 soundBits) {
 }
 
 // Might be process_all_sound_requests
-void func_800C5848(void) {
+void audio_process_all_pending_sound_requests(void) {
     while (sSoundRequestCount != sNumProcessedSoundRequests) {
         audio_process_sound_requests();
         sNumProcessedSoundRequests++;
@@ -1735,7 +1735,7 @@ void fade_channel_volume_scale(u8 player, u8 targetScale, u16 fadeDuration) {
     temp_v0->velocity = (temp_v0->current - temp_v0->target) / fadeDuration;
 }
 
-void func_800C5968(u8 arg0) {
+void audio_update_channel_volume_scale_fade(u8 arg0) {
     struct ChannelVolumeScaleFade* temp_v0;
 
     temp_v0 = &D_80192C48[arg0];
@@ -1749,7 +1749,7 @@ void func_800C5968(u8 arg0) {
     }
 }
 
-void func_800C59C4(void) {
+void audio_update_all_sound_banks(void) {
     u8 i;
 
     if (gSequencePlayers[2].channels[0] != &gSequenceChannelNone) {
@@ -1757,7 +1757,7 @@ void func_800C59C4(void) {
         for (i = 0; i < 6; i++) {
             audio_sort_sound_bank_priorities(i);
             audio_dispatch_active_sound_bank_channels(i);
-            func_800C5968(i);
+            audio_update_channel_volume_scale_fade(i);
         }
     }
 }
@@ -2036,7 +2036,7 @@ void audio_update_skid_sound_frequency(u8 playerId) {
 void audio_update_tyre_skid_sound(u8 cameraId) {
     if ((D_800EA108 == 0) && (D_800EA0EC[cameraId] == 0)) {
         if (D_800E9E74[cameraId] != D_800E9E84[cameraId]) {
-            func_800C5578(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
+            audio_stop_sound_at_position(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
             switch (D_800E9E74[cameraId]) {
                 case 3:
                     play_sound(SOUND_ACTION_TYRE_SQUEAL, &D_800E9F7C[cameraId].pos, cameraId, &D_800E9F14[cameraId],
@@ -2181,7 +2181,7 @@ void audio_update_tyre_skid_sound(u8 cameraId) {
                     D_800E9E94[cameraId] = SOUND_ARG_LOAD(0x01, 0x00, 0xF0, 0x2B);
                     break;
                 default:
-                    func_800C5578(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
+                    audio_stop_sound_at_position(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
                     break;
             }
         }
@@ -2415,7 +2415,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
             func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
             func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFF, 0x2C));
             func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x4C));
-            func_800C5578(&D_800E9F7C[playerId].pos, D_800E9E94[playerId]);
+            audio_stop_sound_at_position(&D_800E9F7C[playerId].pos, D_800E9E94[playerId]);
             D_800E9E74[playerId] = 0;
             switch (gModeSelection) { /* irregular */
                 case GRAND_PRIX:
@@ -2916,7 +2916,7 @@ void func_800C8F80(u8 arg0, u32 soundBits) {
 }
 
 void func_800C9018(u8 playerIndex, u32 soundBits) {
-    func_800C5578(&D_800E9F7C[playerIndex].pos, soundBits);
+    audio_stop_sound_at_position(&D_800E9F7C[playerIndex].pos, soundBits);
 }
 
 void func_800C9060(u8 playerId, u32 soundBits) {
@@ -3079,11 +3079,11 @@ void audio_play_kart_engine_idle(u8 playerId) {
 }
 
 void audio_stop_kart_engine_sound(u8 arg0) {
-    func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x00));
-    func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x14));
-    func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x2E));
-    func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x36));
-    func_800C5578(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x3E));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x00));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x14));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x2E));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x36));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x3E));
 }
 
 void func_800C98B8(Vec3f position, Vec3f velocity, u32 soundBits) {
@@ -3109,7 +3109,7 @@ void func_800C99E0(Vec3f arg0, s32 soundBits) {
         for (temp_t9 = 0; temp_t9 < D_800EA1C0 + 1; temp_t9++) {
             temp_v0 = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
             if (temp_v0 != NULL) {
-                func_800C5578(temp_v0, soundBits);
+                audio_stop_sound_at_position(temp_v0, soundBits);
             }
         }
     }
@@ -3170,7 +3170,7 @@ void audio_play_kart_engine_driving(u8 playerId) {
 }
 
 void func_800C9D0C(u8 playerId) {
-    func_800C550C(
+    audio_stop_all_sounds_at_position(
         audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
 }
 
@@ -3200,7 +3200,7 @@ void func_800C9EF4(Vec3f arg0, u32 soundBits) {
     for (i = 0; i < D_800EA1C0 + 1; i++) {
         temp = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
         if (temp != NULL) {
-            func_800C5578(temp, soundBits);
+            audio_stop_sound_at_position(temp, soundBits);
         }
     }
 }
@@ -3433,7 +3433,7 @@ void play_star_sound_effect(u8 playerIndex) {
 
 void play_star_music_stop_effect(u8 playerId) {
     if ((u8) D_800EA108 == 0) {
-        func_800C5578(audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
+        audio_stop_sound_at_position(audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
     }
 }
 
@@ -3460,7 +3460,7 @@ void play_star_sound_effect_stop(u8 playerIndex) {
 void reset_thunder_sound_effect() {
     if (D_800EA108 == 0) {
         seq_player_set_volume_target(0, 1U, 0x7FU, 0x19);
-        func_800C56F0(SOUND_ITEM_THUNDERBOLT);
+        audio_stop_sound_by_bits(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
     }
 }
@@ -3481,7 +3481,7 @@ void play_thunder_sound_effect_stop(UNUSED s32 arg0) {
         if ((D_800EA170[0] == 0) && (D_800EA170[1] == 0) && (D_800EA170[2] == 0) && (D_800EA170[3] == 0)) {
             seq_player_set_volume_target(0, 1, 0x7FU, 0x19);
         }
-        func_800C56F0(SOUND_ITEM_THUNDERBOLT);
+        audio_stop_sound_by_bits(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
     }
 }
@@ -3624,8 +3624,8 @@ void audio_game_loop_tick() {
     audio_update_3d_spatial_sounds();
     audio_update_sequence_players();
     audio_process_sequence_commands();
-    func_800C5848();
-    func_800C59C4();
+    audio_process_all_pending_sound_requests();
+    audio_update_all_sound_banks();
     func_800C8CCC();
     audio_sync_sequence_script_io(0);
     audio_cmd_queue_flush();

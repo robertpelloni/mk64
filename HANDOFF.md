@@ -1,9 +1,18 @@
-# Session Handoff - 2026-06-02 (v8.107.31)
+# Session Handoff - 2026-06-02 (v8.107.32)
 
 ## Executive Summary
-Completed decompilation labeling of sound request queue processing, priority-based sound bank channel sorting, and voice playback dispatch routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.31`.
+Completed decompilation labeling of spatial sound cancellation, pending sound request flushing, and channel volume scale updates across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.32`.
 
 ### Recent Fixes & Additions
+- **Sound Cancellation & Bank Update Routines (v8.107.32):**
+  - `func_800C5384` -> `audio_stop_sounds_at_position_in_bank`: Stops active sound instances in target bank matching a specific position vector pointer.
+  - `func_800C54B8` -> `audio_stop_and_cancel_sounds_at_position_in_bank`: Stops active sounds and cancels queued sound requests matching position in bank.
+  - `func_800C550C` -> `audio_stop_all_sounds_at_position`: Stops all sound instances across all 6 sound banks associated with a given position vector.
+  - `func_800C5578` -> `audio_stop_sound_at_position`: Stops specific sound bits at a given position vector and cancels matching requests.
+  - `func_800C56F0` -> `audio_stop_sound_by_bits`: Stops specific sound bits across its bank and cancels matching requests.
+  - `func_800C5848` -> `audio_process_all_pending_sound_requests`: Processes all unhandled sound requests in queue up to `sSoundRequestCount`.
+  - `func_800C5968` -> `audio_update_channel_volume_scale_fade`: Ticks volume fade interpolation for a channel.
+  - `func_800C59C4` -> `audio_update_all_sound_banks`: Iterates all sound banks to sort priorities, dispatch voices, and tick volume fades.
 - **Sound Request & Sound Bank Channel Management Routines (v8.107.31):**
   - `func_800C41CC` -> `audio_cancel_matching_sound_requests`: Cancels queued sound requests matching filter conditions by zeroing out their soundBits and unlinking spatial nodes.
   - `func_800C4398` -> `audio_process_sound_requests`: Inserts newly requested sounds into destination sound banks with priority scoring and freshness parameters.
