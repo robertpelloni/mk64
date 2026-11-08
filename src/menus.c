@@ -728,7 +728,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                 sp24 = &gSaveData.allCourseTimeTrialRecords.cupRecords[gTimeTrialDataCourseIndex / 4]
                             .courseRecords[gTimeTrialDataCourseIndex % 4];
                 if (gCourseRecordsMenuSelection == COURSE_RECORDS_MENU_ERASE_GHOST &&
-                    func_800B639C(gTimeTrialDataCourseIndex) < 0) {
+                    find_saved_ghost_index_for_course(gTimeTrialDataCourseIndex) < 0) {
                     gCourseRecordsMenuSelection -= 1;
                 }
 
@@ -756,7 +756,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                     }
 
                     if (gCourseRecordsMenuSelection == COURSE_RECORDS_MENU_ERASE_GHOST &&
-                        func_800B639C(gTimeTrialDataCourseIndex) < 0) {
+                        find_saved_ghost_index_for_course(gTimeTrialDataCourseIndex) < 0) {
                         if (sp24->unknownBytes[0] == 0) {
                             gCourseRecordsMenuSelection = COURSE_RECORDS_MENU_RETURN_MENU;
                         } else {
@@ -824,7 +824,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                                 break;
                             }
                             case COURSE_RECORDS_MENU_ERASE_GHOST: {
-                                res = func_800B639C(gTimeTrialDataCourseIndex);
+                                res = find_saved_ghost_index_for_course(gTimeTrialDataCourseIndex);
                                 if (res >= 0) {
                                     if (clear_and_write_pak1_ghost_header(res) != 0) {
                                         gSubMenuSelection = SUB_MENU_DATA_CANT_ERASE;

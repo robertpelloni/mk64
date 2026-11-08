@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.32)
+# Session Handoff - 2026-06-02 (v8.107.33)
 
 ## Executive Summary
-Completed decompilation labeling of spatial sound cancellation, pending sound request flushing, and channel volume scale updates across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.32`.
+Completed decompilation labeling of ghost slot lookup, course matching, and candidate verification routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.33`.
 
 ### Recent Fixes & Additions
+- **Ghost Slot Lookup & Candidate Verification Routines (v8.107.33):**
+  - `func_800B6348` -> `get_ghost_slot_index_for_course`: Returns ghost slot (0 or 1) saving ghost data for the specified course.
+  - `func_800B639C` -> `find_saved_ghost_index_for_course`: Finds matching ghost slot (0 or 1), or -1 if no saved ghost matches course.
+  - `func_800B63F0` -> `verify_ghost_candidate_match`: Validates course index, ghost metadata, character ID, and page checksums against candidates.
 - **Sound Cancellation & Bank Update Routines (v8.107.32):**
   - `func_800C5384` -> `audio_stop_sounds_at_position_in_bank`: Stops active sound instances in target bank matching a specific position vector pointer.
   - `func_800C54B8` -> `audio_stop_and_cancel_sounds_at_position_in_bank`: Stops active sounds and cancels queued sound requests matching position in bank.

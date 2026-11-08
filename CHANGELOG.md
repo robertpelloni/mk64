@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.33] - 2026-06-02
+### Changed
+- Labeled ghost slot lookup, course matching, and candidate verification routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B6348` -> `get_ghost_slot_index_for_course`: Returns ghost slot (0 or 1) saving ghost data for the specified course.
+  - `func_800B639C` -> `find_saved_ghost_index_for_course`: Finds matching ghost slot (0 or 1), or -1 if no saved ghost matches course.
+  - `func_800B63F0` -> `verify_ghost_candidate_match`: Validates course index, ghost metadata, character ID, and page checksums against candidates.
+
 ## [8.107.32] - 2026-06-02
 ### Changed
 - Labeled spatial sound cancellation, request processing, and channel volume scale updates in `src/audio/external.c` and `src/audio/external.h`:

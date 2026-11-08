@@ -788,7 +788,7 @@ s32 func_800B6178(s32 arg0) {
     return var_v0;
 }
 
-s32 func_800B6348(s32 arg0) {
+s32 get_ghost_slot_index_for_course(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -798,7 +798,7 @@ s32 func_800B6348(s32 arg0) {
     return 0;
 }
 
-s32 func_800B639C(s32 arg0) {
+s32 find_saved_ghost_index_for_course(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -808,7 +808,7 @@ s32 func_800B639C(s32 arg0) {
     return -1;
 }
 
-s32 func_800B63F0(s32 arg0) {
+s32 verify_ghost_candidate_match(s32 arg0) {
     s32 temp_s0;
     u8* phi_s1;
     s32 phi_s3;
