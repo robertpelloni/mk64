@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.34] - 2026-06-02
+### Changed
+- Labeled ghost data disk read/write and Controller Pak transfer routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B6178` -> `save_ghost_data_to_pak1`: Writes 0x3C00 bytes of compressed ghost data to Controller Pak 1, computes and sets rolling page checksums, and saves the ghost header entry.
+  - `func_800B64EC` -> `load_ghost_data_from_pak1`: Reads 0x3C00 bytes of compressed ghost data from Controller Pak 1 into `gReplayGhostCompressed`, validates page checksums, and enables player ghost replay.
+  - `func_800B65F4` -> `copy_ghost_data_from_pak2_to_buffer`: Reads ghost data from Controller Pak 2 into `gReplayGhostCompressed`, verifies page checksums, and stages metadata for copying to Pak 1.
+
 ## [8.107.33] - 2026-06-02
 ### Changed
 - Labeled ghost slot lookup, course matching, and candidate verification routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:

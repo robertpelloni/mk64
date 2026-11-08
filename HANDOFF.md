@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.33)
+# Session Handoff - 2026-06-02 (v8.107.34)
 
 ## Executive Summary
-Completed decompilation labeling of ghost slot lookup, course matching, and candidate verification routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.33`.
+Completed decompilation labeling of ghost data disk read/write and Controller Pak transfer routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.34`.
 
 ### Recent Fixes & Additions
+- **Ghost Data Disk I/O & Transfer Routines (v8.107.34):**
+  - `func_800B6178` -> `save_ghost_data_to_pak1`: Writes 0x3C00 bytes of compressed ghost data to Controller Pak 1, computes and sets rolling page checksums, and saves the ghost header entry.
+  - `func_800B64EC` -> `load_ghost_data_from_pak1`: Reads 0x3C00 bytes of compressed ghost data from Controller Pak 1 into `gReplayGhostCompressed`, validates page checksums, and enables player ghost replay.
+  - `func_800B65F4` -> `copy_ghost_data_from_pak2_to_buffer`: Reads ghost data from Controller Pak 2 into `gReplayGhostCompressed`, verifies page checksums, and stages metadata for copying to Pak 1.
 - **Ghost Slot Lookup & Candidate Verification Routines (v8.107.33):**
   - `func_800B6348` -> `get_ghost_slot_index_for_course`: Returns ghost slot (0 or 1) saving ghost data for the specified course.
   - `func_800B639C` -> `find_saved_ghost_index_for_course`: Finds matching ghost slot (0 or 1), or -1 if no saved ghost matches course.

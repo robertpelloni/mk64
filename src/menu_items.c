@@ -1404,7 +1404,7 @@ void func_80091EE4(void) {
 
         for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
             if ((D_8018EE10[temp_s0].ghostDataSaved != 0) && (temp_s2 == D_8018EE10[temp_s0].courseIndex)) {
-                func_800B64EC(temp_s0);
+                load_ghost_data_from_pak1(temp_s0);
                 temp_s0 = 2;
                 gGhostPlayerInit = 0;
             }
@@ -11401,7 +11401,7 @@ void func_800AD2E8(MenuItem* arg0) {
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
                 }
-                if (func_800B6178(arg0->param2) != 0) {
+                if (save_ghost_data_to_pak1(arg0->param2) != 0) {
                     arg0->state = 0x0000001A;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
@@ -11798,7 +11798,7 @@ void func_800AE218(MenuItem* arg0) {
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;
                 }
-                if (func_800B6178(arg0->param2) != 0) {
+                if (save_ghost_data_to_pak1(arg0->param2) != 0) {
                     arg0->state = 0x00000029;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                     return;

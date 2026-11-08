@@ -585,7 +585,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_COPY_PAK_COPYING: {
                 res = controller_pak_2_status();
                 if (res == PFS_NO_ERROR) {
-                    res = func_800B65F4(sp38->param2, sp38->param1);
+                    res = copy_ghost_data_from_pak2_to_buffer(sp38->param2, sp38->param1);
                 }
                 if (res != 0) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_UNABLE_READ_FROM_2P;
@@ -595,7 +595,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 res = osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                     (u8*) gExtCode, &gControllerPak1FileNote);
                 if (res == PFS_NO_ERROR) {
-                    res = func_800B6178(sp38->param1);
+                    res = save_ghost_data_to_pak1(sp38->param1);
                 }
                 if (res != 0) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_UNABLE_COPY_FROM_1P;

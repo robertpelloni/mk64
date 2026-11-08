@@ -740,7 +740,7 @@ u8 calculate_ghost_page_checksum(s32 page) {
     return checksum;
 }
 
-s32 func_800B6178(s32 arg0) {
+s32 save_ghost_data_to_pak1(s32 arg0) {
     s32 var_v0;
     s32 var_s0;
     struct_8018EE10_entry* temp_s3;
@@ -844,7 +844,7 @@ s32 verify_ghost_candidate_match(s32 arg0) {
     return phi_s3;
 }
 
-s32 func_800B64EC(s32 arg0) {
+s32 load_ghost_data_from_pak1(s32 arg0) {
     s32 temp_s0;
     s32 temp_v0;
     u8* phi_s1;
@@ -879,7 +879,7 @@ s32 func_800B64EC(s32 arg0) {
     return temp_v0;
 }
 
-s32 func_800B65F4(s32 arg0, s32 arg1) {
+s32 copy_ghost_data_from_pak2_to_buffer(s32 arg0, s32 arg1) {
     UNUSED s32 stackPadding;
     s32 i;
     s32 writeStatus;
