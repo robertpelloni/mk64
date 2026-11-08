@@ -1239,7 +1239,7 @@ void play_sound(u32 soundBits, Vec3f* position, u8 cameraId, f32* arg3, f32* arg
     }
 }
 
-void func_800C41CC(u8 arg0, struct SoundCharacteristics* arg1) {
+void audio_cancel_matching_sound_requests(u8 arg0, struct SoundCharacteristics* arg1) {
     s32 found;
     u8 soundId;
     struct Sound* sound;
@@ -1289,7 +1289,7 @@ void func_800C41CC(u8 arg0, struct SoundCharacteristics* arg1) {
     }
 }
 
-void func_800C4398(void) {
+void audio_process_sound_requests(void) {
     u8 bank;
     u8 soundIndex;
     u8 var_a3;
@@ -1401,7 +1401,7 @@ struct ActiveSfx {
 };
 #define AUDIO_MK_CMD(b0, b1, b2, b3) \
     ((((b0) & 0xFF) << 0x18) | (((b1) & 0xFF) << 0x10) | (((b2) & 0xFF) << 0x8) | (((b3) & 0xFF) << 0))
-void func_800C4888(u8 bankId) {
+void audio_sort_sound_bank_priorities(u8 bankId) {
     u8 j;
     u8 numChannels;
     u8 chosenEntryIndex;
@@ -1554,7 +1554,7 @@ void func_800C4888(u8 bankId) {
     }
 }
 
-void func_800C4FE4(u8 bankId) {
+void audio_dispatch_active_sound_bank_channels(u8 bankId) {
     u8 soundId;
     u8 var_s4;
     UNUSED u32 cmd;
@@ -1590,7 +1590,7 @@ void func_800C4FE4(u8 bankId) {
 }
 
 // Seems somewhat similar to certain parts of `select_current_sounds` from SM64
-void func_800C5278(u8 bankId) {
+void audio_clear_sound_bank(u8 bankId) {
     UNUSED s32 stackPadding0;
     u8 soundId;
     struct SoundCharacteristics sp60;
@@ -1609,7 +1609,7 @@ void func_800C5278(u8 bankId) {
         soundId = sSoundBanks[bankId][0].next;
     }
     sp60.soundBits = bankId << 0x1C;
-    func_800C41CC(0, &sp60);
+    audio_cancel_matching_sound_requests(0, &sp60);
 }
 
 void func_800C5384(u8 arg0, Vec3f* arg1) {
@@ -1641,7 +1641,7 @@ void func_800C54B8(u8 arg0, Vec3f* arg1) {
     func_800C5384(arg0, arg1);
     unk.soundBits = arg0 << 0x1C;
     unk.unk00 = arg1;
-    func_800C41CC(1, &unk);
+    audio_cancel_matching_sound_requests(1, &unk);
 }
 
 void func_800C550C(Vec3f* arg0) {
@@ -1653,7 +1653,7 @@ void func_800C550C(Vec3f* arg0) {
     }
 
     sp3C.unk00 = arg0;
-    func_800C41CC(2, &sp3C);
+    audio_cancel_matching_sound_requests(2, &sp3C);
 }
 
 void func_800C5578(Vec3f* arg0, u32 soundBits) {
@@ -1684,7 +1684,7 @@ void func_800C5578(Vec3f* arg0, u32 soundBits) {
     }
     sp60.unk00 = arg0;
     sp60.soundBits = soundBits;
-    func_800C41CC(3, &sp60);
+    audio_cancel_matching_sound_requests(3, &sp60);
 }
 
 void func_800C56F0(u32 soundBits) {
@@ -1711,13 +1711,13 @@ void func_800C56F0(u32 soundBits) {
         next = sSoundBanks[bankId][curr].next;
     }
     sp68.soundBits = soundBits;
-    func_800C41CC(5, &sp68);
+    audio_cancel_matching_sound_requests(5, &sp68);
 }
 
 // Might be process_all_sound_requests
 void func_800C5848(void) {
     while (sSoundRequestCount != sNumProcessedSoundRequests) {
-        func_800C4398();
+        audio_process_sound_requests();
         sNumProcessedSoundRequests++;
     }
 }
@@ -1755,8 +1755,8 @@ void func_800C59C4(void) {
     if (gSequencePlayers[2].channels[0] != &gSequenceChannelNone) {
         D_80192C38 = 0;
         for (i = 0; i < 6; i++) {
-            func_800C4888(i);
-            func_800C4FE4(i);
+            audio_sort_sound_bank_priorities(i);
+            audio_dispatch_active_sound_bank_channels(i);
             func_800C5968(i);
         }
     }
@@ -2424,7 +2424,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                     if (D_800EA1C0 == 0) {
                         audio_push_sequence_command(0x100100FF);
                         audio_push_sequence_command(0x110100FF);
-                        func_800C5278(5U);
+                        audio_clear_sound_bank(5U);
                         if (gPlayers[playerId].currentRank == 0) {
                             audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
@@ -2465,7 +2465,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                             play_sequences(SEQ_EVENT_RACE_FINISH_LOSE, SEQ_MENU_RESULTS_SCREEN_LOSE);
                         }
                         if ((D_800EA104 != 0) || (D_800EA0EC[playerId] != 1)) {
-                            func_800C5278(5U);
+                            audio_clear_sound_bank(5U);
                         }
                     }
                     break;
@@ -2508,7 +2508,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
 #endif
                                 D_800EA104 = 1;
                             } else if ((D_800EA104 == 1) && (D_800EA0EC[playerId] == 1)) {
-                                func_800C5278(5U);
+                                audio_clear_sound_bank(5U);
 #ifndef VERSION_EU
                                 if (seq_player_get_active_sequence_id(1) != 0x000D)
 #endif
@@ -2532,7 +2532,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                                 }
                                 D_800EA104 = 2;
                             } else if ((D_800EA104 == 2) && (D_800EA0EC[playerId] == 1)) {
-                                func_800C5278(5U);
+                                audio_clear_sound_bank(5U);
 #ifndef VERSION_EU
                                 if (seq_player_get_active_sequence_id(1) != 0x000E)
 #endif
@@ -2550,7 +2550,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                         case 1:           /* switch 2 */
                             audio_push_sequence_command(0x100100FF);
                             audio_push_sequence_command(0x110100FF);
-                            func_800C5278(5U);
+                            audio_clear_sound_bank(5U);
                             func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xF9, 0x26));
                             play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                             D_800EA0EC[playerId] = 2;
@@ -2559,7 +2559,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                             break;
                         case 2: /* switch 2 */
                             if ((D_800EA0EC[0] == 1) && (D_800EA0EC[1] == 1) && (D_800EA0EC[2] == 1)) {
-                                func_800C5278(5U);
+                                audio_clear_sound_bank(5U);
                                 func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
                                 play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                                 D_800EA0EC[playerId] = 2;
@@ -2570,7 +2570,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                         case 3: /* switch 2 */
                             if ((D_800EA0EC[0] == 1) && (D_800EA0EC[1] == 1) && (D_800EA0EC[2] == 1) &&
                                 (D_800EA0EC[3] == 1)) {
-                                func_800C5278(5U);
+                                audio_clear_sound_bank(5U);
                                 func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
                                 play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                                 D_800EA0EC[playerId] = 2;
@@ -3246,8 +3246,8 @@ void audio_mute_sfx_enable_cutscene() {
 }
 
 void audio_clear_sound_banks(void) {
-    func_800C5278(3);
-    func_800C5278(5);
+    audio_clear_sound_bank(3);
+    audio_clear_sound_bank(5);
 }
 
 void audio_trigger_race_finish(u8 arg0) {

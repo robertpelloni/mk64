@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.31] - 2026-06-02
+### Changed
+- Labeled sound request processing, sound bank priority sorting, and channel voice dispatch routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C41CC` -> `audio_cancel_matching_sound_requests`: Cancels queued sound requests matching filter conditions by zeroing out their soundBits and unlinking spatial nodes.
+  - `func_800C4398` -> `audio_process_sound_requests`: Inserts newly requested sounds into destination sound banks with priority scoring and freshness parameters.
+  - `func_800C4888` -> `audio_sort_sound_bank_priorities`: Evaluates sound distance and priority scores, selecting highest-priority active sounds to occupy hardware channels.
+  - `func_800C4FE4` -> `audio_dispatch_active_sound_bank_channels`: Dispatches pitch, pan, volume, and note-on commands to hardware channels on SequencePlayer 2.
+  - `func_800C5278` -> `audio_clear_sound_bank`: Stops and flushes all active sound instances within a target sound bank.
+
 ## [8.107.30] - 2026-06-02
 ### Changed
 - Labeled 3D active sound relative position query and sequence script IO sync routines in `src/audio/external.c` and `src/audio/external.h`:

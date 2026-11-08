@@ -1,9 +1,15 @@
-# Session Handoff - 2026-06-02 (v8.107.30)
+# Session Handoff - 2026-06-02 (v8.107.31)
 
 ## Executive Summary
-Completed decompilation labeling of 3D active sound relative position queries and sequence script IO sync routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.30`.
+Completed decompilation labeling of sound request queue processing, priority-based sound bank channel sorting, and voice playback dispatch routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.31`.
 
 ### Recent Fixes & Additions
+- **Sound Request & Sound Bank Channel Management Routines (v8.107.31):**
+  - `func_800C41CC` -> `audio_cancel_matching_sound_requests`: Cancels queued sound requests matching filter conditions by zeroing out their soundBits and unlinking spatial nodes.
+  - `func_800C4398` -> `audio_process_sound_requests`: Inserts newly requested sounds into destination sound banks with priority scoring and freshness parameters.
+  - `func_800C4888` -> `audio_sort_sound_bank_priorities`: Evaluates sound distance and priority scores, selecting highest-priority active sounds to occupy hardware channels.
+  - `func_800C4FE4` -> `audio_dispatch_active_sound_bank_channels`: Dispatches pitch, pan, volume, and note-on commands to hardware channels on SequencePlayer 2.
+  - `func_800C5278` -> `audio_clear_sound_bank`: Stops and flushes all active sound instances within a target sound bank.
 - **3D Sound Queries & Script IO Sync Routines (v8.107.30):**
   - `func_800C21E8` -> `audio_get_active_3d_sound_relative_pos`: Queries active 3D sound nodes in `D_8018EFD8` matching sound coordinates and soundBits, returning a pointer to the relative orientation vector.
   - `func_800C2274` -> `audio_sync_sequence_script_io`: Reads sequence player channel script IO registers (`soundScriptIO[0..3]`) to synchronize music cues with camera cues and trigger gameplay sound sync events (`func_8001AAAC`).

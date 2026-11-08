@@ -230,13 +230,13 @@ void audio_reset_soft_sequence_player_settings(void);
 void audio_set_sound_banks_enabled_mask(u16);
 void audio_clear_sound_channel_active_bit(u8);
 void play_sound(u32, Vec3f*, u8, f32*, f32*, s8*);
-void func_800C41CC(u8, struct SoundCharacteristics*);
-void func_800C4398(void);
+void audio_cancel_matching_sound_requests(u8, struct SoundCharacteristics*);
+void audio_process_sound_requests(void);
 void delete_sound_from_bank(u8, u8);
-void func_800C4888(u8);
-void func_800C4FE4(u8);
+void audio_sort_sound_bank_priorities(u8);
+void audio_dispatch_active_sound_bank_channels(u8);
 
-void func_800C5278(u8);
+void audio_clear_sound_bank(u8);
 void func_800C5384(u8, Vec3f*);
 void func_800C54B8(u8, Vec3f*);
 void func_800C550C(Vec3f*);
