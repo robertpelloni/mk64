@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.24] - 2026-06-02
+### Changed
+- Labeled sequence player frame update, volume target, and setup cancel routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C3724` -> `audio_update_sequence_players`: Frame tick update executed every audio loop cycle; computes composite sequence player volumes and pushes volume/tempo updates.
+  - `func_800C36C4` -> `seq_player_set_volume_target`: Configures sequence player sub-volume targets in `D_801930D0[seqPlayer].unk_00E[channel]` with transition frame duration.
+  - `func_800C3608` -> `seq_player_cancel_setup_operations`: Cancels queued operations matching a given setup op code across the target sequence player.
+
 ## [8.107.23] - 2026-06-02
 ### Changed
 - Labeled sequence player dispatch, start, stop, and active state query routines in `src/audio/external.c` and `src/audio/external.h`:

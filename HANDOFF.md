@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.23)
+# Session Handoff - 2026-06-02 (v8.107.24)
 
 ## Executive Summary
-Completed decompilation labeling of sequence player control routines, opcode execution dispatcher, and active query functions across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.23`.
+Completed decompilation labeling of sequence player composite volume calculation, volume target setup, and operation cancellation routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.24`.
 
 ### Recent Fixes & Additions
+- **Sequence Player Volume & Setup Update Routines (v8.107.24):**
+  - `func_800C3724` -> `audio_update_sequence_players`: Audio tick updater that computes composite sequence player volumes and pushes volume/tempo updates.
+  - `func_800C36C4` -> `seq_player_set_volume_target`: Configures sequence player sub-volume targets in `D_801930D0[seqPlayer].unk_00E[channel]` with transition frame duration.
+  - `func_800C3608` -> `seq_player_cancel_setup_operations`: Cancels queued operations matching a given setup op code across the target sequence player.
 - **Sequence Player Control & Command Dispatcher Routines (v8.107.23):**
   - `func_800C284C` -> `seq_player_play_sequence`: Dispatches sequence playback command `0x82000000`, initializes sequence ID and priority in `D_801930D0[seqPlayer].unk_248`, and sets default channel volume states.
   - `func_800C29B4` -> `seq_player_stop_sequence`: Pushes sequence stop command `0x83000000` with fade duration and clears `unk_248`.

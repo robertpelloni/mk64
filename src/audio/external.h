@@ -215,15 +215,15 @@ void audio_reset_state_and_cameras(void);
 void seq_player_play_sequence(u8, u8, u8, u16);
 void seq_player_stop_sequence(u8, u16);
 
-void func_800C3724(void);
+void audio_update_sequence_players(void);
 void audio_execute_sequence_command(u32);
 void audio_push_sequence_command(u32);
 void audio_process_sequence_commands(void);
 u16 seq_player_get_active_sequence_id(u8);
-void func_800C3608(u8, u8);
+void seq_player_cancel_setup_operations(u8, u8);
 u8 audio_is_sequence_command_pending(s32);
 void seq_player_clear_queued_count(u8);
-void func_800C36C4(u8, u8, u8, u8);
+void seq_player_set_volume_target(u8, u8, u8, u8);
 void audio_reset_all_sequence_player_settings(void);
 
 void audio_reset_soft_sequence_player_settings(void);

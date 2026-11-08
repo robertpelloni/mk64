@@ -945,7 +945,7 @@ void seq_player_clear_queued_count(u8 arg0) {
     D_80192CC6[arg0] = 0;
 }
 
-void func_800C3608(u8 arg0, u8 arg1) {
+void seq_player_cancel_setup_operations(u8 arg0, u8 arg1) {
     u8 var_v0;
     u8 thing;
 
@@ -957,13 +957,13 @@ void func_800C3608(u8 arg0, u8 arg1) {
     }
 }
 
-void func_800C36C4(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+void seq_player_set_volume_target(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
     D_801930D0[arg0].unk_00E[arg1] = arg2;
     D_801930D0[arg0].unk_011 = arg3;
     D_801930D0[arg0].unk_012 = 1;
 }
 
-void func_800C3724(void) {
+void audio_update_sequence_players(void) {
     u8 seqPlayerIndex;
     f32 volume;
     u8 tempoOp;
@@ -1145,7 +1145,7 @@ void func_800C3724(void) {
                         audio_push_sequence_command((((u8) targetSeqPlayerIndex) << 0x18) |
                                       (((u8) D_801930D0[targetSeqPlayerIndex].unk_042) << 0x10) | ((u16) seqId));
 
-                        func_800C36C4(targetSeqPlayerIndex, 1, 0x7F, 0);
+                        seq_player_set_volume_target(targetSeqPlayerIndex, 1, 0x7F, 0);
                         D_801930D0[targetSeqPlayerIndex].unk_042 = 0;
                         break;
 
@@ -2900,7 +2900,7 @@ void play_sequence2(u16 index) {
 }
 
 void func_800C8F44(u8 arg0) {
-    func_800C36C4(0, 0, arg0, 1);
+    seq_player_set_volume_target(0, 0, arg0, 1);
 }
 
 void func_800C8F80(u8 arg0, u32 soundBits) {
@@ -3218,8 +3218,8 @@ void audio_set_pause_mute(u8 arg0) {
 }
 
 void audio_init_course_sequence(u8 arg0, u8 arg1) {
-    func_800C36C4(0, 0, 0x7F, 1);
-    func_800C36C4(1, 0, 0x7F, 1);
+    seq_player_set_volume_target(0, 0, 0x7F, 1);
+    seq_player_set_volume_target(1, 0, 0x7F, 1);
 
     if (arg1 >= 4) {
         if ((arg1 == 0xC) || (arg1 == 4)) {
@@ -3391,7 +3391,7 @@ void stop_star_music(u8 playerIndex) {
                     } else if ((D_800EA10C[0] == 0) && (D_800EA10C[1] == 0)) {
                         if (D_8018FC08 != 0) {
                             if (((u32) (gSequencePlayers[1].enabled)) == 0) {
-                                func_800C3608(1, 5);
+                                seq_player_cancel_setup_operations(1, 5);
                                 play_sequence(D_800EA15C);
                                 audio_push_sequence_command(0xB001307DU);
                             } else if ((seq_player_get_active_sequence_id(1) == 0xC) || (audio_is_sequence_command_pending(0x0101000C) == 0)) {
@@ -3446,7 +3446,7 @@ void play_star_sound_effect_stop(u8 playerIndex) {
             case 2:
                 D_800EA0EC[playerIndex] = 1;
             case 0:
-                func_800C36C4(0, 1U, 0x55U, 5);
+                seq_player_set_volume_target(0, 1U, 0x55U, 5);
                 func_800C9060(playerIndex, 0x1900F013U);
                 play_sound(SOUND_ITEM_THUNDERBOLT, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
                 break;
@@ -3459,7 +3459,7 @@ void play_star_sound_effect_stop(u8 playerIndex) {
 
 void reset_thunder_sound_effect() {
     if (D_800EA108 == 0) {
-        func_800C36C4(0, 1U, 0x7FU, 0x19);
+        seq_player_set_volume_target(0, 1U, 0x7FU, 0x19);
         func_800C56F0(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
     }
@@ -3469,7 +3469,7 @@ void play_thunder_sound_effect(UNUSED u8 arg0) {
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
         play_sound(SOUND_ACTION_EXPLOSION_2, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
         if ((D_800EA10C[0] != 1) && (D_800EA10C[1] != 1)) {
-            func_800C36C4(0, 1, 0x37U, 5);
+            seq_player_set_volume_target(0, 1, 0x37U, 5);
             play_sound(SOUND_ITEM_THUNDERBOLT, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
             D_800EA168 = 1;
         }
@@ -3479,7 +3479,7 @@ void play_thunder_sound_effect(UNUSED u8 arg0) {
 void play_thunder_sound_effect_stop(UNUSED s32 arg0) {
     if (D_800EA108 == 0) {
         if ((D_800EA170[0] == 0) && (D_800EA170[1] == 0) && (D_800EA170[2] == 0) && (D_800EA170[3] == 0)) {
-            func_800C36C4(0, 1, 0x7FU, 0x19);
+            seq_player_set_volume_target(0, 1, 0x7FU, 0x19);
         }
         func_800C56F0(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
@@ -3540,7 +3540,7 @@ void play_boo_sound_effect(u8 playerIndex) {
             case 2:
                 D_800EA0EC[playerIndex] = 1;
             case 0:
-                func_800C36C4(0, 1, 0x55U, 5);
+                seq_player_set_volume_target(0, 1, 0x55U, 5);
                 func_800C9060(playerIndex, 0x19009E59U);
                 func_800C8F80(playerIndex, 0x0100FA4C);
                 D_800EA170[playerIndex] = 1;
@@ -3553,7 +3553,7 @@ void stop_boo_sound_effect(u8 playerIndex) {
     if (D_800EA108 == 0) {
         if (D_800EA170[playerIndex] == 1) {
             if ((u8) D_800EA168 == 0) {
-                func_800C36C4(0, 1U, 0x7FU, 0x19);
+                seq_player_set_volume_target(0, 1U, 0x7FU, 0x19);
             }
             func_800C90F4(playerIndex,
                           gPlayers[playerIndex].characterId * 0x10 + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08));
@@ -3622,7 +3622,7 @@ void begin_losing_ceremony_sequence() {
 // Main audio update loop called per game tick
 void audio_game_loop_tick() {
     func_800C1F8C();
-    func_800C3724();
+    audio_update_sequence_players();
     audio_process_sequence_commands();
     func_800C5848();
     func_800C59C4();
