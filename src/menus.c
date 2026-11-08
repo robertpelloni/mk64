@@ -818,7 +818,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                         switch (gCourseRecordsMenuSelection) {
                             case COURSE_RECORDS_MENU_ERASE_RECORDS: {
                                 reset_course_time_trial_records(gTimeTrialDataCourseIndex);
-                                func_800B559C(gTimeTrialDataCourseIndex);
+                                write_eeprom_best_time_trial_records(gTimeTrialDataCourseIndex);
                                 play_sound2(SOUND_MENU_EXPLOSION);
                                 res = -1;
                                 break;

@@ -60,7 +60,7 @@ void reset_all_save_data_to_defaults(void) {
 
     for (i = 0; i < 16; i++) {
         reset_course_time_trial_records(i);
-        func_800B559C(i);
+        write_eeprom_best_time_trial_records(i);
     }
 
     reset_save_data_grand_prix_points_and_sound_mode();
@@ -166,7 +166,7 @@ void func_800B4A9C(s32 course) {
 
     if (sp24->checksum != checksum_time_trial_records(course)) {
         reset_course_time_trial_records(course);
-        if (func_800B58C4(course) == 0) {
+        if (validate_best_time_trial_records_checksum(course) == 0) {
             s32 a3 = 0;
 
             test = &gSaveData.onlyBestTimeTrialRecords[course / 8];
@@ -191,10 +191,10 @@ void func_800B4A9C(s32 course) {
             write_eeprom_course_time_trial_records(course);
         }
         // L800B4C78
-        func_800B559C(course);
-    } else if (func_800B58C4(course)) {
+        write_eeprom_best_time_trial_records(course);
+    } else if (validate_best_time_trial_records_checksum(course)) {
         // L800B4C88
-        func_800B559C(course);
+        write_eeprom_best_time_trial_records(course);
     }
 }
 
@@ -433,7 +433,7 @@ s32 has_completed_extra_mode(void) {
     return is_cc_mode_complete(CC_EXTRA);
 }
 
-void func_800B559C(s32 arg0) {
+void write_eeprom_best_time_trial_records(s32 arg0) {
     CourseTimeTrialRecords* courseRecord;
     OnlyBestTimeTrialRecords* bestRecord;
     s32 x = arg0 / 8;
@@ -455,8 +455,8 @@ void func_800B559C(s32 arg0) {
         }
     }
     bestRecord = &gSaveData.onlyBestTimeTrialRecords[x];
-    bestRecord->unknownBytes[6] = func_800B578C(x);
-    bestRecord->unknownBytes[7] = func_800B5888(x);
+    bestRecord->unknownBytes[6] = compute_best_time_trial_records_checksum_1(x);
+    bestRecord->unknownBytes[7] = compute_best_time_trial_records_checksum_2(x);
     osEepromLongWrite(&gSIEventMesgQueue, ((u32) (((u8*) bestRecord) - ((u8*) (&gSaveData)))) >> 3,
                       bestRecord->bestThreelaps[0], 0x38);
 }
@@ -470,7 +470,7 @@ void func_800B559C(s32 arg0) {
  *
  * But only unknown bytes 7 and 8 ever get set, so why the extra 3, and why in chunks of 17?
  **/
-u8 func_800B578C(s32 arg0) {
+u8 compute_best_time_trial_records_checksum_1(s32 arg0) {
     u8* times = (u8*)&gSaveData.onlyBestTimeTrialRecords[arg0];
     s32 checksum = 0;
     s32 i;
@@ -484,20 +484,20 @@ u8 func_800B578C(s32 arg0) {
     return (checksum % 256);
 }
 
-s32 func_800B5888(s32 arg0) {
+s32 compute_best_time_trial_records_checksum_2(s32 arg0) {
     s32 tmp = gSaveData.onlyBestTimeTrialRecords[arg0].unknownBytes[6] + 90;
     return (tmp % 256) & 0xFF;
 }
 
-s32 func_800B58C4(s32 arg0) {
+s32 validate_best_time_trial_records_checksum(s32 arg0) {
     UNUSED s32 pad1;
     OnlyBestTimeTrialRecords* temp_v1;
     UNUSED s32 pad2;
     UNUSED s32 pad3;
 
     temp_v1 = &gSaveData.onlyBestTimeTrialRecords[arg0 / 8];
-    if ((temp_v1->unknownBytes[6] != (func_800B578C(arg0 / 8) ^ 0)) ||
-        (temp_v1->unknownBytes[7] != (func_800B5888(arg0 / 8) ^ 0))) {
+    if ((temp_v1->unknownBytes[6] != (compute_best_time_trial_records_checksum_1(arg0 / 8) ^ 0)) ||
+        (temp_v1->unknownBytes[7] != (compute_best_time_trial_records_checksum_2(arg0 / 8) ^ 0))) {
         return 1;
     }
 

@@ -5712,7 +5712,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
                 }
             }
             if ((menuItem->param1 == 0) || (menuItem->param2 != 0)) {
-                func_800B559C((gCupSelection * 4) + gCourseIndexInCup);
+                write_eeprom_best_time_trial_records((gCupSelection * 4) + gCourseIndexInCup);
             }
             break;
         case MENU_ITEM_DATA_COURSE_IMAGE:

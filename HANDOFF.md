@@ -1,9 +1,14 @@
-# Session Handoff - 2026-06-02 (v8.107.37)
+# Session Handoff - 2026-06-02 (v8.107.38)
 
 ## Executive Summary
-Completed decompilation labeling of 3D spatial sound emission, player vocalization, and spatial sound stopping routines across `src/audio/external.c`, `src/audio/external.h`, and callsites across actors, vehicles, and objects. Verified with static C syntax checking, and bumped the project version to `8.107.37`.
+Completed decompilation labeling of best time trial record checksum calculation, validation, and EEPROM commit routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.38`.
 
 ### Recent Fixes & Additions
+- **Best Time Trial Records & Checksum Routines (v8.107.38):**
+  - `func_800B559C` -> `write_eeprom_best_time_trial_records`: Updates best 3-lap and single-lap times for cup block `x`, calculates checksums, and writes to EEPROM.
+  - `func_800B578C` -> `compute_best_time_trial_records_checksum_1`: Calculates primary 51-byte checksum for `onlyBestTimeTrialRecords[arg0]`.
+  - `func_800B5888` -> `compute_best_time_trial_records_checksum_2`: Calculates secondary checksum offset by +90.
+  - `func_800B58C4` -> `validate_best_time_trial_records_checksum`: Validates primary and secondary checksums for `onlyBestTimeTrialRecords[arg0 / 8]`.
 - **3D Spatial Sound Emission & Control Routines (v8.107.37):**
   - `func_800C9250` -> `audio_play_player_random_voice`: Dispatches a randomized character voice line.
   - `func_800C92CC` -> `audio_play_player_speech_3d`: Allocates 3D audio node for each active camera viewport and plays speech line with Doppler/shock modulation.

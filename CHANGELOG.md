@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.38] - 2026-06-02
+### Changed
+- Labeled best time trial record checksum calculation, validation, and EEPROM commit routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:
+  - `func_800B559C` -> `write_eeprom_best_time_trial_records`: Updates best 3-lap and single-lap times for cup block `x`, calculates checksums, and writes to EEPROM.
+  - `func_800B578C` -> `compute_best_time_trial_records_checksum_1`: Calculates primary 51-byte checksum for `onlyBestTimeTrialRecords[arg0]`.
+  - `func_800B5888` -> `compute_best_time_trial_records_checksum_2`: Calculates secondary checksum offset by +90.
+  - `func_800B58C4` -> `validate_best_time_trial_records_checksum`: Validates primary and secondary checksums for `onlyBestTimeTrialRecords[arg0 / 8]`.
+
 ## [8.107.37] - 2026-06-02
 ### Changed
 - Labeled 3D spatial sound emission, player vocalization, and spatial sound stopping routines in `src/audio/external.c` and `src/audio/external.h`:
