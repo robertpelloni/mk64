@@ -2189,7 +2189,7 @@ void audio_update_tyre_skid_sound(u8 cameraId) {
     }
 }
 
-void func_800C70A8(u8 playerId) {
+void audio_determine_surface_skid_effect(u8 playerId) {
     if (D_800EA0EC[playerId] == 0) {
         D_800E9E74[playerId] = 0;
         if ((D_800E9E54[playerId] > 3500.0f) || ((gPlayers[playerId].effects & DRIFTING_EFFECT) == DRIFTING_EFFECT)) {
@@ -2857,7 +2857,7 @@ void func_800C8CCC() {
         audio_update_skid_sound_volume(var_s0);
         audio_update_skid_sound_frequency(var_s0);
         audio_update_tyre_skid_sound(var_s0);
-        func_800C70A8(var_s0);
+        audio_determine_surface_skid_effect(var_s0);
         audio_update_race_finish_sequences(var_s0);
         audio_update_player_submerged_sound(var_s0);
         func_800C86D8(var_s0);

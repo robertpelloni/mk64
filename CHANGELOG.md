@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.27] - 2026-06-02
+### Changed
+- Labeled surface skid effect selector routine in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C70A8` -> `audio_determine_surface_skid_effect`: Evaluates player tyres surface type (DIRT, SAND, BRIDGE, STONE, SNOW, ICE, ROPE_BRIDGE, WOOD_BRIDGE, TRAIN_TRACK, GRASS), drift status, and spinout flags, selecting the active sound index into `D_800E9E74[playerId]`.
+
 ## [8.107.26] - 2026-06-02
 ### Changed
 - Labeled tyre squeal and offroad skid volume, frequency, and sound playback routines in `src/audio/external.c` and `src/audio/external.h`:

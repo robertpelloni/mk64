@@ -1,9 +1,11 @@
-# Session Handoff - 2026-06-02 (v8.107.26)
+# Session Handoff - 2026-06-02 (v8.107.27)
 
 ## Executive Summary
-Completed decompilation labeling of tyre squeal and offroad skid volume, frequency, and playback routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.26`.
+Completed decompilation labeling of tyre surface skid effect sound index selector routine across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.27`.
 
 ### Recent Fixes & Additions
+- **Tyre Surface Skid Effect Selector Routine (v8.107.27):**
+  - `func_800C70A8` -> `audio_determine_surface_skid_effect`: Evaluates player tyres surface type (DIRT, SAND, BRIDGE, STONE, SNOW, ICE, ROPE_BRIDGE, WOOD_BRIDGE, TRAIN_TRACK, GRASS), drift status, and spinout flags, selecting the active sound index into `D_800E9E74[playerId]`.
 - **Tyre Skid & Surface Sound Routines (v8.107.26):**
   - `func_800C64A0` -> `audio_update_skid_sound_volume`: Computes skid volume scalers `D_800E9EF4[playerId]` and `D_800E9F04[playerId]` based on kart surface type and speed.
   - `func_800C6758` -> `audio_update_skid_sound_frequency`: Computes dynamic pitch frequency scaler `D_800E9F14[playerId]` from kart drift/spin speed.

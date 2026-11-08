@@ -258,7 +258,7 @@ void audio_update_skid_sound_volume(u8);
 void audio_update_skid_sound_frequency(u8);
 void audio_update_tyre_skid_sound(u8);
 
-void func_800C70A8(u8);
+void audio_determine_surface_skid_effect(u8);
 void audio_update_race_finish_sequences(u8);
 
 void audio_update_player_submerged_sound(u8);
