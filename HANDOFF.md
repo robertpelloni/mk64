@@ -1,9 +1,14 @@
-# Session Handoff - 2026-06-02 (v8.107.24)
+# Session Handoff - 2026-06-02 (v8.107.25)
 
 ## Executive Summary
-Completed decompilation labeling of sequence player composite volume calculation, volume target setup, and operation cancellation routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.24`.
+Completed decompilation labeling of character sound bank initialization, throttle counter tracking, and dynamic engine pitch calculation routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.25`.
 
 ### Recent Fixes & Additions
+- **Player Voice Bank & Kart Engine Dynamics Audio Routines (v8.107.25):**
+  - `func_800C5BD0` -> `audio_init_player_sound_bank`: Dispatches command `0xF3000000` with the character voice sound bank ID from `D_800EA154[gPlayers[0].characterId]`.
+  - `func_800C5D04` -> `audio_update_kart_throttle_timer`: Updates throttle on/off frame counters (`D_800E9E24[playerId]`, `D_800E9E34[playerId]`) and triggers engine idle audio on initial throttle press.
+  - `func_800C5E38` -> `audio_update_kart_engine_rev_sound`: Manages kart deceleration and throttle release audio effects.
+  - `func_800C6108` -> `audio_calculate_kart_engine_pitch`: Computes dynamic engine pitch scale `D_800E9E64[playerId]` from player engine RPM / unk_098 and forward speed.
 - **Sequence Player Volume & Setup Update Routines (v8.107.24):**
   - `func_800C3724` -> `audio_update_sequence_players`: Audio tick updater that computes composite sequence player volumes and pushes volume/tempo updates.
   - `func_800C36C4` -> `seq_player_set_volume_target`: Configures sequence player sub-volume targets in `D_801930D0[seqPlayer].unk_00E[channel]` with transition frame duration.

@@ -1795,7 +1795,7 @@ void sound_init(void) {
     }
 }
 
-void func_800C5BD0(void) {
+void audio_init_player_sound_bank(void) {
     if (D_800EA1C0 == 0) {
         audio_cmd_queue_push_s8(((D_800EA154[gPlayers[0].characterId] & 0xFFFF) << 8) | 0xF3000000, 0);
     } else {
@@ -1813,7 +1813,7 @@ void audio_soft_reset(void) {
     }
     sound_init();
     seq_player_play_sequence(2, 0, 0xFF, 1);
-    func_800C5BD0();
+    audio_init_player_sound_bank();
 }
 
 // game_audio_init?
@@ -1824,7 +1824,7 @@ void audio_init(void) {
     seq_player_play_sequence(2, 0, 0xFF, 1);
 }
 
-void func_800C5D04(u8 playerId) {
+void audio_update_kart_throttle_timer(u8 playerId) {
     if ((gPlayers[playerId].kartProps & THROTTLE) == THROTTLE) {
         D_800E9E34[playerId] = 0;
         if (D_800E9E24[playerId] < 0x4E20) {
@@ -1852,7 +1852,7 @@ void func_800C5D04(u8 playerId) {
     }
 }
 
-void func_800C5E38(u8 playerId) {
+void audio_update_kart_engine_rev_sound(u8 playerId) {
     if (D_800EA108 == 0) {
         if (((gPlayers[playerId].kartProps & THROTTLE) != THROTTLE) && (gPlayers[playerId].unk_098 > 400.0f)) {
             D_800E9E14[playerId] = 1;
@@ -1901,7 +1901,7 @@ void func_800C5E38(u8 playerId) {
     }
 }
 
-void func_800C6108(u8 playerId) {
+void audio_calculate_kart_engine_pitch(u8 playerId) {
     Player* player;
 
     player = &gPlayers[playerId];
@@ -2851,9 +2851,9 @@ void func_800C8CCC() {
     u8 var_s0;
 
     for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
-        func_800C5D04(var_s0);
-        func_800C5E38(var_s0);
-        func_800C6108(var_s0);
+        audio_update_kart_throttle_timer(var_s0);
+        audio_update_kart_engine_rev_sound(var_s0);
+        audio_calculate_kart_engine_pitch(var_s0);
         func_800C64A0(var_s0);
         func_800C6758(var_s0);
         func_800C683C(var_s0);

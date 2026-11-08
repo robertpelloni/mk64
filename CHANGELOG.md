@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.25] - 2026-06-02
+### Changed
+- Labeled player character sound bank initialization and kart throttle/pitch calculation routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C5BD0` -> `audio_init_player_sound_bank`: Dispatches command `0xF3000000` with the character voice sound bank ID from `D_800EA154[gPlayers[0].characterId]`.
+  - `func_800C5D04` -> `audio_update_kart_throttle_timer`: Updates throttle on/off frame counters (`D_800E9E24[playerId]`, `D_800E9E34[playerId]`) and triggers engine idle audio on initial throttle press.
+  - `func_800C5E38` -> `audio_update_kart_engine_rev_sound`: Manages kart deceleration and throttle release audio effects.
+  - `func_800C6108` -> `audio_calculate_kart_engine_pitch`: Computes dynamic engine pitch scale `D_800E9E64[playerId]` from player engine RPM / unk_098 and forward speed.
+
 ## [8.107.24] - 2026-06-02
 ### Changed
 - Labeled sequence player frame update, volume target, and setup cancel routines in `src/audio/external.c` and `src/audio/external.h`:

@@ -247,13 +247,13 @@ void fade_channel_volume_scale(u8, u8, u16);
 void func_800C5968(u8);
 void func_800C59C4(void);
 void sound_init(void);
-void func_800C5BD0(void);
+void audio_init_player_sound_bank(void);
 void audio_soft_reset(void);
 void audio_init(void);
-void func_800C5D04(u8);
-void func_800C5E38(u8);
+void audio_update_kart_throttle_timer(u8);
+void audio_update_kart_engine_rev_sound(u8);
 
-void func_800C6108(u8);
+void audio_calculate_kart_engine_pitch(u8);
 void func_800C64A0(u8);
 void func_800C6758(u8);
 void func_800C683C(u8);
