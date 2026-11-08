@@ -1129,10 +1129,10 @@ void func_8002A79C(Player* player, s8 playerIndex) {
         player->driftStateCounter = 0;
         if (D_8015F890 != 1) {
             if ((player->type & PLAYER_HUMAN) && !(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C9250(playerIndex);
+                audio_play_player_random_voice(playerIndex);
             }
         } else if (player == gPlayerOne) {
-            func_800C9250(playerIndex);
+            audio_play_player_random_voice(playerIndex);
         }
     } else if ((player->effects & MINI_TURBO_EFFECT) == MINI_TURBO_EFFECT) {
         player->unk_23A += 1;

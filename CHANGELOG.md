@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.37] - 2026-06-02
+### Changed
+- Labeled 3D spatial sound emission, player vocalization, and spatial sound stopping routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C9250` -> `audio_play_player_random_voice`: Dispatches a randomized character voice line.
+  - `func_800C92CC` -> `audio_play_player_speech_3d`: Allocates 3D audio node for each active camera viewport and plays speech line with Doppler/shock modulation.
+  - `func_800C98B8` -> `audio_play_sound_at_position_3d`: Emits 3D positional sound effect with camera-relative spatialization.
+  - `func_800C99E0` -> `audio_stop_sound_at_position_3d`: Stops active 3D sound instances at spatial coordinates across viewports.
+  - `func_800C9D0C` -> `audio_stop_player_driving_sound_3d`: Stops driving engine loop sound at player's 3D position.
+  - `func_800C9D80` -> `audio_play_looping_sound_at_position_3d`: Emits continuous looping positional sound with Doppler shifts.
+  - `func_800C9EF4` -> `audio_stop_looping_sound_at_position_3d`: Stops continuous looping positional sounds across viewports.
+
 ## [8.107.36] - 2026-06-02
 ### Changed
 - Labeled player spatial sound and character voice playback/stop routines across audio, actor, menu, and player systems:

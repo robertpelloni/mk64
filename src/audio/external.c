@@ -2628,7 +2628,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                 if (gPlayers[playerId].currentRank == 0) {
                     if (D_800E9EA4[playerId] >= 0x15F) {
                         if (D_800E9EA4[playerId] == 0x0000015F) {
-                            func_800C9D0C(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 400.0f;
@@ -2636,7 +2636,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                 } else if (gPlayers[playerId].currentRank < 4) {
                     if (D_800E9EA4[playerId] >= 0x15F) {
                         if (D_800E9EA4[playerId] == 0x0000015F) {
-                            func_800C9D0C(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 400.0f;
@@ -2653,7 +2653,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
                 if (D_800EA1C0 == (u8) 1) {
                     if (D_800E9EA4[playerId] >= 0x65) {
                         if (D_800E9EA4[playerId] == 0x00000065) {
-                            func_800C9D0C(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
@@ -2669,7 +2669,7 @@ void audio_update_race_finish_sequences(u8 playerId) {
             case TIME_TRIALS: /* switch 4 */
                 if (D_800E9EA4[playerId] >= 0x12D) {
                     if (D_800E9EA4[playerId] == 0x0000012D) {
-                        func_800C9D0C(0U);
+                        audio_stop_player_driving_sound_3d(0U);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 350.0f;
@@ -2958,12 +2958,12 @@ void audio_play_player_character_voice(u8 playerId, u32 soundBits) {
     }
 }
 
-void func_800C9250(u8 playerIndex) {
+void audio_play_player_random_voice(u8 playerIndex) {
     audio_play_player_character_voice(playerIndex, (gPlayers[playerIndex].characterId * 0x10) + (gAudioRandom & 1) +
                                    SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x01));
 }
 
-void func_800C92CC(u8 playerId, u32 soundBits) {
+void audio_play_player_speech_3d(u8 playerId, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
@@ -3086,7 +3086,7 @@ void audio_stop_kart_engine_sound(u8 arg0) {
     audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x3E));
 }
 
-void func_800C98B8(Vec3f position, Vec3f velocity, u32 soundBits) {
+void audio_play_sound_at_position_3d(Vec3f position, Vec3f velocity, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
@@ -3101,7 +3101,7 @@ void func_800C98B8(Vec3f position, Vec3f velocity, u32 soundBits) {
     }
 }
 
-void func_800C99E0(Vec3f arg0, s32 soundBits) {
+void audio_stop_sound_at_position_3d(Vec3f arg0, s32 soundBits) {
     Vec3f* temp_v0;
     u8 temp_t9;
 
@@ -3169,12 +3169,12 @@ void audio_play_kart_engine_driving(u8 playerId) {
     }
 }
 
-void func_800C9D0C(u8 playerId) {
+void audio_stop_player_driving_sound_3d(u8 playerId) {
     audio_stop_all_sounds_at_position(
         audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
 }
 
-void func_800C9D80(Vec3f position, Vec3f velocity, u32 soundBits) {
+void audio_play_looping_sound_at_position_3d(Vec3f position, Vec3f velocity, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
@@ -3193,7 +3193,7 @@ void func_800C9D80(Vec3f position, Vec3f velocity, u32 soundBits) {
     }
 }
 
-void func_800C9EF4(Vec3f arg0, u32 soundBits) {
+void audio_stop_looping_sound_at_position_3d(Vec3f arg0, u32 soundBits) {
     Vec3f* temp;
     u8 i;
 

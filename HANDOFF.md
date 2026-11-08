@@ -1,9 +1,17 @@
-# Session Handoff - 2026-06-02 (v8.107.36)
+# Session Handoff - 2026-06-02 (v8.107.37)
 
 ## Executive Summary
-Completed decompilation labeling of player spatial sound and character voice playback/stop routines across `src/audio/external.c`, `src/audio/external.h`, and callers across racing, menus, effects, and actors. Verified with static C syntax checking, and bumped the project version to `8.107.36`.
+Completed decompilation labeling of 3D spatial sound emission, player vocalization, and spatial sound stopping routines across `src/audio/external.c`, `src/audio/external.h`, and callsites across actors, vehicles, and objects. Verified with static C syntax checking, and bumped the project version to `8.107.37`.
 
 ### Recent Fixes & Additions
+- **3D Spatial Sound Emission & Control Routines (v8.107.37):**
+  - `func_800C9250` -> `audio_play_player_random_voice`: Dispatches a randomized character voice line.
+  - `func_800C92CC` -> `audio_play_player_speech_3d`: Allocates 3D audio node for each active camera viewport and plays speech line with Doppler/shock modulation.
+  - `func_800C98B8` -> `audio_play_sound_at_position_3d`: Emits 3D positional sound effect with camera-relative spatialization.
+  - `func_800C99E0` -> `audio_stop_sound_at_position_3d`: Stops active 3D sound instances at spatial coordinates across viewports.
+  - `func_800C9D0C` -> `audio_stop_player_driving_sound_3d`: Stops driving engine loop sound at player's 3D position.
+  - `func_800C9D80` -> `audio_play_looping_sound_at_position_3d`: Emits continuous looping positional sound with Doppler shifts.
+  - `func_800C9EF4` -> `audio_stop_looping_sound_at_position_3d`: Stops continuous looping positional sounds across viewports.
 - **Player Spatial Sound & Voice Routines (v8.107.36):**
   - `func_800C9018` -> `audio_stop_player_sound`: Stops active sounds at a player's spatial coordinates (`&D_800E9F7C[playerIndex].pos`).
   - `func_800C9060` -> `audio_play_player_sound`: Plays sound effect attached to player position, checking mute states and setting tunnel reverberation.

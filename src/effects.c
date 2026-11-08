@@ -531,12 +531,12 @@ void trigger_shroom(Player* player, s8 playerIndex) {
     if (D_8015F890 != 1) {
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
             ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-            func_800C9250(playerIndex);
+            audio_play_player_random_voice(playerIndex);
             audio_play_player_sound(playerIndex, 0x1900A40B);
         }
     } else {
         if (player == gPlayerOne) {
-            func_800C9250(playerIndex);
+            audio_play_player_random_voice(playerIndex);
             audio_play_player_sound(playerIndex, 0x1900A40B);
         }
     }

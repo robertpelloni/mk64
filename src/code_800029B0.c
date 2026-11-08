@@ -248,33 +248,33 @@ void func_80002DAC(void) {
     switch (gCurrentCourseId) {
         case COURSE_MARIO_RACEWAY:
             vec3f_set(D_8015F748, -223.0f, 94.0f, -155.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_ROYAL_RACEWAY:
             vec3f_set(D_8015F748, 177.0f, 87.0f, -393.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_LUIGI_RACEWAY:
             vec3f_set(D_8015F748, 85.0f, 21.0f, -219.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F748, D_802B91C8, 0x5103700B);
             break;
         case COURSE_WARIO_STADIUM:
             vec3f_set(D_8015F748, 298.0f, 202.0f, -850.0f);
-            func_800C9D80(D_8015F748, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F748, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F758, -1600.0f, 202.0f, -2430.0f);
-            func_800C9D80(D_8015F758, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F758, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F768, -2708.0f, 202.0f, 1762.0f);
-            func_800C9D80(D_8015F768, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F768, D_802B91C8, 0x5103700B);
             vec3f_set(D_8015F778, -775.0f, 202.0f, 1930.0f);
-            func_800C9D80(D_8015F778, D_802B91C8, 0x5103700B);
+            audio_play_looping_sound_at_position_3d(D_8015F778, D_802B91C8, 0x5103700B);
             break;
         case COURSE_KOOPA_BEACH:
             vec3f_set(D_8015F738, 153.0f, 0.0f, 2319.0f);
-            func_800C9D80(D_8015F738, D_802B91C8, 0x51028001);
+            audio_play_looping_sound_at_position_3d(D_8015F738, D_802B91C8, 0x51028001);
             break;
         case COURSE_DK_JUNGLE:
             vec3f_set(D_8015F738, -790.0f, -255.0f, -447.0f);
-            func_800C9D80(D_8015F738, D_802B91C8, 0x51028001);
+            audio_play_looping_sound_at_position_3d(D_8015F738, D_802B91C8, 0x51028001);
             break;
         default:
             break;

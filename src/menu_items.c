@@ -1345,7 +1345,7 @@ void func_80091B78(void) {
     }
 
     for (i = 1; i < 8; i++) {
-        func_800C9D0C((u8) i);
+        audio_stop_player_driving_sound_3d((u8) i);
     }
 
     set_sound_mode();
