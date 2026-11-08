@@ -1966,7 +1966,7 @@ void audio_calculate_kart_engine_pitch(u8 playerId) {
     D_800E9F7C[playerId].unk_38 = (D_800E9F7C[playerId].unk_0C / 1.5f) + 0.4f;
 }
 
-void func_800C64A0(u8 playerId) {
+void audio_update_skid_sound_volume(u8 playerId) {
     switch (D_800E9E74[playerId]) {
         case 3:
             D_800E9EF4[playerId] = (gPlayers[playerId].speed / 5.0f) + 0.2f;
@@ -2017,7 +2017,7 @@ void func_800C64A0(u8 playerId) {
     }
 }
 
-void func_800C6758(u8 playerId) {
+void audio_update_skid_sound_frequency(u8 playerId) {
     switch (D_800E9E74[playerId]) { /* irregular */
         case 3:
             D_800E9F14[playerId] = (gPlayers[playerId].speed / 9.0f) + 0.6f;
@@ -2033,7 +2033,7 @@ void func_800C6758(u8 playerId) {
     }
 }
 
-void func_800C683C(u8 cameraId) {
+void audio_update_tyre_skid_sound(u8 cameraId) {
     if ((D_800EA108 == 0) && (D_800EA0EC[cameraId] == 0)) {
         if (D_800E9E74[cameraId] != D_800E9E84[cameraId]) {
             func_800C5578(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
@@ -2854,9 +2854,9 @@ void func_800C8CCC() {
         audio_update_kart_throttle_timer(var_s0);
         audio_update_kart_engine_rev_sound(var_s0);
         audio_calculate_kart_engine_pitch(var_s0);
-        func_800C64A0(var_s0);
-        func_800C6758(var_s0);
-        func_800C683C(var_s0);
+        audio_update_skid_sound_volume(var_s0);
+        audio_update_skid_sound_frequency(var_s0);
+        audio_update_tyre_skid_sound(var_s0);
         func_800C70A8(var_s0);
         audio_update_race_finish_sequences(var_s0);
         audio_update_player_submerged_sound(var_s0);

@@ -254,9 +254,9 @@ void audio_update_kart_throttle_timer(u8);
 void audio_update_kart_engine_rev_sound(u8);
 
 void audio_calculate_kart_engine_pitch(u8);
-void func_800C64A0(u8);
-void func_800C6758(u8);
-void func_800C683C(u8);
+void audio_update_skid_sound_volume(u8);
+void audio_update_skid_sound_frequency(u8);
+void audio_update_tyre_skid_sound(u8);
 
 void func_800C70A8(u8);
 void audio_update_race_finish_sequences(u8);

@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.25)
+# Session Handoff - 2026-06-02 (v8.107.26)
 
 ## Executive Summary
-Completed decompilation labeling of character sound bank initialization, throttle counter tracking, and dynamic engine pitch calculation routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.25`.
+Completed decompilation labeling of tyre squeal and offroad skid volume, frequency, and playback routines across `src/audio/external.c` and `src/audio/external.h`. Verified with static C syntax checking, and bumped the project version to `8.107.26`.
 
 ### Recent Fixes & Additions
+- **Tyre Skid & Surface Sound Routines (v8.107.26):**
+  - `func_800C64A0` -> `audio_update_skid_sound_volume`: Computes skid volume scalers `D_800E9EF4[playerId]` and `D_800E9F04[playerId]` based on kart surface type and speed.
+  - `func_800C6758` -> `audio_update_skid_sound_frequency`: Computes dynamic pitch frequency scaler `D_800E9F14[playerId]` from kart drift/spin speed.
+  - `func_800C683C` -> `audio_update_tyre_skid_sound`: Coordinates triggering sound effects (tyre squeal, spinout, dirt drift, grass drift) when skid state changes.
 - **Player Voice Bank & Kart Engine Dynamics Audio Routines (v8.107.25):**
   - `func_800C5BD0` -> `audio_init_player_sound_bank`: Dispatches command `0xF3000000` with the character voice sound bank ID from `D_800EA154[gPlayers[0].characterId]`.
   - `func_800C5D04` -> `audio_update_kart_throttle_timer`: Updates throttle on/off frame counters (`D_800E9E24[playerId]`, `D_800E9E34[playerId]`) and triggers engine idle audio on initial throttle press.

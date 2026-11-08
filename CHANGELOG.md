@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.26] - 2026-06-02
+### Changed
+- Labeled tyre squeal and offroad skid volume, frequency, and sound playback routines in `src/audio/external.c` and `src/audio/external.h`:
+  - `func_800C64A0` -> `audio_update_skid_sound_volume`: Computes skid volume scalers `D_800E9EF4[playerId]` and `D_800E9F04[playerId]` based on kart surface type and speed.
+  - `func_800C6758` -> `audio_update_skid_sound_frequency`: Computes dynamic pitch frequency scaler `D_800E9F14[playerId]` from kart drift/spin speed.
+  - `func_800C683C` -> `audio_update_tyre_skid_sound`: Coordinates triggering sound effects (tyre squeal, spinout, dirt drift, grass drift) when skid state changes.
+
 ## [8.107.25] - 2026-06-02
 ### Changed
 - Labeled player character sound bank initialization and kart throttle/pitch calculation routines in `src/audio/external.c` and `src/audio/external.h`:
