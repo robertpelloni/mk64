@@ -431,7 +431,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_ERASE_ERASE:
                             gSubMenuSelection = SUB_MENU_SAVE_DATA_ERASED;
-                            func_800B46D0();
+                            reset_all_save_data_to_defaults();
                             D_800DC5AC = 0;
                             play_sound2(SOUND_MENU_EXPLOSION);
                             break;
@@ -817,7 +817,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                         res = 0;
                         switch (gCourseRecordsMenuSelection) {
                             case COURSE_RECORDS_MENU_ERASE_RECORDS: {
-                                func_800B4728(gTimeTrialDataCourseIndex);
+                                reset_course_time_trial_records(gTimeTrialDataCourseIndex);
                                 func_800B559C(gTimeTrialDataCourseIndex);
                                 play_sound2(SOUND_MENU_EXPLOSION);
                                 res = -1;

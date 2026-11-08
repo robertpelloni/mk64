@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.35] - 2026-06-02
+### Changed
+- Labeled EEPROM course time trial record write and save reset routines in `src/save.c`, `src/save.h`, and `src/menus.c`:
+  - `func_800B45E0` -> `write_eeprom_course_time_trial_records`: Calculates checksum and writes `CourseTimeTrialRecords` to EEPROM using `osEepromLongWrite`.
+  - `func_800B46D0` -> `reset_all_save_data_to_defaults`: Resets all 16 course time trial records, best time records, Grand Prix points, and updates save backup.
+  - `func_800B4728` -> `reset_course_time_trial_records`: Fills course time trial record slots with default times from `D_800F2E60`, calculates checksum, and writes to EEPROM.
+
 ## [8.107.34] - 2026-06-02
 ### Changed
 - Labeled ghost data disk read/write and Controller Pak transfer routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:

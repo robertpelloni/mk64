@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.34)
+# Session Handoff - 2026-06-02 (v8.107.35)
 
 ## Executive Summary
-Completed decompilation labeling of ghost data disk read/write and Controller Pak transfer routines across `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`. Verified with static C syntax checking, and bumped the project version to `8.107.34`.
+Completed decompilation labeling of EEPROM course time trial record write, save reset to defaults, and course time trial resets across `src/save.c`, `src/save.h`, and `src/menus.c`. Verified with static C syntax checking, and bumped the project version to `8.107.35`.
 
 ### Recent Fixes & Additions
+- **EEPROM Time Trial & Save Defaults Routines (v8.107.35):**
+  - `func_800B45E0` -> `write_eeprom_course_time_trial_records`: Calculates checksum and writes `CourseTimeTrialRecords` to EEPROM using `osEepromLongWrite`.
+  - `func_800B46D0` -> `reset_all_save_data_to_defaults`: Resets all 16 course time trial records, best time records, Grand Prix points, and updates save backup.
+  - `func_800B4728` -> `reset_course_time_trial_records`: Fills course time trial record slots with default times from `D_800F2E60`, calculates checksum, and writes to EEPROM.
 - **Ghost Data Disk I/O & Transfer Routines (v8.107.34):**
   - `func_800B6178` -> `save_ghost_data_to_pak1`: Writes 0x3C00 bytes of compressed ghost data to Controller Pak 1, computes and sets rolling page checksums, and saves the ghost header entry.
   - `func_800B64EC` -> `load_ghost_data_from_pak1`: Reads 0x3C00 bytes of compressed ghost data from Controller Pak 1 into `gReplayGhostCompressed`, validates page checksums, and enables player ghost replay.

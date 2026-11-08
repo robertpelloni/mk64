@@ -39,7 +39,7 @@ const u8 gGameName[] = {
 const u8 gExtCode[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // new file start?
-void func_800B45E0(s32 arg0) {
+void write_eeprom_course_time_trial_records(s32 arg0) {
     CourseTimeTrialRecords* courseTimeTrialRecordsPtr =
         &gSaveData.allCourseTimeTrialRecords.cupRecords[arg0 / 4].courseRecords[arg0 % 4];
 
@@ -55,11 +55,11 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
-void func_800B46D0(void) {
+void reset_all_save_data_to_defaults(void) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
-        func_800B4728(i);
+        reset_course_time_trial_records(i);
         func_800B559C(i);
     }
 
@@ -67,7 +67,7 @@ void func_800B46D0(void) {
     update_save_data_backup();
 }
 
-void func_800B4728(s32 arg0) {
+void reset_course_time_trial_records(s32 arg0) {
     s32 i, j;
     CourseTimeTrialRecords* courseTimeTrialRecords;
 
@@ -85,7 +85,7 @@ void func_800B4728(s32 arg0) {
 
     courseTimeTrialRecords->unknownBytes[0] = 0;
     courseTimeTrialRecords->checksum = checksum_time_trial_records(arg0);
-    func_800B45E0(arg0);
+    write_eeprom_course_time_trial_records(arg0);
 }
 
 void reset_save_data_grand_prix_points_and_sound_mode(void) {
@@ -165,7 +165,7 @@ void func_800B4A9C(s32 course) {
     if (sp24) {}
 
     if (sp24->checksum != checksum_time_trial_records(course)) {
-        func_800B4728(course);
+        reset_course_time_trial_records(course);
         if (func_800B58C4(course) == 0) {
             s32 a3 = 0;
 
@@ -188,7 +188,7 @@ void func_800B4A9C(s32 course) {
             } else {
                 sp24->unknownBytes[0] = 1;
             }
-            func_800B45E0(course);
+            write_eeprom_course_time_trial_records(course);
         }
         // L800B4C78
         func_800B559C(course);
@@ -309,7 +309,7 @@ s32 func_800B5020(u32 time, s32 charId) {
 
     populate_time_trial_record(tt->records[i], time, charId);
     tt->unknownBytes[0] = 1;
-    func_800B45E0(course);
+    write_eeprom_course_time_trial_records(course);
 
     return i;
 }
@@ -341,7 +341,7 @@ s32 func_800B5218(void) {
     if (playerHUD->lapDurations[fastestLapIndex] < (func_800B4F2C() & 0xFFFFF)) {
         populate_time_trial_record(recordPointer + 0xF, playerHUD->lapDurations[fastestLapIndex], character);
         recordPointer[0x12] = 1;
-        func_800B45E0(recordIndex);
+        write_eeprom_course_time_trial_records(recordIndex);
         return lapBitmask;
     } else {
         return 0;

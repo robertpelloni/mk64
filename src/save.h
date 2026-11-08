@@ -28,10 +28,10 @@
 
 /* Function Prototypes */
 
-void func_800B45E0(s32);
+void write_eeprom_course_time_trial_records(s32);
 void write_save_data_grand_prix_points_and_sound_mode(void);
-void func_800B46D0(void);
-void func_800B4728(s32);
+void reset_all_save_data_to_defaults(void);
+void reset_course_time_trial_records(s32);
 void reset_save_data_grand_prix_points_and_sound_mode(void);
 u8 checksum_time_trial_records(s32);
 s32 get_ghost_slot_index_for_course(s32);

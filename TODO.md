@@ -4,7 +4,7 @@
 - Port the core "Item & Collision" logic to Rust to enable the "Zero-Latency" Engine.
 - Cross-compile the decompiled code to WASM with Shared Memory for browser emulation.
 - Create missing specific documentation files required by universal instructions: `ROADMAP.md`, `CHANGELOG.md`, `HANDOFF.md`, `DEPLOY.md`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GPT.md`, `copilot-instructions.md`, `MEMORY.md`.
-- Label more functions in `src/audio`, `src/menus`, and `src/save` (ongoing: labeled ghost I/O routines `save_ghost_data_to_pak1`, `load_ghost_data_from_pak1`, `copy_ghost_data_from_pak2_to_buffer`, ghost candidate verification `verify_ghost_candidate_match`, course ghost index lookup `find_saved_ghost_index_for_course`, `get_ghost_slot_index_for_course`).
+- Label more functions in `src/audio`, `src/menus`, and `src/save` (ongoing: labeled EEPROM course time trial write `write_eeprom_course_time_trial_records`, save reset to defaults `reset_all_save_data_to_defaults`, course time trial resets `reset_course_time_trial_records`, ghost I/O routines `save_ghost_data_to_pak1`).
 - Expand documentation around memory layout and `mk64.ld`.
 
 ## Backlog
