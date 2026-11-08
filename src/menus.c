@@ -1535,7 +1535,7 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
             
                 if ((btnAndStick & A_BUTTON) && (gCharacterGridIsSelected[controllerIdx] == 0)) {
                     gCharacterGridIsSelected[controllerIdx] = true;
-                    func_800C90F4(controllerIdx, ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) + 0x2900800E);
+                    audio_play_player_character_voice(controllerIdx, ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) + 0x2900800E);
                 }
 
                 selected = false;

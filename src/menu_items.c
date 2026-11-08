@@ -11050,7 +11050,7 @@ void func_800ACF40(MenuItem* arg0) {
                                       segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_a1]));
                         arg0->state = 3;
                         audio_set_player_finish_state(somePlayerIndex);
-                        func_800C90F4(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
+                        audio_play_player_character_voice(somePlayerIndex, (gCharacterSelections[somePlayerIndex] * 0x10) + 0x29008007);
                     }
                 }
             }
@@ -11818,7 +11818,7 @@ void func_800AEC54(MenuItem* arg0) {
             arg0->column = (get_string_width(gTextMenuAnnounceGhost) / 2) + 0x140;
             arg0->row = 0x000000DA;
             arg0->state = 1;
-            func_800C90F4(0U, (D_80162DE4 * 0x10) + 0x29008001);
+            audio_play_player_character_voice(0U, (D_80162DE4 * 0x10) + 0x29008001);
             break;
         case 1:
             func_800A9208(arg0, 0x000000A0);
@@ -12024,14 +12024,14 @@ void func_800AF270(MenuItem* arg0) {
                 if (D_802874D8.unk1D >= 3) {
                     arg0->state = 4;
                     audio_mute_sfx_disable();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
+                    audio_play_player_character_voice(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
                     audio_mute_sfx_enable();
                 } else {
                     arg0->state = 3;
                     func_8009A640(arg0->D_8018DEE0_index, 0, sp30,
                                   segmented_to_virtual_dupe_2(gCharacterCelebrateAnimation[temp_v0]));
                     audio_mute_sfx_disable();
-                    func_800C90F4(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
+                    audio_play_player_character_voice(0U, (sp30 * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
                     audio_mute_sfx_enable();
                 }
             }

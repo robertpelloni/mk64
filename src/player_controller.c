@@ -364,7 +364,7 @@ void func_80027EDC(Player* player, s8 playerId) {
                                 audio_clear_player_tunnel_reverb(playerId);
                             }
                             if (D_80165300[playerId] == 2) {
-                                func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x70, 0x80, 0x2D));
+                                audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x70, 0x80, 0x2D));
                             }
                             D_80165300[playerId] = 0;
                         }
@@ -1114,8 +1114,8 @@ void func_8002A704(Player* player, s8 playerIndex) {
     player->triggers &= ~START_BOOST_TRIGGER;
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(0U, (player->characterId * 0x10) + 0x29008001);
-        func_800C9060(playerIndex, 0x1900A40BU);
+        audio_play_player_character_voice(0U, (player->characterId * 0x10) + 0x29008001);
+        audio_play_player_sound(playerIndex, 0x1900A40BU);
     }
     player->boostTimer = 0x0050;
 }
@@ -1152,7 +1152,7 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
                 player->driftStateCounter++;
             }
             if ((player->driftStateCounter == 100) && (player->type & PLAYER_HUMAN)) {
-                func_800C9060(playerIndex, 0x1900851EU);
+                audio_play_player_sound(playerIndex, 0x1900851EU);
             }
         } else {
             if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
@@ -1172,7 +1172,7 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
             player->driftStateCounter++;
         }
         if ((player->driftStateCounter == 100) && (player->type & PLAYER_HUMAN)) {
-            func_800C9060(playerIndex, 0x1900851EU);
+            audio_play_player_sound(playerIndex, 0x1900851EU);
         }
     } else {
         if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
@@ -1735,11 +1735,11 @@ void func_8002BF4C(Player* player, s8 playerIndex) {
                     player->effects |= CPU_FAST_EFFECT;
                     if ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB) {
                         uselessAssignment = player->type & PLAYER_INVISIBLE_OR_BOMB;
-                        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008001);
+                        audio_play_player_character_voice(playerIndex, (player->characterId * 0x10) + 0x29008001);
                     }
                     if ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB) {
                         uselessAssignment = var_a2;
-                        func_800C9060(playerIndex, 0x19008011);
+                        audio_play_player_sound(playerIndex, 0x19008011);
                     }
                 }
                 break;
@@ -1843,9 +1843,9 @@ void func_8002C4F8(Player* player, s8 playerIndex) {
             if ((gCurrentCourseId != COURSE_KOOPA_BEACH) && (gCurrentCourseId != COURSE_SKYSCRAPER) &&
                 (gCurrentCourseId != COURSE_RAINBOW_ROAD) && ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN)) {
                 if ((gCurrentCourseId == COURSE_BOWSER_CASTLE) || (gCurrentCourseId == COURSE_BIG_DONUT)) {
-                    func_800C9060((u8) playerIndex, 0x1900801CU);
+                    audio_play_player_sound((u8) playerIndex, 0x1900801CU);
                 } else {
-                    func_800C9060((u8) playerIndex, 0x19008008U);
+                    audio_play_player_sound((u8) playerIndex, 0x19008008U);
                 }
             }
         }
@@ -2304,7 +2304,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                  ((player->effects & BOOST_RAMP_ASPHALT_EFFECT) == BOOST_RAMP_ASPHALT_EFFECT)) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
 
-                func_800C9060(playerId, 0x1900A60AU);
+                audio_play_player_sound(playerId, 0x1900A60AU);
             } else if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                        ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
                 play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
@@ -4646,7 +4646,7 @@ void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex
             kart_hop(player);
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C9060(playerIndex, 0x19008000);
+                audio_play_player_sound(playerIndex, 0x19008000);
             }
         }
         if ((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) {

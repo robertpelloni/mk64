@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.36] - 2026-06-02
+### Changed
+- Labeled player spatial sound and character voice playback/stop routines across audio, actor, menu, and player systems:
+  - `func_800C9018` -> `audio_stop_player_sound`: Stops active sounds at a player's spatial coordinates (`&D_800E9F7C[playerIndex].pos`).
+  - `func_800C9060` -> `audio_play_player_sound`: Plays sound effect attached to player position, checking mute states and setting tunnel reverberation.
+  - `func_800C90F4` -> `audio_play_player_character_voice`: Plays character speech audio at player position, applying lightning shock frequency modulation if shocked.
+- Updated all call sites across `src/audio/external.c`, `src/menus.c`, `src/menu_items.c`, `src/player_controller.c`, `src/racing/actors.c`, `src/racing/actors_extended.c`, `src/racing/race_logic.c`, `src/update_objects.c`, `src/code_80057C60.c`, `src/code_80086E70.c`, `src/ending/ceremony_and_credits.c`, and `src/effects.c`.
+
 ## [8.107.35] - 2026-06-02
 ### Changed
 - Labeled EEPROM course time trial record write and save reset routines in `src/save.c`, `src/save.h`, and `src/menus.c`:

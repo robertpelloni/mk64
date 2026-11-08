@@ -1,9 +1,13 @@
-# Session Handoff - 2026-06-02 (v8.107.35)
+# Session Handoff - 2026-06-02 (v8.107.36)
 
 ## Executive Summary
-Completed decompilation labeling of EEPROM course time trial record write, save reset to defaults, and course time trial resets across `src/save.c`, `src/save.h`, and `src/menus.c`. Verified with static C syntax checking, and bumped the project version to `8.107.35`.
+Completed decompilation labeling of player spatial sound and character voice playback/stop routines across `src/audio/external.c`, `src/audio/external.h`, and callers across racing, menus, effects, and actors. Verified with static C syntax checking, and bumped the project version to `8.107.36`.
 
 ### Recent Fixes & Additions
+- **Player Spatial Sound & Voice Routines (v8.107.36):**
+  - `func_800C9018` -> `audio_stop_player_sound`: Stops active sounds at a player's spatial coordinates (`&D_800E9F7C[playerIndex].pos`).
+  - `func_800C9060` -> `audio_play_player_sound`: Plays sound effect attached to player position, checking mute states and setting tunnel reverberation.
+  - `func_800C90F4` -> `audio_play_player_character_voice`: Plays character speech audio at player position, applying lightning shock frequency modulation if shocked.
 - **EEPROM Time Trial & Save Defaults Routines (v8.107.35):**
   - `func_800B45E0` -> `write_eeprom_course_time_trial_records`: Calculates checksum and writes `CourseTimeTrialRecords` to EEPROM using `osEepromLongWrite`.
   - `func_800B46D0` -> `reset_all_save_data_to_defaults`: Resets all 16 course time trial records, best time records, Grand Prix points, and updates save backup.

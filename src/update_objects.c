@@ -2987,7 +2987,7 @@ void func_800791F0(s32 objectIndex, s32 playerId) {
         func_800722CC(objectIndex, 0x00000010);
         player->lakituProps &= ~THAWING_EFFECT;
     }
-    func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
+    audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
 }
 
 void init_obj_lakitu_red_flag_countdown(s32 objectIndex, s32 arg1) {
@@ -3241,7 +3241,7 @@ void update_object_lakitu_fishing(s32 objectIndex, s32 playerId) {
             break;
         case 5:
             func_800722CC(objectIndex, 1);
-            func_800C9018((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
+            audio_stop_player_sound((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
             func_80072428(objectIndex);
             func_80073720(objectIndex);
             break;
@@ -3274,7 +3274,7 @@ void update_object_lakitu_fishing2(s32 objectIndex, s32 playerId) {
     switch (gObjectList[objectIndex].unk_0D6) {
         case 1:
             if (func_80086FA4(objectIndex) != 0) {
-                func_800C9060((u8) playerId, 0x1900A055U);
+                audio_play_player_sound((u8) playerId, 0x1900A055U);
                 func_80073654(objectIndex);
             }
             break;
@@ -3303,7 +3303,7 @@ void update_object_lakitu_fishing2(s32 objectIndex, s32 playerId) {
             func_800722CC(objectIndex, 4);
             func_800722CC(objectIndex, 8);
             func_80073654(objectIndex);
-            func_800C9060((u8) playerId, 0x1900A056U);
+            audio_play_player_sound((u8) playerId, 0x1900A056U);
             break;
         case 6:
             if (func_8007375C(objectIndex, 0x000000A0) != 0) {
@@ -3320,7 +3320,7 @@ void update_object_lakitu_fishing2(s32 objectIndex, s32 playerId) {
             func_80072428(objectIndex);
             player->lakituProps &= ~THAWING_EFFECT;
             func_800722CC(objectIndex, 1);
-            func_800C9018((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
+            audio_stop_player_sound((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
             break;
     }
 
@@ -3473,7 +3473,7 @@ void update_object_lakitu_reverse(s32 objectIndex, s32 playerId) {
                 func_80086F10(objectIndex, 6, &D_800E69F4);
                 gObjectList[objectIndex].unk_0D6 = 2;
                 gObjectList[objectIndex].unk_04C = 0x00000050;
-                func_800C9018((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
+                audio_stop_player_sound((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
                 return;
             }
             return;
@@ -3628,7 +3628,7 @@ void func_8007ABFC(s32 playerId, bool arg1) {
                 playerHUD[playerId].itemOverride = arg1;
             }
         }
-        func_800C9060(playerId, 0x19008406U);
+        audio_play_player_sound(playerId, 0x19008406U);
     }
 }
 
@@ -3743,7 +3743,7 @@ s32 func_8007B040(s32 objectIndex, s32 playerId) {
             var_v1 = gen_random_item_human(gLapCountByPlayerId[playerId], gGPCurrentRaceRankByPlayerId[playerId]);
         } else {
             var_v1 = 0;
-            func_800C9060(playerId, 0x1900A058U);
+            audio_play_player_sound(playerId, 0x1900A058U);
         }
         var_t3 = 1;
         gObjectList[objectIndex].textureListIndex = gObjectList[objectIndex].unk_0A2 = var_v1;
@@ -3869,7 +3869,7 @@ void func_8007B34C(s32 playerId) {
             object->unk_04C = 8;
             object->unk_0D6 = 2;
             object_next_state(temp_s0);
-            func_800C9018((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x1C));
+            audio_stop_player_sound((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x1C));
             func_800C8F80((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x47));
             break;
         case 7:
@@ -4333,7 +4333,7 @@ void func_8007C7B4(s32 someIndex, s32 playerIndex) {
         gObjectList[objectIndex].origin_pos[1] = (f32) temp_s4;
         gObjectList[objectIndex].origin_pos[2] = (f32) temp_s5;
     }
-    func_800C9060(playerIndex, 0x1900705AU);
+    audio_play_player_sound(playerIndex, 0x1900705AU);
 
     if (someIndex == 0) {
         D_8018CFF0 = 1;
@@ -5985,7 +5985,7 @@ void func_80080B28(s32 objectIndex, s32 playerId) {
                         if (temp_s0->type & PLAYER_CPU) {
                             func_800C98B8(temp_s0->pos, temp_s0->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0xA2, 0x4A));
                         } else {
-                            func_800C9060((u8) playerId, SOUND_ARG_LOAD(0x19, 0x01, 0xA2, 0x4A));
+                            audio_play_player_sound((u8) playerId, SOUND_ARG_LOAD(0x19, 0x01, 0xA2, 0x4A));
                         }
                         func_80080DE4(objectIndex);
                         func_80075304(gObjectList[objectIndex].pos, 3, 3, D_8018D3C4);
@@ -6388,7 +6388,7 @@ void func_80081D34(s32 objectIndex) {
                     func_80072180();
                 }
                 if (player->effects & STAR_EFFECT) {
-                    func_800C9060(playerIndex, 0x1900A046U);
+                    audio_play_player_sound(playerIndex, 0x1900A046U);
                 } else {
                     player->triggers |= HIGH_TUMBLE_TRIGGER;
                 }

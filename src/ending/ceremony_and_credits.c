@@ -711,13 +711,13 @@ void play_sound_trophy(UNUSED CinematicCamera* camera) {
 
 void func_80283B6C(UNUSED CinematicCamera* camera) {
     audio_mute_sfx_disable();
-    func_800C9060(0, SOUND_ACTION_EXPLOSION);
+    audio_play_player_sound(0, SOUND_ACTION_EXPLOSION);
     audio_mute_sfx_enable();
 }
 
 void func_80283BA4(UNUSED CinematicCamera* camera) {
     audio_mute_sfx_disable();
-    func_800C90F4(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
+    audio_play_player_character_voice(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
     audio_mute_sfx_enable();
 }
 

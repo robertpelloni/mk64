@@ -275,9 +275,9 @@ void play_sequence2(u16);
 void func_800C8F44(u8);
 void func_800C8F80(u8, u32);
 
-void func_800C9018(u8, u32);
-void func_800C9060(u8, u32);
-void func_800C90F4(u8, u32);
+void audio_stop_player_sound(u8, u32);
+void audio_play_player_sound(u8, u32);
+void audio_play_player_character_voice(u8, u32);
 void func_800C9250(u8);
 void func_800C92CC(u8, u32);
 void audio_play_kart_engine_idle(u8);
