@@ -121,7 +121,7 @@ void set_staff_ghost(void) {
 #if !ENABLE_CUSTOM_COURSE_ENGINE
     switch (gCurrentCourseId) {
         case COURSE_MARIO_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_MARIO) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -133,7 +133,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 0;
             break;
         case COURSE_ROYAL_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_ROYAL) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -145,7 +145,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 6;
             break;
         case COURSE_LUIGI_RACEWAY:
-            bestTime = func_800B4E24(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_LUIGI) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;

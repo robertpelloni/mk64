@@ -140,7 +140,7 @@ void load_save_data(void) {
     osEepromLongRead(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData), (u8*) &gSaveData, sizeof(SaveData));
     // 16: 4 cup records * 4 course records?
     for (i = 0; i < 16; i++) {
-        func_800B4A9C(i);
+        validate_and_recover_course_time_trials(i);
     }
 
     validate_save_data();
@@ -151,17 +151,17 @@ void load_save_data(void) {
     }
 }
 
-void func_800B4A9C(s32 course) {
+void validate_and_recover_course_time_trials(s32 course) {
     OnlyBestTimeTrialRecords* test;
     CourseTimeTrialRecords* sp24;
     s32 i;
 
-    if ((func_800B4EB4(0, course) & 0xFFFFF) < 0x927C0U) {
+    if ((get_course_time_trial_record(0, course) & 0xFFFFF) < 0x927C0U) {
         gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4].unknownBytes[0] = 1;
     }
     sp24 = &gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4];
 
-    func_800B4FB0(course);
+    get_course_best_lap_record(course);
     if (sp24) {}
 
     if (sp24->checksum != checksum_time_trial_records(course)) {
@@ -239,7 +239,7 @@ void populate_time_trial_record(u8* timeTrialRecord, u32 time, s32 characterId) 
 }
 
 // combine time trial record u8[3] into the lower 24 bits of a word [xx221100]
-u32 func_800B4DF4(u8* arr) {
+u32 unpack_time_trial_record(u8* arr) {
     s32 a, b, c;
     a = arr[0];
     b = arr[1];
@@ -249,34 +249,34 @@ u32 func_800B4DF4(u8* arr) {
 }
 
 // Get a time trial record, infer course index
-s32 func_800B4E24(s32 recordIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 get_current_course_time_trial_record(s32 recordIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[recordIndex]);
 }
 
 // Get a time trial record, but take the course index as an argument
-u32 func_800B4EB4(s32 recordIndex, s32 courseIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+u32 get_course_time_trial_record(s32 recordIndex, s32 courseIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[recordIndex]);
 }
 
 // Get Best Lap record of the inferred course index
-s32 func_800B4F2C(void) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 get_current_course_best_lap_record(void) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
 // Get the best single lap time record of the given course index
-s32 func_800B4FB0(s32 courseIndex) {
-    return func_800B4DF4(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+s32 get_course_best_lap_record(s32 courseIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
-s32 func_800B5020(u32 time, s32 charId) {
+s32 update_course_three_lap_records(u32 time, s32 charId) {
     UNUSED s32 stackPadding[3];
     s32 course; // sp30
     s32 i;
@@ -288,7 +288,7 @@ s32 func_800B5020(u32 time, s32 charId) {
 
     i = 0;
     for (; i < 5; i++) {
-        if (time < (func_800B4DF4(tt->records[i]) & 0x000FFFFF)) {
+        if (time < (unpack_time_trial_record(tt->records[i]) & 0x000FFFFF)) {
             break;
         }
     }
@@ -314,7 +314,7 @@ s32 func_800B5020(u32 time, s32 charId) {
     return i;
 }
 
-s32 func_800B5218(void) {
+s32 update_course_best_single_lap_record(void) {
     u8* recordPointer;
     UNUSED s32 pad;
     s32 fastestLapIndex;
@@ -338,7 +338,7 @@ s32 func_800B5218(void) {
         }
     }
 
-    if (playerHUD->lapDurations[fastestLapIndex] < (func_800B4F2C() & 0xFFFFF)) {
+    if (playerHUD->lapDurations[fastestLapIndex] < (get_current_course_best_lap_record() & 0xFFFFF)) {
         populate_time_trial_record(recordPointer + 0xF, playerHUD->lapDurations[fastestLapIndex], character);
         recordPointer[0x12] = 1;
         write_eeprom_course_time_trial_records(recordIndex);
@@ -348,24 +348,24 @@ s32 func_800B5218(void) {
     }
 }
 
-void func_800B536C(s32 arg0) {
+void update_current_cup_grand_prix_points(s32 arg0) {
     u8* points;
     u8 tmp;
     s32 tmp2;
 
     if (arg0 >= 0) {
         points = &gSaveData.main.saveInfo.grandPrixPoints[gCCSelection];
-        tmp = func_800B54EC(gCupSelection, *points);
+        tmp = extract_cup_grand_prix_points(gCupSelection, *points);
         tmp2 = 3 - arg0;
         if ((arg0 < 3) && (tmp < (3 - arg0))) {
-            *points = func_800B5508(gCupSelection, *points, tmp2);
+            *points = pack_cup_grand_prix_points(gCupSelection, *points, tmp2);
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
         }
     }
 }
 
-void func_800B5404(s32 arg0, s32 arg1) {
+void update_cup_grand_prix_points(s32 arg0, s32 arg1) {
     u8* points;
     s32 temp_a0;
     s32 temp;
@@ -375,10 +375,10 @@ void func_800B5404(s32 arg0, s32 arg1) {
     if (arg0 >= 0) {
         temp2 = arg1 / 4;
         points = &gSaveData.main.saveInfo.grandPrixPoints[arg1 % 4];
-        temp = func_800B54EC(temp2, *points);
+        temp = extract_cup_grand_prix_points(temp2, *points);
 
         if ((arg0 < 3) && (temp < (temp_a0 = 3 - arg0))) {
-            *points = func_800B5508(temp2, *points, temp_a0);
+            *points = pack_cup_grand_prix_points(temp2, *points, temp_a0);
 
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
@@ -387,12 +387,12 @@ void func_800B5404(s32 arg0, s32 arg1) {
 }
 
 // Get Grand Prix points for a given cup and CC mode
-u8 func_800B54C0(s32 cup, s32 cc_mode) {
-    return func_800B54EC(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
+u8 get_cup_grand_prix_points(s32 cup, s32 cc_mode) {
+    return extract_cup_grand_prix_points(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
 }
 
 // Get Grand Prix points scored for a given cup
-u8 func_800B54EC(s32 cup, s32 ccGrandPrixPoints) {
+u8 extract_cup_grand_prix_points(s32 cup, s32 ccGrandPrixPoints) {
     s32 cup_index = cup * 2;
     u32 cup_points = ccGrandPrixPoints;
 
@@ -405,7 +405,7 @@ u8 func_800B54EC(s32 cup, s32 ccGrandPrixPoints) {
 
 // Generate a new CC Grand Prix Points entry with points_scored
 // placed in the given cup's location
-u8 func_800B5508(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
+u8 pack_cup_grand_prix_points(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
     s32 cup_index = cup * 2;
 
     points_scored <<= cup_index;

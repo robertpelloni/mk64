@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.39] - 2026-06-02
+### Changed
+- Labeled and documented remaining unnamed save, time trial, and Grand Prix score routines in `src/save.c`, `src/save.h`, `src/menu_items.c`, `src/menus.c`, `src/replays.c`, and `src/code_8006E9C0.c`:
+  - `func_800B4A9C` -> `validate_and_recover_course_time_trials`: Validates and recovers EEPROM time trial records for a specific course from the best records backup.
+  - `func_800B4DF4` -> `unpack_time_trial_record`: Deserializes/unpacks a 3-byte time trial record into a 24-bit integer timestamp.
+  - `func_800B4E24` -> `get_current_course_time_trial_record`: Retrieves an unpacked time trial record for the active cup & course.
+  - `func_800B4EB4` -> `get_course_time_trial_record`: Retrieves an unpacked time trial record for an explicit course index.
+  - `func_800B4F2C` -> `get_current_course_best_lap_record`: Retrieves the best single-lap time record for the active cup & course.
+  - `func_800B4FB0` -> `get_course_best_lap_record`: Retrieves the best single-lap time record for an explicit course index.
+  - `func_800B5020` -> `update_course_three_lap_records`: Inserts and updates top 5 three-lap race times in EEPROM.
+  - `func_800B5218` -> `update_course_best_single_lap_record`: Checks completed laps to update the best single lap time record in EEPROM.
+  - `func_800B536C` -> `update_current_cup_grand_prix_points`: Updates Grand Prix score in EEPROM and backup for the current cup/engine class.
+  - `func_800B5404` -> `update_cup_grand_prix_points`: Updates Grand Prix score in EEPROM and backup for an explicit cup/engine class.
+  - `func_800B54C0` -> `get_cup_grand_prix_points`: Fetches scored Grand Prix cup points for a specified cup and engine class.
+  - `func_800B54EC` -> `extract_cup_grand_prix_points`: Bitwise extracts 2-bit cup score from packed CC points byte.
+  - `func_800B5508` -> `pack_cup_grand_prix_points`: Bitwise packs 2-bit cup score into a CC points byte.
+  - Removed obsolete stray prototype `func_800B5B2C` from `src/save.h`.
+
 ## [8.107.38] - 2026-06-02
 ### Changed
 - Labeled best time trial record checksum calculation, validation, and EEPROM commit routines in `src/save.c`, `src/save.h`, `src/menus.c`, and `src/menu_items.c`:

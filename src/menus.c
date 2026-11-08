@@ -1168,14 +1168,14 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 if (btnAndStick & B_BUTTON) {
                     for (i = 0; i < 16; i++) {
-                        func_800B5404(0, i);
+                        update_cup_grand_prix_points(0, i);
                     }
                     play_sound2(SOUND_MENU_SELECT);
                     break;
                 } else if (btnAndStick & L_TRIG) {
                     reset_save_data_grand_prix_points_and_sound_mode();
                     for (i = 0; i < 16; i++) {
-                        func_800B5404(i / 4, i);
+                        update_cup_grand_prix_points(i / 4, i);
                     }
                     play_sound2(SOUND_MENU_SELECT);
                     break;
@@ -1183,9 +1183,9 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     reset_save_data_grand_prix_points_and_sound_mode();
                     for (i = 0; i < 16; i++) {
                         if (i % 4 == 2) {
-                            func_800B5404(0, i);
+                            update_cup_grand_prix_points(0, i);
                         } else {
-                            func_800B5404(i / 4, i);
+                            update_cup_grand_prix_points(i / 4, i);
                         }
                     }
                     play_sound2(SOUND_MENU_SELECT);

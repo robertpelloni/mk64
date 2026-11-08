@@ -5605,7 +5605,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             break;
         case MENU_ITEM_TYPE_067:
             menuItem->param1 = (s32) gCupSelection;
-            menuItem->param2 = func_800B54C0(gCupSelection, gCCSelection);
+            menuItem->param2 = get_cup_grand_prix_points(gCupSelection, gCCSelection);
             menuItem->D_8018DEE0_index = animate_character_select_menu(
                 segmented_to_virtual_dupe_2(D_800E7E20[((gCCSelection / 2) * 4) - menuItem->param2]));
             menuItem->column = D_800E7268[0].column;
@@ -5704,8 +5704,8 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             break;
         }
         case MENU_ITEM_TYPE_0BB:
-            menuItem->param1 = func_800B5020(playerHUD[0].someTimer, gCharacterSelections[0]);
-            menuItem->param2 = func_800B5218();
+            menuItem->param1 = update_course_three_lap_records(playerHUD[0].someTimer, gCharacterSelections[0]);
+            menuItem->param2 = update_course_best_single_lap_record();
             if (bPlayerGhostDisabled != 1) {
                 if (func_800051C4() > 0x3C00) {
                     bPlayerGhostDisabled = 1;
@@ -5903,7 +5903,7 @@ void render_menus(MenuItem* arg0) {
                                             0, 0, 0, 0x00000096);
                 set_text_color(TEXT_GREEN);
                 print_text1_center_mode_1(0x0000009B, 0x0000008C, gCourseNamesDup[0], 0, 0.9f, 0.9f);
-                temp_v1 = func_800B4EB4(0, 7) & 0xFFFFF;
+                temp_v1 = get_course_time_trial_record(0, 7) & 0xFFFFF;
                 if (temp_v1 < 0x1EAA) {
                     set_text_color((s32) gGlobalTimer % 2);
                 } else if (temp_v1 < 0x2329) {
@@ -7598,16 +7598,16 @@ void render_lap_times(s32 recordType, s32 column, s32 row) {
     }
     if (recordType < 5) {
         if (sp30 == 0) {
-            timeRecord = func_800B4E24(recordType);
+            timeRecord = get_current_course_time_trial_record(recordType);
         } else {
-            timeRecord = func_800B4EB4(recordType, gTimeTrialDataCourseIndex);
+            timeRecord = get_course_time_trial_record(recordType, gTimeTrialDataCourseIndex);
         }
         set_text_color(TEXT_GREEN);
     } else {
         if (sp30 == 0) {
-            timeRecord = func_800B4F2C();
+            timeRecord = get_current_course_best_lap_record();
         } else {
-            timeRecord = func_800B4FB0(gTimeTrialDataCourseIndex);
+            timeRecord = get_course_best_lap_record(gTimeTrialDataCourseIndex);
         }
     }
     func_800939C8(column + 0x14, row, D_800E7744[recordType], 2, 0.65f, 0.65f);
@@ -7696,7 +7696,7 @@ void render_pause_menu_time_trials(MenuItem* arg0) {
                               gCourseNamesDup[gCupCourseOrder[gCupSelection][gCourseIndexInCup]], 0, 1.0f, 1.0f);
     set_text_color(TEXT_RED);
     print_text1_center_mode_1(0x0000009D, 0x00000060, gBestTimeText[0], 0, 0.8f, 0.8f);
-    temp_a0 = func_800B4E24(TIME_TRIAL_3LAP_RECORD_1);
+    temp_a0 = get_current_course_time_trial_record(TIME_TRIAL_3LAP_RECORD_1);
     temp_a0 &= 0xFFFFF;
     get_time_record_minutes(temp_a0, sp68);
     func_800939C8(0x0000007F, 0x0000006D, sp68, 0, 0.8f, 0.8f);
@@ -7707,7 +7707,7 @@ void render_pause_menu_time_trials(MenuItem* arg0) {
     get_time_record_centiseconds(temp_a0, sp68);
     func_800939C8(0x000000B3, 0x0000006D, sp68, 0, 0.8f, 0.8f);
     print_text1_center_mode_1(0x0000009D, 0x0000007C, gBestTimeText[1], 0, 0.8f, 0.8f);
-    temp_a0 = func_800B4F2C();
+    temp_a0 = get_current_course_best_lap_record();
     temp_a0 &= 0xFFFFF;
     get_time_record_minutes(temp_a0, sp68);
     func_800939C8(0x0000007F, 0x00000089, sp68, 0, 0.8f, 0.8f);
@@ -7907,7 +7907,7 @@ void render_menu_item_end_course_option(MenuItem* arg0) {
             case 16:
                 set_text_color(TEXT_RED);
                 print_text1_center_mode_2(0x0000009D, 0x00000060, gBestTimeText[0], 0, 0.8f, 0.8f);
-                temp_a0 = func_800B4E24(0);
+                temp_a0 = get_current_course_time_trial_record(0);
                 temp_a0 &= 0xFFFFF;
                 get_time_record_minutes(temp_a0, sp84);
                 text_draw(0x0000007F, 0x0000006D, sp84, 0, 0.8f, 0.8f);
@@ -7918,7 +7918,7 @@ void render_menu_item_end_course_option(MenuItem* arg0) {
                 get_time_record_centiseconds(temp_a0, sp84);
                 text_draw(0x000000B3, 0x0000006D, sp84, 0, 0.8f, 0.8f);
                 print_text1_center_mode_2(0x0000009D, 0x0000007C, gBestTimeText[1], 0, 0.8f, 0.8f);
-                temp_a0 = func_800B4F2C();
+                temp_a0 = get_current_course_best_lap_record();
                 temp_a0 &= 0xFFFFF;
                 get_time_record_minutes(temp_a0, sp84);
                 text_draw(0x0000007F, 0x00000089, sp84, 0, 0.8f, 0.8f);
@@ -9015,7 +9015,7 @@ void func_800A874C(MenuItem* arg0) {
     UNUSED u32 var_v0;
     u32 var_s2;
     set_text_color(TEXT_GREEN);
-    var_s2 = arg0->type == MENU_ITEM_TYPE_065 ? func_800B4E24(0) : func_800B4F2C();
+    var_s2 = arg0->type == MENU_ITEM_TYPE_065 ? get_current_course_time_trial_record(0) : get_current_course_best_lap_record();
     temp_s1 = var_s2 & 0xFFFFF;
     get_time_record_minutes((temp_s1 ^ 0), buffer);
     text_draw(arg0->column + 5, arg0->row + 0x21, buffer, 0, 0.6f, 0.65f);
@@ -10447,7 +10447,7 @@ void func_800AB9B0(MenuItem* arg0) {
 
     if (arg0->param1 != gCupSelection) {
         arg0->param1 = gCupSelection;
-        arg0->param2 = func_800B54C0((s32) gCupSelection, gCCSelection);
+        arg0->param2 = get_cup_grand_prix_points((s32) gCupSelection, gCCSelection);
         func_8009A594(arg0->D_8018DEE0_index, 0,
                       segmented_to_virtual_dupe_2(D_800E7E20[((gCCSelection / 2) * 4) - arg0->param2]));
         arg0->column = (s32) D_800E7268->column;
@@ -10809,7 +10809,7 @@ void func_800AC458(MenuItem* arg0) {
                 if (gCourseIndexInCup == 3) {
                     for (var_a1 = 0; var_a1 < 8; var_a1++) {
                         if (gGetPlayerByCharacterId[gCharacterIdByGPOverallRank[var_a1]] < gPlayerCount) {
-                            func_800B536C(var_a1);
+                            update_current_cup_grand_prix_points(var_a1);
                             break;
                         }
                     }
@@ -11893,7 +11893,7 @@ void func_800AEEE8(MenuItem* arg0) {
 
 void func_800AEF14(MenuItem* arg0) {
     if (playerHUD[PLAYER_ONE].raceCompleteBool != 0) {
-        if ((u32) playerHUD[PLAYER_ONE].someTimer < (u32) (func_800B4E24(4) & 0xFFFFF)) {
+        if ((u32) playerHUD[PLAYER_ONE].someTimer < (u32) (get_current_course_time_trial_record(4) & 0xFFFFF)) {
             D_8018ED90 = 1;
         }
         arg0->type = 0;
