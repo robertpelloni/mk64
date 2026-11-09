@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.42] - 2026-06-02
+### Changed
+- Labeled and documented screen transition, viewport fading, and demo sequence audio routines in `src/menu_items.c` and `src/menu_items.h`:
+  - `func_8009CE1C` -> `menu_init_demo_audio`: Dispatches demo mode audio sequence command (0xE0000002) in multiplayer.
+  - `func_8009CE64` -> `handle_screen_transition_complete`: Handles menu navigation or race state switches upon transition completion.
+  - `func_8009D77C` -> `draw_fade_out`: Generic box-fill fade-out routine with custom color and alpha step.
+  - `func_8009D958` -> `draw_black_fade_out`: Solid black box-fill fade out.
+  - `func_8009D978` -> `draw_white_fade_out`: Solid white box-fill fade out.
+  - `func_8009D998` -> `draw_black_box_viewport`: Draws solid black box covering player viewport.
+  - `func_8009DAA8` -> `draw_screen_fade_out_step`: Full screen fade out animation step.
+  - `func_8009DB8C` -> `draw_screen_mosaic_fade_out_step`: Full screen mosaic pixelation fade out step.
+  - `func_8009DF6C` -> `start_screen_fade_in_alt`: Starts alternate screen fade-in type 8.
+
 ## [8.107.41] - 2026-06-02
 ### Changed
 - Labeled MIO0 alternative decompressor and menu texture rectangle drawing routines in `include/decode.h`, `src/racing/memory.c`, `asm/unused_mio0_decode.s`, `src/menu_items.c`, `src/menu_items.h`, and `src/main.h`:

@@ -2548,7 +2548,7 @@ void setup_menus(void) {
         if (gFadeModeSelection != FADE_MODE_LOGO) {
             start_screen_fade_in(0x00000014);
         } else {
-            func_8009DF6C(0x00000014);
+            start_screen_fade_in_alt(0x00000014);
         }
         gFadeModeSelection = FADE_MODE_NONE;
     }
@@ -4615,19 +4615,19 @@ void func_8009CA6C(s32 arg0) {
                 draw_black_fade_in(arg0, var_a1);
                 return;
             case 2:
-                func_8009D958(arg0, var_a1);
+                draw_black_fade_out(arg0, var_a1);
                 return;
             case 3:
-                func_8009DB8C();
+                draw_screen_mosaic_fade_out_step();
                 return;
             case 4:
-                func_8009DAA8();
+                draw_screen_fade_out_step();
                 return;
             case 5:
-                func_8009D998(arg0);
+                draw_black_box_viewport(arg0);
                 return;
             case 7:
-                func_8009D978(arg0, var_a1);
+                draw_white_fade_out(arg0, var_a1);
                 return;
             case 8:
                 draw_white_fade_in(arg0, var_a1);
@@ -4691,13 +4691,13 @@ void draw_white_fade_in(s32 arg0, s32 arg1) {
     draw_fade_in(arg0, arg1, 1);
 }
 
-void func_8009CE1C(void) {
+void menu_init_demo_audio(void) {
     if ((gSoundMode != 3) && (gPlayerCountSelection1 >= 2)) {
         audio_push_sequence_command(0xE0000002);
     }
 }
 
-void func_8009CE64(s32 arg0) {
+void handle_screen_transition_complete(s32 arg0) {
     s32 thing;
     s32 var_a1;
     UNUSED s32 stackPadding0;
@@ -4950,7 +4950,7 @@ void func_8009CE64(s32 arg0) {
                 if (gModeSelection == 1) {
                     gGhostPlayerInit = (s8) 1;
                 }
-                func_8009CE1C();
+                menu_init_demo_audio();
             }
             unref_8018EE0C = 0;
         } else {
@@ -5023,7 +5023,7 @@ void func_8009CE64(s32 arg0) {
     }
 }
 
-void func_8009D77C(s32 arg0, s32 arg1, s32 arg2) {
+void draw_fade_out(s32 arg0, s32 arg1, s32 arg2) {
     s16 var_ra;
     s16 var_t3;
     s16 var_t4;
@@ -5069,20 +5069,20 @@ void func_8009D77C(s32 arg0, s32 arg1, s32 arg2) {
     if (arg1 == 0) {
         gCurrentTransitionTime[arg0]++;
         if ((gTransitionDuration[arg0] + 1) < gCurrentTransitionTime[arg0]) {
-            func_8009CE64(arg0);
+            handle_screen_transition_complete(arg0);
         }
     }
 }
 
-void func_8009D958(s32 arg0, s32 arg1) {
-    func_8009D77C(arg0, arg1, 0);
+void draw_black_fade_out(s32 arg0, s32 arg1) {
+    draw_fade_out(arg0, arg1, 0);
 }
 
-void func_8009D978(s32 arg0, s32 arg1) {
-    func_8009D77C(arg0, arg1, 1);
+void draw_white_fade_out(s32 arg0, s32 arg1) {
+    draw_fade_out(arg0, arg1, 1);
 }
 
-void func_8009D998(s32 arg0) {
+void draw_black_box_viewport(s32 arg0) {
     s16 var_t0;
     s16 var_t1;
     s16 var_t2;
@@ -5119,12 +5119,12 @@ void func_8009D998(s32 arg0) {
         draw_box(gDisplayListHead, var_t0 - temp_v0, var_t1 - temp_v1, someMath0, someMath1, 0, 0, 0, 0x000000FF);
 }
 
-void func_8009DAA8(void) {
+void draw_screen_fade_out_step(void) {
     u32 var_t0;
 
     gCurrentTransitionTime[4]++;
     if (gCurrentTransitionTime[4] >= (gTransitionDuration[4] + 1)) {
-        func_8009CE64(4);
+        handle_screen_transition_complete(4);
     }
     gDPPipeSync(gDisplayListHead++);
     var_t0 = (gCurrentTransitionTime[4] * 255) / gTransitionDuration[4];
@@ -5134,7 +5134,7 @@ void func_8009DAA8(void) {
     gDisplayListHead = draw_box(gDisplayListHead, 0, 0, 0x00000140, 0x000000F0, 0, 0, 0, (s32) var_t0);
 }
 
-void func_8009DB8C(void) {
+void draw_screen_mosaic_fade_out_step(void) {
     s32 temp_t4;
     s32 temp_t5;
     s32 var_s0;
@@ -5150,7 +5150,7 @@ void func_8009DB8C(void) {
                 sTKMK00_LowResBuffer[var_s0] = 1;
             }
         } else {
-            func_8009CE64(4);
+            handle_screen_transition_complete(4);
         }
     } else {
         var_s0 = 0;
@@ -5204,7 +5204,7 @@ void start_screen_fade_in(s32 arg0) {
     start_screen_fade_in_type(arg0, 1);
 }
 
-void func_8009DF6C(s32 arg0) {
+void start_screen_fade_in_alt(s32 arg0) {
     start_screen_fade_in_type(arg0, 8);
 }
 
