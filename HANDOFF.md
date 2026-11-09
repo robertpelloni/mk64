@@ -1,9 +1,18 @@
-# Session Handoff - 2026-06-02 (v8.107.40)
+# Session Handoff - 2026-06-02 (v8.107.41)
 
 ## Executive Summary
-Completed decompilation labeling of all remaining unnamed audio routines across `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/player_controller.c`, and `src/update_objects.c`. Verified with static C syntax checking, and bumped the project version to `8.107.40`.
+Completed decompilation labeling of alternative MIO0 decompressor and menu texture rectangle drawing routines across `include/decode.h`, `src/racing/memory.c`, `asm/unused_mio0_decode.s`, `src/menu_items.c`, `src/menu_items.h`, and `src/main.h`. Verified with static C syntax checking and VR4300 assembly, and bumped the project version to `8.107.41`.
 
 ### Recent Fixes & Additions
+- **MIO0 Alternative Decompressor & Menu Rectangle Drawing Routines (v8.107.41):**
+  - `func_80040030` -> `mio0decode_alt`: Alternative MIO0 decompressor variant.
+  - `func_80095BD0` -> `render_textured_rectangle_4b_scaled`: Emits Fast3D matrix and 4-bit texture rectangle rendering display lists with scaling.
+  - `func_80095E10` -> `render_textured_rectangle_16b`: Renders 16-bit texture rectangle tiles with power-of-two alignment.
+  - `func_80096CD8` -> `render_course_preview_static_overlay`: Renders subtle static noise overlay during cup preview transitions.
+  - `func_80097274` -> `render_textured_rectangle_multitile`: Emits 2-cycle multi-tile texture rendering with randomized noise mixing.
+  - `func_80097A14` -> `render_textured_rectangle_16b_copy`: Renders 16-bit texture rectangle using Fast3D G_CYC_COPY mode.
+  - `func_80097AE4` -> `render_textured_rectangle_split_horizontal`: Renders two-half split horizontally scaled texture rectangles.
+  - `func_80097E58` -> `render_textured_rectangle_split_horizontal_scaled`: Renders multi-slice split horizontally scaled texture tiles.
 - **Audio Engine Final Routines (v8.107.40):**
   - `func_800C13F0` -> `audio_dummy_nop`: Empty no-op function stub.
   - `func_800C86D8` -> `audio_play_player_lightning_recovery_voice`: Dispatches character voice line when recovery from lightning effect completes.

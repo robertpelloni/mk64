@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.41] - 2026-06-02
+### Changed
+- Labeled MIO0 alternative decompressor and menu texture rectangle drawing routines in `include/decode.h`, `src/racing/memory.c`, `asm/unused_mio0_decode.s`, `src/menu_items.c`, `src/menu_items.h`, and `src/main.h`:
+  - `func_80040030` -> `mio0decode_alt`: Alternative MIO0 decompressor variant.
+  - `func_80095BD0` -> `render_textured_rectangle_4b_scaled`: Emits Fast3D matrix and 4-bit texture rectangle rendering display lists with scaling.
+  - `func_80095E10` -> `render_textured_rectangle_16b`: Renders 16-bit texture rectangle tiles with power-of-two alignment.
+  - `func_80096CD8` -> `render_course_preview_static_overlay`: Renders subtle static noise overlay during cup preview transitions.
+  - `func_80097274` -> `render_textured_rectangle_multitile`: Emits 2-cycle multi-tile texture rendering with randomized noise mixing.
+  - `func_80097A14` -> `render_textured_rectangle_16b_copy`: Renders 16-bit texture rectangle using Fast3D G_CYC_COPY mode.
+  - `func_80097AE4` -> `render_textured_rectangle_split_horizontal`: Renders two-half split horizontally scaled texture rectangles.
+  - `func_80097E58` -> `render_textured_rectangle_split_horizontal_scaled`: Renders multi-slice split horizontally scaled texture tiles.
+
 ## [8.107.40] - 2026-06-02
 ### Changed
 - Labeled and documented final unnamed audio routines across `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/player_controller.c`, and `src/update_objects.c`:

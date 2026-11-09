@@ -2757,7 +2757,7 @@ void func_80095AE0(MTX_TYPE* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
 
 #undef MTX_TYPE
 
-Gfx* func_80095BD0(Gfx* displayListHead, u8* arg1, f32 arg2, f32 arg3, u32 arg4, u32 arg5, f32 arg6, f32 arg7) {
+Gfx* render_textured_rectangle_4b_scaled(Gfx* displayListHead, u8* arg1, f32 arg2, f32 arg3, u32 arg4, u32 arg5, f32 arg6, f32 arg7) {
     Vtx* var_a1;
     Mtx* sp28;
 
@@ -2798,7 +2798,7 @@ func_80095BD0_label2:
     return func_800959F8(displayListHead, var_a1);
 }
 
-Gfx* func_80095E10(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+Gfx* render_textured_rectangle_16b(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    s32 arg9, u8* argA, u32 argB, u32 argC) {
     u32 var_a1_2 = arg4;
     u32 var_s3 = arg5;
@@ -2998,7 +2998,7 @@ extern u8 D_0B002A00[];
  * Try locking the word at `8018DC80` to see something like 0x20 just before confirming character selection to make it
  * last longer
  */
-Gfx* func_80096CD8(Gfx* displayListHead, s32 xPos, s32 yPos, u32 width, u32 height) {
+Gfx* render_course_preview_static_overlay(Gfx* displayListHead, s32 xPos, s32 yPos, u32 width, u32 height) {
     u32 x;
     u32 y;
     UNUSED s32 pad;
@@ -3088,7 +3088,7 @@ Gfx* func_80096CD8(Gfx* displayListHead, s32 xPos, s32 yPos, u32 width, u32 heig
     return displayListHead;
 }
 
-Gfx* func_80097274(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+Gfx* render_textured_rectangle_multitile(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    s32 arg9, UNUSED u16* argA, u32 argB, u32 argC, UNUSED s32 argD) {
     u32 var_a1_2 = arg4;
     u32 var_s3 = arg5;
@@ -3178,18 +3178,18 @@ Gfx* func_80097274(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, 
     return displayListHead;
 }
 
-Gfx* func_80097A14(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, u8* arg8,
+Gfx* render_textured_rectangle_16b_copy(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, u8* arg8,
                    u32 arg9, u32 argA) {
     gDPPipeSync(displayListHead++);
     gDPSetCycleType(displayListHead++, G_CYC_COPY);
-    displayListHead = func_80095E10(displayListHead, arg1, 0x00001000, 0x00000400, arg2, arg3, arg4, arg5, arg6, arg7,
+    displayListHead = render_textured_rectangle_16b(displayListHead, arg1, 0x00001000, 0x00000400, arg2, arg3, arg4, arg5, arg6, arg7,
                                     arg8, arg9, argA);
     gDPPipeSync(displayListHead++);
     gDPSetCycleType(displayListHead++, G_CYC_1CYCLE);
     return displayListHead;
 }
 
-Gfx* func_80097AE4(Gfx* displayListHead, s8 fmt, s32 arg2, s32 arg3, u8* arg4, s32 width) {
+Gfx* render_textured_rectangle_split_horizontal(Gfx* displayListHead, s8 fmt, s32 arg2, s32 arg3, u8* arg4, s32 width) {
     s32 i;
     s32 temp;
     s32 arg2Copy;
@@ -3222,7 +3222,7 @@ Gfx* func_80097AE4(Gfx* displayListHead, s8 fmt, s32 arg2, s32 arg3, u8* arg4, s
     return displayListHead;
 }
 
-Gfx* func_80097E58(Gfx* displayListHead, s8 fmt, UNUSED u32 arg2, u32 arg3, UNUSED u32 arg4, u32 arg5, s32 arg6,
+Gfx* render_textured_rectangle_split_horizontal_scaled(Gfx* displayListHead, s8 fmt, UNUSED u32 arg2, u32 arg3, UNUSED u32 arg4, u32 arg5, s32 arg6,
                    s32 arg7, u8* someTexture, u32 arg9, UNUSED u32 argA, s32 width) {
     u32 ult;
     u32 temp;
@@ -4335,7 +4335,7 @@ Gfx* render_menu_textures(Gfx* arg0, MenuTexture* arg1, s32 column, s32 row) {
         if (temp_v0_3 != 0) {
             if (gTransitionType[4] != 4) {
                 arg0 =
-                    func_80095E10(arg0, var_s4, 0x00000400, 0x00000400, 0, 0, temp_v0->width, temp_v0->height,
+                    render_textured_rectangle_16b(arg0, var_s4, 0x00000400, 0x00000400, 0, 0, temp_v0->width, temp_v0->height,
                                   temp_v0->dX + column, temp_v0->dY + row, temp_v0_3, temp_v0->width, temp_v0->height);
             } else {
                 arg0 = func_800987D0(arg0, 0U, 0U, temp_v0->width, temp_v0->height, temp_v0->dX + column,
@@ -4365,18 +4365,18 @@ Gfx* func_8009BC9C(Gfx* arg0, MenuTexture* arg1, s32 arg2, s32 arg3, s32 arg4, s
         if (temp_v0_3 != 0) {
             switch (arg4) {
                 case 1:
-                    arg0 = func_80097AE4(arg0, 0, var_s0->dX + arg2, var_s0->dY + arg3, temp_v0_3, arg5);
+                    arg0 = render_textured_rectangle_split_horizontal(arg0, 0, var_s0->dX + arg2, var_s0->dY + arg3, temp_v0_3, arg5);
                     break;
                 case 2:
-                    arg0 = func_80097E58(arg0, 0, 0, 0U, var_s0->width, var_s0->height, var_s0->dX + arg2,
+                    arg0 = render_textured_rectangle_split_horizontal_scaled(arg0, 0, 0, 0U, var_s0->width, var_s0->height, var_s0->dX + arg2,
                                          var_s0->dY + arg3, temp_v0_3, var_s0->width, var_s0->height, arg5);
                     break;
                 case 3:
-                    arg0 = func_80097A14(arg0, 0, 0, 0, var_s0->width, var_s0->height, var_s0->dX + arg2,
+                    arg0 = render_textured_rectangle_16b_copy(arg0, 0, 0, 0, var_s0->width, var_s0->height, var_s0->dX + arg2,
                                          var_s0->dY + arg3, temp_v0_3, var_s0->width, var_s0->height);
                     break;
                 case 4:
-                    arg0 = func_80097274(arg0, 0, 0x00000400, 0x00000400, 0, 0, var_s0->width, var_s0->height,
+                    arg0 = render_textured_rectangle_multitile(arg0, 0, 0x00000400, 0x00000400, 0, 0, var_s0->width, var_s0->height,
                                          var_s0->dX + arg2, var_s0->dY + arg3, (u16*) temp_v0_3, var_s0->width,
                                          var_s0->height, arg5);
                     break;
@@ -4423,12 +4423,12 @@ Gfx* print_letter(Gfx* arg0, MenuTexture* glyphTexture, f32 arg2, f32 arg3, s32 
                 switch (mode) { /* irregular */
                     case 1:
                         gSPDisplayList(arg0++, D_020077F8);
-                        arg0 = func_80095BD0(arg0, temp_v0_2, var_s0->dX + arg2, var_s0->dY + arg3, var_s0->width,
+                        arg0 = render_textured_rectangle_4b_scaled(arg0, temp_v0_2, var_s0->dX + arg2, var_s0->dY + arg3, var_s0->width,
                                              var_s0->height, scaleX, scaleY);
                         break;
                     case 2:
                         gSPDisplayList(arg0++, D_02007818);
-                        arg0 = func_80095BD0(arg0, temp_v0_2, var_s0->dX + arg2, var_s0->dY + arg3, var_s0->width,
+                        arg0 = render_textured_rectangle_4b_scaled(arg0, temp_v0_2, var_s0->dX + arg2, var_s0->dY + arg3, var_s0->width,
                                              var_s0->height, scaleX, scaleY);
                         break;
                 }
@@ -4515,12 +4515,12 @@ Gfx* func_8009C434(Gfx* arg0, struct_8018DEE0_entry* arg1, s32 arg2, s32 arg3, s
         }
         if (arg4 >= 0) {
             arg0 =
-                func_80097E58(arg0, var_t1, 0, 0U, var_s0->width, var_s0->height, var_s0->dX + arg2, var_s0->dY + arg3,
+                render_textured_rectangle_split_horizontal_scaled(arg0, var_t1, 0, 0U, var_s0->width, var_s0->height, var_s0->dX + arg2, var_s0->dY + arg3,
                               (u8*) &gMenuTextureBuffer[var_t0], var_s0->width, var_s0->height, (u32) arg4);
         } else {
             switch (arg4) {
                 case -1:
-                    arg0 = func_80095E10(arg0, var_t1, 0x00000400, 0x00000400, 0, 0, var_s0->width, var_s0->height,
+                    arg0 = render_textured_rectangle_16b(arg0, var_t1, 0x00000400, 0x00000400, 0, 0, var_s0->width, var_s0->height,
                                          var_s0->dX + arg2, var_s0->dY + arg3, (u8*) &gMenuTextureBuffer[var_t0],
                                          var_s0->width, var_s0->height);
                     break;
@@ -4566,7 +4566,7 @@ Gfx* func_8009C708(Gfx* arg0, struct_8018DEE0_entry* arg1, s32 arg2, s32 arg3, s
         }
         if (arg5 >= 0) {
             arg0 =
-                func_80097E58(arg0, var_t0, 0, 0U, var_s1->width, var_s1->height, var_s1->dX + arg2, var_s1->dY + arg3,
+                render_textured_rectangle_split_horizontal_scaled(arg0, var_t0, 0, 0U, var_s1->width, var_s1->height, var_s1->dX + arg2, var_s1->dY + arg3,
                               D_802BFB80.arraySize4[arg1->unk14][arg4 / 2][(arg4 % 2) + 2].pixel_index_array,
                               var_s1->width, var_s1->height, (u32) arg5);
         }
@@ -6224,7 +6224,7 @@ void render_menus(MenuItem* arg0) {
                 func_800A2D1C(arg0);
                 break;
             case MENU_ITEM_TYPE_05E: /* switch 6 */
-                gDisplayListHead = func_80096CD8(gDisplayListHead, 0x00000019, 0x00000072, 0x0000007CU, 0x0000004AU);
+                gDisplayListHead = render_course_preview_static_overlay(gDisplayListHead, 0x00000019, 0x00000072, 0x0000007CU, 0x0000004AU);
                 break;
             case MENU_ITEM_TYPE_0AA: /* switch 6 */
                 func_800A2EB8(arg0);

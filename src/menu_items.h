@@ -18,7 +18,7 @@ Known `types` for `MenuItem`
 0x5E: A box of static over the course images as the cup selection screen loads in.
       It is near unnoticeable though as in practice it doesn't last long enough to be seen.
       Try locking the word at `8018DC80` to see something like 0x20 just before confirming character selection to make
-it last longer See `func_80096CD8` for the actual drawing of the static
+it last longer See `render_course_preview_static_overlay` for the actual drawing of the static
 */
 
 typedef struct {
@@ -394,15 +394,15 @@ Gfx* draw_flash_select_case(Gfx*, s32, s32, s32, s32, s32);
 Gfx* draw_flash_select_case_slow(Gfx*, s32, s32, s32, s32);
 Gfx* draw_flash_select_case_fast(Gfx*, s32, s32, s32, s32);
 Gfx* func_800959F8(Gfx*, Vtx*);
-Gfx* func_80095BD0(Gfx*, u8*, f32, f32, u32, u32, f32, f32);
-Gfx* func_80095E10(Gfx*, s8, s32, s32, s32, s32, s32, s32, s32, s32, u8*, u32, u32);
+Gfx* render_textured_rectangle_4b_scaled(Gfx*, u8*, f32, f32, u32, u32, f32, f32);
+Gfx* render_textured_rectangle_16b(Gfx*, s8, s32, s32, s32, s32, s32, s32, s32, s32, u8*, u32, u32);
 Gfx* func_800963F0(Gfx*, s8, s32, s32, f32, f32, s32, s32, s32, s32, s32, s32, u8*, u32, u32);
-Gfx* func_80096CD8(Gfx* displayListHead, s32 xPos, s32 yPos, u32 width, u32 height);
-Gfx* func_80097274(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+Gfx* render_course_preview_static_overlay(Gfx* displayListHead, s32 xPos, s32 yPos, u32 width, u32 height);
+Gfx* render_textured_rectangle_multitile(Gfx* displayListHead, s8 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    s32 arg9, u16* argA, u32 argB, u32 argC, s32 argD);
-Gfx* func_80097A14(Gfx*, s8, s32, s32, s32, s32, s32, s32, u8*, u32, u32);
-Gfx* func_80097AE4(Gfx*, s8, s32, s32, u8*, s32);
-Gfx* func_80097E58(Gfx* displayListHead, s8 fmt, u32 arg2, u32 arg3, u32 arg4, u32 arg5, s32 arg6, s32 arg7,
+Gfx* render_textured_rectangle_16b_copy(Gfx*, s8, s32, s32, s32, s32, s32, s32, u8*, u32, u32);
+Gfx* render_textured_rectangle_split_horizontal(Gfx*, s8, s32, s32, u8*, s32);
+Gfx* render_textured_rectangle_split_horizontal_scaled(Gfx* displayListHead, s8 fmt, u32 arg2, u32 arg3, u32 arg4, u32 arg5, s32 arg6, s32 arg7,
                    u8* someTexture, u32 arg9, u32 argA, s32 width);
 Gfx* func_80098558(Gfx*, u32, u32, u32, u32, u32, u32, s32, s32);
 Gfx* func_800987D0(Gfx*, u32, u32, u32, u32, s32, s32, u8*, u32, s32);
