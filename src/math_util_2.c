@@ -376,26 +376,26 @@ UNUSED s32 is_within_distance_2d(f32 x1, f32 y1, f32 x2, f32 y2, f32 distance) {
     return ret;
 }
 
-s32 func_80041658(f32 arg0, f32 arg1) {
+s32 atan2s_neg(f32 arg0, f32 arg1) {
     return -atan2s(arg0, arg1) & 0xFFFF;
 }
 
-UNUSED s32 func_80041680(f32 arg0, f32 arg1) {
+UNUSED s32 atan2s_yx_1(f32 arg0, f32 arg1) {
     return atan2s(arg1, arg0);
 }
 
-UNUSED s32 func_800416AC(f32 arg0, f32 arg1) {
+UNUSED s32 atan2s_yx_2(f32 arg0, f32 arg1) {
     return atan2s(arg1, arg0);
 }
 
-f32 func_800416D8(f32 x, f32 z, u16 angle) {
+f32 rotate_xz_x(f32 x, f32 z, u16 angle) {
     f32 cosAngle;
 
     cosAngle = coss(angle);
     return (cosAngle * x) - (sins(angle) * z);
 }
 
-f32 func_80041724(f32 x, f32 z, u16 angle) {
+f32 rotate_xz_z(f32 x, f32 z, u16 angle) {
     f32 sinAngle;
 
     sinAngle = sins(angle);

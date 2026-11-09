@@ -376,8 +376,8 @@ void audio_calculate_sound_relative_camera_position(Camera* arg0, Vec3s rot, str
 
     x = arg0->pos[0] - *arg2->posX;
     y = arg0->pos[2] - *arg2->posZ;
-    arg2->unk18[0] = func_800416D8(x, y, rot[1]);
-    arg2->unk18[2] = func_80041724(x, y, rot[1]);
+    arg2->unk18[0] = rotate_xz_x(x, y, rot[1]);
+    arg2->unk18[2] = rotate_xz_z(x, y, rot[1]);
 }
 
 void audio_calculate_doppler_pitch_shift(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
@@ -532,7 +532,7 @@ void audio_sync_sequence_script_io(u8 player) {
                 D_8018FC10[sp46][1] = sp42;
                 for (var_s0 = 0; var_s0 < 4; var_s0++) {
                     if (D_8018FC10[var_s0][0] != why) {
-                        func_8001AAAC(var_s0, D_8018FC10[var_s0][0], D_8018FC10[var_s0][1]);
+                        camera_set_target_override(var_s0, D_8018FC10[var_s0][0], D_8018FC10[var_s0][1]);
                         D_8018FC10[var_s0][0] = why;
                     }
                 }

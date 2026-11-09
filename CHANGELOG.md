@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.43] - 2026-06-02
+### Changed
+- Labeled coordinate rotation, inverse trigonometric, and camera override routines across `src/math_util_2.c`, `src/math_util_2.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/audio/external.c`, `src/code_80086E70.c`, and `src/update_objects.c`:
+  - `func_800416D8` -> `rotate_xz_x`: Rotates coordinate in XZ plane: `(cos(angle) * x) - (sin(angle) * z)`.
+  - `func_80041724` -> `rotate_xz_z`: Rotates coordinate in XZ plane: `(cos(angle) * z) + (sin(angle) * x)`.
+  - `func_80041658` -> `atan2s_neg`: Computes negative arctangent `-atan2s(x, y) & 0xFFFF`.
+  - `func_80041680` -> `atan2s_yx_1`: Computes arctangent `atan2s(y, x)`.
+  - `func_800416AC` -> `atan2s_yx_2`: Computes arctangent `atan2s(y, x)`.
+  - `func_8001AAAC` -> `camera_set_target_override`: Sets camera target player override request in `D_801646D0[cameraIndex]` triggered by audio sound script events.
+
 ## [8.107.42] - 2026-06-02
 ### Changed
 - Labeled and documented screen transition, viewport fading, and demo sequence audio routines in `src/menu_items.c` and `src/menu_items.h`:

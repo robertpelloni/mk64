@@ -4027,7 +4027,7 @@ void func_8007BBBC(s32 objectIndex) {
             } else {
                 var_f14 = object->velocity[2];
             }
-            object->direction_angle[0] = func_80041658(object->velocity[1], var_f14);
+            object->direction_angle[0] = atan2s_neg(object->velocity[1], var_f14);
             set_and_run_timer_object(objectIndex, 0x00000046);
             break;
         case 3:
@@ -6036,8 +6036,8 @@ void func_80080E8C(s32 objectIndex1, s32 objectIndex2, s32 arg2) {
     init_object(objectIndex1, arg2);
     gObjectList[objectIndex1].unk_0D5 = 2;
     anAngle = gObjectList[objectIndex2].direction_angle[1];
-    thing1 = func_800416D8(D_800E594C[arg2 * 2 + 1], D_800E594C[arg2 * 2 + 0], anAngle);
-    thing0 = func_80041724(D_800E594C[arg2 * 2 + 1], D_800E594C[arg2 * 2 + 0], anAngle);
+    thing1 = rotate_xz_x(D_800E594C[arg2 * 2 + 1], D_800E594C[arg2 * 2 + 0], anAngle);
+    thing0 = rotate_xz_z(D_800E594C[arg2 * 2 + 1], D_800E594C[arg2 * 2 + 0], anAngle);
     gObjectList[objectIndex1].origin_pos[0] = gObjectList[objectIndex2].pos[0] + thing0;
     gObjectList[objectIndex1].origin_pos[1] = gObjectList[objectIndex2].surfaceHeight - 9.0;
     gObjectList[objectIndex1].origin_pos[2] = gObjectList[objectIndex2].pos[2] + thing1;

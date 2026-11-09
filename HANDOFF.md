@@ -1,9 +1,16 @@
-# Session Handoff - 2026-06-02 (v8.107.42)
+# Session Handoff - 2026-06-02 (v8.107.43)
 
 ## Executive Summary
-Completed decompilation labeling of screen transitions, viewport fading, and demo sequence audio routines across `src/menu_items.c` and `src/menu_items.h`. Verified with static C syntax checking and bumped the project version to `8.107.42`.
+Completed decompilation labeling of 2D coordinate rotation, inverse trigonometric, and camera target override trigger routines across `src/math_util_2.c`, `src/math_util_2.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/audio/external.c`, `src/code_80086E70.c`, and `src/update_objects.c`. Verified with static C syntax checking and bumped the project version to `8.107.43`.
 
 ### Recent Fixes & Additions
+- **Math Util Coordinate Rotation & Camera Override Routines (v8.107.43):**
+  - `func_800416D8` -> `rotate_xz_x`: Rotates coordinate in XZ plane: `(cos(angle) * x) - (sin(angle) * z)`.
+  - `func_80041724` -> `rotate_xz_z`: Rotates coordinate in XZ plane: `(cos(angle) * z) + (sin(angle) * x)`.
+  - `func_80041658` -> `atan2s_neg`: Computes negative arctangent `-atan2s(x, y) & 0xFFFF`.
+  - `func_80041680` -> `atan2s_yx_1`: Computes arctangent `atan2s(y, x)`.
+  - `func_800416AC` -> `atan2s_yx_2`: Computes arctangent `atan2s(y, x)`.
+  - `func_8001AAAC` -> `camera_set_target_override`: Sets camera target player override request in `D_801646D0[cameraIndex]` triggered by audio sound script events.
 - **Screen Transitions & Viewport Fading Routines (v8.107.42):**
   - `func_8009CE1C` -> `menu_init_demo_audio`: Dispatches demo mode audio sequence command (0xE0000002) in multiplayer.
   - `func_8009CE64` -> `handle_screen_transition_complete`: Handles menu navigation or race state switches upon transition completion.

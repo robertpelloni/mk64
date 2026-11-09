@@ -3866,7 +3866,7 @@ void func_8001A588(UNUSED u16* localD_80152300, Camera* camera, Player* player, 
     }
 }
 
-void func_8001AAAC(s16 arg0, s16 arg1, s16 arg2) {
+void camera_set_target_override(s16 arg0, s16 arg1, s16 arg2) {
     if (D_801646D0[arg0].unk0 == 0) {
         D_801646D0[arg0].unk0 = 1;
         D_801646D0[arg0].unk2 = arg1;

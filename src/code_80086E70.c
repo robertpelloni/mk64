@@ -1881,7 +1881,7 @@ void func_8008B928(s32 objectIndex, s16 arg1, s16 arg2, s16 arg3, SplineData* sp
     object->velocity[1] = (f32) (spline->controlPoints[1].pos[1] - spline->controlPoints[0].pos[1]);
     object->velocity[2] = (f32) (spline->controlPoints[1].pos[2] - spline->controlPoints[0].pos[2]);
     object->direction_angle[1] = get_y_direction_angle(objectIndex);
-    object->velocity[2] = func_800416D8(object->velocity[2], object->velocity[0], -object->direction_angle[1]);
+    object->velocity[2] = rotate_xz_x(object->velocity[2], object->velocity[0], -object->direction_angle[1]);
     object->direction_angle[0] = get_x_direction_angle(objectIndex);
 }
 

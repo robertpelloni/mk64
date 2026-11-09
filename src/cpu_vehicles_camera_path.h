@@ -273,7 +273,7 @@ void func_8001A3D8(s32, f32, s32);
 void func_8001A450(s32, s32, s32);
 void func_8001A518(s32, s32, s32);
 void func_8001A588(u16*, Camera*, Player*, s8, s32);
-void func_8001AAAC(s16, s16, s16);
+void camera_set_target_override(s16, s16, s16);
 void func_8001AB00(void);
 void cpu_decisions_branch_item(s32, s16*, s32);
 void func_8001ABE0(s32, CpuItemStrategyData*);
