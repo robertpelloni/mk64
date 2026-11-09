@@ -249,7 +249,7 @@ void audio_update_all_sound_banks(void);
 void sound_init(void);
 void audio_init_player_sound_bank(void);
 void audio_soft_reset(void);
-void audio_init(void);
+void game_audio_init(void);
 void audio_update_kart_throttle_timer(u8);
 void audio_update_kart_engine_rev_sound(u8);
 

@@ -1,9 +1,19 @@
-# Session Handoff - 2026-06-02 (v8.107.43)
+# Session Handoff - 2026-06-02 (v8.107.44)
 
 ## Executive Summary
-Completed decompilation labeling of 2D coordinate rotation, inverse trigonometric, and camera target override trigger routines across `src/math_util_2.c`, `src/math_util_2.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path.h`, `src/audio/external.c`, `src/code_80086E70.c`, and `src/update_objects.c`. Verified with static C syntax checking and bumped the project version to `8.107.43`.
+Completed decompilation labeling of audio memory allocation, sample DMA caching, filter calculation, and bank loading routines across `src/audio/load.c`, `src/audio/load.h`, `src/audio/heap.c`, `src/audio/heap.h`, `src/audio/port_eu.c`, and `src/audio/seqplayer.c`. Verified with static C syntax checking and bumped the project version to `8.107.44`.
 
 ### Recent Fixes & Additions
+- **Audio Heap, Load, and Cache Routines (v8.107.44):**
+  - `func_800BB030` -> `init_sample_dma_buffers`: Allocates and initializes audio sample DMA buffers and reuse queues from `gNotesAndBuffersPool`.
+  - `func_800BB304` -> `audio_dma_load_sample_immediate`: Immediately loads and DMAs audio sample into memory buffer.
+  - `func_800BB388` -> `audio_load_instrument_samples_immediate`: Immediately loads samples for normal and high/low note ranges of an instrument or drum.
+  - `func_800BB43C` -> `patch_seq_file`: Relocates sequence file offset pointers to base address.
+  - `func_800BB584` -> `patch_audio_bank_by_id`: Patches audio bank instruments and drum table offsets by bank ID.
+  - `func_800B90E0` -> `sound_alloc_pool_clear`: Resets sound allocation pool pointers and allocated count.
+  - `func_800B914C` -> `session_pools_init`: Initializes session note/buffer and sequence/bank pools.
+  - `func_800B9BE4` -> `audio_calculate_filter_coefficients`: Computes audio IIR/FIR filter coefficient arrays.
+  - `func_800BA8B0` -> `audio_load_asset_to_pool`: Allocates memory and DMAs sequence or bank assets into `gUnkPool1`.
 - **Math Util Coordinate Rotation & Camera Override Routines (v8.107.43):**
   - `func_800416D8` -> `rotate_xz_x`: Rotates coordinate in XZ plane: `(cos(angle) * x) - (sin(angle) * z)`.
   - `func_80041724` -> `rotate_xz_z`: Rotates coordinate in XZ plane: `(cos(angle) * z) + (sin(angle) * x)`.

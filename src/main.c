@@ -41,6 +41,7 @@
 #include "buffers/gfx_output_buffer.h"
 
 void func_80091B78(void);
+void game_audio_init(void);
 void audio_init(void);
 void create_debug_thread(void);
 void start_debug_thread(void);
@@ -1189,7 +1190,7 @@ void thread5_game_loop(UNUSED void* arg) {
     gNmiUnknown6 = &pAppNmiBuffer[28]; // 4  u8's, tracking number of Battle mode wins by player 1/2/3/4
     rendering_init();
     read_controllers();
-    audio_init();
+    game_audio_init();
 
     while (true) {
         audio_game_loop_tick();

@@ -1817,7 +1817,7 @@ void audio_soft_reset(void) {
 }
 
 // game_audio_init?
-void audio_init(void) {
+void game_audio_init(void) {
     audio_reset_state_and_cameras();
     audio_reset_all_sequence_player_settings();
     sound_init();

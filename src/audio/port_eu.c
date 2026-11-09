@@ -198,7 +198,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
             }
             break;
         case 0xF3:
-            func_800BB388(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
+            audio_load_instrument_samples_immediate(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
             break;
     }
 }
