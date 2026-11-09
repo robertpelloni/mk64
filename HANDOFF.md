@@ -1,9 +1,14 @@
-# Session Handoff - 2026-06-02 (v8.107.44)
+# Session Handoff - 2026-06-02 (v8.107.45)
 
 ## Executive Summary
-Completed decompilation labeling of audio memory allocation, sample DMA caching, filter calculation, and bank loading routines across `src/audio/load.c`, `src/audio/load.h`, `src/audio/heap.c`, `src/audio/heap.h`, `src/audio/port_eu.c`, and `src/audio/seqplayer.c`. Verified with static C syntax checking and bumped the project version to `8.107.44`.
+Completed decompilation labeling of 100% of all functions in the audio subsystem, eliminating all unnamed `func_800*` routines across `src/audio/synthesis.c`, `src/audio/synthesis.h`, `src/audio/playback.c`, `src/audio/playback.h`, and `src/audio/seqplayer.h`. Verified with static C syntax checking and bumped the project version to `8.107.45`.
 
 ### Recent Fixes & Additions
+- **Complete Audio Subsystem Labeling (v8.107.45):**
+  - `func_800B6FB4` -> `note_subs_disable_remaining_updates`: Disables active note sub-frames across remaining frame updates when no note re-initialization is required.
+  - `func_800B86A0` -> `synthesis_process_note_envelope_and_pan`: Dispatches RSP audio synthesis commands for ADSR envelope volume ramping, stereo mixer routing, and headset panning.
+  - `func_800BD8F4` -> `note_release_to_layer`: Releases note ownership from its previous layer and assigns it to a new channel layer.
+  - Removed stray unused prototype `func_800BEF2C` from `src/audio/seqplayer.h`.
 - **Audio Heap, Load, and Cache Routines (v8.107.44):**
   - `func_800BB030` -> `init_sample_dma_buffers`: Allocates and initializes audio sample DMA buffers and reuse queues from `gNotesAndBuffersPool`.
   - `func_800BB304` -> `audio_dma_load_sample_immediate`: Immediately loads and DMAs audio sample into memory buffer.

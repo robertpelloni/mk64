@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.45] - 2026-06-02
+### Changed
+- Completed 100% labeling of all remaining unnamed functions in the audio subsystem across `src/audio/synthesis.c`, `src/audio/synthesis.h`, `src/audio/playback.c`, `src/audio/playback.h`, and `src/audio/seqplayer.h`:
+  - `func_800B6FB4` -> `note_subs_disable_remaining_updates`: Disables active note sub-frames across remaining frame updates when no note re-initialization is required.
+  - `func_800B86A0` -> `synthesis_process_note_envelope_and_pan`: Dispatches RSP audio synthesis commands for ADSR envelope volume ramping, stereo mixer routing, and headset panning.
+  - `func_800BD8F4` -> `note_release_to_layer`: Releases note ownership from its previous layer and assigns it to a new channel layer.
+  - Removed stray unused prototype `func_800BEF2C` from `src/audio/seqplayer.h`.
+
 ## [8.107.44] - 2026-06-02
 ### Changed
 - Labeled audio memory allocation, sample DMA caching, and bank loading routines across `src/audio/load.c`, `src/audio/load.h`, `src/audio/heap.c`, `src/audio/heap.h`, `src/audio/port_eu.c`, and `src/audio/seqplayer.c`:
