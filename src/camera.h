@@ -61,16 +61,16 @@ void camera_trigger_screen_shake(Camera*);
 void player_trigger_screen_shake(Player*, f32);
 void camera_calculate_grid_start_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32, s32);
 void camera_calculate_driving_follow_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);
-void func_8001D53C(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16, s16);
-void func_8001D794(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16);
-void func_8001D944(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);
-void func_8001E0C4(Camera*, Player*, s8);
-void func_8001E45C(Camera*, Player*, s8);
-void func_8001E8E8(Camera*, Player*, s8);
-void func_8001EA0C(Camera*, Player*, s8);
-void func_8001EE98(Player*, Camera*, s8);
-void func_8001F394(Player*, f32*);
-void func_8001F87C(s32);
+void camera_calculate_lakitu_retrieval_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16, s16);
+void camera_calculate_reverse_look_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16);
+void camera_calculate_close_follow_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);
+void camera_update_grid_start(Camera*, Player*, s8);
+void camera_update_normal_follow(Camera*, Player*, s8);
+void camera_update_lakitu_follow(Camera*, Player*, s8);
+void camera_update_close_follow(Camera*, Player*, s8);
+void camera_update_state_machine(Player*, Camera*, s8);
+void camera_update_dynamic_fov_zoom(Player*, f32*);
+void camera_check_grid_start_complete(s32);
 
 extern f32 D_800DDB30[];
 

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.48] - 2026-06-02
+### Changed
+- Labeled camera follow positioning, Lakitu tracking, and dynamic FOV zoom routines in `src/camera.c`, `src/camera.h`, and `src/racing/skybox_and_splitscreen.c`:
+  - `func_8001D53C` -> `camera_calculate_lakitu_retrieval_position`: Computes camera position and orientation during Lakitu retrieval.
+  - `func_8001D794` -> `camera_calculate_reverse_look_position`: Computes reverse/behind camera lookAt and position.
+  - `func_8001D944` -> `camera_calculate_close_follow_position`: Computes close-up behind camera follow position.
+  - `func_8001E0C4` -> `camera_update_grid_start`: Updates camera during race countdown and grid positioning.
+  - `func_8001E45C` -> `camera_update_normal_follow`: Updates camera in standard driving follow mode with drift angling.
+  - `func_8001E8E8` -> `camera_update_lakitu_follow`: Updates camera when player kart is being transported by Lakitu.
+  - `func_8001EA0C` -> `camera_update_close_follow`: Updates camera in close-up behind-the-kart driving mode.
+  - `func_8001EE98` -> `camera_update_state_machine`: Dispatches per-frame camera state update machine based on game mode and pause state.
+  - `func_8001F394` -> `camera_update_dynamic_fov_zoom`: Computes dynamic field-of-view zoom level based on speed, mushroom boosts, and squish triggers.
+  - `func_8001F87C` -> `camera_check_grid_start_complete`: Checks if all Grand Prix karts have completed grid setup to transition camera to race follow mode.
+
 ## [8.107.47] - 2026-06-02
 ### Changed
 - Labeled camera screen shake and position calculation routines across `src/camera.c`, `src/camera.h`, `src/player_controller.c`, and `src/update_objects.c`:

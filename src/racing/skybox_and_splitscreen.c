@@ -602,22 +602,22 @@ void set_perspective_and_aspect_ratio(void) {
 void func_802A4EF4(void) {
     switch (gActiveScreenMode) {
         case SCREEN_MODE_1P:
-            func_8001F394(gPlayerOne, &gCameraZoom[0]);
+            camera_update_dynamic_fov_zoom(gPlayerOne, &gCameraZoom[0]);
             break;
 
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
-            func_8001F394(gPlayerOne, &gCameraZoom[0]);
-            func_8001F394(gPlayerTwo, &gCameraZoom[1]);
+            camera_update_dynamic_fov_zoom(gPlayerOne, &gCameraZoom[0]);
+            camera_update_dynamic_fov_zoom(gPlayerTwo, &gCameraZoom[1]);
             break;
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL:
-            func_8001F394(gPlayerOne, &gCameraZoom[0]);
-            func_8001F394(gPlayerTwo, &gCameraZoom[1]);
+            camera_update_dynamic_fov_zoom(gPlayerOne, &gCameraZoom[0]);
+            camera_update_dynamic_fov_zoom(gPlayerTwo, &gCameraZoom[1]);
             break;
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
-            func_8001F394(gPlayerOne, &gCameraZoom[0]);
-            func_8001F394(gPlayerTwo, &gCameraZoom[1]);
-            func_8001F394(gPlayerThree, &gCameraZoom[2]);
-            func_8001F394(gPlayerFour, &gCameraZoom[3]);
+            camera_update_dynamic_fov_zoom(gPlayerOne, &gCameraZoom[0]);
+            camera_update_dynamic_fov_zoom(gPlayerTwo, &gCameraZoom[1]);
+            camera_update_dynamic_fov_zoom(gPlayerThree, &gCameraZoom[2]);
+            camera_update_dynamic_fov_zoom(gPlayerFour, &gCameraZoom[3]);
             break;
     }
 }

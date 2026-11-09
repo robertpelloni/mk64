@@ -1,9 +1,20 @@
-# Session Handoff - 2026-06-02 (v8.107.47)
+# Session Handoff - 2026-06-02 (v8.107.48)
 
 ## Executive Summary
-Completed decompilation labeling of camera screen shake triggers and track/follow position calculation routines across `src/camera.c`, `src/camera.h`, `src/player_controller.c`, and `src/update_objects.c`. Verified with static C syntax checking, and bumped the project version to `8.107.47`.
+Completed decompilation labeling of camera follow positioning, Lakitu tracking, and dynamic FOV zoom routines across `src/camera.c`, `src/camera.h`, and `src/racing/skybox_and_splitscreen.c`. Verified with static C syntax checking, and bumped the project version to `8.107.48`.
 
 ### Recent Fixes & Additions
+- **Camera Follow, Lakitu Tracking, and Dynamic FOV Zoom (v8.107.48):**
+  - `func_8001D53C` -> `camera_calculate_lakitu_retrieval_position`: Computes camera position and orientation during Lakitu retrieval.
+  - `func_8001D794` -> `camera_calculate_reverse_look_position`: Computes reverse/behind camera lookAt and position.
+  - `func_8001D944` -> `camera_calculate_close_follow_position`: Computes close-up behind camera follow position.
+  - `func_8001E0C4` -> `camera_update_grid_start`: Updates camera during race countdown and grid positioning.
+  - `func_8001E45C` -> `camera_update_normal_follow`: Updates camera in standard driving follow mode with drift angling.
+  - `func_8001E8E8` -> `camera_update_lakitu_follow`: Updates camera when player kart is being transported by Lakitu.
+  - `func_8001EA0C` -> `camera_update_close_follow`: Updates camera in close-up behind-the-kart driving mode.
+  - `func_8001EE98` -> `camera_update_state_machine`: Dispatches per-frame camera state update machine based on game mode and pause state.
+  - `func_8001F394` -> `camera_update_dynamic_fov_zoom`: Computes dynamic field-of-view zoom level based on speed, mushroom boosts, and squish triggers.
+  - `func_8001F87C` -> `camera_check_grid_start_complete`: Checks if all Grand Prix karts have completed grid setup to transition camera to race follow mode.
 - **Camera Screen Shake & Positioning Routines (v8.107.47):**
   - `func_8001CA10` -> `camera_trigger_screen_shake`: Triggers screen shake with default 6.0f intensity on camera.
   - `func_8001CA24` -> `player_trigger_screen_shake`: Triggers screen shake for the viewport camera belonging to `player` with specified intensity.

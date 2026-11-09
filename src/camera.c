@@ -405,7 +405,7 @@ void camera_calculate_driving_follow_position(Player* player, Camera* camera, Ve
     }
 }
 
-void func_8001D53C(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, s16 arg6, s16 arg7) {
+void camera_calculate_lakitu_retrieval_position(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, s16 arg6, s16 arg7) {
     Mat3 sp74;
     Vec3f sp68;
     Vec3f sp5C;
@@ -455,7 +455,7 @@ void func_8001D53C(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* a
     D_80164AA0[arg7] = 0.0f;
 }
 
-void func_8001D794(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, s16 arg6) {
+void camera_calculate_reverse_look_position(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, s16 arg6) {
     Mat3 sp6C;
     Vec3f sp60;
     Vec3f sp54;
@@ -496,7 +496,7 @@ void func_8001D794(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* a
     *arg5 = camera->pos[2] + ((test3 - camera->pos[2]) * 1);
 }
 
-void func_8001D944(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32* arg6,
+void camera_calculate_close_follow_position(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32* arg6,
                    s16 arg7, s16 index) {
     Mat3 sp9C;
     Vec3f sp90;
@@ -625,7 +625,7 @@ void func_8001D944(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* a
     }
 }
 
-void func_8001E0C4(Camera* camera, Player* player, s8 arg2) {
+void camera_update_grid_start(Camera* camera, Player* player, s8 arg2) {
     UNUSED s32 pad[6];
     f32 temp_f12;
     f32 sp80;
@@ -686,7 +686,7 @@ void func_8001E0C4(Camera* camera, Player* player, s8 arg2) {
 }
 
 // This function has a few stack variables.
-void func_8001E45C(Camera* camera, Player* player, s8 arg2) {
+void camera_update_normal_follow(Camera* camera, Player* player, s8 arg2) {
     UNUSED s32 pad[6];
     f32 temp_f12;
     f32 sp90;
@@ -780,7 +780,7 @@ void func_8001E45C(Camera* camera, Player* player, s8 arg2) {
     camera->rot[2] = 0;
 }
 
-void func_8001E8E8(Camera* camera, Player* player, s8 arg2) {
+void camera_update_lakitu_follow(Camera* camera, Player* player, s8 arg2) {
     UNUSED f32 pad[6];
     f32 temp_f12;
     f32 sp88;
@@ -795,7 +795,7 @@ void func_8001E8E8(Camera* camera, Player* player, s8 arg2) {
 
     camera->unk_B0 = 0;
     camera->unk_2C = player->rotation[1];
-    func_8001D53C(player, camera, sp5C, &sp7C, &sp78, &sp74, (s16) (s32) player->rotation[1], (s16) (s32) arg2);
+    camera_calculate_lakitu_retrieval_position(player, camera, sp5C, &sp7C, &sp78, &sp74, (s16) (s32) player->rotation[1], (s16) (s32) arg2);
     check_bounding_collision(&camera->collision, 5.0f, sp7C, sp78, sp74);
     camera->lookAt[0] = sp5C[0];
     camera->lookAt[1] = sp5C[1];
@@ -811,7 +811,7 @@ void func_8001E8E8(Camera* camera, Player* player, s8 arg2) {
     camera->rot[2] = 0;
 }
 
-void func_8001EA0C(Camera* camera, Player* player, s8 arg2) {
+void camera_update_close_follow(Camera* camera, Player* player, s8 arg2) {
     UNUSED s32 pad[6];
     f32 temp_f12;
     f32 sp90;
@@ -880,10 +880,10 @@ void func_8001EA0C(Camera* camera, Player* player, s8 arg2) {
         (((player->effects & AB_SPIN_EFFECT) == AB_SPIN_EFFECT) && (player->unk_078 != 0)) ||
         (player->collision.surfaceDistance[0] <= 0.0f) || (player->collision.surfaceDistance[1] <= 0.0f) ||
         ((player->effects & LIGHTNING_STRIKE_EFFECT) == LIGHTNING_STRIKE_EFFECT)) {
-        func_8001D944(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
+        camera_calculate_close_follow_position(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
     } else {
         adjust_angle(&camera->unk_2C, (s16) (player->rotation[1] + camera->unk_B0), var_a3);
-        func_8001D944(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
+        camera_calculate_close_follow_position(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
     }
     temp = 3;
     camera->someBitFlags &= 0xFFFB;
@@ -906,7 +906,7 @@ void func_8001EA0C(Camera* camera, Player* player, s8 arg2) {
     camera->rot[2] = 0;
 }
 
-void func_8001EE98(Player* player, Camera* camera, s8 index) {
+void camera_update_state_machine(Player* player, Camera* camera, s8 index) {
     s32 cameraIndex;
 
     if (camera == camera1) {
@@ -990,28 +990,28 @@ void func_8001EE98(Player* player, Camera* camera, s8 index) {
             case 1:
                 if (((player->lakituProps & LAKITU_RETRIEVAL) == LAKITU_RETRIEVAL) ||
                     ((player->lakituProps & HELD_BY_LAKITU) == HELD_BY_LAKITU)) {
-                    func_8001E8E8(camera, player, index);
+                    camera_update_lakitu_follow(camera, player, index);
                     break;
                 }
-                func_8001E45C(camera, player, index);
+                camera_update_normal_follow(camera, player, index);
                 break;
             case 8:
-                func_8001E0C4(camera, player, index);
-                func_8001F87C(cameraIndex);
+                camera_update_grid_start(camera, player, index);
+                camera_check_grid_start_complete(cameraIndex);
                 break;
             case 9:
                 if (((player->lakituProps & LAKITU_RETRIEVAL) == LAKITU_RETRIEVAL) ||
                     ((player->lakituProps & HELD_BY_LAKITU) == HELD_BY_LAKITU)) {
-                    func_8001E8E8(camera, player, index);
+                    camera_update_lakitu_follow(camera, player, index);
                     break;
                 }
-                func_8001EA0C(camera, player, index);
+                camera_update_close_follow(camera, player, index);
                 break;
         }
     }
 }
 
-void func_8001F394(Player* player, f32* arg1) {
+void camera_update_dynamic_fov_zoom(Player* player, f32* arg1) {
     f32 var_f0;
     UNUSED s32 pad;
     s32 playerIndex;
@@ -1143,7 +1143,7 @@ void func_8001F394(Player* player, f32* arg1) {
     camera->unk_B4 = var_f0;
 }
 
-void func_8001F87C(s32 cameraId) {
+void camera_check_grid_start_complete(s32 cameraId) {
     s32 playerIndex;
     // Why?
     s32 id = cameraId;
