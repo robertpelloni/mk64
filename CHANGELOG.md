@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.47] - 2026-06-02
+### Changed
+- Labeled camera screen shake and position calculation routines across `src/camera.c`, `src/camera.h`, `src/player_controller.c`, and `src/update_objects.c`:
+  - `func_8001CA10` -> `camera_trigger_screen_shake`: Triggers screen shake with default 6.0f intensity on camera.
+  - `func_8001CA24` -> `player_trigger_screen_shake`: Triggers screen shake for the viewport camera belonging to `player` with specified intensity.
+  - `func_8001CA78` -> `camera_calculate_grid_start_position`: Computes fixed starting grid track orientation and camera offset.
+  - `func_8001CCEC` -> `camera_calculate_driving_follow_position`: Computes standard behind-the-kart driving camera follow position with vertical bounce and shake decay.
+
 ## [8.107.46] - 2026-06-02
 ### Changed
 - Labeled ghost replay compression, decompression, buffer swapping, and cinematic player transition routines across `src/replays.c`, `src/replays.h`, `src/save.c`, `src/code_800029B0.c`, `src/menu_items.c`, `src/racing/race_logic.c`, and `asm/mio0_decode.s`:

@@ -188,12 +188,12 @@ void camera_init(f32 posX, f32 posY, f32 posZ, UNUSED s16 rot, u32 arg4, s32 cam
     planar_angles(camera->pos, camera->lookAt, camera->rot);
 }
 
-void func_8001CA10(Camera* camera) {
+void camera_trigger_screen_shake(Camera* camera) {
     camera->unk_94.unk_8 = 0;
     camera->unk_94.unk_0 = 6.0f;
 }
 
-void func_8001CA24(Player* player, f32 arg1) {
+void player_trigger_screen_shake(Player* player, f32 arg1) {
     Camera* camera = &cameras[0];
 
     if (player == gPlayerTwo) {
@@ -209,7 +209,7 @@ void func_8001CA24(Player* player, f32 arg1) {
     camera->unk_94.unk_0 = arg1;
 }
 
-void func_8001CA78(UNUSED Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32 huh,
+void camera_calculate_grid_start_position(UNUSED Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32 huh,
                    UNUSED s32 wut) {
     Mat3 sp74;
     Vec3f sp68;
@@ -262,7 +262,7 @@ void func_8001CA78(UNUSED Player* player, Camera* camera, Vec3f arg2, f32* arg3,
     *arg5 = ((temp_f16 - posZ) * 1) + posZ;
 }
 
-void func_8001CCEC(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32* arg6,
+void camera_calculate_driving_follow_position(Player* player, Camera* camera, Vec3f arg2, f32* arg3, f32* arg4, f32* arg5, UNUSED s32* arg6,
                    s16 arg7, s16 index) {
     Mat3 sp9C;
     Vec3f sp90;
@@ -648,7 +648,7 @@ void func_8001E0C4(Camera* camera, Player* player, s8 arg2) {
         var_a2 = (player->unk_078 / 3) + 0x87;
     }
     adjust_angle(&camera->unk_2C, player->rotation[1], var_a2);
-    func_8001CA78(player, camera, sp60, &sp74, &sp70, &sp6C, camera->unk_2C, arg2);
+    camera_calculate_grid_start_position(player, camera, sp60, &sp74, &sp70, &sp6C, camera->unk_2C, arg2);
     camera->someBitFlags &= ~0x0004;
     temp_t7 = check_bounding_collision(&camera->collision, test, sp74, sp70, sp6C);
     if (camera->collision.surfaceDistance[2] < 0.0f) {
@@ -754,10 +754,10 @@ void func_8001E45C(Camera* camera, Player* player, s8 arg2) {
         (((player->effects & AB_SPIN_EFFECT) == AB_SPIN_EFFECT) && (player->unk_078 != 0)) ||
         (player->collision.surfaceDistance[0] <= 0.0f) || (player->collision.surfaceDistance[1] <= 0.0f) ||
         ((player->effects & LIGHTNING_STRIKE_EFFECT) == LIGHTNING_STRIKE_EFFECT)) {
-        func_8001CCEC(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
+        camera_calculate_driving_follow_position(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
     } else {
         adjust_angle(&camera->unk_2C, (s16) (player->rotation[1] + camera->unk_B0), var_a3);
-        func_8001CCEC(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
+        camera_calculate_driving_follow_position(player, camera, sp64, &sp84, &sp80, &sp7C, &sp58, (s32) camera->unk_2C, (s32) arg2);
     }
     temp = 3;
     camera->someBitFlags &= 0xFFFB;

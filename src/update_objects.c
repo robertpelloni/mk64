@@ -5961,7 +5961,7 @@ void func_80080A4C(s32 objectIndex, s32 cameraPlayerId) {
     if (gScreenModeSelection != SCREEN_MODE_3P_4P_SPLITSCREEN) {
         if ((func_80072320(objectIndex, 0x00000010) != 0) &&
             (is_within_horizontal_distance_of_player(objectIndex, player, 500.0f) != false)) {
-            func_8001CA10(camera);
+            camera_trigger_screen_shake(camera);
             audio_play_sound_at_position_3d(gObjectList[objectIndex].pos, gObjectList[objectIndex].velocity,
                           SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
         }

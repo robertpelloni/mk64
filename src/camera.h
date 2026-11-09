@@ -57,10 +57,10 @@ typedef struct {
 } Camera; /* size = 0xB8 */
 
 void camera_init(f32, f32, f32, s16, u32, s32);
-void func_8001CA10(Camera*);
-void func_8001CA24(Player*, f32);
-void func_8001CA78(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32, s32);
-void func_8001CCEC(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);
+void camera_trigger_screen_shake(Camera*);
+void player_trigger_screen_shake(Player*, f32);
+void camera_calculate_grid_start_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32, s32);
+void camera_calculate_driving_follow_position(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);
 void func_8001D53C(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16, s16);
 void func_8001D794(Player*, Camera*, Vec3f, f32*, f32*, f32*, s16);
 void func_8001D944(Player*, Camera*, Vec3f, f32*, f32*, f32*, s32*, s16, s16);

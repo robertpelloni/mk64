@@ -1888,7 +1888,7 @@ void func_8002C7E4(Player* player, s8 playerIndex, s8 arg2) {
             player->unk_046 |= 1;
             player->unk_046 |= 8;
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
-                func_8001CA24(player, 2.8f);
+                player_trigger_screen_shake(player, 2.8f);
             }
             if ((player->unk_046 & CRITTER_TOUCH) == CRITTER_TOUCH) {
                 if ((player->unk_046 & CRITTER_TOUCH_GATE) != CRITTER_TOUCH_GATE) {
@@ -1941,7 +1941,7 @@ void func_8002C954(Player* player, s8 playerId, Vec3f velocity) {
         player->unk_046 |= 0x20;
     }
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && (((player->speed / 18.0f) * 216.0f) > 30.0f)) {
-        func_8001CA24(player, 3.0f);
+        player_trigger_screen_shake(player, 3.0f);
     }
     player->unk_046 |= 0x10;
     player->unk_256++;

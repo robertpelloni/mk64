@@ -1,9 +1,14 @@
-# Session Handoff - 2026-06-02 (v8.107.46)
+# Session Handoff - 2026-06-02 (v8.107.47)
 
 ## Executive Summary
-Completed decompilation labeling of all ghost replay compression, decompression, buffer swapping, and cinematic player transition routines across `src/replays.c`, `src/replays.h`, `src/save.c`, `src/code_800029B0.c`, `src/menu_items.c`, `src/racing/race_logic.c`, and `asm/mio0_decode.s`. Verified with static C syntax checking and VR4300 assembly, and bumped the project version to `8.107.46`.
+Completed decompilation labeling of camera screen shake triggers and track/follow position calculation routines across `src/camera.c`, `src/camera.h`, `src/player_controller.c`, and `src/update_objects.c`. Verified with static C syntax checking, and bumped the project version to `8.107.47`.
 
 ### Recent Fixes & Additions
+- **Camera Screen Shake & Positioning Routines (v8.107.47):**
+  - `func_8001CA10` -> `camera_trigger_screen_shake`: Triggers screen shake with default 6.0f intensity on camera.
+  - `func_8001CA24` -> `player_trigger_screen_shake`: Triggers screen shake for the viewport camera belonging to `player` with specified intensity.
+  - `func_8001CA78` -> `camera_calculate_grid_start_position`: Computes fixed starting grid track orientation and camera offset.
+  - `func_8001CCEC` -> `camera_calculate_driving_follow_position`: Computes standard behind-the-kart driving camera follow position with vertical bounce and shake decay.
 - **Ghost Replay & MIO0 Encoding Pipeline (v8.107.46):**
   - `func_80040174` -> `mio0_encode_preprocess`: Pre-processes uncompressed buffer and constructs MIO0 lookup table.
   - `func_800051C4` -> `compress_ghost_replay_data`: Encodes and compresses ghost replay buffer with MIO0 for Controller Pak storage.
