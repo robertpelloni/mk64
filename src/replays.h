@@ -4,27 +4,26 @@
 #include <PR/os.h>
 #include <common_structs.h>
 
-void func_80005B18(void);
+void update_time_trial_replays(void);
 void load_course_ghost(void);
 void load_post_time_trial_replay(void);
 void load_player_ghost(void);
 void set_staff_ghost(void);
-s32 func_800051C4(void);
-void func_8000522C(void);
-void func_800052A4(void);
-void func_80005310(void);
+s32 compress_ghost_replay_data(void);
+void decompress_player_ghost(void);
+void swap_replay_buffers(void);
+void init_time_trial_replay_state(void);
 void process_post_time_trial_replay(void);
 void process_course_ghost_replay(void);
 void process_player_ghost_replay(void);
-void func_8000599C(void);
-void func_80005AE8(Player*);
-void func_80005E6C(void);
+void set_player_to_cinematic_cpu(Player*);
+void playback_post_time_trial_replays(void);
 void replays_loop(void);
 
 // mi0decode
 
 extern s32 mio0encode(s32 input, s32, s32);
-extern s32 func_80040174(void*, s32, s32);
+extern s32 mio0_encode_preprocess(void*, s32, s32);
 
 extern s32 D_80162DC8;
 extern s32 D_80162DCC;

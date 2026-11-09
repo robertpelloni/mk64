@@ -565,7 +565,7 @@ void func_8028EF28(void) {
                         D_800DC510 = 4;
                     }
                     if (gModeSelection == TIME_TRIALS) {
-                        func_80005AE8(player);
+                        set_player_to_cinematic_cpu(player);
                     }
 
                     if (gModeSelection == VERSUS) {
@@ -636,7 +636,7 @@ void func_8028EF28(void) {
             } else if (gPlayers[i].lapCount == 3) {
                 func_8028EEF0(i);
                 if (gModeSelection == TIME_TRIALS) {
-                    func_80005AE8(player);
+                    set_player_to_cinematic_cpu(player);
                 }
             }
         }
@@ -834,13 +834,13 @@ void func_8028F970(void) {
             gPauseTriggered = 1;
             if (gModeSelection == TIME_TRIALS) {
                 if (gPlayerOne->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerOne);
+                    set_player_to_cinematic_cpu(gPlayerOne);
                 }
                 if (gPlayerTwo->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerTwo);
+                    set_player_to_cinematic_cpu(gPlayerTwo);
                 }
                 if (gPlayerThree->type & (PLAYER_EXISTS | PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_80005AE8(gPlayerThree);
+                    set_player_to_cinematic_cpu(gPlayerThree);
                 }
             }
             return;

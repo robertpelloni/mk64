@@ -753,7 +753,7 @@ s32 save_ghost_data_to_pak1(s32 arg0) {
             return -1;
     }
     if (gGamestate == RACING) {
-        func_800051C4();
+        compress_ghost_replay_data();
     }
     temp_s3 = &D_8018EE10[arg0];
     temp_s3->ghostDataSaved = 0;
@@ -813,9 +813,9 @@ s32 verify_ghost_candidate_match(s32 arg0) {
     u8* phi_s1;
     s32 phi_s3;
 
-    func_800051C4();
+    compress_ghost_replay_data();
     bCourseGhostDisabled = 1;
-    func_80005AE8(gPlayerThree);
+    set_player_to_cinematic_cpu(gPlayerThree);
 
     phi_s3 = 0;
     if (((gCupSelection * 4) + gCourseIndexInCup) != D_8018EE10[arg0].courseIndex) {
@@ -867,7 +867,7 @@ s32 load_ghost_data_from_pak1(s32 arg0) {
 
             ++phi_s1;
             if ((++temp_s0) == 0x3C) {
-                func_8000522C();
+                decompress_player_ghost();
                 bPlayerGhostDisabled = 0;
                 D_80162DE0 = (s32) D_8018EE10[arg0].characterId;
                 D_80162DFC = D_8018EE10[arg0].unk_00;

@@ -201,7 +201,7 @@ void setup_race(void) {
         gNextFreeMemoryAddress = D_8015F730;
     }
     func_802969F8();
-    func_80005310();
+    init_time_trial_replay_state();
     func_8003D080();
     init_hud();
     D_800DC510 = 0;

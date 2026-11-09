@@ -1,9 +1,19 @@
-# Session Handoff - 2026-06-02 (v8.107.45)
+# Session Handoff - 2026-06-02 (v8.107.46)
 
 ## Executive Summary
-Completed decompilation labeling of 100% of all functions in the audio subsystem, eliminating all unnamed `func_800*` routines across `src/audio/synthesis.c`, `src/audio/synthesis.h`, `src/audio/playback.c`, `src/audio/playback.h`, and `src/audio/seqplayer.h`. Verified with static C syntax checking and bumped the project version to `8.107.45`.
+Completed decompilation labeling of all ghost replay compression, decompression, buffer swapping, and cinematic player transition routines across `src/replays.c`, `src/replays.h`, `src/save.c`, `src/code_800029B0.c`, `src/menu_items.c`, `src/racing/race_logic.c`, and `asm/mio0_decode.s`. Verified with static C syntax checking and VR4300 assembly, and bumped the project version to `8.107.46`.
 
 ### Recent Fixes & Additions
+- **Ghost Replay & MIO0 Encoding Pipeline (v8.107.46):**
+  - `func_80040174` -> `mio0_encode_preprocess`: Pre-processes uncompressed buffer and constructs MIO0 lookup table.
+  - `func_800051C4` -> `compress_ghost_replay_data`: Encodes and compresses ghost replay buffer with MIO0 for Controller Pak storage.
+  - `func_8000522C` -> `decompress_player_ghost`: Decompresses saved ghost from compressed buffer into `sPlayerGhostReplay`.
+  - `func_800052A4` -> `swap_replay_buffers`: Swaps active and standby replay buffer slots and tracks recorded length.
+  - `func_80005310` -> `init_time_trial_replay_state`: Initializes ghost recording and playback states at the start of a time trial.
+  - `func_80005AE8` -> `set_player_to_cinematic_cpu`: Disables human player input and converts target player kart to CPU cinematic mode.
+  - `func_80005B18` -> `update_time_trial_replays`: Frame update loop processing ghost recording and active ghost playback during a race.
+  - `func_80005E6C` -> `playback_post_time_trial_replays`: Frame update loop executing post-race time trial replay viewing.
+  - Removed obsolete stray prototype `func_8000599C` from `src/replays.h`.
 - **Complete Audio Subsystem Labeling (v8.107.45):**
   - `func_800B6FB4` -> `note_subs_disable_remaining_updates`: Disables active note sub-frames across remaining frame updates when no note re-initialization is required.
   - `func_800B86A0` -> `synthesis_process_note_envelope_and_pan`: Dispatches RSP audio synthesis commands for ADSR envelope volume ramping, stereo mixer routing, and headset panning.

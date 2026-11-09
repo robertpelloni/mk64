@@ -5707,7 +5707,7 @@ void add_menu_item(s32 type, s32 column, s32 row, s8 priority) {
             menuItem->param1 = update_course_three_lap_records(playerHUD[0].someTimer, gCharacterSelections[0]);
             menuItem->param2 = update_course_best_single_lap_record();
             if (bPlayerGhostDisabled != 1) {
-                if (func_800051C4() > 0x3C00) {
+                if (compress_ghost_replay_data() > 0x3C00) {
                     bPlayerGhostDisabled = 1;
                 }
             }

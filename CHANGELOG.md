@@ -2,13 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [8.107.45] - 2026-06-02
+## [8.107.46] - 2026-06-02
 ### Changed
-- Completed 100% labeling of all remaining unnamed functions in the audio subsystem across `src/audio/synthesis.c`, `src/audio/synthesis.h`, `src/audio/playback.c`, `src/audio/playback.h`, and `src/audio/seqplayer.h`:
-  - `func_800B6FB4` -> `note_subs_disable_remaining_updates`: Disables active note sub-frames across remaining frame updates when no note re-initialization is required.
-  - `func_800B86A0` -> `synthesis_process_note_envelope_and_pan`: Dispatches RSP audio synthesis commands for ADSR envelope volume ramping, stereo mixer routing, and headset panning.
-  - `func_800BD8F4` -> `note_release_to_layer`: Releases note ownership from its previous layer and assigns it to a new channel layer.
-  - Removed stray unused prototype `func_800BEF2C` from `src/audio/seqplayer.h`.
+- Labeled ghost replay compression, decompression, buffer swapping, and cinematic player transition routines across `src/replays.c`, `src/replays.h`, `src/save.c`, `src/code_800029B0.c`, `src/menu_items.c`, `src/racing/race_logic.c`, and `asm/mio0_decode.s`:
+  - `func_80040174` -> `mio0_encode_preprocess`: Pre-processes uncompressed buffer and constructs MIO0 lookup table.
+  - `func_800051C4` -> `compress_ghost_replay_data`: Encodes and compresses ghost replay buffer with MIO0 for Controller Pak storage.
+  - `func_8000522C` -> `decompress_player_ghost`: Decompresses saved ghost from compressed buffer into `sPlayerGhostReplay`.
+  - `func_800052A4` -> `swap_replay_buffers`: Swaps active and standby replay buffer slots and tracks recorded length.
+  - `func_80005310` -> `init_time_trial_replay_state`: Initializes ghost recording and playback states at the start of a time trial.
+  - `func_80005AE8` -> `set_player_to_cinematic_cpu`: Disables human player input and converts target player kart to CPU cinematic mode.
+  - `func_80005B18` -> `update_time_trial_replays`: Frame update loop processing ghost recording and active ghost playback during a race.
+  - `func_80005E6C` -> `playback_post_time_trial_replays`: Frame update loop executing post-race time trial replay viewing.
+  - Removed obsolete stray prototype `func_8000599C` from `src/replays.h`.
 
 ## [8.107.44] - 2026-06-02
 ### Changed
