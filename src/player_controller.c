@@ -3129,7 +3129,7 @@ f32 func_80030150(Player* player, s8 playerIndex) {
     return (1.0f - player->unk_104) * var_f2;
 }
 
-void func_80030A34(Player* player) {
+void update_player_surface_vibration(Player* player) {
     f32 var_f0;
     f32 var_f2;
 

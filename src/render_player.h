@@ -56,14 +56,14 @@ void render_player_shadow(Player*, s8, s8);
 void render_player_shadow_credits(Player*, s8, s8);
 void render_kart(Player*, s8, s8, s8);
 void render_ghost(Player*, s8, s8, s8);
-void func_80025DE8(Player*, s8, s8, s8);
+void render_player_boost_afterimage(Player*, s8, s8, s8);
 void render_player_ice_reflection(Player*, s8, s8, s8);
 void render_player(Player*, s8, s8);
-void func_80026A48(Player*, s8);
+void update_player_wheel_spin_speed(Player*, s8);
 void update_wheel_palette(Player*, s8, s8, s8);
-void func_80030A34(Player*);
-void func_8002701C(void);
-void func_80027024(s32, s32, s32);
+void update_player_surface_vibration(Player*);
+void render_player_dummy_stub1(void);
+void render_player_dummy_stub2(s32, s32, s32);
 
 /* This is where I'd put my static data, if I had any */
 

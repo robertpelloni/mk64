@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.50] - 2026-06-02
+### Changed
+- Completed 100% labeling of all function prototypes in `src/render_player.h` across `src/render_player.c`, `src/render_player.h`, `src/player_controller.c`, and `src/player_controller.h`:
+  - `func_80025DE8` -> `render_player_boost_afterimage`: Renders afterimage ghost trail when player `boostPower >= 2.0f`.
+  - `func_80026A48` -> `update_player_wheel_spin_speed`: Calculates wheel rotation velocity (`tyreSpeed`) based on kart speed and burnouts.
+  - `func_8002701C` -> `render_player_dummy_stub1`: Unused empty stub routine.
+  - `func_80027024` -> `render_player_dummy_stub2`: Unused empty 3-argument stub routine.
+  - `func_80030A34` -> `update_player_surface_vibration`: Computes surface-dependent rumble/vibration on track terrain (asphalt, railway, bridge).
+
 ## [8.107.49] - 2026-06-02
 ### Changed
 - Labeled player kart vertex squash/stretch, lighting tinting, and particle rendering dispatch routines across `src/render_player.c`, `src/render_player.h`, `src/main.c`, `src/player_controller.c`, `src/racing/skybox_and_splitscreen.c`, `src/ending/code_80281C40.c`, and `src/ending/podium_ceremony_actors.c`:

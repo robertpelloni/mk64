@@ -1,9 +1,15 @@
-# Session Handoff - 2026-06-02 (v8.107.49)
+# Session Handoff - 2026-06-02 (v8.107.50)
 
 ## Executive Summary
-Completed decompilation labeling of player kart vertex squash/stretch, lighting tinting, and particle rendering dispatch routines across `src/render_player.c`, `src/render_player.h`, `src/main.c`, `src/player_controller.c`, `src/racing/skybox_and_splitscreen.c`, `src/ending/code_80281C40.c`, and `src/ending/podium_ceremony_actors.c`. Verified with static C syntax checking, and bumped the project version to `8.107.49`.
+Completed 100% decompilation labeling of all function prototypes in `src/render_player.h`, resolving boost afterimages, wheel spin speed, and terrain surface vibration physics across `src/render_player.c`, `src/render_player.h`, and `src/player_controller.c`. Verified with static C syntax checking, and bumped the project version to `8.107.50`.
 
 ### Recent Fixes & Additions
+- **Complete Player Render Header Labeling (v8.107.50):**
+  - `func_80025DE8` -> `render_player_boost_afterimage`: Renders afterimage ghost trail when player `boostPower >= 2.0f`.
+  - `func_80026A48` -> `update_player_wheel_spin_speed`: Calculates wheel rotation velocity (`tyreSpeed`) based on kart speed and burnouts.
+  - `func_8002701C` -> `render_player_dummy_stub1`: Unused empty stub routine.
+  - `func_80027024` -> `render_player_dummy_stub2`: Unused empty 3-argument stub routine.
+  - `func_80030A34` -> `update_player_surface_vibration`: Computes surface-dependent rumble/vibration on track terrain (asphalt, railway, bridge).
 - **Player Kart Vertex Deformation & Render Updates (v8.107.49):**
   - `func_8001F980` -> `get_camera_frustum_offsets`: Retrieves camera frustum check offset bounds.
   - `func_8001F9E4` -> `update_player_visibility_flags`: Sets camera visibility bitmasks for player kart viewports.

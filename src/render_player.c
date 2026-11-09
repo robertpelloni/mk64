@@ -954,7 +954,7 @@ void update_all_players_render_state(void) {
 
 void update_single_player_render_state(Player* player, s8 playerIndex) {
     if ((player->type & PLAYER_EXISTS) == PLAYER_EXISTS) {
-        func_80026A48(player, playerIndex);
+        update_player_wheel_spin_speed(player, playerIndex);
         update_player_color_effects(player, playerIndex);
         if (((player->effects & SQUISH_EFFECT) == SQUISH_EFFECT) ||
             ((player->effects & POST_SQUISH_EFFECT) == POST_SQUISH_EFFECT)) {
@@ -967,7 +967,7 @@ void update_single_player_render_state(Player* player, s8 playerIndex) {
         } else {
             update_player_vertical_bounce_physics(player, playerIndex);
         }
-        func_80030A34(player);
+        update_player_surface_vibration(player);
     }
 }
 
@@ -1627,7 +1627,7 @@ void render_ghost(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
     gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
 }
 
-void func_80025DE8(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
+void render_player_boost_afterimage(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
     Mat4 spA8;
     Vec3f sp9C;
     Vec3s sp94;
@@ -1750,11 +1750,11 @@ void render_player(Player* player, s8 playerId, s8 screenId) {
         render_player_ice_reflection(player, playerId, screenId, flipOffset);
     }
     if (player->boostPower >= 2.0f) {
-        func_80025DE8(player, playerId, screenId, flipOffset);
+        render_player_boost_afterimage(player, playerId, screenId, flipOffset);
     }
 }
 
-void func_80026A48(Player* player, s8 playerIndex) {
+void update_player_wheel_spin_speed(Player* player, s8 playerIndex) {
     f32 temp_f0;
 
     if (((player->effects & EARLY_START_SPINOUT_EFFECT) == EARLY_START_SPINOUT_EFFECT) &&
@@ -1860,8 +1860,8 @@ void update_wheel_palette(Player* player, s8 playerId, s8 screenId, s8 arg3) {
 
 #undef D_802F1F80_WHEEL
 
-UNUSED void func_8002701C(void) {
+UNUSED void render_player_dummy_stub1(void) {
 }
 
-UNUSED void func_80027024(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
+UNUSED void render_player_dummy_stub2(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
 }
