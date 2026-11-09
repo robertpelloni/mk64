@@ -348,7 +348,7 @@ void func_80027EDC(Player* player, s8 playerId) {
                     (((s16) gNearestPathPointByPlayerId[playerId] >= 0x14A) &&
                      ((s16) gNearestPathPointByPlayerId[playerId] < 0x21F))) {
                     if (D_80165300[playerId] != 2) {
-                        func_800C8F80(playerId, 0x0170802D);
+                        audio_play_player_sound_at_position(playerId, 0x0170802D);
                     }
                     D_80165300[playerId] = 2;
                 } else {

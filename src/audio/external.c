@@ -150,7 +150,7 @@ char external_unused_string_eu_03[] = "SE FADE OUT TIME %d\n";
 #endif
 
 // Requires void in the argument list to match properly.
-void func_800C13F0(void) {
+void audio_dummy_nop(void) {
 }
 
 void audio_reset_session_eu(OSMesg presetId) {
@@ -2725,7 +2725,7 @@ void audio_update_player_submerged_sound(u8 playerId) {
     }
 }
 
-void func_800C86D8(u8 playerId) {
+void audio_play_player_lightning_recovery_voice(u8 playerId) {
     if (((gPlayers[playerId].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) && (D_800E9F24[playerId] == 1)) {
         audio_play_player_character_voice(playerId, (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08));
     }
@@ -2777,7 +2777,7 @@ void check_and_reset_thunder_effect(void) {
     }
 }
 
-void func_800C89E4(void) {
+void audio_update_ambient_volume_fade(void) {
     if (D_800EA180 != 0) {
         D_800EA180++;
         if (D_800EA180 == 2) {
@@ -2800,7 +2800,7 @@ void func_800C89E4(void) {
     }
 }
 
-void func_800C8AE4(void) {
+void audio_update_tunnel_ambient_reverb(void) {
     if (gCurrentCourseId == COURSE_LUIGI_RACEWAY) {
         if (D_800EA184 != 0) {
             if ((u8) D_800EA16C == 0) {
@@ -2843,11 +2843,11 @@ void func_800C8AE4(void) {
     }
 }
 
-void func_800C8C7C(u8 arg0) {
+void audio_update_player_effective_volume(u8 arg0) {
     D_800EA06C[arg0].unk00[2] = (1.0f - D_800E9F54[arg0]) - D_800EA130[arg0];
 }
 
-void func_800C8CCC() {
+void audio_update_all_player_sounds() {
     u8 var_s0;
 
     for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
@@ -2860,22 +2860,22 @@ void func_800C8CCC() {
         audio_determine_surface_skid_effect(var_s0);
         audio_update_race_finish_sequences(var_s0);
         audio_update_player_submerged_sound(var_s0);
-        func_800C86D8(var_s0);
+        audio_play_player_lightning_recovery_voice(var_s0);
     }
     if (gModeSelection == GRAND_PRIX) {
         for (var_s0 = 0; var_s0 < 8; var_s0++) {
             audio_update_player_lightning_distortion(var_s0);
-            func_800C8C7C(var_s0);
+            audio_update_player_effective_volume(var_s0);
         }
     } else {
         for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
             audio_update_player_lightning_distortion(var_s0);
-            func_800C8C7C(var_s0);
+            audio_update_player_effective_volume(var_s0);
         }
     }
     check_and_reset_thunder_effect();
-    func_800C89E4();
-    func_800C8AE4();
+    audio_update_ambient_volume_fade();
+    audio_update_tunnel_ambient_reverb();
 }
 
 void play_sound2(s32 soundBits) {
@@ -2899,11 +2899,11 @@ void play_sequence2(u16 index) {
     D_800EA160 = index;
 }
 
-void func_800C8F44(u8 arg0) {
+void audio_set_music_volume(u8 arg0) {
     seq_player_set_volume_target(0, 0, arg0, 1);
 }
 
-void func_800C8F80(u8 arg0, u32 soundBits) {
+void audio_play_player_sound_at_position(u8 arg0, u32 soundBits) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[arg0]) {
             case 2:
@@ -3354,11 +3354,11 @@ void play_star_music(u8 playerId) {
                    &D_800EA1D4, &D_800EA1D4, (s8*) &D_800E9F7C[playerId].unk_14);
         D_800EA164 = 1;
         if ((s32) D_800EA1C0 >= 2) {
-            func_800C8F80(playerId, 0x0100FF2C);
+            audio_play_player_sound_at_position(playerId, 0x0100FF2C);
         } else {
             audio_push_sequence_command(0x100100FF);
             if (D_800EA104 != 0) {
-                func_800C8F80(playerId, 0x0100FF2C);
+                audio_play_player_sound_at_position(playerId, 0x0100FF2C);
             } else if (D_8018FC08 != 0) {
                 if ((seq_player_get_active_sequence_id(1) == 0x000C) || (audio_is_sequence_command_pending(0x0101000C) == 0)) {
                     audio_push_sequence_command(0xC1F00000);
@@ -3542,7 +3542,7 @@ void play_boo_sound_effect(u8 playerIndex) {
             case 0:
                 seq_player_set_volume_target(0, 1, 0x55U, 5);
                 audio_play_player_sound(playerIndex, 0x19009E59U);
-                func_800C8F80(playerIndex, 0x0100FA4C);
+                audio_play_player_sound_at_position(playerIndex, 0x0100FA4C);
                 D_800EA170[playerIndex] = 1;
                 break;
         }
@@ -3626,7 +3626,7 @@ void audio_game_loop_tick() {
     audio_process_sequence_commands();
     audio_process_all_pending_sound_requests();
     audio_update_all_sound_banks();
-    func_800C8CCC();
+    audio_update_all_player_sounds();
     audio_sync_sequence_script_io(0);
     audio_cmd_queue_flush();
 }

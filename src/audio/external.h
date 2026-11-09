@@ -197,7 +197,7 @@ typedef struct {
 
 void audio_play_kart_engine_idle(u8);
 void play_kart_landing_sound_effect(u8, f32);
-void func_800C13F0(void);
+void audio_dummy_nop(void);
 void audio_reset_session_eu(OSMesg);
 f32 audio_calculate_distance_attenuation(u8, u8);
 s8 audio_calculate_sound_reverb(u8, u8, u8);
@@ -262,18 +262,18 @@ void audio_determine_surface_skid_effect(u8);
 void audio_update_race_finish_sequences(u8);
 
 void audio_update_player_submerged_sound(u8);
-void func_800C86D8(u8);
+void audio_play_player_lightning_recovery_voice(u8);
 void audio_update_player_lightning_distortion(u8);
 void check_and_reset_thunder_effect(void);
-void func_800C89E4(void);
-void func_800C8AE4(void);
-void func_800C8C7C(u8);
-void func_800C8CCC(void);
+void audio_update_ambient_volume_fade(void);
+void audio_update_tunnel_ambient_reverb(void);
+void audio_update_player_effective_volume(u8);
+void audio_update_all_player_sounds(void);
 void play_sound2(s32);
 void play_sequence(u16);
 void play_sequence2(u16);
-void func_800C8F44(u8);
-void func_800C8F80(u8, u32);
+void audio_set_music_volume(u8);
+void audio_play_player_sound_at_position(u8, u32);
 
 void audio_stop_player_sound(u8, u32);
 void audio_play_player_sound(u8, u32);

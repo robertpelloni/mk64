@@ -162,13 +162,13 @@ f32 D_801625FC;
 void func_800029B0(void) {
     switch (D_800DC5A8) {
         case 0:
-            func_800C8F44(127);
+            audio_set_music_volume(127);
             break;
         case 1:
-            func_800C8F44(75);
+            audio_set_music_volume(75);
             break;
         case 2:
-            func_800C8F44(0);
+            audio_set_music_volume(0);
             break;
     }
 }

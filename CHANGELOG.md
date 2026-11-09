@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.40] - 2026-06-02
+### Changed
+- Labeled and documented final unnamed audio routines across `src/audio/external.c`, `src/audio/external.h`, `src/code_800029B0.c`, `src/player_controller.c`, and `src/update_objects.c`:
+  - `func_800C13F0` -> `audio_dummy_nop`: Empty no-op function stub.
+  - `func_800C86D8` -> `audio_play_player_lightning_recovery_voice`: Dispatches character voice line when recovery from lightning effect completes.
+  - `func_800C89E4` -> `audio_update_ambient_volume_fade`: Ticks master volume fade-in and ducking states via timer `D_800EA180`.
+  - `func_800C8AE4` -> `audio_update_tunnel_ambient_reverb`: Updates tunnel reverb and ducking transitions for Luigi Raceway and other tracks via `D_800EA184`.
+  - `func_800C8C7C` -> `audio_update_player_effective_volume`: Computes per-player effective volume attenuation based on lightning distortion and master volume.
+  - `func_800C8CCC` -> `audio_update_all_player_sounds`: Frame audio update iterating over active players to update engines, skids, surface sounds, finish fanfares, water splashes, and lightning distortion.
+  - `func_800C8F44` -> `audio_set_music_volume`: Sets sequence player 0 volume target.
+  - `func_800C8F80` -> `audio_play_player_sound_at_position`: Plays positional sound attached to a player while checking finish state and mute flags.
+
 ## [8.107.39] - 2026-06-02
 ### Changed
 - Labeled and documented remaining unnamed save, time trial, and Grand Prix score routines in `src/save.c`, `src/save.h`, `src/menu_items.c`, `src/menus.c`, `src/replays.c`, and `src/code_8006E9C0.c`:

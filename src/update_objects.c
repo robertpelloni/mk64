@@ -3169,7 +3169,7 @@ void init_obj_lakitu_red_flag_fishing(s32 objectIndex, s32 arg1) {
     set_object_flag_status_false(objectIndex, 0x00000010);
     func_80073720(objectIndex);
     object_next_state(objectIndex);
-    func_800C8F80((u8) arg1, 0x0100FA28);
+    audio_play_player_sound_at_position((u8) arg1, 0x0100FA28);
 }
 
 void func_80079A5C(s32 objectIndex, UNUSED Player* player) {
@@ -3443,7 +3443,7 @@ void func_8007A3F0(s32 objectIndex, s32 arg1) {
     func_80086F10(objectIndex, 6, &D_800E69B0);
     gObjectList[objectIndex].unk_0D6 = 0;
     object_next_state(objectIndex);
-    func_800C8F80((u8) arg1, 0x0100FA28);
+    audio_play_player_sound_at_position((u8) arg1, 0x0100FA28);
 }
 
 void update_object_lakitu_reverse(s32 objectIndex, s32 playerId) {
@@ -3804,7 +3804,7 @@ void func_8007B254(s32 objectIndex, s32 arg1) {
         playerHUD[PLAYER_ONE].slideItemBoxY = 0;
         D_80165888 = 0;
     } else {
-        func_800C8F80(arg1, 0x0100FE1CU);
+        audio_play_player_sound_at_position(arg1, 0x0100FE1CU);
     }
 }
 
@@ -3870,7 +3870,7 @@ void func_8007B34C(s32 playerId) {
             object->unk_0D6 = 2;
             object_next_state(temp_s0);
             audio_stop_player_sound((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x1C));
-            func_800C8F80((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x47));
+            audio_play_player_sound_at_position((u8) playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFE, 0x47));
             break;
         case 7:
             func_80072D3C(temp_s0, (s32) object->unk_0A2, 0, 8, 0x0000000A);
