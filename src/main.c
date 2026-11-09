@@ -613,7 +613,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             sNumVBlanks = 0;
@@ -677,7 +677,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             profiler_log_thread5_time(LEVEL_SCRIPT_EXECUTE);
@@ -723,7 +723,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             profiler_log_thread5_time(LEVEL_SCRIPT_EXECUTE);
             sNumVBlanks = (u16) 0;
@@ -795,7 +795,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             sNumVBlanks = 0;

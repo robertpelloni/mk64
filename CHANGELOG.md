@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.49] - 2026-06-02
+### Changed
+- Labeled player kart vertex squash/stretch, lighting tinting, and particle rendering dispatch routines across `src/render_player.c`, `src/render_player.h`, `src/main.c`, `src/player_controller.c`, `src/racing/skybox_and_splitscreen.c`, `src/ending/code_80281C40.c`, and `src/ending/podium_ceremony_actors.c`:
+  - `func_8001F980` -> `get_camera_frustum_offsets`: Retrieves camera frustum check offset bounds.
+  - `func_8001F9E4` -> `update_player_visibility_flags`: Sets camera visibility bitmasks for player kart viewports.
+  - `func_8001FD78` -> `is_point_inside_kart_bounding_polygon`: Evaluates 2D triangular/polygonal collision with player kart bounds.
+  - `func_80021B0C` -> `render_player_particles_screen_one`: Dispatches player particles for screen 1.
+  - `func_80021C78` -> `render_player_particles_screen_two`: Dispatches player particles for screen 2.
+  - `func_80021D40` -> `render_player_particles_screen_three`: Dispatches player particles for screen 3.
+  - `func_80021DA8` -> `render_player_particles_screen_four`: Dispatches player particles for screen 4.
+  - `func_80021F50` -> `mtxf_translate_vec3f`: Translates 4x4 matrix position by Vec3f.
+  - `func_80022744` -> `update_player_render_state`: Top-level per-tick player render update hook.
+  - `func_8002276C` -> `update_all_players_render_state`: Dispatches render state update across active players per screen mode.
+  - `func_80022A98` -> `update_single_player_render_state`: Updates single player squash, palette, and bounce state.
+  - `func_80022B50` -> `update_player_squish_physics`: Computes squash compression deformation physics.
+  - `func_80022BC4` -> `update_player_post_squish_physics`: Computes post-squish decompression bounce oscillation.
+  - `func_80022CA8` -> `deform_player_vertices_squish`: Deforms player sprite vertices for squish animation.
+  - `func_80022D60` -> `deform_player_vertices_lakitu_carry`: Deforms player sprite vertices during Lakitu retrieval.
+  - `func_80022DB4` -> `update_player_vertical_bounce_physics`: Computes standard vertical bounce oscillation physics.
+  - `func_80022E84` -> `deform_player_vertices_bounce`: Deforms player sprite vertices for standard vertical bounce.
+  - `func_800235AC` -> `update_player_color_effects`: Updates atmospheric light tinting and star/invincibility color cycling.
+  - `func_80023BF0` -> `apply_player_vertex_deformations`: Dispatches vertex deformations based on squish, bounce, or Lakitu retrieval.
+
 ## [8.107.48] - 2026-06-02
 ### Changed
 - Labeled camera follow positioning, Lakitu tracking, and dynamic FOV zoom routines in `src/camera.c`, `src/camera.h`, and `src/racing/skybox_and_splitscreen.c`:

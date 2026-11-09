@@ -1728,7 +1728,7 @@ void func_8002BF4C(Player* player, s8 playerIndex) {
             playerBorrow = &players[i];
             if (((player != playerBorrow) && ((playerBorrow->type & PLAYER_INVISIBLE_OR_BOMB) == 0) &&
                  (playerBorrow->type & PLAYER_EXISTS)) &&
-                ((var_a2 = func_8001FD78(player, playerBorrow->pos[0], playerBorrow->pos[1], playerBorrow->pos[2]),
+                ((var_a2 = is_point_inside_kart_bounding_polygon(player, playerBorrow->pos[0], playerBorrow->pos[1], playerBorrow->pos[2]),
                   var_a2 == 1))) {
                 player->unk_0E2 += 1;
                 if (player->unk_0E2 >= 0x3D) {
