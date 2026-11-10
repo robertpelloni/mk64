@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.51] - 2026-06-02
+### Changed
+- Completed 100% labeling of all function prototypes in `src/math_util_2.h` across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`:
+  - `func_80040E84` -> `is_bitflag_set`: Checks if bitflag is set in integer pointer.
+  - `func_80040EA4` -> `is_bitflag_cleared`: Checks if bitflag is cleared in integer pointer.
+  - `func_80041480` -> `oscillate_s16_within_range`: Bounces an angle/value back and forth within a range [min, max].
+  - `func_800417B4` -> `step_angle_smooth_towards`: Steps an angle smoothly towards a target angle using tiered angular thresholds.
+  - `func_800418AC` -> `atan2s_xz_relative`: Computes arctangent angle in XZ plane relative to Vec3f point.
+  - `func_800418E8` -> `atan2s_yz_relative`: Computes arctangent angle in YZ plane relative to Vec3f point.
+  - `func_80041924` -> `check_point_collision_valid`: Tests bounding collision for a Vec3f point and returns 1 if surface is valid.
+  - `func_800419F8` -> `update_global_light_direction`: Updates global directional lighting vectors `D_80165840`.
+  - `func_80041D24` -> `request_hud_matrix_update`: Sets HUD projection matrix update request flag.
+  - `func_80041D34` -> `init_hud_ortho_matrices`: Initializes orthographic projection matrices for 2D HUD rendering.
+  - `func_80041F54` -> `hud_matrix_translate_xy`: Emits translated 2D HUD matrix display list.
+  - `func_80042000` -> `hud_matrix_rotate_z`: Emits rotated 2D HUD matrix display list.
+  - `func_800420A8` -> `hud_matrix_scale_xy`: Emits scaled 2D HUD matrix display list.
+  - `func_8004214C` -> `hud_matrix_rotate_z_scale_xy`: Emits rotated and scaled 2D HUD matrix display list.
+  - `func_800421FC` -> `hud_matrix_translate_xy_scale`: Emits translated and scaled 2D HUD matrix display list.
+  - `func_80042330` -> `hud_matrix_translate_rotate_scale`: Emits translated, rotated, and scaled 2D HUD matrix display list.
+  - `func_800423F0` -> `mtxf_rotate_euler_3d`: Generates 3D rotation matrix from Euler angles (yaw, pitch, roll).
+  - `func_8004252C` -> `mtxf_rotate_pitch_yaw`: Generates 3D rotation matrix from pitch and yaw angles.
+
 ## [8.107.50] - 2026-06-02
 ### Changed
 - Completed 100% labeling of all function prototypes in `src/render_player.h` across `src/render_player.c`, `src/render_player.h`, `src/player_controller.c`, and `src/player_controller.h`:

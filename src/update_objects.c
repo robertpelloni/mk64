@@ -1402,7 +1402,7 @@ void func_80074E28(s32 objectIndex) {
         case 0:
             break;
         case 3:
-            func_80041480(&gObjectList[objectIndex].unk_084[6], -0x1000, 0x1000, &gObjectList[objectIndex].unk_084[7]);
+            oscillate_s16_within_range(&gObjectList[objectIndex].unk_084[6], -0x1000, 0x1000, &gObjectList[objectIndex].unk_084[7]);
             if (gObjectList[objectIndex].unk_0AE == 0) {
                 func_80072428(objectIndex);
             }
@@ -4231,7 +4231,7 @@ void func_8007C420(s32 objectIndex, Player* player, Camera* camera) {
     x = player->pos[0] - gObjectList[objectIndex].pos[0];
     z = player->pos[2] - gObjectList[objectIndex].pos[2];
     gObjectList[objectIndex].direction_angle[1] =
-        func_800417B4(gObjectList[objectIndex].direction_angle[1], atan2s(x, z));
+        step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[1], atan2s(x, z));
     func_8007C360(objectIndex, camera);
 }
 
@@ -4254,7 +4254,7 @@ void func_8007C4A4(s32 objectIndex) {
 
 void func_8007C550(s32 objectIndex) {
     gObjectList[objectIndex].direction_angle[1] =
-        func_800417B4(gObjectList[objectIndex].direction_angle[1],
+        step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[1],
                       atan2s(gObjectList[objectIndex].velocity[0], gObjectList[objectIndex].velocity[2]));
     func_8007C4A4(objectIndex);
 }
@@ -4714,7 +4714,7 @@ void func_8007DA74(s32 objectIndex) {
         }
     }
     gObjectList[objectIndex].direction_angle[0] =
-        func_800417B4(gObjectList[objectIndex].direction_angle[0], gObjectList[objectIndex].unk_0C6);
+        step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[0], gObjectList[objectIndex].unk_0C6);
     func_80087844(objectIndex);
     object_calculate_new_pos_offset(objectIndex);
 }
@@ -4893,7 +4893,7 @@ void func_8007E00C(s32 objectIndex) {
             }
             break;
         case 5:
-            gObjectList[objectIndex].orientation[2] = func_800417B4(gObjectList[objectIndex].orientation[2], 0U);
+            gObjectList[objectIndex].orientation[2] = step_angle_smooth_towards(gObjectList[objectIndex].orientation[2], 0U);
             if (gObjectList[objectIndex].orientation[2] == 0) {
                 object_next_state(objectIndex);
             }
@@ -5603,7 +5603,7 @@ void func_8007FB48(s32 objectIndex) {
             }
             object_add_velocity_offset_xz(objectIndex);
             if (gObjectList[objectIndex].unk_0B0 < 0x65) {
-                gObjectList[objectIndex].orientation[1] = func_800417B4(
+                gObjectList[objectIndex].orientation[1] = step_angle_smooth_towards(
                     gObjectList[objectIndex].orientation[1], (gObjectList[objectIndex].direction_angle[1] + 0x8000));
                 if (gObjectList[objectIndex].unk_0B0 == 0x0064) {
                     gObjectList[objectIndex].textureListIndex = 1;
@@ -5633,7 +5633,7 @@ void func_8007FB48(s32 objectIndex) {
             break;
         case 5:
             gObjectList[objectIndex].orientation[1] =
-                func_800417B4(gObjectList[objectIndex].orientation[1], gObjectList[objectIndex].direction_angle[1]);
+                step_angle_smooth_towards(gObjectList[objectIndex].orientation[1], gObjectList[objectIndex].direction_angle[1]);
             if (gObjectList[objectIndex].orientation[1] == gObjectList[objectIndex].direction_angle[1]) {
                 func_800722CC(objectIndex, 8);
                 func_80086FD4(objectIndex);
@@ -7150,7 +7150,7 @@ void func_800842C8(void) {
 
     D_80165834[0] += 0x200;
     D_80165834[1] += 0x400;
-    func_800419F8();
+    update_global_light_direction();
     D_8016582C[0] += 0x2000;
     D_8016582C[1] += 0x1000;
     D_8016582C[2] += 0x1800;
@@ -7367,7 +7367,7 @@ void func_80084D2C(s32 objectIndex, s32 arg1) {
             break;
         case 1:
             gObjectList[objectIndex].direction_angle[1] =
-                func_800417B4(gObjectList[objectIndex].direction_angle[1], gObjectList[objectIndex].unk_0C6);
+                step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[1], gObjectList[objectIndex].unk_0C6);
             if (gObjectList[objectIndex].direction_angle[1] == gObjectList[objectIndex].unk_0C6) {
                 gObjectList[objectIndex].unk_09C = 4;
                 gObjectList[objectIndex].unk_034 = 0.4f;

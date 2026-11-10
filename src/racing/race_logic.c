@@ -296,7 +296,7 @@ void func_8028E678(void) {
                 D_8015F894 = 3;
                 func_80092500();
                 func_80019DE4();
-                func_80041D24();
+                request_hud_matrix_update();
             }
             break;
         case 6:

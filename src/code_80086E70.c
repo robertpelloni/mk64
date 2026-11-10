@@ -136,12 +136,12 @@ s32 get_y_direction_angle(s32 objectIndex) {
 
 UNUSED void func_800873A4(s32 objectIndex) {
     gObjectList[objectIndex].direction_angle[0] =
-        func_800417B4(gObjectList[objectIndex].direction_angle[0], get_x_direction_angle(objectIndex));
+        step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[0], get_x_direction_angle(objectIndex));
 }
 
 void func_800873F4(s32 objectIndex) {
     gObjectList[objectIndex].direction_angle[1] =
-        func_800417B4(gObjectList[objectIndex].direction_angle[1], get_y_direction_angle(objectIndex));
+        step_angle_smooth_towards(gObjectList[objectIndex].direction_angle[1], get_y_direction_angle(objectIndex));
 }
 
 UNUSED void func_80087444(s32 objectIndex) {

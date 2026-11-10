@@ -1412,7 +1412,7 @@ void func_8005A070(void) {
     func_8008C1D8(&D_80165678);
     gMatrixHudCount = 0;
     D_801655C0 = 0;
-    func_80041D34();
+    init_hud_ortho_matrices();
     if (gIsGamePaused == false) {
         func_8005C728();
         if (gGamestate == ENDING) {
