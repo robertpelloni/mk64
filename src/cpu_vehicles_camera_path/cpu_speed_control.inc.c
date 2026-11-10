@@ -1,4 +1,4 @@
-void func_80007D04(s32 playerId, Player* player) {
+void cpu_adjust_rubberbanding_speed(s32 playerId, Player* player) {
     s16 temp_t1;
     s16 temp_t2;
     s32 var_v0;
@@ -81,7 +81,7 @@ void func_80007D04(s32 playerId, Player* player) {
     }
 }
 
-void func_80007FA4(s32 playerId, Player* player, f32 arg2) {
+void cpu_decelerate_near_target(s32 playerId, Player* player, f32 arg2) {
     f32 temp_f0;
     f32 dist;
     f32 temp_f2;
@@ -138,7 +138,7 @@ void regulate_cpu_speed(s32 playerId, f32 targetSpeed, Player* player) {
         !(player->triggers & HIT_BY_STAR_TRIGGER) && !(player->triggers & HIGH_TUMBLE_TRIGGER) &&
         !(player->triggers & LOW_TUMBLE_TRIGGER)) {
         if (gCurrentCourseId == COURSE_AWARD_CEREMONY) {
-            func_80007FA4(playerId, player, speed);
+            cpu_decelerate_near_target(playerId, player, speed);
         } else if ((bStopAICrossing[playerId] == true) && !(player->effects & (STAR_EFFECT | BOO_EFFECT))) {
             player_decelerate_alternative(player, 10.0f);
             if (player->currentSpeed == 0.0) {
@@ -170,7 +170,7 @@ void regulate_cpu_speed(s32 playerId, f32 targetSpeed, Player* player) {
                     player_decelerate_alternative(player, 1.0f);
                 }
             } else if ((D_801631E0[playerId] == true) && (D_80163330[playerId] != 1)) {
-                if (func_800088D8(playerId, gLapCountByPlayerId[playerId], gGPCurrentRaceRankByPlayerIdDup[playerId]) ==
+                if (should_cpu_rubberband_catch_up(playerId, gLapCountByPlayerId[playerId], gGPCurrentRaceRankByPlayerIdDup[playerId]) ==
                     1) {
                     player->effects |= CPU_FAST_EFFECT;
                     player_accelerate_alternative(player);
@@ -205,8 +205,8 @@ void regulate_cpu_speed(s32 playerId, f32 targetSpeed, Player* player) {
                         if ((gDemoMode == 1) && (gCurrentCourseId != COURSE_AWARD_CEREMONY)) {
                             player_accelerate_alternative(player);
                         } else if (D_80163330[playerId] == 1) {
-                            func_80007D04(playerId, player);
-                        } else if (func_800088D8(playerId, gLapCountByPlayerId[playerId],
+                            cpu_adjust_rubberbanding_speed(playerId, player);
+                        } else if (should_cpu_rubberband_catch_up(playerId, gLapCountByPlayerId[playerId],
                                                  gGPCurrentRaceRankByPlayerIdDup[playerId]) == true) {
                             player->effects |= CPU_FAST_EFFECT;
                             player_accelerate_alternative(player);

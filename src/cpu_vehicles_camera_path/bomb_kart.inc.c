@@ -56,7 +56,7 @@ void set_bomb_kart_spawn_positions(void) {
     }
 }
 
-void func_8000DF8C(s32 bombKartId) {
+void update_bomb_kart_path_movement(s32 bombKartId) {
     UNUSED s32 stackPadding0;
     f32 sp118;
     f32 var_f18;
@@ -214,7 +214,7 @@ void func_8000DF8C(s32 bombKartId) {
                 if ((D_8016347C == 0) || (gNearestPathPointByPlayerId[3] < 5)) {
                     break;
                 } else {
-                    spCA = func_8000D2B4(var_f22, var_f20, var_f24, spCA, 3);
+                    spCA = update_path_point_with_start_adjustment(var_f22, var_f20, var_f24, spCA, 3);
                     if ((spCA < 0) || (gPathCountByPathIndex[3] < spCA)) {
                         spCA = 0;
                     }

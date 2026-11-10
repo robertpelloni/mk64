@@ -104,32 +104,32 @@ void set_places(void);
 void update_player_rankings(void);
 void set_places_end_course_with_time(void);
 s32 is_path_point_in_range(u16, u16, u16, u16, u16);
-void func_80007D04(s32, Player*);
-void func_80007FA4(s32, Player*, f32);
+void cpu_adjust_rubberbanding_speed(s32, Player*);
+void cpu_decelerate_near_target(s32, Player*, f32);
 
 void regulate_cpu_speed(s32, f32, Player*);
-bool func_800088D8(s32, s16, s16);
+bool should_cpu_rubberband_catch_up(s32, s16, s16);
 void set_current_path(s32);
 s32 update_player_path_selection(s32, s32);
 void update_player_completion(s32);
 
 void yoshi_valley_cpu_path(s32);
 void update_cpu_path_completion(s32, Player*);
-f32 func_80009258(s32, f32, f32);
+f32 calculate_finish_line_cross_time(s32, f32, f32);
 void update_player_path_completion(s32, Player*);
 void update_vehicles(void);
 void play_cpu_sound_effect(s32, Player*);
 void update_player_timer_sound(s32, Player*);
 void update_player(s32);
 
-void func_8000B140(s32);
+void cpu_apply_turn_steering_adjustment(s32);
 s32 are_in_curve(s32, u16);
 bool is_far_from_path(s32);
 f32 calculate_track_position_factor(f32, f32, u16, s32);
 void update_player_position_factor(s32, u16, s32);
 void calculate_track_offset_position(u16, f32, f32, s16);
 void set_track_offset_position(u16, f32, s16);
-s16 func_8000BD94(f32, f32, f32, s32);
+s16 find_closest_path_point_in_path(f32, f32, f32, s32);
 
 s16 find_closest_path_point_track_section(f32, f32, f32, u16, s32*);
 s16 update_path_index_with_track(f32, f32, f32, s16, s32, u16);
@@ -140,23 +140,23 @@ s16 update_path_index_track_section(f32, f32, f32, Player*, s32, s32*);
 s16 update_player_path(f32, f32, f32, s16, Player*, s32, s32);
 
 s16 find_closest_vehicles_path_point(f32, f32, f32, s16);
-s16 func_8000D24C(f32, f32, f32, s32*);
-s16 func_8000D2B4(f32, f32, f32, s16, s32);
-s16 func_8000D33C(f32, f32, f32, s16, s32);
+s16 find_closest_path_point_by_collision(f32, f32, f32, s32*);
+s16 update_path_point_with_start_adjustment(f32, f32, f32, s16, s32);
+s16 update_path_point_with_fallback(f32, f32, f32, s16, s32);
 f32 cpu_track_position_factor(s32);
 void determine_ideal_cpu_position_offset(s32, u16);
 s16 func_8000D6D0(Vec3f, s16*, f32, f32, s16, s16);
 s16 func_8000D940(Vec3f, s16*, f32, f32, s16);
 s16 update_vehicle_following_path(Vec3f, s16*, f32);
 void set_bomb_kart_spawn_positions(void);
-void func_8000DF8C(s32);
+void update_bomb_kart_path_movement(s32);
 
 s32 add_actor_in_unexpired_actor_list(s32, s16);
 s32 add_red_shell_in_unexpired_actor_list(s32);
 s32 add_green_shell_in_unexpired_actor_list(s32);
 s32 add_blue_shell_in_unexpired_actor_list(s32);
 void delete_actor_in_unexpired_actor_list(s32);
-void func_8000EEDC(void);
+void init_unexpired_actors_list(void);
 void generate_player_smoke(void);
 
 void reset_cpu_camera_path_indices(void);

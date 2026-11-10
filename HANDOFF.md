@@ -1,9 +1,22 @@
-# Session Handoff - 2026-06-02 (v8.107.51)
+# Session Handoff - 2026-06-02 (v8.107.52)
 
 ## Executive Summary
 Completed 100% decompilation labeling of all function prototypes in `src/math_util_2.h`, resolving HUD matrix transformations, Euler angle rotations, smooth angle stepping, relative arctangents, and collision checks across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`. Verified with static C syntax checking, and bumped the project version to `8.107.51`.
 
 ### Recent Fixes & Additions
+- **CPU Navigation & Speed Control Routines (v8.107.52):**
+  - `func_80007D04` -> `cpu_adjust_rubberbanding_speed`: Regulate CPU speed based on human distance and race rank.
+  - `func_80007FA4` -> `cpu_decelerate_near_target`: Decelerate CPU when nearing obstacle/waypoint.
+  - `func_800088D8` -> `should_cpu_rubberband_catch_up`: Check if CPU should catch up to leading human racers.
+  - `func_80009258` -> `calculate_finish_line_cross_time`: Interpolate exact timer when kart crosses finish line.
+  - `func_8000B140` -> `cpu_apply_turn_steering_adjustment`: Adjust CPU steering when navigating sharp path curves.
+  - `func_8000BD94` -> `find_closest_path_point_in_path`: Find nearest waypoint in a specific track path.
+  - `func_8000D24C` -> `find_closest_path_point_by_collision`: Find nearest waypoint using bounding box surface lookup.
+  - `func_8000D2B4` -> `update_path_point_with_start_adjustment`: Update waypoint with finish-line compensation.
+  - `func_8000D33C` -> `update_path_point_with_fallback`: Update waypoint with collision-based fallback.
+  - `func_8000DF8C` -> `update_bomb_kart_path_movement`: Update bomb kart physics, path waypoint following, and speed.
+  - `func_8000EEDC` -> `init_unexpired_actors_list`: Clear and initialize unexpired actors table.
+
 - **Complete Math Utilities Header Labeling (v8.107.51):**
   - `func_80040E84` -> `is_bitflag_set`: Checks if bitflag is set in integer pointer.
   - `func_80040EA4` -> `is_bitflag_cleared`: Checks if bitflag is cleared in integer pointer.

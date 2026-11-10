@@ -876,7 +876,7 @@ void func_8003C0F0(void) {
         case COURSE_SKYSCRAPER:
         case COURSE_DOUBLE_DECK:
         case COURSE_BIG_DONUT:
-            func_8000EEDC();
+            init_unexpired_actors_list();
             break;
     }
 

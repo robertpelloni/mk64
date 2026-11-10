@@ -56,7 +56,7 @@ void delete_actor_in_unexpired_actor_list(s32 actorIndex) {
     }
 }
 
-void func_8000EEDC(void) {
+void init_unexpired_actors_list(void) {
     struct unexpiredActors* phi;
     s32 i;
 
