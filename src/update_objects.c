@@ -6574,7 +6574,7 @@ void func_8008275C(s32 objectIndex) {
         case 2:
             func_8008B78C(objectIndex);
             vec3f_copy(gObjectList[objectIndex].unk_01C, gObjectList[objectIndex].pos);
-            func_8000D940(gObjectList[objectIndex].origin_pos, (s16*) &gObjectList[objectIndex].unk_0C6,
+            update_vehicle_path_simple(gObjectList[objectIndex].origin_pos, (s16*) &gObjectList[objectIndex].unk_0C6,
                           gObjectList[objectIndex].unk_034, 0.0f, 0);
             gObjectList[objectIndex].offset[0] *= 2.0;
             gObjectList[objectIndex].offset[1] *= 2.5;
@@ -7683,7 +7683,7 @@ void update_chain_chomps(void) {
         if (object->state != 0) {
             func_800859C8(objectIndex, var_s4);
             vec3f_copy(object->unk_01C, object->offset);
-            func_8000D940(object->offset, &object->unk_084[8], object->unk_034, object->surfaceHeight, 0);
+            update_vehicle_path_simple(object->offset, &object->unk_084[8], object->unk_034, object->surfaceHeight, 0);
             object->direction_angle[1] = get_xz_angle_between_points(object->unk_01C, object->offset);
             object_calculate_new_pos_offset(objectIndex);
             func_80089CBC(objectIndex, 30.0f);

@@ -39,7 +39,7 @@ void load_track_path(s32 pathIndex) {
             // Skip processing the data.
             //! @todo Confirm this comment
             if (!bInvalidPath) {
-                var_v0 = func_80011014(pathDest, path, sp24, pathIndex);
+                var_v0 = interpolate_bezier_curve_path(pathDest, path, sp24, pathIndex);
                 gPathCountByPathIndex[pathIndex] = (u16) var_v0;
             }
         }
@@ -290,13 +290,13 @@ void analisze_curved_path(s32 pathIndex) {
     }
 }
 
-f32 func_80010F40(f32 arg0, f32 arg1, f32 arg2, UNUSED s32 arg3, UNUSED s32 arg4) {
+f32 get_path_point_surface_height(f32 arg0, f32 arg1, f32 arg2, UNUSED s32 arg3, UNUSED s32 arg4) {
     arg1 = get_surface_height(arg0, 2000.0f, arg2);
     check_bounding_collision(&D_80162E70, 1.0f, arg0, arg1, arg2);
     return arg1;
 }
 
-f32 func_80010FA0(f32 arg0, f32 arg1, f32 arg2, UNUSED s32 arg3, UNUSED s32 arg4) {
+f32 get_path_point_surface_height_offset(f32 arg0, f32 arg1, f32 arg2, UNUSED s32 arg3, UNUSED s32 arg4) {
     arg1 = get_surface_height(arg0, (f32) ((f64) arg1 + 30.0), arg2);
     check_bounding_collision(&D_80162E70, 10.0f, arg0, arg1, arg2);
     return arg1;
@@ -305,7 +305,7 @@ f32 func_80010FA0(f32 arg0, f32 arg1, f32 arg2, UNUSED s32 arg3, UNUSED s32 arg4
 /**
  * @return's the number of items processed.
  */
-s32 func_80011014(TrackPathPoint* pathDest, TrackPathPoint* path, s32 numPathPoints, UNUSED s32 pathIndex) {
+s32 interpolate_bezier_curve_path(TrackPathPoint* pathDest, TrackPathPoint* path, s32 numPathPoints, UNUSED s32 pathIndex) {
     f32 temp_f24_2;
     f32 temp_f2_3;
     f32 var_f20_2;
@@ -336,7 +336,7 @@ s32 func_80011014(TrackPathPoint* pathDest, TrackPathPoint* path, s32 numPathPoi
     var_s0 = 0;
     temp_f20 = (f32) path[0].posX;
     temp_f22 = (f32) path[0].posZ;
-    var_f28 = func_80010F40(temp_f20, 2000.0f, temp_f22, gCurrentCourseId, 0);
+    var_f28 = get_path_point_surface_height(temp_f20, 2000.0f, temp_f22, gCurrentCourseId, 0);
 
     for (i = 0; i < numPathPoints; i++) {
         point1 = &path[i % numPathPoints];
@@ -371,10 +371,10 @@ s32 func_80011014(TrackPathPoint* pathDest, TrackPathPoint* path, s32 numPathPoi
                 if (gIsMirrorMode) {
                     // temp_f12 = -temp_f24_2;
                     pathDest->posX = (s16) -temp_f24_2;
-                    var_f20_2 = func_80010FA0(-temp_f24_2, var_f28, x1_2, gCurrentCourseId, var_s0);
+                    var_f20_2 = get_path_point_surface_height_offset(-temp_f24_2, var_f28, x1_2, gCurrentCourseId, var_s0);
                 } else {
                     pathDest->posX = (s16) temp_f24_2;
-                    var_f20_2 = func_80010FA0(temp_f24_2, var_f28, x1_2, gCurrentCourseId, var_s0);
+                    var_f20_2 = get_path_point_surface_height_offset(temp_f24_2, var_f28, x1_2, gCurrentCourseId, var_s0);
                 }
 
                 pathDest->posZ = (s16) temp_f22;

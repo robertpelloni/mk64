@@ -1443,7 +1443,7 @@ void update_player(s32 playerId) {
                 case COURSE_KALAMARI_DESERT:
                     handle_trains_interactions(playerId, player);
                     if (playerId == 0) {
-                        func_80013054();
+                        update_train_railroad_crossings();
                     }
                     break;
                 case COURSE_DK_JUNGLE:

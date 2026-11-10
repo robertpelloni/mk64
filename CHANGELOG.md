@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.53] - 2026-11-09
+### Changed
+- Completed semantic labeling of 8 vehicle navigation, path interpolation, track height calculation, and train crossing routines in `src/cpu_vehicles_camera_path.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path/path_utils.inc.c`, `src/cpu_vehicles_camera_path/vehicle_utils.inc.c`, `src/cpu_vehicles_camera_path/path_calc.inc.c`, `src/cpu_vehicles_camera_path/behaviour_utils.inc.c`, and `src/update_objects.c`:
+  - `func_8000D6D0` -> `update_vehicle_path_with_lookahead`: Update vehicle position and orientation along path with waypoint lookahead offset.
+  - `func_8000D940` -> `update_vehicle_path_simple`: Update vehicle or track object along waypoint path without lookahead.
+  - `func_80010F40` -> `get_path_point_surface_height`: Sample track surface height and test boundary collision at 2000.0f ceiling.
+  - `func_80010FA0` -> `get_path_point_surface_height_offset`: Sample track surface height with +30.0f vertical search offset.
+  - `func_80011014` -> `interpolate_bezier_curve_path`: Subdivide and generate smooth Bezier path curve between waypoints.
+  - `func_80011EC0` -> `cpu_initiate_drift_hop`: Trigger hop and drift effects for CPU racers navigating curve sections.
+  - `func_80013054` -> `update_train_railroad_crossings`: Calculate train path progress and trigger railroad crossing signals/gates.
+  - `func_80013C74` -> `get_vehicle_lane_offset`: Retrieve lateral lane position offset based on vehicle type and path index.
+
 ## [8.107.52] - 2026-11-09
 ### Changed
 - Completed semantic labeling of 11 core CPU vehicle and camera path navigation routines in `src/cpu_vehicles_camera_path.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path/path_utils.inc.c`, `src/cpu_vehicles_camera_path/cpu_speed_control.inc.c`, `src/cpu_vehicles_camera_path/bomb_kart.inc.c`, `src/cpu_vehicles_camera_path/actor_utils.inc.c`, and `src/spawn_players.c`:

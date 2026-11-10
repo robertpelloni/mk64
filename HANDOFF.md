@@ -1,9 +1,19 @@
-# Session Handoff - 2026-06-02 (v8.107.52)
+# Session Handoff - 2026-06-02 (v8.107.53)
 
 ## Executive Summary
 Completed 100% decompilation labeling of all function prototypes in `src/math_util_2.h`, resolving HUD matrix transformations, Euler angle rotations, smooth angle stepping, relative arctangents, and collision checks across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`. Verified with static C syntax checking, and bumped the project version to `8.107.51`.
 
 ### Recent Fixes & Additions
+- **Vehicle Navigation, Bezier Paths & Railroad Crossings (v8.107.53):**
+  - `func_8000D6D0` -> `update_vehicle_path_with_lookahead`: Update vehicle position and orientation along path with waypoint lookahead offset.
+  - `func_8000D940` -> `update_vehicle_path_simple`: Update vehicle or track object along waypoint path without lookahead.
+  - `func_80010F40` -> `get_path_point_surface_height`: Sample track surface height and test boundary collision at 2000.0f ceiling.
+  - `func_80010FA0` -> `get_path_point_surface_height_offset`: Sample track surface height with +30.0f vertical search offset.
+  - `func_80011014` -> `interpolate_bezier_curve_path`: Subdivide and generate smooth Bezier path curve between waypoints.
+  - `func_80011EC0` -> `cpu_initiate_drift_hop`: Trigger hop and drift effects for CPU racers navigating curve sections.
+  - `func_80013054` -> `update_train_railroad_crossings`: Calculate train path progress and trigger railroad crossing signals/gates.
+  - `func_80013C74` -> `get_vehicle_lane_offset`: Retrieve lateral lane position offset based on vehicle type and path index.
+
 - **CPU Navigation & Speed Control Routines (v8.107.52):**
   - `func_80007D04` -> `cpu_adjust_rubberbanding_speed`: Regulate CPU speed based on human distance and race rank.
   - `func_80007FA4` -> `cpu_decelerate_near_target`: Decelerate CPU when nearing obstacle/waypoint.

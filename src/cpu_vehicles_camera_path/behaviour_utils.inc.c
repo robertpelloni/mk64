@@ -43,7 +43,7 @@ void cpu_behaviour_start(s32 playerId, Player* player) {
         gCurrentCPUBehaviourId[playerId]++;
         switch (behaviourType) {
             case BEHAVIOUR_1:
-                func_80011EC0(playerId, player, player->steerPosition >> 16, playerPathPoint);
+                cpu_initiate_drift_hop(playerId, player, player->steerPosition >> 16, playerPathPoint);
                 break;
             case BEHAVIOUR_HOP:
                 kart_hop(player);
@@ -136,7 +136,7 @@ void cpu_behaviour(s32 playerIndex) {
     }
 }
 
-void func_80011EC0(s32 playerIndex, Player* player, s32 arg2, UNUSED u16 arg3) {
+void cpu_initiate_drift_hop(s32 playerIndex, Player* player, s32 arg2, UNUSED u16 arg3) {
     if ((((player->speed / 18.0f) * 216.0f) >= 45.0f) && (D_801630E8[playerIndex] == 0)) {
         switch (gCurrentTrackSectionTypesPath[sSomeNearestPathPoint]) {
             case RIGHT_LEANING_CURVE:

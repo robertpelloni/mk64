@@ -659,7 +659,7 @@ void determine_ideal_cpu_position_offset(s32 playerId, u16 pathPoint) {
     gOffsetPosition[2] = (sp44 + stackPadding4) * 0.5f;
 }
 
-s16 func_8000D6D0(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex, s16 arg5) {
+s16 update_vehicle_path_with_lookahead(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex, s16 arg5) {
     f32 temp1;
     f32 temp2;
     f32 midX;
@@ -725,7 +725,7 @@ s16 func_8000D6D0(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 
     return get_angle_between_path(oldPos, position);
 }
 
-s16 func_8000D940(Vec3f pos, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex) {
+s16 update_vehicle_path_simple(Vec3f pos, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex) {
     UNUSED f32 pad;
     f32 thing1;
     f32 thing2;
