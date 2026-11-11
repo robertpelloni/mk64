@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.107.54] - 2026-11-09
+### Changed
+- Completed semantic labeling of 8 camera path collision, reset, fov, and follow routines in `src/cpu_vehicles_camera_path.h`, `src/cpu_vehicles_camera_path.c`, and `src/camera.c`:
+  - `func_80014D30` -> `check_camera_path_point_collision`: Test bounding collision at nearest camera track path waypoint.
+  - `func_80014DE4` -> `reset_camera_path_tracking`: Reset camera path index tracking, timers, and nearest path points.
+  - `func_80014EE4` -> `calculate_camera_dynamic_fov`: Compute smooth dynamic FOV based on speed and camera path mode.
+  - `func_8001530C` -> `camera_path_dummy_nop`: Empty stub in camera path processor.
+  - `func_80015314` -> `init_camera_follow_player_rotation`: Initialize camera rotation angle to player facing angle.
+  - `func_80015390` -> `update_camera_follow_player_rotation`: Update camera rotation tracking player facing angle and spinouts.
+  - `func_80015544` -> `init_camera_path_offset_position`: Set initial camera position along path with lateral offset and surface height lookup.
+  - `func_8001577C` -> `update_camera_path_offset_follow`: Update camera position following player along waypoint path with offset.
+
 ## [8.107.53] - 2026-11-09
 ### Changed
 - Completed semantic labeling of 8 vehicle navigation, path interpolation, track height calculation, and train crossing routines in `src/cpu_vehicles_camera_path.h`, `src/cpu_vehicles_camera_path.c`, `src/cpu_vehicles_camera_path/path_utils.inc.c`, `src/cpu_vehicles_camera_path/vehicle_utils.inc.c`, `src/cpu_vehicles_camera_path/path_calc.inc.c`, `src/cpu_vehicles_camera_path/behaviour_utils.inc.c`, and `src/update_objects.c`:

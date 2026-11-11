@@ -2232,7 +2232,7 @@ void init_players(void) {
 
 #include "cpu_vehicles_camera_path/vehicle_utils.inc.c"
 
-void func_80014D30(s32 cameraId, s32 pathIndex) {
+void check_camera_path_point_collision(s32 cameraId, s32 pathIndex) {
     s16 cameraPathPoint;
     TrackPathPoint* temp_v0;
 
@@ -2242,7 +2242,7 @@ void func_80014D30(s32 cameraId, s32 pathIndex) {
                              (f32) temp_v0->posZ);
 }
 
-void func_80014DE4(s32 cameraIndex) {
+void reset_camera_path_tracking(s32 cameraIndex) {
     s32 cameraId;
 
     D_801646CC = 0;
@@ -2269,7 +2269,7 @@ void func_80014DE4(s32 cameraIndex) {
     }
 }
 
-f32 func_80014EE4(f32 arg0, s32 arg1) {
+f32 calculate_camera_dynamic_fov(f32 arg0, s32 arg1) {
     f32 temp_f0;
     f64 temp_f2;
 
@@ -2379,10 +2379,10 @@ void calculate_camera_up_vector(Camera* camera, s32 cameraIndex) {
     }
 }
 
-UNUSED void func_8001530C(void) {
+UNUSED void camera_path_dummy_nop(void) {
 }
 
-void func_80015314(s32 playerId, UNUSED f32 arg1, s32 cameraId) {
+void init_camera_follow_player_rotation(s32 playerId, UNUSED f32 arg1, s32 cameraId) {
     Camera* temp_a0;
     Player* temp_a1;
 
@@ -2393,10 +2393,10 @@ void func_80015314(s32 playerId, UNUSED f32 arg1, s32 cameraId) {
     temp_a1 += playerId;
     temp_a0 += cameraId;
     temp_a0->unk_2C = temp_a1->rotation[1];
-    func_80015390(temp_a0, temp_a1, 0);
+    update_camera_follow_player_rotation(temp_a0, temp_a1, 0);
 }
 
-void func_80015390(Camera* camera, UNUSED Player* player, UNUSED s32 arg2) {
+void update_camera_follow_player_rotation(Camera* camera, UNUSED Player* player, UNUSED s32 arg2) {
     UNUSED s32 pad[6];
     f32 temp_f12;
     f32 sp90;
@@ -2443,7 +2443,7 @@ void func_80015390(Camera* camera, UNUSED Player* player, UNUSED s32 arg2) {
     camera->rot[2] = 0;
 }
 
-void func_80015544(s32 playerId, f32 arg1, s32 cameraId, s32 pathIndex) {
+void init_camera_path_offset_position(s32 playerId, f32 arg1, s32 cameraId, s32 pathIndex) {
     Camera* camera;
 
     f32 temp_f12;
@@ -2473,7 +2473,7 @@ void func_80015544(s32 playerId, f32 arg1, s32 cameraId, s32 pathIndex) {
     camera->pos[2] = D_80164638[cameraId];
 }
 
-void func_8001577C(Camera* camera, UNUSED Player* playerArg, UNUSED s32 arg2, s32 cameraId) {
+void update_camera_path_offset_follow(Camera* camera, UNUSED Player* playerArg, UNUSED s32 arg2, s32 cameraId) {
     s16 cameraPathPoint;
     s16 playerPathPoint;
     UNUSED s32 pad;
@@ -2521,7 +2521,7 @@ alable:
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     xdiff = camera->lookAt[0] - camera->pos[0];
     ydiff = camera->lookAt[1] - camera->pos[1];
     zdiff = camera->lookAt[2] - camera->pos[2];
@@ -2630,7 +2630,7 @@ void func_80015C94(Camera* camera, UNUSED Player* unusedPlayer, UNUSED s32 arg2,
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     xdiff2 = camera->lookAt[0] - camera->pos[0];
     ydiff2 = camera->lookAt[1] - camera->pos[1];
     zdiff2 = camera->lookAt[2] - camera->pos[2];
@@ -2758,7 +2758,7 @@ void func_80016494(Camera* camera, UNUSED Player* unusedPlayer, UNUSED s32 arg2,
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     xdiff2 = camera->lookAt[0] - camera->pos[0];
     ydiff2 = camera->lookAt[1] - camera->pos[1];
     zdiff2 = camera->lookAt[2] - camera->pos[2];
@@ -2916,7 +2916,7 @@ void func_80017054(Camera* camera, UNUSED Player* player, UNUSED s32 index, s32 
     camera->lookAt[0] = sp8C;
     camera->lookAt[1] = sp88 + 8.0;
     camera->lookAt[2] = sp84;
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     spAC = camera->lookAt[0] - camera->pos[0];
     spA8 = camera->lookAt[1] - camera->pos[1];
     spA4 = camera->lookAt[2] - camera->pos[2];
@@ -3031,7 +3031,7 @@ void func_800178F4(Camera* camera, UNUSED Player* unusedPlayer, UNUSED s32 arg2,
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     xdiff2 = camera->lookAt[0] - camera->pos[0];
     ydiff2 = camera->lookAt[1] - camera->pos[1];
     zdiff2 = camera->lookAt[2] - camera->pos[2];
@@ -3146,7 +3146,7 @@ void func_800180F0(Camera* camera, UNUSED Player* unusedPlayer, UNUSED s32 arg2,
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     sp94 = camera->lookAt[0] - camera->pos[0];
     sp90 = camera->lookAt[1] - camera->pos[1];
     sp8C = camera->lookAt[2] - camera->pos[2];
@@ -3282,7 +3282,7 @@ void func_800188F4(Camera* camera, UNUSED Player* unusePlayer, UNUSED s32 arg2, 
     camera->lookAt[0] = player->pos[0];
     camera->lookAt[1] = player->pos[1] + 6.0;
     camera->lookAt[2] = player->pos[2];
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     spAC = camera->lookAt[0] - camera->pos[0];
     spA8 = camera->lookAt[1] - camera->pos[1];
     spA4 = camera->lookAt[2] - camera->pos[2];
@@ -3359,7 +3359,7 @@ void func_8001933C(Camera* camera, UNUSED Player* playerArg, UNUSED s32 arg2, s3
     camera->lookAt[0] = (player->pos[0] * 0.8) + (0.2 * pathPoint->posX);
     camera->lookAt[1] = (player->pos[1] * 0.8) + (0.2 * pathPoint->posY);
     camera->lookAt[2] = (player->pos[2] * 0.8) + (0.2 * pathPoint->posZ);
-    func_80014D30(cameraId, pathIndex);
+    check_camera_path_point_collision(cameraId, pathIndex);
     xdiff = camera->lookAt[0] - camera->pos[0];
     ydiff = camera->lookAt[1] - camera->pos[1];
     zdiff = camera->lookAt[2] - camera->pos[2];
@@ -3401,7 +3401,7 @@ void func_80019760(Camera* camera, UNUSED Player* player, UNUSED s32 arg2, s32 c
     camera->lookAt[0] = (f32) temp_v1->posX;
     camera->lookAt[1] = (f32) temp_v1->posY;
     camera->lookAt[2] = (f32) temp_v1->posZ;
-    func_80014D30(cameraId, 0);
+    check_camera_path_point_collision(cameraId, 0);
     xdiff = camera->lookAt[0] - camera->pos[0];
     ydiff = camera->lookAt[1] - camera->pos[1];
     zdiff = camera->lookAt[2] - camera->pos[2];
@@ -3421,13 +3421,13 @@ void func_80019890(s32 playerId, s32 cameraId) {
 
     switch (D_80164680[cameraId]) {
         case 0:
-            func_80015314(playerId, 0.0f, cameraId);
+            init_camera_follow_player_rotation(playerId, 0.0f, cameraId);
             break;
         case 2:
-            func_80015544(playerId, -1.0f, cameraId, pathIndex);
+            init_camera_path_offset_position(playerId, -1.0f, cameraId, pathIndex);
             break;
         case 3:
-            func_80015544(playerId, 1.0f, cameraId, pathIndex);
+            init_camera_path_offset_position(playerId, 1.0f, cameraId, pathIndex);
             break;
         case 6:
             func_80015A9C(playerId, -0.6f, cameraId, (s16) pathIndex);
@@ -3466,7 +3466,7 @@ void func_80019890(s32 playerId, s32 cameraId) {
             func_8001969C(playerId, 1.0f, cameraId, (s16) pathIndex);
             break;
         default:
-            func_80015314(playerId, 0.0f, cameraId);
+            init_camera_follow_player_rotation(playerId, 0.0f, cameraId);
             break;
     }
     gNearestPathPointByCameraId[cameraId] =
@@ -3585,7 +3585,7 @@ void func_80019ED0(void) {
 
     for (i = 0; i < 4; i++) {
         D_80164680[i] = 0;
-        func_80015314(gPlayerWinningIndex, 0, i);
+        init_camera_follow_player_rotation(gPlayerWinningIndex, 0, i);
         D_80164678[i] = 1;
     }
 }
@@ -3826,11 +3826,11 @@ void func_8001A588(UNUSED u16* localD_80152300, Camera* camera, Player* player, 
     func_80019C50(cameraIndex);
     switch (D_80164680[cameraIndex]) {
         case 0:
-            func_80015390(camera, player, index);
+            update_camera_follow_player_rotation(camera, player, index);
             break;
         case 2:
         case 3:
-            func_8001577C(camera, player, index, cameraIndex);
+            update_camera_path_offset_follow(camera, player, index, cameraIndex);
             break;
         case 6:
         case 7:
@@ -3861,7 +3861,7 @@ void func_8001A588(UNUSED u16* localD_80152300, Camera* camera, Player* player, 
             func_80019760(camera, player, index, cameraIndex);
             break;
         default:
-            func_80015390(camera, player, index);
+            update_camera_follow_player_rotation(camera, player, index);
             break;
     }
 }
@@ -4500,7 +4500,7 @@ void func_8001C05C(void) {
     D_80163480 = 0;
     D_80163484 = 0;
     init_course_path_point();
-    func_80014DE4(0);
+    reset_camera_path_tracking(0);
     func_8001BE78();
     D_80163418[0] = -3202.475097656f;
     D_80163428[0] = 19.166999817f;

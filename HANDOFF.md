@@ -1,9 +1,19 @@
-# Session Handoff - 2026-06-02 (v8.107.53)
+# Session Handoff - 2026-06-02 (v8.107.54)
 
 ## Executive Summary
-Completed 100% decompilation labeling of all function prototypes in `src/math_util_2.h`, resolving HUD matrix transformations, Euler angle rotations, smooth angle stepping, relative arctangents, and collision checks across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`. Verified with static C syntax checking, and bumped the project version to `8.107.51`.
+Completed 100% decompilation labeling of all function prototypes in `src/math_util_2.h`, resolving HUD matrix transformations, Euler angle rotations, smooth angle stepping, relative arctangents, and collision checks across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`. Verified with static C syntax checking, and bumped the project version to `8.107.54`.
 
 ### Recent Fixes & Additions
+- **Camera Path Collision, Reset, Dynamic FOV, and Follow (v8.107.54):**
+  - `func_80014D30` -> `check_camera_path_point_collision`: Test bounding collision at nearest camera track path waypoint.
+  - `func_80014DE4` -> `reset_camera_path_tracking`: Reset camera path index tracking, timers, and nearest path points.
+  - `func_80014EE4` -> `calculate_camera_dynamic_fov`: Compute smooth dynamic FOV based on speed and camera path mode.
+  - `func_8001530C` -> `camera_path_dummy_nop`: Empty stub in camera path processor.
+  - `func_80015314` -> `init_camera_follow_player_rotation`: Initialize camera rotation angle to player facing angle.
+  - `func_80015390` -> `update_camera_follow_player_rotation`: Update camera rotation tracking player facing angle and spinouts.
+  - `func_80015544` -> `init_camera_path_offset_position`: Set initial camera position along path with lateral offset and surface height lookup.
+  - `func_8001577C` -> `update_camera_path_offset_follow`: Update camera position following player along waypoint path with offset.
+
 - **Vehicle Navigation, Bezier Paths & Railroad Crossings (v8.107.53):**
   - `func_8000D6D0` -> `update_vehicle_path_with_lookahead`: Update vehicle position and orientation along path with waypoint lookahead offset.
   - `func_8000D940` -> `update_vehicle_path_simple`: Update vehicle or track object along waypoint path without lookahead.
@@ -27,7 +37,7 @@ Completed 100% decompilation labeling of all function prototypes in `src/math_ut
   - `func_8000DF8C` -> `update_bomb_kart_path_movement`: Update bomb kart physics, path waypoint following, and speed.
   - `func_8000EEDC` -> `init_unexpired_actors_list`: Clear and initialize unexpired actors table.
 
-- **Complete Math Utilities Header Labeling (v8.107.51):**
+- **Complete Math Utilities Header Labeling (v8.107.54):**
   - `func_80040E84` -> `is_bitflag_set`: Checks if bitflag is set in integer pointer.
   - `func_80040EA4` -> `is_bitflag_cleared`: Checks if bitflag is cleared in integer pointer.
   - `func_80041480` -> `oscillate_s16_within_range`: Bounces an angle/value back and forth within a range [min, max].

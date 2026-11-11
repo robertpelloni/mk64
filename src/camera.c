@@ -154,7 +154,7 @@ void camera_init(f32 posX, f32 posY, f32 posZ, UNUSED s16 rot, u32 arg4, s32 cam
                     break;
             }
 
-            func_80014DE4(cameraId);
+            reset_camera_path_tracking(cameraId);
 
             if (D_80164678[cameraId] == 0) {
                 if (D_80164A28 == 1) {
@@ -1130,12 +1130,12 @@ void camera_update_dynamic_fov_zoom(Player* player, f32* arg1) {
                     D_80164498[playerIndex] = 0.0f;
                 }
             }
-            var_f0 = func_80014EE4(*arg1, playerIndex);
+            var_f0 = calculate_camera_dynamic_fov(*arg1, playerIndex);
             break;
         case SCREEN_MODE_2P_SPLITSCREEN_HORIZONTAL:
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
-            var_f0 = func_80014EE4(*arg1, playerIndex);
+            var_f0 = calculate_camera_dynamic_fov(*arg1, playerIndex);
             break;
     }
     *arg1 = var_f0;

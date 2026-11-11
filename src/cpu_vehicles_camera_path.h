@@ -224,16 +224,16 @@ void init_vehicles_cars(void);
 void update_vehicle_cars(void);
 void handle_cars_interactions(s32, Player*);
 void update_player_track_position_factor_from_cars(s32);
-void func_80014D30(s32, s32);
-void func_80014DE4(s32);
-f32 func_80014EE4(f32, s32);
+void check_camera_path_point_collision(s32, s32);
+void reset_camera_path_tracking(s32);
+f32 calculate_camera_dynamic_fov(f32, s32);
 
 void calculate_camera_up_vector(Camera*, s32);
-void func_8001530C(void);
-void func_80015314(s32, f32, s32);
-void func_80015390(Camera*, Player*, s32);
-void func_80015544(s32, f32, s32, s32);
-void func_8001577C(Camera*, UNUSED Player*, s32, s32);
+void camera_path_dummy_nop(void);
+void init_camera_follow_player_rotation(s32, f32, s32);
+void update_camera_follow_player_rotation(Camera*, Player*, s32);
+void init_camera_path_offset_position(s32, f32, s32, s32);
+void update_camera_path_offset_follow(Camera*, UNUSED Player*, s32, s32);
 void func_80015A9C(s32, f32, s32, s16);
 void func_80015C94(Camera*, Player*, s32, s32);
 
