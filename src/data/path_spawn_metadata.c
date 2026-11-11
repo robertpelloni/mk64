@@ -42,7 +42,7 @@ f32 cpu_CourseMinimumSeparation[] = {
 #endif
 
 // I think the types for D_800DCAF4, D_800DCB34, and D_800DCBB4 are all
-// wrong in some way based on their usage in func_800088D8
+// wrong in some way based on their usage in should_cpu_rubberband_catch_up
 // But I cannot be bothered to figure it out
 // Used as a ptr in D_800DCBB4
 s16 D_800DCAF4[] = {

@@ -120,7 +120,7 @@ struct SPTask* create_next_audio_frame_task(void) {
         gAiBufferLengths[index] = gAudioBufferParameters.maxAiBufferLength;
     }
     if (osRecvMesg(D_800EA3AC, &sp54, 0) != -1) {
-        func_800CBCB0((u32) sp54);
+        audio_cmd_queue_process((u32) sp54);
     }
     gAudioCmd = synthesis_execute((Acmd*) gAudioCmd, &writtenCmds, currAiBuffer, gAiBufferLengths[index]);
     gAudioRandom = osGetCount() * (gAudioRandom + gAudioFrameCount);
@@ -167,7 +167,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
         case 0x82:
         case 0x88:
             load_sequence(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
-            func_800CBA64(cmd->u.s.bankId, cmd->u2.as_s32);
+            seq_player_fade_in(cmd->u.s.bankId, cmd->u2.as_s32);
             break;
 
         case 0x83:
@@ -198,7 +198,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
             }
             break;
         case 0xF3:
-            func_800BB388(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
+            audio_load_instrument_samples_immediate(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
             break;
     }
 }
@@ -215,7 +215,7 @@ void seq_player_fade_to_zero_volume(s32 arg0, s32 fadeOutTime) {
     player->fadeVelocity = -(player->fadeVolume / fadeOutTime);
 }
 
-void func_800CBA64(s32 playerIndex, s32 fadeInTime) {
+void seq_player_fade_in(s32 playerIndex, s32 fadeInTime) {
     struct SequencePlayer* player;
 
     if (fadeInTime != 0) {
@@ -237,28 +237,28 @@ void port_eu_init_queues(void) {
     osCreateMesgQueue(D_800EA3B4, D_8019403C, 1);
 }
 
-void func_800CBB48(s32 arg0, s32* arg1) {
+void audio_cmd_queue_push(s32 arg0, s32* arg1) {
     struct EuAudioCmd* cmd = &sAudioCmd[D_800EA3A0[0] & 0xff];
     cmd->u.first = arg0;
     cmd->u2.as_u32 = *arg1;
     D_800EA3A0[0]++;
 }
 
-void func_800CBB88(u32 arg0, f32 arg1) {
-    func_800CBB48(arg0, (s32*) &arg1);
+void audio_cmd_queue_push_f32(u32 arg0, f32 arg1) {
+    audio_cmd_queue_push(arg0, (s32*) &arg1);
 }
 
-void func_800CBBB8(u32 arg0, u32 arg1) {
-    func_800CBB48(arg0, (s32*) &arg1);
+void audio_cmd_queue_push_u32(u32 arg0, u32 arg1) {
+    audio_cmd_queue_push(arg0, (s32*) &arg1);
 }
 
-void func_800CBBE8(u32 arg0, s8 arg1) {
+void audio_cmd_queue_push_s8(u32 arg0, s8 arg1) {
     s32 sp34 = arg1 << 24;
-    func_800CBB48(arg0, &sp34);
+    audio_cmd_queue_push(arg0, &sp34);
 }
 
 //! @todo clenanup, something's weird with the variables. D_800EA4A4 is probably EuAudioCmd bc of the + 0x100
-void func_800CBC24(void) {
+void audio_cmd_queue_flush(void) {
     s32 temp_t6;
     s32 test;
     OSMesg thing;
@@ -275,7 +275,7 @@ void func_800CBC24(void) {
     D_800EA3A4[0] = D_800EA3A0[0];
 }
 
-void func_800CBCB0(u32 arg0) {
+void audio_cmd_queue_process(u32 arg0) {
     struct EuAudioCmd* cmd;
     struct SequencePlayer* seqPlayer;
     struct SequenceChannel* chan;

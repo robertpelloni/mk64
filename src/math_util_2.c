@@ -27,7 +27,7 @@ UNUSED void operator_xor(s32* arg0, s32 arg1) {
     *arg0 = (s32) (*arg0 ^ arg1);
 }
 
-UNUSED bool func_80040E84(s32* arg0, s32 arg1) {
+UNUSED bool is_bitflag_set(s32* arg0, s32 arg1) {
     bool phi_v1;
 
     phi_v1 = false;
@@ -37,7 +37,7 @@ UNUSED bool func_80040E84(s32* arg0, s32 arg1) {
     return phi_v1;
 }
 
-UNUSED s32 func_80040EA4(s32* arg0, s32 arg1) {
+UNUSED s32 is_bitflag_cleared(s32* arg0, s32 arg1) {
     s32 phi_v1;
 
     phi_v1 = 0;
@@ -325,7 +325,7 @@ s32 f32_step_towards(f32* value, f32 target, f32 step) {
     return targetReached;
 }
 
-void func_80041480(s16* arg0, s16 arg1, s16 arg2, s16* arg3) {
+void oscillate_s16_within_range(s16* arg0, s16 arg1, s16 arg2, s16* arg3) {
     *arg0 += *arg3;
     if (*arg3 >= 0) {
         if (*arg0 >= arg2) {
@@ -376,26 +376,26 @@ UNUSED s32 is_within_distance_2d(f32 x1, f32 y1, f32 x2, f32 y2, f32 distance) {
     return ret;
 }
 
-s32 func_80041658(f32 arg0, f32 arg1) {
+s32 atan2s_neg(f32 arg0, f32 arg1) {
     return -atan2s(arg0, arg1) & 0xFFFF;
 }
 
-UNUSED s32 func_80041680(f32 arg0, f32 arg1) {
+UNUSED s32 atan2s_yx_1(f32 arg0, f32 arg1) {
     return atan2s(arg1, arg0);
 }
 
-UNUSED s32 func_800416AC(f32 arg0, f32 arg1) {
+UNUSED s32 atan2s_yx_2(f32 arg0, f32 arg1) {
     return atan2s(arg1, arg0);
 }
 
-f32 func_800416D8(f32 x, f32 z, u16 angle) {
+f32 rotate_xz_x(f32 x, f32 z, u16 angle) {
     f32 cosAngle;
 
     cosAngle = coss(angle);
     return (cosAngle * x) - (sins(angle) * z);
 }
 
-f32 func_80041724(f32 x, f32 z, u16 angle) {
+f32 rotate_xz_z(f32 x, f32 z, u16 angle) {
     f32 sinAngle;
 
     sinAngle = sins(angle);
@@ -406,7 +406,7 @@ s32 get_angle_between_xy(f32 x1, f32 x2, f32 y1, f32 y2) {
     return atan2s(x2 - x1, y2 - y1);
 }
 
-u16 func_800417B4(u16 angle1, u16 angle2) {
+u16 step_angle_smooth_towards(u16 angle1, u16 angle2) {
     u16 out_angle;
 
     if ((angle1 >> 8) != (angle2 >> 8)) {
@@ -434,15 +434,15 @@ u16 func_800417B4(u16 angle1, u16 angle2) {
     return out_angle;
 }
 
-s32 func_800418AC(f32 arg0, f32 arg1, Vec3f arg2) {
+s32 atan2s_xz_relative(f32 arg0, f32 arg1, Vec3f arg2) {
     return atan2s(arg0 - arg2[0], arg1 - arg2[2]);
 }
 
-s32 func_800418E8(f32 arg0, f32 arg1, Vec3f arg2) {
+s32 atan2s_yz_relative(f32 arg0, f32 arg1, Vec3f arg2) {
     return atan2s(arg0 - arg2[1], arg1 - arg2[2]);
 }
 
-s32 func_80041924(Collision* arg0, Vec3f arg1) {
+s32 check_point_collision_valid(Collision* arg0, Vec3f arg1) {
     s32 ret = 0;
 
     check_bounding_collision(arg0, 10.0f, arg1[0], arg1[1], arg1[2]);
@@ -464,7 +464,7 @@ bool is_particle_on_screen(Vec3f arg0, Camera* arg1, u16 arg2) {
     return ret;
 }
 
-void func_800419F8(void) {
+void update_global_light_direction(void) {
     Vec3f pos;
     Vec3f vec;
 
@@ -601,14 +601,14 @@ void mtxf_translation_x_y_rotate_z_scale_x_y(Mat4 dest, s32 x, s32 y, u16 angle,
 }
 
 // Likely D_801658**[index] = 1; * denotes wildcard
-void func_80041D24(void) {
+void request_hud_matrix_update(void) {
     D_801658FE = 1;
 }
 
 void guOrtho(Mtx*, f32, f32, f32, f32, f32, f32, f32); /* extern */
 extern s8 D_801658FE;
 
-void func_80041D34(void) {
+void init_hud_ortho_matrices(void) {
     guOrtho(&D_80183D60, 0.0f, 320.0f, 240.0f, 0.0f, -1.0f, 1.0f, 1.0f);
     switch (gActiveScreenMode) {
         case SCREEN_MODE_1P:
@@ -638,7 +638,7 @@ void set_matrix_hud_screen(void) {
 
 // void convert_to_fixed_point_matrix(Mtx*, Mat4);
 
-UNUSED void func_80041F54(s32 x, s32 y) {
+UNUSED void hud_matrix_translate_xy(s32 x, s32 y) {
     Mat4 matrix;
 
     mtfx_translation_x_y(matrix, x, y);
@@ -648,7 +648,7 @@ UNUSED void func_80041F54(s32 x, s32 y) {
               G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 }
 
-UNUSED void func_80042000(u16 angle_z) {
+UNUSED void hud_matrix_rotate_z(u16 angle_z) {
     Mat4 matrix;
 
     mtxf_u16_rotate_z(matrix, angle_z);
@@ -658,7 +658,7 @@ UNUSED void func_80042000(u16 angle_z) {
               G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 }
 
-UNUSED void func_800420A8(f32 scale) {
+UNUSED void hud_matrix_scale_xy(f32 scale) {
     Mat4 matrix;
 
     mtxf_scale_x_y(matrix, scale);
@@ -668,7 +668,7 @@ UNUSED void func_800420A8(f32 scale) {
               G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 }
 
-UNUSED void func_8004214C(u16 angle, f32 scale) {
+UNUSED void hud_matrix_rotate_z_scale_xy(u16 angle, f32 scale) {
     Mat4 matrix;
 
     mtxf_rotate_z_scale_x_y(matrix, angle, scale);
@@ -678,7 +678,7 @@ UNUSED void func_8004214C(u16 angle, f32 scale) {
               G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 }
 
-UNUSED void func_800421FC(s32 x, s32 y, f32 scale) {
+UNUSED void hud_matrix_translate_xy_scale(s32 x, s32 y, f32 scale) {
     Mat4 matrix;
 
     mtfx_translation_x_y(matrix, x, y);
@@ -693,7 +693,7 @@ UNUSED void func_800421FC(s32 x, s32 y, f32 scale) {
               G_MTX_NOPUSH | G_MTX_MUL | G_MTX_MODELVIEW);
 }
 
-void func_80042330(s32 x, s32 y, u16 angle, f32 scale) {
+void hud_matrix_translate_rotate_scale(s32 x, s32 y, u16 angle, f32 scale) {
     Mat4 matrix;
     mtxf_translation_x_y_rotate_z_scale_x_y(matrix, x, y, angle, scale);
     convert_to_fixed_point_matrix(&gGfxPool->mtxHud[gMatrixHudCount], matrix);
@@ -701,7 +701,7 @@ void func_80042330(s32 x, s32 y, u16 angle, f32 scale) {
               G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 }
 
-UNUSED void func_800423F0(Mat4 arg0, u16 arg1, u16 arg2, u16 arg3) {
+UNUSED void mtxf_rotate_euler_3d(Mat4 arg0, u16 arg1, u16 arg2, u16 arg3) {
     f32 sp3C;
     f32 temp_f20;
     f32 sp34;
@@ -734,7 +734,7 @@ UNUSED void func_800423F0(Mat4 arg0, u16 arg1, u16 arg2, u16 arg3) {
     arg0[3][3] = 1.0f;
 }
 
-UNUSED void func_8004252C(Mat4 arg0, u16 arg1, u16 arg2) {
+UNUSED void mtxf_rotate_pitch_yaw(Mat4 arg0, u16 arg1, u16 arg2) {
     f32 sp2C = sins(arg1);
     f32 sp28 = coss(arg1);
     f32 sin_theta_y = sins(arg2);

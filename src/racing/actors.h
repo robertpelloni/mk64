@@ -113,8 +113,8 @@ void render_course_actors(struct UnkStruct_800DC5EC*);
 void update_course_actors(void);
 
 // audio/external.c
-extern void func_800C98B8(Vec3f, Vec3f, u32);
-extern void func_800C99E0(Vec3f, s32);
+extern void audio_play_sound_at_position_3d(Vec3f, Vec3f, u32);
+extern void audio_stop_sound_at_position_3d(Vec3f, s32);
 
 extern u8* D_802BA050;
 extern u8* D_802BA054;

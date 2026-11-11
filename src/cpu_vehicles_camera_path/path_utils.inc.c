@@ -169,7 +169,7 @@ void set_track_offset_position(u16 pathPointIndex, f32 trackOffset, s16 pathInde
     gOffsetPosition[2] = ((temp_f0 * (z1 + z3)) / 2.0f) + ((temp_f12 * (z2 + z4)) / 2.0f);
 }
 
-s16 func_8000BD94(f32 posX, f32 posY, f32 posZ, s32 pathIndex) {
+s16 find_closest_path_point_in_path(f32 posX, f32 posY, f32 posZ, s32 pathIndex) {
     f32 x_dist;
     f32 y_dist;
     f32 z_dist;
@@ -485,7 +485,7 @@ s16 update_player_path(f32 posX, f32 posY, f32 posZ, s16 pathPointIndex, Player*
             } else {
                 newPathPoint = update_path_index(posX, posY, posZ, pathPointIndex, pathIndex);
                 if (newPathPoint == -1) {
-                    newPathPoint = func_8000BD94(posX, posY, posZ, pathIndex);
+                    newPathPoint = find_closest_path_point_in_path(posX, posY, posZ, pathIndex);
                     temp_v1 = &gTrackPaths[pathIndex][newPathPoint];
                     posX = (f32) temp_v1->posX;
                     posY = (f32) temp_v1->posY;
@@ -542,7 +542,7 @@ s16 find_closest_vehicles_path_point(f32 xPos, UNUSED f32 yPos, f32 zPos, s16 pa
     return minimumIndex;
 }
 
-s16 func_8000D24C(f32 posX, f32 posY, f32 posZ, s32* pathIndex) {
+s16 find_closest_path_point_by_collision(f32 posX, f32 posY, f32 posZ, s32* pathIndex) {
     UNUSED s32 pad;
     Collision sp24;
 
@@ -550,23 +550,23 @@ s16 func_8000D24C(f32 posX, f32 posY, f32 posZ, s32* pathIndex) {
     return find_closest_path_point_track_section(posX, posY, posZ, get_track_section_id(sp24.meshIndexZX), pathIndex);
 }
 
-s16 func_8000D2B4(f32 posX, f32 posY, f32 posZ, s16 pathPointIndex, s32 pathIndex) {
+s16 update_path_point_with_start_adjustment(f32 posX, f32 posY, f32 posZ, s16 pathPointIndex, s32 pathIndex) {
     s16 pathPoint;
 
     pathPoint = update_path_index(posX, posY, posZ, pathPointIndex, pathIndex);
     if (pathPoint == -1) {
-        pathPoint = func_8000D24C(posX, posY, posZ, &pathIndex);
+        pathPoint = find_closest_path_point_by_collision(posX, posY, posZ, &pathIndex);
     }
     adjust_path_at_start_line(posX, posY, posZ, &pathPoint, pathIndex);
     return pathPoint;
 }
 
-s16 func_8000D33C(f32 posX, f32 posY, f32 posZ, s16 pathPointIndex, s32 pathIndex) {
+s16 update_path_point_with_fallback(f32 posX, f32 posY, f32 posZ, s16 pathPointIndex, s32 pathIndex) {
     s16 pathPoint;
 
     pathPoint = update_path_index(posX, posY, posZ, pathPointIndex, pathIndex);
     if (pathPoint == -1) {
-        pathPoint = func_8000D24C(posX, posY, posZ, &pathIndex);
+        pathPoint = find_closest_path_point_by_collision(posX, posY, posZ, &pathIndex);
     }
     return pathPoint;
 }
@@ -659,7 +659,7 @@ void determine_ideal_cpu_position_offset(s32 playerId, u16 pathPoint) {
     gOffsetPosition[2] = (sp44 + stackPadding4) * 0.5f;
 }
 
-s16 func_8000D6D0(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex, s16 arg5) {
+s16 update_vehicle_path_with_lookahead(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex, s16 arg5) {
     f32 temp1;
     f32 temp2;
     f32 midX;
@@ -692,7 +692,7 @@ s16 func_8000D6D0(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 
     oldPosX = position[0];
     oldPosY = position[1];
     oldPosZ = position[2];
-    temp_v0 = func_8000D2B4(oldPosX, oldPosY, oldPosZ, *pathPointIndex, (s32) pathIndex);
+    temp_v0 = update_path_point_with_start_adjustment(oldPosX, oldPosY, oldPosZ, *pathPointIndex, (s32) pathIndex);
     *pathPointIndex = temp_v0;
     temp_v1 = temp_v0 + arg5;
     pathPoint1 = temp_v1 % gPathCountByPathIndex[pathIndex];
@@ -725,7 +725,7 @@ s16 func_8000D6D0(Vec3f position, s16* pathPointIndex, f32 speed, f32 arg3, s16 
     return get_angle_between_path(oldPos, position);
 }
 
-s16 func_8000D940(Vec3f pos, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex) {
+s16 update_vehicle_path_simple(Vec3f pos, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathIndex) {
     UNUSED f32 pad;
     f32 thing1;
     f32 thing2;
@@ -759,7 +759,7 @@ s16 func_8000D940(Vec3f pos, s16* pathPointIndex, f32 speed, f32 arg3, s16 pathI
     temp_f20 = pos[0];
     temp_f22 = pos[1];
     temp_f24 = pos[2];
-    temp_v0 = func_8000D2B4(temp_f20, temp_f22, temp_f24, *pathPointIndex, (s32) pathIndex);
+    temp_v0 = update_path_point_with_start_adjustment(temp_f20, temp_f22, temp_f24, *pathPointIndex, (s32) pathIndex);
     *pathPointIndex = temp_v0;
     pathPoint1 = ((temp_v0 + pathPointCount) - 3) % pathPointCount;
     pathPoint2 = ((temp_v0 + pathPointCount) - 4) % pathPointCount;

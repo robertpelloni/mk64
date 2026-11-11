@@ -30,7 +30,7 @@
 
 #define MTX_EFFECT_POOL_SIZE 660
 
-// func_80095BD0 sets an OOB pool size max check (760)
+// render_textured_rectangle_4b_scaled sets an OOB pool size max check (760)
 #ifdef AVOID_UB
 #define MTX_EFFECT_POOL_SIZE_MAX MTX_EFFECT_POOL_SIZE
 #else

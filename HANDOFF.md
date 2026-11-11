@@ -1,13 +1,313 @@
-# Session Handoff - 2026-05-20 (v8.107.4)
+# Session Handoff - 2026-06-02 (v8.107.54)
 
 ## Executive Summary
-Completed a massive repository re-initialization mapping out the MK64 documentation suite to comply with the Omni-Workspace monorepo guidelines. Synced tools submodules.
+Completed 100% decompilation labeling of all function prototypes in `src/math_util_2.h`, resolving HUD matrix transformations, Euler angle rotations, smooth angle stepping, relative arctangents, and collision checks across `src/math_util_2.c`, `src/math_util_2.h`, `src/update_objects.c`, `src/code_80086E70.c`, `src/render_objects.c`, `src/racing/race_logic.c`, and `src/code_80057C60.c`. Verified with static C syntax checking, and bumped the project version to `8.107.54`.
 
 ### Recent Fixes & Additions
-- **Documentation Overhaul:** Created and wired up `VISION.md`, `ROADMAP.md`, `TODO.md`, `DEPLOY.md`, `CHANGELOG.md`, `MEMORY.md`, `AGENTS.md`, and all model-specific LLM instructions (`CLAUDE.md`, `GEMINI.md`, `GPT.md`, `copilot-instructions.md`).
-- **Submodule Syncing:** Synced `tools/torch` and `tools/blender/fast64` and merged active main branches natively.
-- **Audio Labelling:** Renamed `func_800CA388` to `fade_all_channel_volume_scale` in the C source resolving a lingering `TODO`.
+- **Camera Path Collision, Reset, Dynamic FOV, and Follow (v8.107.54):**
+  - `func_80014D30` -> `check_camera_path_point_collision`: Test bounding collision at nearest camera track path waypoint.
+  - `func_80014DE4` -> `reset_camera_path_tracking`: Reset camera path index tracking, timers, and nearest path points.
+  - `func_80014EE4` -> `calculate_camera_dynamic_fov`: Compute smooth dynamic FOV based on speed and camera path mode.
+  - `func_8001530C` -> `camera_path_dummy_nop`: Empty stub in camera path processor.
+  - `func_80015314` -> `init_camera_follow_player_rotation`: Initialize camera rotation angle to player facing angle.
+  - `func_80015390` -> `update_camera_follow_player_rotation`: Update camera rotation tracking player facing angle and spinouts.
+  - `func_80015544` -> `init_camera_path_offset_position`: Set initial camera position along path with lateral offset and surface height lookup.
+  - `func_8001577C` -> `update_camera_path_offset_follow`: Update camera position following player along waypoint path with offset.
+
+- **Vehicle Navigation, Bezier Paths & Railroad Crossings (v8.107.53):**
+  - `func_8000D6D0` -> `update_vehicle_path_with_lookahead`: Update vehicle position and orientation along path with waypoint lookahead offset.
+  - `func_8000D940` -> `update_vehicle_path_simple`: Update vehicle or track object along waypoint path without lookahead.
+  - `func_80010F40` -> `get_path_point_surface_height`: Sample track surface height and test boundary collision at 2000.0f ceiling.
+  - `func_80010FA0` -> `get_path_point_surface_height_offset`: Sample track surface height with +30.0f vertical search offset.
+  - `func_80011014` -> `interpolate_bezier_curve_path`: Subdivide and generate smooth Bezier path curve between waypoints.
+  - `func_80011EC0` -> `cpu_initiate_drift_hop`: Trigger hop and drift effects for CPU racers navigating curve sections.
+  - `func_80013054` -> `update_train_railroad_crossings`: Calculate train path progress and trigger railroad crossing signals/gates.
+  - `func_80013C74` -> `get_vehicle_lane_offset`: Retrieve lateral lane position offset based on vehicle type and path index.
+
+- **CPU Navigation & Speed Control Routines (v8.107.52):**
+  - `func_80007D04` -> `cpu_adjust_rubberbanding_speed`: Regulate CPU speed based on human distance and race rank.
+  - `func_80007FA4` -> `cpu_decelerate_near_target`: Decelerate CPU when nearing obstacle/waypoint.
+  - `func_800088D8` -> `should_cpu_rubberband_catch_up`: Check if CPU should catch up to leading human racers.
+  - `func_80009258` -> `calculate_finish_line_cross_time`: Interpolate exact timer when kart crosses finish line.
+  - `func_8000B140` -> `cpu_apply_turn_steering_adjustment`: Adjust CPU steering when navigating sharp path curves.
+  - `func_8000BD94` -> `find_closest_path_point_in_path`: Find nearest waypoint in a specific track path.
+  - `func_8000D24C` -> `find_closest_path_point_by_collision`: Find nearest waypoint using bounding box surface lookup.
+  - `func_8000D2B4` -> `update_path_point_with_start_adjustment`: Update waypoint with finish-line compensation.
+  - `func_8000D33C` -> `update_path_point_with_fallback`: Update waypoint with collision-based fallback.
+  - `func_8000DF8C` -> `update_bomb_kart_path_movement`: Update bomb kart physics, path waypoint following, and speed.
+  - `func_8000EEDC` -> `init_unexpired_actors_list`: Clear and initialize unexpired actors table.
+
+- **Complete Math Utilities Header Labeling (v8.107.54):**
+  - `func_80040E84` -> `is_bitflag_set`: Checks if bitflag is set in integer pointer.
+  - `func_80040EA4` -> `is_bitflag_cleared`: Checks if bitflag is cleared in integer pointer.
+  - `func_80041480` -> `oscillate_s16_within_range`: Bounces an angle/value back and forth within a range [min, max].
+  - `func_800417B4` -> `step_angle_smooth_towards`: Steps an angle smoothly towards a target angle using tiered angular thresholds.
+  - `func_800418AC` -> `atan2s_xz_relative`: Computes arctangent angle in XZ plane relative to Vec3f point.
+  - `func_800418E8` -> `atan2s_yz_relative`: Computes arctangent angle in YZ plane relative to Vec3f point.
+  - `func_80041924` -> `check_point_collision_valid`: Tests bounding collision for a Vec3f point and returns 1 if surface is valid.
+  - `func_800419F8` -> `update_global_light_direction`: Updates global directional lighting vectors `D_80165840`.
+  - `func_80041D24` -> `request_hud_matrix_update`: Sets HUD projection matrix update request flag.
+  - `func_80041D34` -> `init_hud_ortho_matrices`: Initializes orthographic projection matrices for 2D HUD rendering.
+  - `func_80041F54` -> `hud_matrix_translate_xy`: Emits translated 2D HUD matrix display list.
+  - `func_80042000` -> `hud_matrix_rotate_z`: Emits rotated 2D HUD matrix display list.
+  - `func_800420A8` -> `hud_matrix_scale_xy`: Emits scaled 2D HUD matrix display list.
+  - `func_8004214C` -> `hud_matrix_rotate_z_scale_xy`: Emits rotated and scaled 2D HUD matrix display list.
+  - `func_800421FC` -> `hud_matrix_translate_xy_scale`: Emits translated and scaled 2D HUD matrix display list.
+  - `func_80042330` -> `hud_matrix_translate_rotate_scale`: Emits translated, rotated, and scaled 2D HUD matrix display list.
+  - `func_800423F0` -> `mtxf_rotate_euler_3d`: Generates 3D rotation matrix from Euler angles (yaw, pitch, roll).
+  - `func_8004252C` -> `mtxf_rotate_pitch_yaw`: Generates 3D rotation matrix from pitch and yaw angles.
+- **Complete Player Render Header Labeling (v8.107.50):**
+  - `func_80025DE8` -> `render_player_boost_afterimage`: Renders afterimage ghost trail when player `boostPower >= 2.0f`.
+  - `func_80026A48` -> `update_player_wheel_spin_speed`: Calculates wheel rotation velocity (`tyreSpeed`) based on kart speed and burnouts.
+  - `func_8002701C` -> `render_player_dummy_stub1`: Unused empty stub routine.
+  - `func_80027024` -> `render_player_dummy_stub2`: Unused empty 3-argument stub routine.
+  - `func_80030A34` -> `update_player_surface_vibration`: Computes surface-dependent rumble/vibration on track terrain (asphalt, railway, bridge).
+- **Player Kart Vertex Deformation & Render Updates (v8.107.49):**
+  - `func_8001F980` -> `get_camera_frustum_offsets`: Retrieves camera frustum check offset bounds.
+  - `func_8001F9E4` -> `update_player_visibility_flags`: Sets camera visibility bitmasks for player kart viewports.
+  - `func_8001FD78` -> `is_point_inside_kart_bounding_polygon`: Evaluates 2D triangular/polygonal collision with player kart bounds.
+  - `func_80021B0C` -> `render_player_particles_screen_one`: Dispatches player particles for screen 1.
+  - `func_80021C78` -> `render_player_particles_screen_two`: Dispatches player particles for screen 2.
+  - `func_80021D40` -> `render_player_particles_screen_three`: Dispatches player particles for screen 3.
+  - `func_80021DA8` -> `render_player_particles_screen_four`: Dispatches player particles for screen 4.
+  - `func_80021F50` -> `mtxf_translate_vec3f`: Translates 4x4 matrix position by Vec3f.
+  - `func_80022744` -> `update_player_render_state`: Top-level per-tick player render update hook.
+  - `func_8002276C` -> `update_all_players_render_state`: Dispatches render state update across active players per screen mode.
+  - `func_80022A98` -> `update_single_player_render_state`: Updates single player squash, palette, and bounce state.
+  - `func_80022B50` -> `update_player_squish_physics`: Computes squash compression deformation physics.
+  - `func_80022BC4` -> `update_player_post_squish_physics`: Computes post-squish decompression bounce oscillation.
+  - `func_80022CA8` -> `deform_player_vertices_squish`: Deforms player sprite vertices for squish animation.
+  - `func_80022D60` -> `deform_player_vertices_lakitu_carry`: Deforms player sprite vertices during Lakitu retrieval.
+  - `func_80022DB4` -> `update_player_vertical_bounce_physics`: Computes standard vertical bounce oscillation physics.
+  - `func_80022E84` -> `deform_player_vertices_bounce`: Deforms player sprite vertices for standard vertical bounce.
+  - `func_800235AC` -> `update_player_color_effects`: Updates atmospheric light tinting and star/invincibility color cycling.
+  - `func_80023BF0` -> `apply_player_vertex_deformations`: Dispatches vertex deformations based on squish, bounce, or Lakitu retrieval.
+- **Camera Follow, Lakitu Tracking, and Dynamic FOV Zoom (v8.107.48):**
+  - `func_8001D53C` -> `camera_calculate_lakitu_retrieval_position`: Computes camera position and orientation during Lakitu retrieval.
+  - `func_8001D794` -> `camera_calculate_reverse_look_position`: Computes reverse/behind camera lookAt and position.
+  - `func_8001D944` -> `camera_calculate_close_follow_position`: Computes close-up behind camera follow position.
+  - `func_8001E0C4` -> `camera_update_grid_start`: Updates camera during race countdown and grid positioning.
+  - `func_8001E45C` -> `camera_update_normal_follow`: Updates camera in standard driving follow mode with drift angling.
+  - `func_8001E8E8` -> `camera_update_lakitu_follow`: Updates camera when player kart is being transported by Lakitu.
+  - `func_8001EA0C` -> `camera_update_close_follow`: Updates camera in close-up behind-the-kart driving mode.
+  - `func_8001EE98` -> `camera_update_state_machine`: Dispatches per-frame camera state update machine based on game mode and pause state.
+  - `func_8001F394` -> `camera_update_dynamic_fov_zoom`: Computes dynamic field-of-view zoom level based on speed, mushroom boosts, and squish triggers.
+  - `func_8001F87C` -> `camera_check_grid_start_complete`: Checks if all Grand Prix karts have completed grid setup to transition camera to race follow mode.
+- **Camera Screen Shake & Positioning Routines (v8.107.47):**
+  - `func_8001CA10` -> `camera_trigger_screen_shake`: Triggers screen shake with default 6.0f intensity on camera.
+  - `func_8001CA24` -> `player_trigger_screen_shake`: Triggers screen shake for the viewport camera belonging to `player` with specified intensity.
+  - `func_8001CA78` -> `camera_calculate_grid_start_position`: Computes fixed starting grid track orientation and camera offset.
+  - `func_8001CCEC` -> `camera_calculate_driving_follow_position`: Computes standard behind-the-kart driving camera follow position with vertical bounce and shake decay.
+- **Ghost Replay & MIO0 Encoding Pipeline (v8.107.46):**
+  - `func_80040174` -> `mio0_encode_preprocess`: Pre-processes uncompressed buffer and constructs MIO0 lookup table.
+  - `func_800051C4` -> `compress_ghost_replay_data`: Encodes and compresses ghost replay buffer with MIO0 for Controller Pak storage.
+  - `func_8000522C` -> `decompress_player_ghost`: Decompresses saved ghost from compressed buffer into `sPlayerGhostReplay`.
+  - `func_800052A4` -> `swap_replay_buffers`: Swaps active and standby replay buffer slots and tracks recorded length.
+  - `func_80005310` -> `init_time_trial_replay_state`: Initializes ghost recording and playback states at the start of a time trial.
+  - `func_80005AE8` -> `set_player_to_cinematic_cpu`: Disables human player input and converts target player kart to CPU cinematic mode.
+  - `func_80005B18` -> `update_time_trial_replays`: Frame update loop processing ghost recording and active ghost playback during a race.
+  - `func_80005E6C` -> `playback_post_time_trial_replays`: Frame update loop executing post-race time trial replay viewing.
+  - Removed obsolete stray prototype `func_8000599C` from `src/replays.h`.
+- **Complete Audio Subsystem Labeling (v8.107.45):**
+  - `func_800B6FB4` -> `note_subs_disable_remaining_updates`: Disables active note sub-frames across remaining frame updates when no note re-initialization is required.
+  - `func_800B86A0` -> `synthesis_process_note_envelope_and_pan`: Dispatches RSP audio synthesis commands for ADSR envelope volume ramping, stereo mixer routing, and headset panning.
+  - `func_800BD8F4` -> `note_release_to_layer`: Releases note ownership from its previous layer and assigns it to a new channel layer.
+  - Removed stray unused prototype `func_800BEF2C` from `src/audio/seqplayer.h`.
+- **Audio Heap, Load, and Cache Routines (v8.107.44):**
+  - `func_800BB030` -> `init_sample_dma_buffers`: Allocates and initializes audio sample DMA buffers and reuse queues from `gNotesAndBuffersPool`.
+  - `func_800BB304` -> `audio_dma_load_sample_immediate`: Immediately loads and DMAs audio sample into memory buffer.
+  - `func_800BB388` -> `audio_load_instrument_samples_immediate`: Immediately loads samples for normal and high/low note ranges of an instrument or drum.
+  - `func_800BB43C` -> `patch_seq_file`: Relocates sequence file offset pointers to base address.
+  - `func_800BB584` -> `patch_audio_bank_by_id`: Patches audio bank instruments and drum table offsets by bank ID.
+  - `func_800B90E0` -> `sound_alloc_pool_clear`: Resets sound allocation pool pointers and allocated count.
+  - `func_800B914C` -> `session_pools_init`: Initializes session note/buffer and sequence/bank pools.
+  - `func_800B9BE4` -> `audio_calculate_filter_coefficients`: Computes audio IIR/FIR filter coefficient arrays.
+  - `func_800BA8B0` -> `audio_load_asset_to_pool`: Allocates memory and DMAs sequence or bank assets into `gUnkPool1`.
+- **Math Util Coordinate Rotation & Camera Override Routines (v8.107.43):**
+  - `func_800416D8` -> `rotate_xz_x`: Rotates coordinate in XZ plane: `(cos(angle) * x) - (sin(angle) * z)`.
+  - `func_80041724` -> `rotate_xz_z`: Rotates coordinate in XZ plane: `(cos(angle) * z) + (sin(angle) * x)`.
+  - `func_80041658` -> `atan2s_neg`: Computes negative arctangent `-atan2s(x, y) & 0xFFFF`.
+  - `func_80041680` -> `atan2s_yx_1`: Computes arctangent `atan2s(y, x)`.
+  - `func_800416AC` -> `atan2s_yx_2`: Computes arctangent `atan2s(y, x)`.
+  - `func_8001AAAC` -> `camera_set_target_override`: Sets camera target player override request in `D_801646D0[cameraIndex]` triggered by audio sound script events.
+- **Screen Transitions & Viewport Fading Routines (v8.107.42):**
+  - `func_8009CE1C` -> `menu_init_demo_audio`: Dispatches demo mode audio sequence command (0xE0000002) in multiplayer.
+  - `func_8009CE64` -> `handle_screen_transition_complete`: Handles menu navigation or race state switches upon transition completion.
+  - `func_8009D77C` -> `draw_fade_out`: Generic box-fill fade-out routine with custom color and alpha step.
+  - `func_8009D958` -> `draw_black_fade_out`: Solid black box-fill fade out.
+  - `func_8009D978` -> `draw_white_fade_out`: Solid white box-fill fade out.
+  - `func_8009D998` -> `draw_black_box_viewport`: Draws solid black box covering player viewport.
+  - `func_8009DAA8` -> `draw_screen_fade_out_step`: Full screen fade out animation step.
+  - `func_8009DB8C` -> `draw_screen_mosaic_fade_out_step`: Full screen mosaic pixelation fade out step.
+  - `func_8009DF6C` -> `start_screen_fade_in_alt`: Starts alternate screen fade-in type 8.
+- **MIO0 Alternative Decompressor & Menu Rectangle Drawing Routines (v8.107.41):**
+  - `func_80040030` -> `mio0decode_alt`: Alternative MIO0 decompressor variant.
+  - `func_80095BD0` -> `render_textured_rectangle_4b_scaled`: Emits Fast3D matrix and 4-bit texture rectangle rendering display lists with scaling.
+  - `func_80095E10` -> `render_textured_rectangle_16b`: Renders 16-bit texture rectangle tiles with power-of-two alignment.
+  - `func_80096CD8` -> `render_course_preview_static_overlay`: Renders subtle static noise overlay during cup preview transitions.
+  - `func_80097274` -> `render_textured_rectangle_multitile`: Emits 2-cycle multi-tile texture rendering with randomized noise mixing.
+  - `func_80097A14` -> `render_textured_rectangle_16b_copy`: Renders 16-bit texture rectangle using Fast3D G_CYC_COPY mode.
+  - `func_80097AE4` -> `render_textured_rectangle_split_horizontal`: Renders two-half split horizontally scaled texture rectangles.
+  - `func_80097E58` -> `render_textured_rectangle_split_horizontal_scaled`: Renders multi-slice split horizontally scaled texture tiles.
+- **Audio Engine Final Routines (v8.107.40):**
+  - `func_800C13F0` -> `audio_dummy_nop`: Empty no-op function stub.
+  - `func_800C86D8` -> `audio_play_player_lightning_recovery_voice`: Dispatches character voice line when recovery from lightning effect completes.
+  - `func_800C89E4` -> `audio_update_ambient_volume_fade`: Ticks master volume fade-in and ducking states via timer `D_800EA180`.
+  - `func_800C8AE4` -> `audio_update_tunnel_ambient_reverb`: Updates tunnel reverb and ducking transitions for Luigi Raceway and other tracks via `D_800EA184`.
+  - `func_800C8C7C` -> `audio_update_player_effective_volume`: Computes per-player effective volume attenuation based on lightning distortion and master volume.
+  - `func_800C8CCC` -> `audio_update_all_player_sounds`: Frame audio update iterating over active players to update engines, skids, surface sounds, finish fanfares, water splashes, and lightning distortion.
+  - `func_800C8F44` -> `audio_set_music_volume`: Sets sequence player 0 volume target.
+  - `func_800C8F80` -> `audio_play_player_sound_at_position`: Plays positional sound attached to a player while checking finish state and mute flags.
+- **Save & Grand Prix Points Routines (v8.107.39):**
+  - `func_800B4A9C` -> `validate_and_recover_course_time_trials`: Validates and recovers EEPROM time trial records for a specific course from the best records backup.
+  - `func_800B4DF4` -> `unpack_time_trial_record`: Deserializes/unpacks a 3-byte time trial record into a 24-bit integer timestamp.
+  - `func_800B4E24` -> `get_current_course_time_trial_record`: Retrieves an unpacked time trial record for the active cup & course.
+  - `func_800B4EB4` -> `get_course_time_trial_record`: Retrieves an unpacked time trial record for an explicit course index.
+  - `func_800B4F2C` -> `get_current_course_best_lap_record`: Retrieves the best single-lap time record for the active cup & course.
+  - `func_800B4FB0` -> `get_course_best_lap_record`: Retrieves the best single-lap time record for an explicit course index.
+  - `func_800B5020` -> `update_course_three_lap_records`: Inserts and updates top 5 three-lap race times in EEPROM.
+  - `func_800B5218` -> `update_course_best_single_lap_record`: Checks completed laps to update the best single lap time record in EEPROM.
+  - `func_800B536C` -> `update_current_cup_grand_prix_points`: Updates Grand Prix score in EEPROM and backup for the current cup/engine class.
+  - `func_800B5404` -> `update_cup_grand_prix_points`: Updates Grand Prix score in EEPROM and backup for an explicit cup/engine class.
+  - `func_800B54C0` -> `get_cup_grand_prix_points`: Fetches scored Grand Prix cup points for a specified cup and engine class.
+  - `func_800B54EC` -> `extract_cup_grand_prix_points`: Bitwise extracts 2-bit cup score from packed CC points byte.
+  - `func_800B5508` -> `pack_cup_grand_prix_points`: Bitwise packs 2-bit cup score into a CC points byte.
+  - Removed obsolete stray prototype `func_800B5B2C` from `src/save.h`.
+- **Best Time Trial Records & Checksum Routines (v8.107.38):**
+  - `func_800B559C` -> `write_eeprom_best_time_trial_records`: Updates best 3-lap and single-lap times for cup block `x`, calculates checksums, and writes to EEPROM.
+  - `func_800B578C` -> `compute_best_time_trial_records_checksum_1`: Calculates primary 51-byte checksum for `onlyBestTimeTrialRecords[arg0]`.
+  - `func_800B5888` -> `compute_best_time_trial_records_checksum_2`: Calculates secondary checksum offset by +90.
+  - `func_800B58C4` -> `validate_best_time_trial_records_checksum`: Validates primary and secondary checksums for `onlyBestTimeTrialRecords[arg0 / 8]`.
+- **3D Spatial Sound Emission & Control Routines (v8.107.37):**
+  - `func_800C9250` -> `audio_play_player_random_voice`: Dispatches a randomized character voice line.
+  - `func_800C92CC` -> `audio_play_player_speech_3d`: Allocates 3D audio node for each active camera viewport and plays speech line with Doppler/shock modulation.
+  - `func_800C98B8` -> `audio_play_sound_at_position_3d`: Emits 3D positional sound effect with camera-relative spatialization.
+  - `func_800C99E0` -> `audio_stop_sound_at_position_3d`: Stops active 3D sound instances at spatial coordinates across viewports.
+  - `func_800C9D0C` -> `audio_stop_player_driving_sound_3d`: Stops driving engine loop sound at player's 3D position.
+  - `func_800C9D80` -> `audio_play_looping_sound_at_position_3d`: Emits continuous looping positional sound with Doppler shifts.
+  - `func_800C9EF4` -> `audio_stop_looping_sound_at_position_3d`: Stops continuous looping positional sounds across viewports.
+- **Player Spatial Sound & Voice Routines (v8.107.36):**
+  - `func_800C9018` -> `audio_stop_player_sound`: Stops active sounds at a player's spatial coordinates (`&D_800E9F7C[playerIndex].pos`).
+  - `func_800C9060` -> `audio_play_player_sound`: Plays sound effect attached to player position, checking mute states and setting tunnel reverberation.
+  - `func_800C90F4` -> `audio_play_player_character_voice`: Plays character speech audio at player position, applying lightning shock frequency modulation if shocked.
+- **EEPROM Time Trial & Save Defaults Routines (v8.107.35):**
+  - `func_800B45E0` -> `write_eeprom_course_time_trial_records`: Calculates checksum and writes `CourseTimeTrialRecords` to EEPROM using `osEepromLongWrite`.
+  - `func_800B46D0` -> `reset_all_save_data_to_defaults`: Resets all 16 course time trial records, best time records, Grand Prix points, and updates save backup.
+  - `func_800B4728` -> `reset_course_time_trial_records`: Fills course time trial record slots with default times from `D_800F2E60`, calculates checksum, and writes to EEPROM.
+- **Ghost Data Disk I/O & Transfer Routines (v8.107.34):**
+  - `func_800B6178` -> `save_ghost_data_to_pak1`: Writes 0x3C00 bytes of compressed ghost data to Controller Pak 1, computes and sets rolling page checksums, and saves the ghost header entry.
+  - `func_800B64EC` -> `load_ghost_data_from_pak1`: Reads 0x3C00 bytes of compressed ghost data from Controller Pak 1 into `gReplayGhostCompressed`, validates page checksums, and enables player ghost replay.
+  - `func_800B65F4` -> `copy_ghost_data_from_pak2_to_buffer`: Reads ghost data from Controller Pak 2 into `gReplayGhostCompressed`, verifies page checksums, and stages metadata for copying to Pak 1.
+- **Ghost Slot Lookup & Candidate Verification Routines (v8.107.33):**
+  - `func_800B6348` -> `get_ghost_slot_index_for_course`: Returns ghost slot (0 or 1) saving ghost data for the specified course.
+  - `func_800B639C` -> `find_saved_ghost_index_for_course`: Finds matching ghost slot (0 or 1), or -1 if no saved ghost matches course.
+  - `func_800B63F0` -> `verify_ghost_candidate_match`: Validates course index, ghost metadata, character ID, and page checksums against candidates.
+- **Sound Cancellation & Bank Update Routines (v8.107.32):**
+  - `func_800C5384` -> `audio_stop_sounds_at_position_in_bank`: Stops active sound instances in target bank matching a specific position vector pointer.
+  - `func_800C54B8` -> `audio_stop_and_cancel_sounds_at_position_in_bank`: Stops active sounds and cancels queued sound requests matching position in bank.
+  - `func_800C550C` -> `audio_stop_all_sounds_at_position`: Stops all sound instances across all 6 sound banks associated with a given position vector.
+  - `func_800C5578` -> `audio_stop_sound_at_position`: Stops specific sound bits at a given position vector and cancels matching requests.
+  - `func_800C56F0` -> `audio_stop_sound_by_bits`: Stops specific sound bits across its bank and cancels matching requests.
+  - `func_800C5848` -> `audio_process_all_pending_sound_requests`: Processes all unhandled sound requests in queue up to `sSoundRequestCount`.
+  - `func_800C5968` -> `audio_update_channel_volume_scale_fade`: Ticks volume fade interpolation for a channel.
+  - `func_800C59C4` -> `audio_update_all_sound_banks`: Iterates all sound banks to sort priorities, dispatch voices, and tick volume fades.
+- **Sound Request & Sound Bank Channel Management Routines (v8.107.31):**
+  - `func_800C41CC` -> `audio_cancel_matching_sound_requests`: Cancels queued sound requests matching filter conditions by zeroing out their soundBits and unlinking spatial nodes.
+  - `func_800C4398` -> `audio_process_sound_requests`: Inserts newly requested sounds into destination sound banks with priority scoring and freshness parameters.
+  - `func_800C4888` -> `audio_sort_sound_bank_priorities`: Evaluates sound distance and priority scores, selecting highest-priority active sounds to occupy hardware channels.
+  - `func_800C4FE4` -> `audio_dispatch_active_sound_bank_channels`: Dispatches pitch, pan, volume, and note-on commands to hardware channels on SequencePlayer 2.
+  - `func_800C5278` -> `audio_clear_sound_bank`: Stops and flushes all active sound instances within a target sound bank.
+- **3D Sound Queries & Script IO Sync Routines (v8.107.30):**
+  - `func_800C21E8` -> `audio_get_active_3d_sound_relative_pos`: Queries active 3D sound nodes in `D_8018EFD8` matching sound coordinates and soundBits, returning a pointer to the relative orientation vector.
+  - `func_800C2274` -> `audio_sync_sequence_script_io`: Reads sequence player channel script IO registers (`soundScriptIO[0..3]`) to synchronize music cues with camera cues and trigger gameplay sound sync events (`func_8001AAAC`).
+- **3D Spatial Sound Characteristics Routines (v8.107.29):**
+  - `func_800C1480` -> `audio_calculate_distance_attenuation`: Computes distance-based volume attenuation factor 0.0f..1.0f.
+  - `func_800C15D0` -> `audio_calculate_sound_reverb`: Computes distance-dependent reverb level clamped to 0x7F.
+  - `func_800C16E8` -> `audio_calculate_sound_panning`: Computes stereo panning balance (0..127) based on sound relative X/Z coordinates.
+  - `func_800C1934` -> `audio_calculate_random_pitch_variation`: Applies small random pitch variation if flag 0x800000 is present.
+  - `func_800C19D0` -> `audio_apply_sound_characteristics_to_channel`: Combines volume attenuation, reverb, pitch, and pan, pushing updates to the audio channel queue.
+- **3D Spatial Audio & Doppler Routines (v8.107.28):**
+  - `func_800C1C88` -> `audio_allocate_3d_sound_node`: Allocates an available slot from the 3D spatial node linked list (`D_8018EFD8`), assigning 3D coordinates, velocity vectors, sound bits, and camera associations.
+  - `func_800C1DA4` -> `audio_calculate_sound_relative_camera_position`: Computes 3D relative positioning of a sound node rotated by camera yaw angle.
+  - `func_800C1E2C` -> `audio_calculate_doppler_pitch_shift`: Calculates Doppler pitch shift factor (`unk2C`) based on camera and sound source relative motion vectors and sound speed.
+  - `func_800C1F8C` -> `audio_update_3d_spatial_sounds`: Frame tick updater that recalculates camera velocities, updates active spatial node orientations/Doppler shifts, and frees inactive nodes back to the free list.
+- **Tyre Surface Skid Effect Selector Routine (v8.107.27):**
+  - `func_800C70A8` -> `audio_determine_surface_skid_effect`: Evaluates player tyres surface type (DIRT, SAND, BRIDGE, STONE, SNOW, ICE, ROPE_BRIDGE, WOOD_BRIDGE, TRAIN_TRACK, GRASS), drift status, and spinout flags, selecting the active sound index into `D_800E9E74[playerId]`.
+- **Tyre Skid & Surface Sound Routines (v8.107.26):**
+  - `func_800C64A0` -> `audio_update_skid_sound_volume`: Computes skid volume scalers `D_800E9EF4[playerId]` and `D_800E9F04[playerId]` based on kart surface type and speed.
+  - `func_800C6758` -> `audio_update_skid_sound_frequency`: Computes dynamic pitch frequency scaler `D_800E9F14[playerId]` from kart drift/spin speed.
+  - `func_800C683C` -> `audio_update_tyre_skid_sound`: Coordinates triggering sound effects (tyre squeal, spinout, dirt drift, grass drift) when skid state changes.
+- **Player Voice Bank & Kart Engine Dynamics Audio Routines (v8.107.25):**
+  - `func_800C5BD0` -> `audio_init_player_sound_bank`: Dispatches command `0xF3000000` with the character voice sound bank ID from `D_800EA154[gPlayers[0].characterId]`.
+  - `func_800C5D04` -> `audio_update_kart_throttle_timer`: Updates throttle on/off frame counters (`D_800E9E24[playerId]`, `D_800E9E34[playerId]`) and triggers engine idle audio on initial throttle press.
+  - `func_800C5E38` -> `audio_update_kart_engine_rev_sound`: Manages kart deceleration and throttle release audio effects.
+  - `func_800C6108` -> `audio_calculate_kart_engine_pitch`: Computes dynamic engine pitch scale `D_800E9E64[playerId]` from player engine RPM / unk_098 and forward speed.
+- **Sequence Player Volume & Setup Update Routines (v8.107.24):**
+  - `func_800C3724` -> `audio_update_sequence_players`: Audio tick updater that computes composite sequence player volumes and pushes volume/tempo updates.
+  - `func_800C36C4` -> `seq_player_set_volume_target`: Configures sequence player sub-volume targets in `D_801930D0[seqPlayer].unk_00E[channel]` with transition frame duration.
+  - `func_800C3608` -> `seq_player_cancel_setup_operations`: Cancels queued operations matching a given setup op code across the target sequence player.
+- **Sequence Player Control & Command Dispatcher Routines (v8.107.23):**
+  - `func_800C284C` -> `seq_player_play_sequence`: Dispatches sequence playback command `0x82000000`, initializes sequence ID and priority in `D_801930D0[seqPlayer].unk_248`, and sets default channel volume states.
+  - `func_800C29B4` -> `seq_player_stop_sequence`: Pushes sequence stop command `0x83000000` with fade duration and clears `unk_248`.
+  - `func_800C2A2C` -> `audio_execute_sequence_command`: Command dispatcher parsing opcode switches (0..15) for sequence volume fades, channel masks, session resets, and sequence playback.
+  - `func_800C3508` -> `seq_player_get_active_sequence_id`: Returns currently playing sequence ID for a given sequence player index, or -1 if inactive.
+  - `func_800C357C` -> `audio_is_sequence_command_pending`: Scans sequence command ring buffer for matching command.
+  - `func_800C35E8` -> `seq_player_clear_queued_count`: Resets the active queued sequence count in `D_80192CC6[player]`.
+- **Audio Course Sequence & Race Finish Status Routines (v8.107.22):**
+  - `func_800CA008` -> `audio_init_course_sequence`: Adjusts volume channels, determines sequence index by course ID/game mode, and dispatches the corresponding sequence command.
+  - `func_800CA24C` -> `audio_set_player_finish_state`: Updates `D_800EA0EC[playerIndex] = 2` to signal that player has completed their race.
+  - `func_800CA270` -> `audio_set_race_finish_flag`: Sets global finish flag `D_800EA0F4 = 1`.
+- **Controller Pak Ghost File Allocation & Entry Clearing Routines (v8.107.21):**
+  - `func_800B69BC` -> `clear_and_write_pak1_ghost_header`: Clears a ghost header slot in `D_8018EE10[arg0]`, computes header checksum, and writes to Controller Pak 1 via `osPfsReadWriteFile`.
+  - `func_800B6A68` -> `allocate_pak1_ghost_file`: Allocates the 0x7900 byte ghost note on Controller Pak 1 using `osPfsAllocateFile` and clears both ghost header slots.
+- **Controller Pak Ghost Header Validation & Checksum Routines (v8.107.20):**
+  - `func_800B6708` -> `load_and_validate_pak1_ghost_headers`: Reads ghost headers from Pak 1 into `D_8018EE10` and validates checksums.
+  - `func_800B6798` -> `load_and_validate_pak2_ghost_headers`: Reads ghost headers from Pak 2 into `gSomeDLBuffer` and validates checksums.
+  - `func_800B6828` -> `calculate_pak1_ghost_header_checksum`: Calculates checksum for Pak 1 ghost header entry `D_8018EE10[arg0]`.
+  - `func_800B68F4` -> `calculate_pak2_ghost_header_checksum`: Calculates checksum for Pak 2 ghost header entry in `gSomeDLBuffer`.
+- **Controller Pak 2 Probe & Ghost Checksum Routines (v8.107.19):**
+  - `func_800B6014` -> `probe_controller_pak_2`: Probes controller pak 2 insertion state (`sControllerPak2State`) and initialises `&gControllerPak2FileHandle` using `osPfsInit`.
+  - `func_800B6088` -> `save_ghost_header_to_pak`: Computes header checksum via `func_800B6828` and writes the 128-byte `struct_8018EE10_entry` header into Controller Pak 1.
+  - `func_800B60E8` -> `calculate_ghost_page_checksum`: Calculates rolling checksum for a 256-byte page of compressed ghost data in `gReplayGhostCompressed`.
+- **Controller Pak & Grand Prix Selection Routines (v8.107.18):**
+  - `func_800B5F30` -> `probe_controller_pak_1`: Checks controller pak 1 initialization status (`gControllerPak1State`), initialises PFS via `osPfsInitPak`, checks file state, and sets `gControllerPak1Files`.
+  - `func_8000F0E0` -> `reset_cpu_camera_path_indices`: Clears CPU vehicle waypoint and camera path tracking indices.
+  - `func_8000F124` -> `select_grand_prix_rival_characters`: Selects and assigns non-human rival racer characters for Grand Prix mode based on current character table rankings.
+- **Screen Transition Visual Faders (v8.107.17):**
+  - `func_8009DEF8` -> `start_screen_fade_in_type`: Custom duration/type fade-in on transition channel 4.
+  - `func_8009DF4C` -> `start_screen_fade_in`: Default type 1 fade-in.
+  - `func_8009DF8C` -> `start_screen_fade_out_type`: Custom duration/type fade-out on transition channel 4.
+  - `func_8009DFE0` -> `start_screen_fade_out`: Default type 2 fade-out used across menus and transitions.
+  - `func_8009E000` -> `start_screen_fade_out_alt`: Alternate type 7 fade-out.
+  - `func_8009E020` -> `start_channel_fade_in`: Per-channel fade-in (used in `effects.c` for screen-specific player effects).
+  - `func_8009E088` -> `start_channel_fade_out`: Per-channel fade-out (used in `effects.c`).
+  - `func_8009E0F0` -> `start_screen_mosaic_fade_out`: Low-res mosaic pixelation fade-out in `sTKMK00_LowResBuffer`.
+  - `func_8009E17C` -> `start_screen_transition_type_4`.
+- **Menu Screen Transition & Fade Handlers (v8.107.16):**
+  - Labeled `set_menu_fade_main`, `set_menu_fade_main_alt`, `set_menu_fade_back`, `set_menu_fade_demo`, `set_menu_fade_data`, and `set_menu_fade_option`.
+- **Audio Sequence Player Settings & Bank Mask Routines (v8.107.15):**
+  - Labeled `audio_reset_all_sequence_player_settings`, `audio_reset_soft_sequence_player_settings`, `audio_set_sound_banks_enabled_mask`, and `audio_clear_sound_channel_active_bit`.
+- **Submodule Inventory Alignment (v8.107.14):**
+  - Synchronized `SUBMODULE_INVENTORY.md` across all submodules.
+- **Audio Sequence Command Buffer & Fadeouts (v8.107.13):**
+  - Labeled `audio_fade_out_all_sequences`, `audio_push_sequence_command`, and `audio_process_sequence_commands`.
+- **Race Finish and Results Sequence Audio Labeling (v8.107.12):**
+  - `audio_trigger_race_finish` and `audio_update_race_finish_sequences`.
+- **Audio Initialization & State Resets (v8.107.11):**
+  - `audio_init`, `audio_soft_reset`, and `audio_reset_state_and_cameras`.
+- **Tunnel Acoustics & Final Lap Audio Labeling (v8.107.10):**
+  - `audio_play_final_lap_fanfare`, `audio_set_player_tunnel_reverb`, `audio_clear_player_tunnel_reverb`, `audio_set_cpu_tunnel_reverb`, and `audio_clear_cpu_tunnel_reverb`.
+- **Kart Engine & Player Physics Audio Labeling (v8.107.9):**
+  - `audio_update_player_submerged_sound`, `audio_update_player_lightning_distortion`, `audio_play_kart_engine_idle`, `audio_stop_kart_engine_sound`, and `audio_play_kart_engine_driving`.
+- **Audio Mute & Sound Bank Routine Renaming (v8.107.8):**
+  - `audio_set_pause_mute`, `audio_mute_sfx_enable`, `audio_mute_sfx_disable`, `audio_mute_sfx_enable_cutscene`, and `audio_clear_sound_banks`.
+- **Audio Port EU Command Queue Renaming (v8.107.7):**
+  - `audio_cmd_queue_push_*`, `audio_cmd_queue_flush`, `audio_cmd_queue_process`, and `seq_player_fade_in`.
+- **Environment & Build Infrastructure:**
+  - Installed MIPS cross-compilers (`binutils-mips-linux-gnu`, `gcc-mips-linux-gnu`).
+  - Verified Torch and recompilation tools build cleanly (`make -C tools`).
+  - Zero syntax errors confirmed across all updated files.
 
 ## Next Steps for Implementor
 1. **Zero-Latency Rust Bridge:** Review the `TODO.md` backlog regarding the porting of collision logic (`src/racing/`) into native Rust routines to circumvent N64 physics limitations.
-2. **Continue C Renaming:** There are hundreds of `func_800...` references remaining across the `src/` tree, particularly in the actor and course logic segments. Contextual mapping of these functions is the primary short-term implementation priority.
+2. **Continue C Renaming:** Continue mapping remaining `func_800...` routines in `src/audio` (spatial positioning, sound banks) and `src/racing` (collision and course rendering).

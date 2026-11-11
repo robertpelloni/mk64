@@ -41,6 +41,7 @@
 #include "buffers/gfx_output_buffer.h"
 
 void func_80091B78(void);
+void game_audio_init(void);
 void audio_init(void);
 void create_debug_thread(void);
 void start_debug_thread(void);
@@ -612,7 +613,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             sNumVBlanks = 0;
@@ -676,7 +677,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             profiler_log_thread5_time(LEVEL_SCRIPT_EXECUTE);
@@ -722,7 +723,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             profiler_log_thread5_time(LEVEL_SCRIPT_EXECUTE);
             sNumVBlanks = (u16) 0;
@@ -794,7 +795,7 @@ void race_logic_loop(void) {
                     course_update_water();
                     func_8028FCBC();
                 }
-                func_80022744();
+                update_player_render_state();
             }
             func_8005A070();
             sNumVBlanks = 0;
@@ -1189,10 +1190,10 @@ void thread5_game_loop(UNUSED void* arg) {
     gNmiUnknown6 = &pAppNmiBuffer[28]; // 4  u8's, tracking number of Battle mode wins by player 1/2/3/4
     rendering_init();
     read_controllers();
-    func_800C5CB8();
+    game_audio_init();
 
     while (true) {
-        func_800CB2C4();
+        audio_game_loop_tick();
 
         // Update the gamestate if it has changed (racing, menus, credits, etc.).
         if (gGamestateNext != gGamestate) {

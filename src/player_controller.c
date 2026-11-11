@@ -220,19 +220,19 @@ void func_80027DA8(Player* player, s8 playerId) {
         if ((player->type & PLAYER_UNKNOWN_0x10) != PLAYER_UNKNOWN_0x10) {
             if (((D_8018D168 == 1) && ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN)) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C94A4(playerId);
+                audio_play_kart_engine_idle(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-                func_800C9A88(playerId);
+                audio_play_kart_engine_driving(playerId);
                 player->type |= PLAYER_UNKNOWN_0x10;
             }
         }
     } else if ((player->type & PLAYER_UNKNOWN_0x10) != PLAYER_UNKNOWN_0x10) {
         if ((D_8018D168 == 1) && (player == gPlayerOne)) {
-            func_800C94A4(playerId);
+            audio_play_kart_engine_idle(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         } else if ((player->type & PLAYER_START_SEQUENCE) == 0) {
-            func_800C9A88(playerId);
+            audio_play_kart_engine_driving(playerId);
             player->type |= PLAYER_UNKNOWN_0x10;
         }
     }
@@ -249,12 +249,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x19B) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1B9)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x55);
+                        audio_set_player_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -263,12 +263,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0xA0) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0xB4)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x55);
+                        audio_set_player_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -277,12 +277,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x29) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1D2)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x41);
+                        audio_set_player_tunnel_reverb(playerId, 0x41);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -291,12 +291,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x180) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1E1)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x41);
+                        audio_set_player_tunnel_reverb(playerId, 0x41);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -305,12 +305,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x145) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x18B)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x55);
+                        audio_set_player_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -318,12 +318,12 @@ void func_80027EDC(Player* player, s8 playerId) {
             case COURSE_TOADS_TURNPIKE:
                 if ((player->type & PLAYER_CINEMATIC_MODE) != PLAYER_CINEMATIC_MODE) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x1e);
+                        audio_set_player_tunnel_reverb(playerId, 0x1e);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -332,12 +332,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x11C) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x209)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA288(playerId, 0x55);
+                        audio_set_player_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA2B8(playerId);
+                        audio_clear_player_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -348,23 +348,23 @@ void func_80027EDC(Player* player, s8 playerId) {
                     (((s16) gNearestPathPointByPlayerId[playerId] >= 0x14A) &&
                      ((s16) gNearestPathPointByPlayerId[playerId] < 0x21F))) {
                     if (D_80165300[playerId] != 2) {
-                        func_800C8F80(playerId, 0x0170802D);
+                        audio_play_player_sound_at_position(playerId, 0x0170802D);
                     }
                     D_80165300[playerId] = 2;
                 } else {
                     if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x288) &&
                         ((s16) gNearestPathPointByPlayerId[playerId] < 0x305)) {
                         if (D_80165300[playerId] != 1) {
-                            func_800CA288(playerId, 0x55);
+                            audio_set_player_tunnel_reverb(playerId, 0x55);
                         }
                         D_80165300[playerId] = 1;
                     } else {
                         if (D_80165300[playerId] != 0) {
                             if (D_80165300[playerId] == 1) {
-                                func_800CA2B8(playerId);
+                                audio_clear_player_tunnel_reverb(playerId);
                             }
                             if (D_80165300[playerId] == 2) {
-                                func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x70, 0x80, 0x2D));
+                                audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x70, 0x80, 0x2D));
                             }
                             D_80165300[playerId] = 0;
                         }
@@ -384,12 +384,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x19B) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1B9)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x55);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -398,12 +398,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0xA0) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0xB4)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x55);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -412,12 +412,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x29) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1D2)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x41);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x41);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -426,12 +426,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x180) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x1E1)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x41);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x41);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -440,12 +440,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x145) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x18B)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x55);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -453,12 +453,12 @@ void func_80027EDC(Player* player, s8 playerId) {
             case COURSE_TOADS_TURNPIKE:
                 if ((player->type & PLAYER_CINEMATIC_MODE) != PLAYER_CINEMATIC_MODE) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x1E);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x1E);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -467,12 +467,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x11C) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x209)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x55);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -481,12 +481,12 @@ void func_80027EDC(Player* player, s8 playerId) {
                 if (((s16) gNearestPathPointByPlayerId[playerId] >= 0x288) &&
                     ((s16) gNearestPathPointByPlayerId[playerId] < 0x305)) {
                     if (D_80165300[playerId] != 1) {
-                        func_800CA2E4(playerId, 0x55);
+                        audio_set_cpu_tunnel_reverb(playerId, 0x55);
                     }
                     D_80165300[playerId] = 1;
                 } else {
                     if (D_80165300[playerId] != 0) {
-                        func_800CA30C(playerId);
+                        audio_clear_cpu_tunnel_reverb(playerId);
                         D_80165300[playerId] = 0;
                     }
                 }
@@ -1114,8 +1114,8 @@ void func_8002A704(Player* player, s8 playerIndex) {
     player->triggers &= ~START_BOOST_TRIGGER;
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(0U, (player->characterId * 0x10) + 0x29008001);
-        func_800C9060(playerIndex, 0x1900A40BU);
+        audio_play_player_character_voice(0U, (player->characterId * 0x10) + 0x29008001);
+        audio_play_player_sound(playerIndex, 0x1900A40BU);
     }
     player->boostTimer = 0x0050;
 }
@@ -1129,10 +1129,10 @@ void func_8002A79C(Player* player, s8 playerIndex) {
         player->driftStateCounter = 0;
         if (D_8015F890 != 1) {
             if ((player->type & PLAYER_HUMAN) && !(player->type & PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C9250(playerIndex);
+                audio_play_player_random_voice(playerIndex);
             }
         } else if (player == gPlayerOne) {
-            func_800C9250(playerIndex);
+            audio_play_player_random_voice(playerIndex);
         }
     } else if ((player->effects & MINI_TURBO_EFFECT) == MINI_TURBO_EFFECT) {
         player->unk_23A += 1;
@@ -1152,7 +1152,7 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
                 player->driftStateCounter++;
             }
             if ((player->driftStateCounter == 100) && (player->type & PLAYER_HUMAN)) {
-                func_800C9060(playerIndex, 0x1900851EU);
+                audio_play_player_sound(playerIndex, 0x1900851EU);
             }
         } else {
             if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
@@ -1172,7 +1172,7 @@ void update_drift_state_counter(Player* player, s8 playerIndex) {
             player->driftStateCounter++;
         }
         if ((player->driftStateCounter == 100) && (player->type & PLAYER_HUMAN)) {
-            func_800C9060(playerIndex, 0x1900851EU);
+            audio_play_player_sound(playerIndex, 0x1900851EU);
         }
     } else {
         if ((player->driftStateCounter >= 18) && (player->driftStateCounter < 100)) {
@@ -1728,18 +1728,18 @@ void func_8002BF4C(Player* player, s8 playerIndex) {
             playerBorrow = &players[i];
             if (((player != playerBorrow) && ((playerBorrow->type & PLAYER_INVISIBLE_OR_BOMB) == 0) &&
                  (playerBorrow->type & PLAYER_EXISTS)) &&
-                ((var_a2 = func_8001FD78(player, playerBorrow->pos[0], playerBorrow->pos[1], playerBorrow->pos[2]),
+                ((var_a2 = is_point_inside_kart_bounding_polygon(player, playerBorrow->pos[0], playerBorrow->pos[1], playerBorrow->pos[2]),
                   var_a2 == 1))) {
                 player->unk_0E2 += 1;
                 if (player->unk_0E2 >= 0x3D) {
                     player->effects |= CPU_FAST_EFFECT;
                     if ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB) {
                         uselessAssignment = player->type & PLAYER_INVISIBLE_OR_BOMB;
-                        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008001);
+                        audio_play_player_character_voice(playerIndex, (player->characterId * 0x10) + 0x29008001);
                     }
                     if ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB) {
                         uselessAssignment = var_a2;
-                        func_800C9060(playerIndex, 0x19008011);
+                        audio_play_player_sound(playerIndex, 0x19008011);
                     }
                 }
                 break;
@@ -1843,9 +1843,9 @@ void func_8002C4F8(Player* player, s8 playerIndex) {
             if ((gCurrentCourseId != COURSE_KOOPA_BEACH) && (gCurrentCourseId != COURSE_SKYSCRAPER) &&
                 (gCurrentCourseId != COURSE_RAINBOW_ROAD) && ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN)) {
                 if ((gCurrentCourseId == COURSE_BOWSER_CASTLE) || (gCurrentCourseId == COURSE_BIG_DONUT)) {
-                    func_800C9060((u8) playerIndex, 0x1900801CU);
+                    audio_play_player_sound((u8) playerIndex, 0x1900801CU);
                 } else {
-                    func_800C9060((u8) playerIndex, 0x19008008U);
+                    audio_play_player_sound((u8) playerIndex, 0x19008008U);
                 }
             }
         }
@@ -1888,7 +1888,7 @@ void func_8002C7E4(Player* player, s8 playerIndex, s8 arg2) {
             player->unk_046 |= 1;
             player->unk_046 |= 8;
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
-                func_8001CA24(player, 2.8f);
+                player_trigger_screen_shake(player, 2.8f);
             }
             if ((player->unk_046 & CRITTER_TOUCH) == CRITTER_TOUCH) {
                 if ((player->unk_046 & CRITTER_TOUCH_GATE) != CRITTER_TOUCH_GATE) {
@@ -1941,7 +1941,7 @@ void func_8002C954(Player* player, s8 playerId, Vec3f velocity) {
         player->unk_046 |= 0x20;
     }
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && (((player->speed / 18.0f) * 216.0f) > 30.0f)) {
-        func_8001CA24(player, 3.0f);
+        player_trigger_screen_shake(player, 3.0f);
     }
     player->unk_046 |= 0x10;
     player->unk_256++;
@@ -2304,10 +2304,10 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                  ((player->effects & BOOST_RAMP_ASPHALT_EFFECT) == BOOST_RAMP_ASPHALT_EFFECT)) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
 
-                func_800C9060(playerId, 0x1900A60AU);
+                audio_play_player_sound(playerId, 0x1900A60AU);
             } else if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                        ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
+                play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
             }
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                 player->kartProps |= POST_TUMBLE_GAS;
@@ -2318,7 +2318,7 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             player->unk_DB4.unk18 = 0;
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
+                play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 35.0f);
             }
             if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                 player->kartProps |= POST_TUMBLE_GAS;
@@ -2330,9 +2330,9 @@ void func_8002D268(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
                 if (((player->unk_0C2 < 0xB) && (player->unk_0C2 >= 4)) && (gCurrentCourseId == COURSE_BOWSER_CASTLE)) {
-                    func_800CADD0((u8) playerId, player->unk_0C2 / 14.0f);
+                    play_kart_landing_sound_effect((u8) playerId, player->unk_0C2 / 14.0f);
                 } else {
-                    func_800CADD0((u8) playerId, player->unk_0C2 / 25.0f);
+                    play_kart_landing_sound_effect((u8) playerId, player->unk_0C2 / 25.0f);
                 }
             }
         }
@@ -2581,7 +2581,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 player->unk_DB4.unkC = 3.0f;
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
                 }
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                     player->kartProps |= POST_TUMBLE_GAS;
@@ -2593,7 +2593,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 player->unk_DB4.unk18 = 0;
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 50.0f);
                 }
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
                     player->kartProps |= POST_TUMBLE_GAS;
@@ -2607,7 +2607,7 @@ void func_8002E594(Player* player, UNUSED Camera* camera, s8 screenId, s8 player
                 }
                 if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                     ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                    func_800CADD0((u8) playerId, ((f32) player->unk_0C2) / 20.0f);
+                    play_kart_landing_sound_effect((u8) playerId, ((f32) player->unk_0C2) / 20.0f);
                 }
                 if (player->unk_0C2 >= 0x28) {
                     player->unk_0C2 = 0x0014;
@@ -3129,7 +3129,7 @@ f32 func_80030150(Player* player, s8 playerIndex) {
     return (1.0f - player->unk_104) * var_f2;
 }
 
-void func_80030A34(Player* player) {
+void update_player_surface_vibration(Player* player) {
     f32 var_f0;
     f32 var_f2;
 
@@ -4646,7 +4646,7 @@ void func_80037CFC(Player* player, struct Controller* controller, s8 playerIndex
             kart_hop(player);
             if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
                 ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-                func_800C9060(playerIndex, 0x19008000);
+                audio_play_player_sound(playerIndex, 0x19008000);
             }
         }
         if ((player->effects & MIDAIR_EFFECT) != MIDAIR_EFFECT) {

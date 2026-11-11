@@ -10,7 +10,7 @@
 
 .section .text, "ax"
 
-glabel func_80040030
+glabel mio0decode_alt
 /* 040C30 80040030 8C980008 */  lw    $t8, 8($a0)
 /* 040C34 80040034 8C99000C */  lw    $t9, 0xc($a0)
 /* 040C38 80040038 20840010 */  addi  $a0, $a0, 0x10

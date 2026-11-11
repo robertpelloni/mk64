@@ -41,13 +41,13 @@ void spawn_vehicle_on_road(VehicleStuff* vehicle) {
     origXPos = vehicle->position[0];
     origZPos = vehicle->position[2];
     if (gIsInExtra == false) {
-        func_8000D6D0(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
+        update_vehicle_path_with_lookahead(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
                       vehicle->someMultiplierTheSequel, 0, 3);
         vehicle->rotation[0] = 0;
         vehicle->rotation[1] = -DEGREES(180);
         vehicle->rotation[2] = 0;
     } else {
-        func_8000D940(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
+        update_vehicle_path_simple(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
                       vehicle->someMultiplierTheSequel, 0);
         vehicle->rotation[0] = 0;
         vehicle->rotation[1] = 0;
@@ -305,10 +305,10 @@ void update_vehicle_trains(void) {
         if ((oldPathPointIndex != gTrainList[i].locomotive.pathPointIndex) &&
             ((gTrainList[i].locomotive.pathPointIndex == 0x00BE) ||
              (gTrainList[i].locomotive.pathPointIndex == 0x0140))) { // play crossing bell sound
-            func_800C98B8(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
+            audio_play_sound_at_position_3d(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
                           SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x0E));
         } else if (random_int(100) == 0) { // play train whistle sound
-            func_800C98B8(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
+            audio_play_sound_at_position_3d(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
                           SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x0D));
         }
 
@@ -410,7 +410,7 @@ void handle_trains_interactions(s32 playerId, Player* player) {
  * Appears to check if the train is close to the crossing.
  * Implements sCrossingActiveTimer as a counter
  */
-void func_80013054(void) {
+void update_train_railroad_crossings(void) {
     f32 temp_f16;
     f32 temp_f18;
     f32 temp_f12;
@@ -534,9 +534,9 @@ void update_vehicle_paddle_boats(void) {
             }
             if (random_int(100) == 0) {
                 if (random_int(2) == 0) {
-                    func_800C98B8(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x47));
+                    audio_play_sound_at_position_3d(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x47));
                 } else {
-                    func_800C98B8(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x48));
+                    audio_play_sound_at_position_3d(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x48));
                 }
             }
             sp94[0] = temp_f26;
@@ -666,17 +666,17 @@ void initialize_toads_turnpike_vehicle(f32 speedA, f32 speedB, s32 numVehicles, 
         veh->rotation[0] = 0;
         veh->rotation[2] = 0;
         if (gIsInExtra == false) {
-            veh->rotation[1] = func_8000D6D0(veh->position, (s16*) &veh->pathPointIndex, veh->speed,
+            veh->rotation[1] = update_vehicle_path_with_lookahead(veh->position, (s16*) &veh->pathPointIndex, veh->speed,
                                              veh->someMultiplierTheSequel, 0, 3);
         } else {
             veh->rotation[1] =
-                func_8000D940(veh->position, (s16*) &veh->pathPointIndex, veh->speed, veh->someMultiplierTheSequel, 0);
+                update_vehicle_path_simple(veh->position, (s16*) &veh->pathPointIndex, veh->speed, veh->someMultiplierTheSequel, 0);
         }
     }
     sVehicleSoundRenderCounter = 10;
 }
 
-f32 func_80013C74(s16 someType, s16 pathPointIndex) {
+f32 get_vehicle_lane_offset(s16 someType, s16 pathPointIndex) {
     f32 var_f2;
 
     var_f2 = 0.0f;
@@ -728,7 +728,7 @@ void update_vehicle_follow_path_point(VehicleStuff* vehicle) {
     sp40[0] = sp58;
     sp40[1] = 0.0f;
     sp40[2] = 0.0f;
-    temp_f0_2 = func_80013C74(vehicle->someType, vehicle->pathPointIndex);
+    temp_f0_2 = get_vehicle_lane_offset(vehicle->someType, vehicle->pathPointIndex);
     if (vehicle->someMultiplierTheSequel < temp_f0_2) {
         vehicle->someMultiplierTheSequel = vehicle->someMultiplierTheSequel + 0.06;
         if (temp_f0_2 < vehicle->someMultiplierTheSequel) {
@@ -742,10 +742,10 @@ void update_vehicle_follow_path_point(VehicleStuff* vehicle) {
         }
     }
     if (gIsInExtra == false) {
-        var_a1 = func_8000D6D0(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
+        var_a1 = update_vehicle_path_with_lookahead(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
                                vehicle->someMultiplierTheSequel, 0, 3);
     } else {
-        var_a1 = func_8000D940(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
+        var_a1 = update_vehicle_path_simple(vehicle->position, (s16*) &vehicle->pathPointIndex, vehicle->speed,
                                vehicle->someMultiplierTheSequel, 0);
     }
     adjust_angle(&vehicle->rotation[1], var_a1, 100);
@@ -818,14 +818,14 @@ void handle_vehicle_interactions(s32 playerId, Player* player, VehicleStuff* veh
                     if ((sVehicleSoundRenderCounter > 0) && (vehicle->someFlags == 0)) {
                         sVehicleSoundRenderCounter--;
                         vehicle->someFlags |= (RENDER_VEHICLE << playerId);
-                        func_800C9D80(vehicle->position, vehicle->velocity, soundBits);
+                        audio_play_looping_sound_at_position_3d(vehicle->position, vehicle->velocity, soundBits);
                     }
                 } else {
                     if (vehicle->someFlags != 0) {
                         vehicle->someFlags &= ~(RENDER_VEHICLE << playerId);
                         if (vehicle->someFlags == 0) {
                             sVehicleSoundRenderCounter++;
-                            func_800C9EF4(vehicle->position, soundBits);
+                            audio_stop_looping_sound_at_position_3d(vehicle->position, soundBits);
                         }
                     }
                 }
@@ -904,7 +904,7 @@ void handle_vehicle_interactions(s32 playerId, Player* player, VehicleStuff* veh
                                     break;
                             }
                             vehicle->someFlagsTheSequel |= ((1 << playerId));
-                            func_800C98B8(vehicle->position, vehicle->velocity, soundBits2);
+                            audio_play_sound_at_position_3d(vehicle->position, vehicle->velocity, soundBits2);
                         }
                     }
                 } else {

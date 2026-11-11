@@ -57,7 +57,7 @@ s16 D_80165150[4][8];
 s16 D_80165190[4][8];
 s16 D_801651D0[4][8];
 
-void func_8001F980(s32* arg0, s32* arg1) {
+void get_camera_frustum_offsets(s32* arg0, s32* arg1) {
     if ((gDemoMode == 1) || (D_80164A28 != 0) || (D_8015F894 != 0)) {
         *arg0 = 0xAA;
     } else {
@@ -70,14 +70,14 @@ void func_8001F980(s32* arg0, s32* arg1) {
     *arg1 = 0;
 }
 
-void func_8001F9E4(Player* player, Camera* camera, s8 screenId) {
+void update_player_visibility_flags(Player* player, Camera* camera, s8 screenId) {
     UNUSED s32 pad;
     s32 sp30;
     s32 sp2C;
     UNUSED s32 pad2;
 
     get_player_index_for_player(player);
-    func_8001F980(&sp30, &sp2C);
+    get_camera_frustum_offsets(&sp30, &sp2C);
 
     player->unk_002 &= ~(UNK_002_UNKNOWN_0x2 << (screenId * 4));
     player->unk_002 &= ~(SIDE_OF_KART << (screenId * 4));
@@ -138,7 +138,7 @@ u16 check_player_camera_collision(Player* player, Camera* camera, f32 arg2, f32 
     return ret;
 }
 
-u16 func_8001FD78(Player* player, f32 posX, UNUSED f32 arg2, f32 posZ) {
+u16 is_point_inside_kart_bounding_polygon(Player* player, f32 posX, UNUSED f32 arg2, f32 posZ) {
     f32 sp64;
     f32 sp60;
     f32 sp5c;
@@ -180,7 +180,7 @@ void init_render_player(Player* player, Camera* camera, s8 playerId, s8 screenId
     s32 temp_v0_2;
 
     if ((player->type & PLAYER_EXISTS) == PLAYER_EXISTS) {
-        func_8001F9E4(player, camera, screenId);
+        update_player_visibility_flags(player, camera, screenId);
         temp_v0 = UNK_002_UNKNOWN_0x2 << (screenId << 2);
         if (temp_v0 == (player->unk_002 & temp_v0)) {
             if (!(player->type & PLAYER_START_SEQUENCE)) {
@@ -192,7 +192,7 @@ void init_render_player(Player* player, Camera* camera, s8 playerId, s8 screenId
                 player->unk_050[screenId] = 0;
             }
         }
-        func_8001F980(&sp4C, &sp48);
+        get_camera_frustum_offsets(&sp4C, &sp48);
         temp_v0_2 = CHANGING_ANIMATION << (screenId << 2);
         if ((temp_v0 == (player->unk_002 & temp_v0)) && (temp_v0_2 == (player->unk_002 & temp_v0_2))) {
             if ((check_player_camera_collision(player, camera, D_80165570 + sp4C, D_80165572 + sp48) == 1) & 0xFFFF) {
@@ -642,7 +642,7 @@ void render_players_on_screen_four(void) {
     gPlayersToRenderCount = 0;
 }
 
-void func_80021B0C(void) {
+void render_player_particles_screen_one(void) {
     func_8006E7CC(gPlayerOneCopy, 0, 0);
     func_8006E7CC(gPlayerTwo, 1, 0);
     func_8006E7CC(gPlayerThree, 2, 0);
@@ -669,7 +669,7 @@ void func_80021B0C(void) {
     }
 }
 
-void func_80021C78(void) {
+void render_player_particles_screen_two(void) {
     func_8006E848(gPlayerOneCopy, 0, 1);
     func_8006E848(gPlayerTwo, 1, 1);
     func_8006E848(gPlayerThree, 2, 1);
@@ -682,14 +682,14 @@ void func_80021C78(void) {
     }
 }
 
-void func_80021D40(void) {
+void render_player_particles_screen_three(void) {
     func_8006E8C4(gPlayerOneCopy, 0, 2);
     func_8006E8C4(gPlayerTwo, 1, 2);
     func_8006E8C4(gPlayerThree, 2, 2);
     func_8006E8C4(gPlayerFour, 3, 2);
 }
 
-void func_80021DA8(void) {
+void render_player_particles_screen_four(void) {
     func_8006E940(gPlayerOneCopy, 0, 3);
     func_8006E940(gPlayerTwo, 1, 3);
     func_8006E940(gPlayerThree, 2, 3);
@@ -723,7 +723,7 @@ void mtxf_translate_rotate(Mat4 dest, Vec3f pos, Vec3s orientation) {
     dest[3][3] = 1.0f;
 }
 
-UNUSED void func_80021F50(Mat4 arg0, Vec3f arg1) {
+UNUSED void mtxf_translate_vec3f(Mat4 arg0, Vec3f arg1) {
     arg0[3][0] += arg1[0];
     arg0[3][1] += arg1[1];
     arg0[3][2] += arg1[2];
@@ -875,43 +875,43 @@ void move_u16_towards(u16* startingValue, s16 targetValue, f32 somePercent) {
     *startingValue -= ((*startingValue - targetValue) * somePercent);
 }
 
-void func_80022744(void) {
+void update_player_render_state(void) {
     func_8006E058();
-    func_8002276C();
+    update_all_players_render_state();
 }
 
-void func_8002276C(void) {
+void update_all_players_render_state(void) {
     switch (gActiveScreenMode) { /* irregular */
         case SCREEN_MODE_1P:
             switch (gModeSelection) { /* switch 1; irregular */
                 case GRAND_PRIX:      /* switch 1 */
-                    func_80022A98(gPlayerOne, 0);
-                    func_80022A98(gPlayerTwo, 1);
-                    func_80022A98(gPlayerThree, 2);
-                    func_80022A98(gPlayerFour, 3);
-                    func_80022A98(gPlayerFive, 4);
-                    func_80022A98(gPlayerSix, 5);
-                    func_80022A98(gPlayerSeven, 6);
-                    func_80022A98(gPlayerEight, 7);
+                    update_single_player_render_state(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerTwo, 1);
+                    update_single_player_render_state(gPlayerThree, 2);
+                    update_single_player_render_state(gPlayerFour, 3);
+                    update_single_player_render_state(gPlayerFive, 4);
+                    update_single_player_render_state(gPlayerSix, 5);
+                    update_single_player_render_state(gPlayerSeven, 6);
+                    update_single_player_render_state(gPlayerEight, 7);
                     break;
                 case TIME_TRIALS: /* switch 1 */
-                    func_80022A98(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerOne, 0);
                     if ((gPlayerTwo->type & PLAYER_INVISIBLE_OR_BOMB) == PLAYER_INVISIBLE_OR_BOMB) {
-                        func_80022A98(gPlayerTwo, 1);
+                        update_single_player_render_state(gPlayerTwo, 1);
                     }
                     if ((gPlayerThree->type & PLAYER_INVISIBLE_OR_BOMB) == PLAYER_INVISIBLE_OR_BOMB) {
-                        func_80022A98(gPlayerThree, 2);
+                        update_single_player_render_state(gPlayerThree, 2);
                     }
                     break;
                 case VERSUS: /* switch 1 */
                 case BATTLE: /* switch 1 */
-                    func_80022A98(gPlayerOne, 0);
-                    func_80022A98(gPlayerTwo, 1);
+                    update_single_player_render_state(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerTwo, 1);
                     if (gPlayerCountSelection1 >= 3) {
-                        func_80022A98(gPlayerThree, 2);
+                        update_single_player_render_state(gPlayerThree, 2);
                     }
                     if (gPlayerCountSelection1 == 4) {
-                        func_80022A98(gPlayerFour, 3);
+                        update_single_player_render_state(gPlayerFour, 3);
                     }
                     break;
             }
@@ -920,58 +920,58 @@ void func_8002276C(void) {
         case SCREEN_MODE_2P_SPLITSCREEN_VERTICAL:
             switch (gModeSelection) { /* switch 2; irregular */
                 case GRAND_PRIX:      /* switch 2 */
-                    func_80022A98(gPlayerOne, 0);
-                    func_80022A98(gPlayerTwo, 1);
-                    func_80022A98(gPlayerThree, 2);
-                    func_80022A98(gPlayerFour, 3);
-                    func_80022A98(gPlayerFive, 4);
-                    func_80022A98(gPlayerSix, 5);
-                    func_80022A98(gPlayerSeven, 6);
-                    func_80022A98(gPlayerEight, 7);
+                    update_single_player_render_state(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerTwo, 1);
+                    update_single_player_render_state(gPlayerThree, 2);
+                    update_single_player_render_state(gPlayerFour, 3);
+                    update_single_player_render_state(gPlayerFive, 4);
+                    update_single_player_render_state(gPlayerSix, 5);
+                    update_single_player_render_state(gPlayerSeven, 6);
+                    update_single_player_render_state(gPlayerEight, 7);
                     break;
                 case VERSUS: /* switch 2 */
                 case BATTLE: /* switch 2 */
-                    func_80022A98(gPlayerOne, 0);
-                    func_80022A98(gPlayerTwo, 1);
+                    update_single_player_render_state(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerTwo, 1);
                     break;
                 case TIME_TRIALS: /* switch 2 */
-                    func_80022A98(gPlayerOne, 0);
+                    update_single_player_render_state(gPlayerOne, 0);
                     break;
             }
             break;
         case SCREEN_MODE_3P_4P_SPLITSCREEN:
             if ((VERSUS == gModeSelection) || (BATTLE == gModeSelection)) {
-                func_80022A98(gPlayerOne, 0);
-                func_80022A98(gPlayerTwo, 1);
-                func_80022A98(gPlayerThree, 2);
+                update_single_player_render_state(gPlayerOne, 0);
+                update_single_player_render_state(gPlayerTwo, 1);
+                update_single_player_render_state(gPlayerThree, 2);
                 if (gPlayerCountSelection1 == 4) {
-                    func_80022A98(gPlayerFour, 3);
+                    update_single_player_render_state(gPlayerFour, 3);
                 }
             }
             break;
     }
 }
 
-void func_80022A98(Player* player, s8 playerIndex) {
+void update_single_player_render_state(Player* player, s8 playerIndex) {
     if ((player->type & PLAYER_EXISTS) == PLAYER_EXISTS) {
-        func_80026A48(player, playerIndex);
-        func_800235AC(player, playerIndex);
+        update_player_wheel_spin_speed(player, playerIndex);
+        update_player_color_effects(player, playerIndex);
         if (((player->effects & SQUISH_EFFECT) == SQUISH_EFFECT) ||
             ((player->effects & POST_SQUISH_EFFECT) == POST_SQUISH_EFFECT)) {
             if ((player->effects & SQUISH_EFFECT) == SQUISH_EFFECT) {
-                func_80022B50(player, playerIndex);
+                update_player_squish_physics(player, playerIndex);
             }
             if ((player->effects & POST_SQUISH_EFFECT) == POST_SQUISH_EFFECT) {
-                func_80022BC4(player, playerIndex);
+                update_player_post_squish_physics(player, playerIndex);
             }
         } else {
-            func_80022DB4(player, playerIndex);
+            update_player_vertical_bounce_physics(player, playerIndex);
         }
-        func_80030A34(player);
+        update_player_surface_vibration(player);
     }
 }
 
-void func_80022B50(Player* player, UNUSED s8 playerIndex) {
+void update_player_squish_physics(Player* player, UNUSED s8 playerIndex) {
     f32 temp_f0;
     s16 var_v0;
 
@@ -986,7 +986,7 @@ void func_80022B50(Player* player, UNUSED s8 playerIndex) {
     player->unk_DB4.unk2 = var_v0;
 }
 
-void func_80022BC4(Player* player, UNUSED s8 playerIndex) {
+void update_player_post_squish_physics(Player* player, UNUSED s8 playerIndex) {
     f32 temp_f0 = player->unk_DB4.unk10;
     s16 temp_v0 = player->unk_DB4.unk2;
     s16 temp_f16;
@@ -1012,7 +1012,7 @@ void func_80022BC4(Player* player, UNUSED s8 playerIndex) {
 }
 
 // look like related to flatten animation
-void func_80022CA8(Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
+void deform_player_vertices_squish(Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
     s16 temp_v0 = player->unk_DA4;
 
     gPlayerVtx[playerId][flipOffset + 0x0].v.ob[1] = 18 - (temp_v0 * 2.3);
@@ -1027,12 +1027,12 @@ void func_80022CA8(Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffse
  * Seems to stretch/warp a specific players texture for a
  * short period of time. Perhaps does not do anything
  **/
-void func_80022D60(UNUSED Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
+void deform_player_vertices_lakitu_carry(UNUSED Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
     gPlayerVtx[playerId][flipOffset].v.ob[1] = 21;
     gPlayerVtx[playerId][flipOffset + 0x3].v.ob[1] = 21;
 }
 
-void func_80022DB4(Player* player, UNUSED s8 playerIndex) {
+void update_player_vertical_bounce_physics(Player* player, UNUSED s8 playerIndex) {
     f32 temp_f0 = player->unk_DB4.unkC;
     s16 temp_v0 = player->unk_DB4.unk18;
     s16 temp_f16;
@@ -1056,7 +1056,7 @@ void func_80022DB4(Player* player, UNUSED s8 playerIndex) {
     player->unk_DB4.unk18 = temp_v0;
 }
 
-void func_80022E84(Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
+void deform_player_vertices_bounce(Player* player, s8 playerId, UNUSED s8 screenId, s8 flipOffset) {
     s16 temp_v0 = player->unk_DB4.unk1E;
 
     gPlayerVtx[playerId][flipOffset + 0x0].v.ob[1] = 18 - temp_v0;
@@ -1175,7 +1175,7 @@ void render_light_environment_on_player(Player* player, s8 playerIndex) {
     }
 }
 
-void func_800235AC(Player* player, s8 playerIndex) {
+void update_player_color_effects(Player* player, s8 playerIndex) {
     s32 time_elapsed;
 
     if (((player->type & PLAYER_INVISIBLE_OR_BOMB) == PLAYER_INVISIBLE_OR_BOMB) && (player == gPlayerThree)) {
@@ -1272,15 +1272,15 @@ void func_800235AC(Player* player, s8 playerIndex) {
     }
 }
 
-void func_80023BF0(Player* player, s8 playerId, s8 screenId, s8 arg3) {
+void apply_player_vertex_deformations(Player* player, s8 playerId, s8 screenId, s8 arg3) {
     if (((player->effects & SQUISH_EFFECT) == SQUISH_EFFECT) ||
         ((player->effects & POST_SQUISH_EFFECT) == POST_SQUISH_EFFECT)) {
-        func_80022CA8(player, playerId, screenId, arg3);
+        deform_player_vertices_squish(player, playerId, screenId, arg3);
     } else {
-        func_80022E84(player, playerId, screenId, arg3);
+        deform_player_vertices_bounce(player, playerId, screenId, arg3);
     }
     if ((player->lakituProps & HELD_BY_LAKITU) == HELD_BY_LAKITU) {
-        func_80022D60(player, playerId, screenId, arg3);
+        deform_player_vertices_lakitu_carry(player, playerId, screenId, arg3);
     }
 }
 
@@ -1627,7 +1627,7 @@ void render_ghost(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
     gDPSetAlphaCompare(gDisplayListHead++, G_AC_NONE);
 }
 
-void func_80025DE8(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
+void render_player_boost_afterimage(Player* player, s8 playerId, s8 screenId, s8 flipOffset) {
     Mat4 spA8;
     Vec3f sp9C;
     Vec3s sp94;
@@ -1726,7 +1726,7 @@ void render_player(Player* player, s8 playerId, s8 screenId) {
     } else {
         flipOffset = 8;
     }
-    func_80023BF0(player, playerId, screenId, flipOffset);
+    apply_player_vertex_deformations(player, playerId, screenId, flipOffset);
     temp_t1 = SIDE_OF_KART << (screenId * 4);
     if ((temp_t1 == (player->unk_002 & temp_t1)) && (player->collision.surfaceDistance[2] <= 50.0f) &&
         (player->surfaceType != ICE)) {
@@ -1750,11 +1750,11 @@ void render_player(Player* player, s8 playerId, s8 screenId) {
         render_player_ice_reflection(player, playerId, screenId, flipOffset);
     }
     if (player->boostPower >= 2.0f) {
-        func_80025DE8(player, playerId, screenId, flipOffset);
+        render_player_boost_afterimage(player, playerId, screenId, flipOffset);
     }
 }
 
-void func_80026A48(Player* player, s8 playerIndex) {
+void update_player_wheel_spin_speed(Player* player, s8 playerIndex) {
     f32 temp_f0;
 
     if (((player->effects & EARLY_START_SPINOUT_EFFECT) == EARLY_START_SPINOUT_EFFECT) &&
@@ -1860,8 +1860,8 @@ void update_wheel_palette(Player* player, s8 playerId, s8 screenId, s8 arg3) {
 
 #undef D_802F1F80_WHEEL
 
-UNUSED void func_8002701C(void) {
+UNUSED void render_player_dummy_stub1(void) {
 }
 
-UNUSED void func_80027024(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
+UNUSED void render_player_dummy_stub2(UNUSED s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
 }

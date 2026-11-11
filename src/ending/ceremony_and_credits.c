@@ -667,8 +667,8 @@ void play_sound_welcome(UNUSED CinematicCamera* camera) {
     }
 }
 
-void wrap_func_800CA0CC(UNUSED CinematicCamera* camera) {
-    func_800CA0CC();
+void wrap_audio_mute_sfx_enable_cutscene(UNUSED CinematicCamera* camera) {
+    audio_mute_sfx_enable_cutscene();
 }
 
 /**
@@ -710,15 +710,15 @@ void play_sound_trophy(UNUSED CinematicCamera* camera) {
 }
 
 void func_80283B6C(UNUSED CinematicCamera* camera) {
-    func_800CA0B8();
-    func_800C9060(0, SOUND_ACTION_EXPLOSION);
-    func_800CA0A0();
+    audio_mute_sfx_disable();
+    audio_play_player_sound(0, SOUND_ACTION_EXPLOSION);
+    audio_mute_sfx_enable();
 }
 
 void func_80283BA4(UNUSED CinematicCamera* camera) {
-    func_800CA0B8();
-    func_800C90F4(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
-    func_800CA0A0();
+    audio_mute_sfx_disable();
+    audio_play_player_character_voice(0, (gPlayerFour->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x04));
+    audio_mute_sfx_enable();
 }
 
 void play_winning_ceremony_sequence_part1(UNUSED CinematicCamera* camera) {
@@ -729,8 +729,8 @@ void play_winning_ceremony_sequence_part2(UNUSED CinematicCamera* camera) {
     play_sequence2(SEQ_EVENT_CEREMONY_PRESENTATION_PART2_WIN);
 }
 
-void wrap_func_800CB134(UNUSED CinematicCamera* camera) {
-    func_800CB134();
+void wrap_trigger_losing_ceremony_sequence(UNUSED CinematicCamera* camera) {
+    trigger_losing_ceremony_sequence();
 }
 
 void play_losing_ceremony_sequence(UNUSED CinematicCamera* camera) {
@@ -744,12 +744,12 @@ void play_winning_ceremony_credits_sequence(UNUSED CinematicCamera* arg0) {
 }
 
 void func_80283CA8(UNUSED CinematicCamera* camera) {
-    func_800CA008(0, 3);
+    audio_init_course_sequence(0, 3);
 }
 
 void func_80283CD0(UNUSED CinematicCamera* camera) {
     if (D_800DC5E4 == 0) {
-        func_800CA008(0, 2);
+        audio_init_course_sequence(0, 2);
     }
 }
 
@@ -919,7 +919,7 @@ struct struct_80282C40 D_80285940[] = {
 void func_80283D2C(CinematicCamera* camera) {
     gOrderedSizeSlidingBorders = 120.0f;
     cutscene_event(func_80283CA8, camera, 0, 0);
-    cutscene_event(wrap_func_800CA0CC, camera, 1, 1);
+    cutscene_event(wrap_audio_mute_sfx_enable_cutscene, camera, 1, 1);
     cutscene_event(play_winning_ceremony_sequence_part1, camera, 0, 0);
     cutscene_event(play_sound_balloon_pop, camera, 45, 45);
     cutscene_event(play_sound_balloon_pop, camera, 65, 65);
@@ -1183,8 +1183,8 @@ void func_802844FC(CinematicCamera* camera) {
 
 void func_8028454C(CinematicCamera* camera) {
     cutscene_event(func_80283CA8, camera, 0, 0);
-    cutscene_event(wrap_func_800CA0CC, camera, 1, 1);
-    cutscene_event(wrap_func_800CB134, camera, 0, 0);
+    cutscene_event(wrap_audio_mute_sfx_enable_cutscene, camera, 1, 1);
+    cutscene_event(wrap_trigger_losing_ceremony_sequence, camera, 0, 0);
     cutscene_event(wrap_func_80280FFC, camera, 0x3C, 0x3C);
     move_cinematic_camera_along_spline(camera, (struct struct_80286A04*) D_80285B18,
                                        (struct struct_80286A04*) D_80285B54, 0);
