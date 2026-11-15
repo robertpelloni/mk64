@@ -88,7 +88,7 @@ u16 D_801631F8[10];
 f32 gCurrentCpuTargetSpeed;
 f32 gPreviousCpuTargetSpeed[10];
 s32 D_80163238;
-u16 D_80163240[12];
+u16 gCrossedFinishLine[12];
 u16 gWrongDirectionCounter[12];
 u16 gIsPlayerWrongDirection[12];
 s32 gPreviousLapProgressScore[10];
@@ -154,7 +154,7 @@ s16 D_80164358;
 s16 D_8016435A;
 s16 D_8016435C;
 s16 gGPCurrentRacePlayerIdByRank[12]; // D_80164360
-s16 D_80164378[12];
+s16 gPrevPlayerIdByRank[12];
 s32 gLapCountByPlayerId[10];          // D_80164390
 s32 gGPCurrentRaceRankByPlayerId[10]; // D_801643B8
 s32 gPreviousGPCurrentRaceRankByPlayerId[10];
@@ -707,15 +707,15 @@ void detect_wrong_player_direction(s32 playerId, Player* player) {
 }
 
 void set_places(void) {
-    s32 temp_s2;
-    f32 temp_f0;
-    s32 rankPlayer[8];
-    s32 a_really_cool_variable_name;
+    s32 playerIdToSwap;
+    f32 courseCompletionToSwap;
+    s32 playerIdByRank[8];
+    s32 prevPlayerId;
     UNUSED s32 pad;
     s32 numPlayer;
+    s32 rank;
     s32 playerId;
-    s32 temp_a0;
-    s32 var_t1_3;
+    s32 rankHigh;
 
     switch (gModeSelection) {
         case BATTLE:
@@ -731,69 +731,70 @@ void set_places(void) {
     }
 
     if (D_8016348C == 0) {
-        for (playerId = 0; playerId < numPlayer; playerId++) {
-            temp_a0 = gGPCurrentRacePlayerIdByRank[playerId];
-            rankPlayer[playerId] = temp_a0;
-            gCourseCompletionPercentByRank[playerId] = gCourseCompletionPercentByPlayerId[temp_a0];
+        for (rank = 0; rank < numPlayer; rank++) {
+            playerId = gGPCurrentRacePlayerIdByRank[rank];
+            playerIdByRank[rank] = playerId;
+            gCourseCompletionPercentByRank[rank] = gCourseCompletionPercentByPlayerId[playerId];
         }
     } else {
-        for (playerId = 0; playerId < numPlayer; playerId++) {
-            temp_a0 = gGPCurrentRacePlayerIdByRank[playerId];
-            rankPlayer[playerId] = temp_a0;
-            gCourseCompletionPercentByRank[playerId] = -gTimePlayerLastTouchedFinishLine[temp_a0];
+        // used in grand Prix mode once all players cross finish line to determine finish order
+        for (rank = 0; rank < numPlayer; rank++) {
+            playerId = gGPCurrentRacePlayerIdByRank[rank];
+            playerIdByRank[rank] = playerId;
+            gCourseCompletionPercentByRank[rank] = -gTimePlayerLastTouchedFinishLine[playerId];
         }
     }
 
-    for (playerId = 0; playerId < numPlayer - 1; playerId++) {
-        if ((gPlayers[gGPCurrentRacePlayerIdByRank[playerId]].type & PLAYER_CINEMATIC_MODE)) {
+    for (rank = 0; rank < numPlayer - 1; rank++) {
+        if ((gPlayers[gGPCurrentRacePlayerIdByRank[rank]].type & PLAYER_CINEMATIC_MODE)) {
             continue;
         }
 
-        for (var_t1_3 = playerId + 1; var_t1_3 < numPlayer; var_t1_3++) {
-            if (gCourseCompletionPercentByRank[playerId] < gCourseCompletionPercentByRank[var_t1_3]) {
-                if (!(gPlayers[gGPCurrentRacePlayerIdByRank[var_t1_3]].type & 0x800)) {
-                    temp_s2 = rankPlayer[playerId];
-                    rankPlayer[playerId] = rankPlayer[var_t1_3];
-                    rankPlayer[var_t1_3] = temp_s2;
-                    temp_f0 = gCourseCompletionPercentByRank[playerId];
-                    gCourseCompletionPercentByRank[playerId] = gCourseCompletionPercentByRank[var_t1_3];
-                    gCourseCompletionPercentByRank[var_t1_3] = temp_f0;
+        for (rankHigh = rank + 1; rankHigh < numPlayer; rankHigh++) {
+            if (gCourseCompletionPercentByRank[rank] < gCourseCompletionPercentByRank[rankHigh]) {
+                if (!(gPlayers[gGPCurrentRacePlayerIdByRank[rankHigh]].type & PLAYER_CINEMATIC_MODE)) {
+                    playerIdToSwap = playerIdByRank[rank];
+                    playerIdByRank[rank] = playerIdByRank[rankHigh];
+                    playerIdByRank[rankHigh] = playerIdToSwap;
+                    courseCompletionToSwap = gCourseCompletionPercentByRank[rank];
+                    gCourseCompletionPercentByRank[rank] = gCourseCompletionPercentByRank[rankHigh];
+                    gCourseCompletionPercentByRank[rankHigh] = courseCompletionToSwap;
                 }
             }
         }
     }
 
-    for (playerId = 0; playerId < NUM_PLAYERS; playerId++) {
-        gPreviousGPCurrentRaceRankByPlayerId[playerId] = gGPCurrentRaceRankByPlayerId[playerId];
+    // actually player_id, not rank
+    for (rank = 0; rank < NUM_PLAYERS; rank++) {
+        gPreviousGPCurrentRaceRankByPlayerId[rank] = gGPCurrentRaceRankByPlayerId[rank];
     }
 
-    for (playerId = 0; playerId < numPlayer; playerId++) {
-        gGPCurrentRacePlayerIdByRank[playerId] = rankPlayer[playerId];
-        gGPCurrentRaceRankByPlayerId[rankPlayer[playerId]] = playerId;
+    for (rank = 0; rank < numPlayer; rank++) {
+        gGPCurrentRacePlayerIdByRank[rank] = playerIdByRank[rank];
+        gGPCurrentRaceRankByPlayerId[playerIdByRank[rank]] = rank;
+    }
+    for (rank = 0; rank < numPlayer; rank++) {
+        prevPlayerId = gPrevPlayerIdByRank[rank];
+        playerIdByRank[rank] = prevPlayerId;
+        gCourseCompletionPercentByRank[rank] = gCourseCompletionPercentByPlayerId[prevPlayerId];
     }
 
-    for (playerId = 0; playerId < numPlayer; playerId++) {
-        a_really_cool_variable_name = D_80164378[playerId];
-        rankPlayer[playerId] = a_really_cool_variable_name;
-        gCourseCompletionPercentByRank[playerId] = gCourseCompletionPercentByPlayerId[a_really_cool_variable_name];
-    }
-
-    for (playerId = 0; playerId < numPlayer - 1; playerId++) {
-        for (var_t1_3 = playerId + 1; var_t1_3 < numPlayer; var_t1_3++) {
-            if (gCourseCompletionPercentByRank[playerId] < gCourseCompletionPercentByRank[var_t1_3]) {
-                temp_s2 = rankPlayer[playerId];
-                rankPlayer[playerId] = rankPlayer[var_t1_3];
-                rankPlayer[var_t1_3] = temp_s2;
-                temp_f0 = gCourseCompletionPercentByRank[playerId];
-                gCourseCompletionPercentByRank[playerId] = gCourseCompletionPercentByRank[var_t1_3];
-                gCourseCompletionPercentByRank[var_t1_3] = temp_f0;
+    for (rank = 0; rank < numPlayer - 1; rank++) {
+        for (rankHigh = rank + 1; rankHigh < numPlayer; rankHigh++) {
+            if (gCourseCompletionPercentByRank[rank] < gCourseCompletionPercentByRank[rankHigh]) {
+                playerIdToSwap = playerIdByRank[rank];
+                playerIdByRank[rank] = playerIdByRank[rankHigh];
+                playerIdByRank[rankHigh] = playerIdToSwap;
+                courseCompletionToSwap = gCourseCompletionPercentByRank[rank];
+                gCourseCompletionPercentByRank[rank] = gCourseCompletionPercentByRank[rankHigh];
+                gCourseCompletionPercentByRank[rankHigh] = courseCompletionToSwap;
             }
         }
     }
 
-    for (playerId = 0; playerId < numPlayer; playerId++) {
-        gGPCurrentRaceRankByPlayerIdDup[rankPlayer[playerId]] = playerId;
-        D_80164378[playerId] = rankPlayer[playerId];
+    for (rank = 0; rank < numPlayer; rank++) {
+        gGPCurrentRaceRankByPlayerIdDup[playerIdByRank[rank]] = rank;
+        gPrevPlayerIdByRank[rank] = playerIdByRank[rank];
     }
 }
 
@@ -992,7 +993,7 @@ bool func_800088D8(s32 playerId, s16 arg1, s16 arg2) {
     if (arg2 == 0) {
         if (gDemoMode == 1) {
             STEMP_V0 = gNumPathPointsTraversed[playerId];
-            STEMP_V1 = gNumPathPointsTraversed[D_80164378[7]];
+            STEMP_V1 = gNumPathPointsTraversed[gPrevPlayerIdByRank[7]];
             progress = STEMP_V0 - STEMP_V1;
             if (progress < 0) {
                 progress = -progress;
@@ -1018,7 +1019,7 @@ bool func_800088D8(s32 playerId, s16 arg1, s16 arg2) {
         rank = gGPCurrentRaceRankByPlayerId[gBestRankedHumanPlayer];
         if (((((gPathCountByPathIndex[0] * 2) / 3)) < progress) && ((rank) >= 6)) {
             STEMP_V0 = gNumPathPointsTraversed[playerId];
-            STEMP_V1 = temp = gNumPathPointsTraversed[D_80164378[rank - 1]];
+            STEMP_V1 = temp = gNumPathPointsTraversed[gPrevPlayerIdByRank[rank - 1]];
             progress = STEMP_V0 - STEMP_V1;
         }
         if (progress < 0) {
@@ -1200,11 +1201,12 @@ void update_cpu_path_completion(s32 playerId, Player* player) {
 
 /**
  * Helps calculate time since player last touched finishline.
+ * Assumes constant z-speed and subtracts portion of frame where the finish line was already crossed
  **/
-f32 func_80009258(UNUSED s32 playerId, f32 arg1, f32 arg2) {
-    f32 temp_f2 = gPathStartZ - arg2;
-    f32 temp_f12 = arg1 - gPathStartZ;
-    return gCourseTimer - ((COURSE_TIMER_ITER_f * temp_f2) / (temp_f2 + temp_f12));
+f32 time_crossed_finish_line(UNUSED s32 playerId, f32 previousPlayerZ, f32 playerZ) {
+    f32 z_change_after_cross = gPathStartZ - playerZ;
+    f32 z_change_before_cross = previousPlayerZ - gPathStartZ;
+    return gCourseTimer - ((COURSE_TIMER_ITER_f * z_change_after_cross) / (z_change_after_cross + z_change_before_cross));
 }
 
 void update_player_path_completion(s32 playerId, Player* player) {
@@ -1220,7 +1222,7 @@ void update_player_path_completion(s32 playerId, Player* player) {
     playerZ = player->pos[2];
     previousPlayerZ = gPreviousPlayerZ[playerId];
     gIsPlayerNewPathPoint = false;
-    D_80163240[playerId] = 0;
+    gCrossedFinishLine[playerId] = 0;
     sSomeNearestPathPoint = update_player_path(playerX, playerY, playerZ, gNearestPathPointByPlayerId[playerId], player,
                                                playerId, gPlayerPathIndex);
     gCurrentNearestPathPoint = sSomeNearestPathPoint;
@@ -1276,12 +1278,12 @@ void update_player_path_completion(s32 playerId, Player* player) {
                         // clang-format on
                     }
                 }
-                D_80163240[playerId] = 1;
+                gCrossedFinishLine[playerId] = 1;
                 update_player_completion(playerId);
                 reset_cpu_behaviour(playerId);
                 cpu_ItemStrategy[playerId].numItemUse = 0;
                 if ((D_8016348C == 0) && !(player->type & PLAYER_CINEMATIC_MODE)) {
-                    gTimePlayerLastTouchedFinishLine[playerId] = func_80009258(playerId, previousPlayerZ, playerZ);
+                    gTimePlayerLastTouchedFinishLine[playerId] = time_crossed_finish_line(playerId, previousPlayerZ, playerZ);
                 }
             }
         }
@@ -1319,15 +1321,17 @@ void update_vehicles(void) {
 
     if (gCurrentCourseId == COURSE_AWARD_CEREMONY) {
         for (i = 0; i < 7; i++) {
-            func_8000DF8C(i);
+            update_bomb_karts(i);
         }
         return;
     }
 
+    // update_vehicles is ran twice per frame.
+    // This makes vehicles only tick once per frame.
     if (D_8016337C & 1) {
         if (gModeSelection == VERSUS) {
             for (i = 0; i < 7; i++) {
-                func_8000DF8C(i);
+                update_bomb_karts(i);
             }
         }
 #if !ENABLE_CUSTOM_COURSE_ENGINE
@@ -1461,7 +1465,11 @@ void update_player(s32 playerId) {
                 player->kartProps &= ~BACK_UP;
             }
             update_player_path_completion(playerId, player);
-            if ((gCurrentCourseId != COURSE_AWARD_CEREMONY) && ((D_80163240[playerId] == 1) || (playerId == 0))) {
+
+            // Because this takes place in a per-player loop and runs primarily when player 1 crosses the finish line,
+            // player 1 effectively has a 1 frame advantage when determining places. However, it runs for everyone when
+            // they cross the finish line, resulting in lower port numbers always winning ties in versus mode.
+            if ((gCurrentCourseId != COURSE_AWARD_CEREMONY) && ((gCrossedFinishLine[playerId] == 1) || (playerId == 0))) {
                 set_places();
             }
             if (player->type & PLAYER_CPU) {
@@ -2031,9 +2039,9 @@ void init_course_path_point(void) {
         if (gSizePath[i] >= 2) {
             load_track_path(i);
             calculate_track_boundaries(i);
-            analize_track_section(i);
-            analyse_angle_path(i);
-            analisze_curved_path(i);
+            analyze_track_sections(i);
+            analyze_path_angle(i);
+            analyze_curved_path(i);
         }
     }
 
@@ -2100,7 +2108,7 @@ void init_players(void) {
         }
         temp_v0_3 = gGPCurrentRaceRankByPlayerId[i];
         gGPCurrentRacePlayerIdByRank[temp_v0_3] = (s16) i;
-        D_80164378[temp_v0_3] = (s16) i;
+        gPrevPlayerIdByRank[temp_v0_3] = (s16) i;
         gGPCurrentRaceRankByPlayerIdDup[i] = temp_v0_3;
         gWrongDirectionCounter[i] = 0;
         gIsPlayerWrongDirection[i] = 0;
@@ -3410,7 +3418,7 @@ void func_80019760(Camera* camera, UNUSED Player* player, UNUSED s32 arg2, s32 c
     camera->rot[2] = 0;
 }
 
-void func_80019890(s32 playerId, s32 cameraId) {
+void camera_start_cinematic_shot(s32 playerId, s32 cameraId) {
     s32 pathIndex;
     Camera* camera = camera1;
     camera += cameraId;
@@ -3563,11 +3571,11 @@ void func_80019DF4(void) {
 
 void func_80019E58(void) {
     D_80164680[0] = 1;
-    func_80019890(0, 0);
+    camera_start_cinematic_shot(0, 0);
     D_80164670[0] = D_80164678[0];
     D_80164678[0] = 1;
     D_80164680[1] = 9;
-    func_80019890(0, 1);
+    camera_start_cinematic_shot(0, 1);
     D_80164670[1] = D_80164678[1];
     D_80164678[1] = 0;
 }
@@ -3691,7 +3699,7 @@ void func_8001A348(s32 cameraId, f32 arg1, s32 arg2) {
     playerId = cameras[cameraId].playerId;
     D_80164688[cameraId] = arg1;
     D_80164680[cameraId] = func_8001A310((s32) gNearestPathPointByCameraId[cameraId], arg2);
-    func_80019890(playerId, cameraId);
+    camera_start_cinematic_shot(playerId, cameraId);
 }
 
 void func_8001A3D8(s32 arg0, f32 arg1, s32 arg2) {
@@ -3701,7 +3709,7 @@ void func_8001A3D8(s32 arg0, f32 arg1, s32 arg2) {
     D_80164688[arg0] = arg1;
     if (arg2 != D_80164680[arg0]) {
         D_80164680[arg0] = arg2;
-        func_80019890(playerId, arg0);
+        camera_start_cinematic_shot(playerId, arg0);
     }
 }
 
@@ -3716,7 +3724,7 @@ void func_8001A450(s32 playerId, s32 arg1, s32 arg2) {
         temp_v0 = func_8001A310(pathPoint, (temp_v1 + 1) % 10);
         if ((temp_v0 != temp_v1) || (arg2 != playerId)) {
             D_80164680[arg1] = temp_v0;
-            func_80019890(arg2, arg1);
+            camera_start_cinematic_shot(arg2, arg1);
         }
     }
 }
@@ -3763,7 +3771,7 @@ void func_8001A588(UNUSED u16* localD_80152300, Camera* camera, Player* player, 
         } else {
             func_8001A124((s32) playerId, cameraIndex);
         }
-        func_80019890((s32) playerId, cameraIndex);
+        camera_start_cinematic_shot((s32) playerId, cameraIndex);
     }
 
     if ((D_80164680[cameraIndex] == 14) || (D_80164680[cameraIndex] == 0)) {

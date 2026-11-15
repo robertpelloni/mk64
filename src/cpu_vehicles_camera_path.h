@@ -115,7 +115,7 @@ void update_player_completion(s32);
 
 void yoshi_valley_cpu_path(s32);
 void update_cpu_path_completion(s32, Player*);
-f32 func_80009258(s32, f32, f32);
+f32 time_crossed_finish_line(s32, f32, f32);
 void update_player_path_completion(s32, Player*);
 void update_vehicles(void);
 void play_cpu_sound_effect(s32, Player*);
@@ -149,7 +149,7 @@ s16 func_8000D6D0(Vec3f, s16*, f32, f32, s16, s16);
 s16 func_8000D940(Vec3f, s16*, f32, f32, s16);
 s16 update_vehicle_following_path(Vec3f, s16*, f32);
 void set_bomb_kart_spawn_positions(void);
-void func_8000DF8C(s32);
+void update_bomb_karts(s32);
 
 s32 add_actor_in_unexpired_actor_list(s32, s16);
 s32 add_red_shell_in_unexpired_actor_list(s32);
@@ -168,10 +168,10 @@ void init_players(void);
 void load_track_path(s32);
 void calculate_track_boundaries(s32);
 f32 calculate_track_curvature(s32, u16);
-void analize_track_section(s32);
+void analyze_track_sections(s32);
 s16 calculate_angle_path(s32, s32);
-void analyse_angle_path(s32);
-void analisze_curved_path(s32);
+void analyze_path_angle(s32);
+void analyze_curved_path(s32);
 f32 func_80010F40(f32, f32, f32, s32, s32);
 f32 func_80010FA0(f32, f32, f32, s32, s32);
 
@@ -254,7 +254,7 @@ void func_8001933C(Camera*, UNUSED Player*, s32, s32);
 void func_8001968C(void);
 void func_8001969C(s32, f32, s32, s16);
 void func_80019760(Camera*, UNUSED Player*, s32, s32);
-void func_80019890(s32, s32);
+void camera_start_cinematic_shot(s32, s32);
 void func_80019B50(s32, u16);
 void func_80019C50(s32);
 void func_80019D2C(Camera*, Player*, s32);
@@ -323,7 +323,7 @@ extern u16 D_801631F8[];
 extern f32 gCurrentCpuTargetSpeed;
 extern f32 gPreviousCpuTargetSpeed[];
 extern s32 D_80163238;
-extern u16 D_80163240[];
+extern u16 gCrossedFinishLine[];
 extern u16 gWrongDirectionCounter[];
 extern u16 gIsPlayerWrongDirection[];
 extern s32 gPreviousLapProgressScore[];
@@ -383,7 +383,7 @@ extern s16 D_80164358;
 extern s16 D_8016435A;
 extern s16 D_8016435C;
 extern s16 gGPCurrentRacePlayerIdByRank[]; // D_80164360
-extern s16 D_80164378[];
+extern s16 gPrevPlayerIdByRank[];          // D_80164378
 extern s32 gLapCountByPlayerId[];          // D_80164390
 extern s32 gGPCurrentRaceRankByPlayerId[]; // D_801643B8
 extern s32 gPreviousGPCurrentRaceRankByPlayerId[];
