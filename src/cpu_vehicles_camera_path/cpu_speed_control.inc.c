@@ -11,13 +11,15 @@ void func_80007D04(s32 playerId, Player* player) {
         s16 val2 = temp_t2 - temp_t1;
 
         if (val2 > 400 && val1 >= 6) {
+            // Rubber banding disabled
             player->effects &= ~CPU_FAST_EFFECT;
             player_accelerate_alternative(player);
             D_801634C0[playerId] = 4;
             return;
         }
     } else {
-        player->effects |= CPU_FAST_EFFECT;
+        // Rubber banding disabled
+        player->effects &= ~CPU_FAST_EFFECT;
         player_accelerate_alternative(player);
         D_801634C0[playerId] = 3;
         return;
@@ -63,7 +65,8 @@ void func_80007D04(s32 playerId, Player* player) {
     }
 
     if (temp_t2 < temp_t1) {
-        player->effects |= CPU_FAST_EFFECT;
+        // Rubber banding disabled
+        player->effects &= ~CPU_FAST_EFFECT;
         player_accelerate_alternative(player);
         D_801634C0[playerId] = 1;
     } else if (temp_t2 < (temp_t1 + var_v0 + 0x32)) {
@@ -76,7 +79,8 @@ void func_80007D04(s32 playerId, Player* player) {
         D_801634C0[playerId] = 2;
     } else {
         player->effects &= ~CPU_FAST_EFFECT;
-        player_decelerate_alternative(player, 1.0f);
+        // Don't decelerate artificially
+        player_accelerate_alternative(player);
         D_801634C0[playerId] = -1;
     }
 }
