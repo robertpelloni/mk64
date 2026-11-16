@@ -151,7 +151,8 @@ char external_unused_string_eu_03[] = "SE FADE OUT TIME %d\n";
 #endif
 
 // Requires void in the argument list to match properly.
-void func_800C13F0(void) {}
+void audio_dummy_nop(void) {
+}
 
 void audio_reset_session_eu(OSMesg presetId) {
     OSMesg mesg;
@@ -163,7 +164,7 @@ void audio_reset_session_eu(OSMesg presetId) {
     }
 }
 
-f32 audio_calculate_distance_volume(u8 bank, u8 soundId) {
+f32 audio_calculate_distance_attenuation(u8 bank, u8 soundId) {
     f32 temp_f0;
     f32 var_f2;
     s32 var_v0;
@@ -201,7 +202,7 @@ f32 audio_calculate_distance_volume(u8 bank, u8 soundId) {
     return var_f2;
 }
 
-s8 audio_calculate_doppler(u8 bank, u8 soundId, u8 channel) {
+s8 audio_calculate_sound_reverb(u8 bank, u8 soundId, u8 channel) {
     s32 var_a0;
     s8 var_v0;
     s8 var_v1;
@@ -228,7 +229,7 @@ s8 audio_calculate_doppler(u8 bank, u8 soundId, u8 channel) {
     return var_a0;
 }
 
-s8 audio_calculate_pan(f32 arg0, f32 arg1, u8 cameraId) {
+s8 audio_calculate_sound_panning(f32 arg0, f32 arg1, u8 cameraId) {
     f32 var_f0;
     f32 var_f14;
     f32 new_var;
@@ -283,7 +284,7 @@ s8 audio_calculate_pan(f32 arg0, f32 arg1, u8 cameraId) {
     return (cameraId & 1) * 0x7F;
 }
 
-f32 audio_calculate_pitch(u8 bank, u8 soundId) {
+f32 audio_calculate_random_pitch_variation(u8 bank, u8 soundId) {
     f32 phi_f2;
 
     phi_f2 = 1.0f;
@@ -293,7 +294,7 @@ f32 audio_calculate_pitch(u8 bank, u8 soundId) {
     return phi_f2;
 }
 
-void audio_update_sound_params(u8 arg0, u8 arg1, u8 arg2) {
+void audio_apply_sound_characteristics_to_channel(u8 arg0, u8 arg1, u8 arg2) {
     f32 sp3C;
     s8 sp3B;
     f32 sp34;
@@ -313,32 +314,32 @@ void audio_update_sound_params(u8 arg0, u8 arg1, u8 arg2) {
         case 5:
             temp_s0 = &sSoundBanks[arg0][arg1];
             temp_s0->distance = sqrtf(temp_s0->distance);
-            sp3C = (audio_calculate_distance_volume(arg0, arg1) * *temp_s0->unk14) * gChannelVolumeScaleFade[arg0].current;
-            sp3B = audio_calculate_doppler(arg0, arg1, arg2);
-            sp34 = audio_calculate_pitch(arg0, arg1) * *temp_s0->unk10;
-            sp33 = audio_calculate_pan(*temp_s0->unk00[0], *temp_s0->unk08, temp_s0->cameraId);
+            sp3C = (audio_calculate_distance_attenuation(arg0, arg1) * *temp_s0->unk14) * D_80192C48[arg0].current;
+            sp3B = audio_calculate_sound_reverb(arg0, arg1, arg2);
+            sp34 = audio_calculate_random_pitch_variation(arg0, arg1) * *temp_s0->unk10;
+            sp33 = audio_calculate_sound_panning(*temp_s0->unk00[0], *temp_s0->unk08, temp_s0->cameraId);
             break;
     }
     temp_s0_2 = &gSoundSourceStates[arg2];
     if (sp3C != temp_s0_2->unk0) {
-        eu_audio_cmd_send_byte(((arg2 & 0xFF) << 8) | 0x06020000 | 3, (u8) (u32) (sp3C * 127.0f));
+        audio_cmd_queue_push_s8(((arg2 & 0xFF) << 8) | 0x06020000 | 3, (u8) (u32) (sp3C * 127.0f));
         temp_s0_2->unk0 = sp3C;
     }
     if (sp3B != (s8) temp_s0_2->unk8) {
-        eu_audio_cmd_send_byte(((arg2 & 0xFF) << 8) | 0x05020000, sp3B);
+        audio_cmd_queue_push_s8(((arg2 & 0xFF) << 8) | 0x05020000, sp3B);
         temp_s0_2->unk8 = (u8) sp3B;
     }
     if (sp34 != temp_s0_2->unk4) {
-        eu_audio_cmd_send_f32(((arg2 & 0xFF) << 8) | 0x04020000, sp34);
+        audio_cmd_queue_push_f32(((arg2 & 0xFF) << 8) | 0x04020000, sp34);
         temp_s0_2->unk4 = sp34;
     }
     if (sp33 != (s8) temp_s0_2->unk9) {
-        eu_audio_cmd_send_byte(((arg2 & 0xFF) << 8) | 0x03020000, sp33);
+        audio_cmd_queue_push_s8(((arg2 & 0xFF) << 8) | 0x03020000, sp33);
         temp_s0_2->unk9 = (u8) sp33;
     }
 }
 
-struct Unk_8018EFD8* audio_alloc_sound_source(u8 arg0, Vec3f position, f32* velocity, f32* arg3, u8 arg4, u32 soundBits) {
+struct Unk_8018EFD8* audio_allocate_3d_sound_node(u8 arg0, Vec3f position, f32* velocity, f32* arg3, u8 arg4, u32 soundBits) {
     struct Unk_8018EFD8* temp_a1;
     UNUSED struct Unk_8018EFD8* temp_v1;
     UNUSED u8 temp_t7;
@@ -370,17 +371,17 @@ struct Unk_8018EFD8* audio_alloc_sound_source(u8 arg0, Vec3f position, f32* velo
     return NULL;
 }
 
-void audio_update_sound_pos(Camera* arg0, Vec3s rot, struct Unk_8018EFD8* arg2) {
+void audio_calculate_sound_relative_camera_position(Camera* arg0, Vec3s rot, struct Unk_8018EFD8* arg2) {
     f32 x;
     f32 y;
 
     x = arg0->pos[0] - *arg2->posX;
     y = arg0->pos[2] - *arg2->posZ;
-    arg2->unk18[0] = math_calc_x_rotated(x, y, rot[1]);
-    arg2->unk18[2] = math_calc_z_rotated(x, y, rot[1]);
+    arg2->unk18[0] = rotate_xz_x(x, y, rot[1]);
+    arg2->unk18[2] = rotate_xz_z(x, y, rot[1]);
 }
 
-void audio_update_doppler_effect(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
+void audio_calculate_doppler_pitch_shift(Camera* camera, Vec3f velocity, struct Unk_8018EFD8* arg2) {
     f32 sp44;
     f32 temp_f6;
     f32 x;
@@ -417,7 +418,7 @@ void audio_update_doppler_effect(Camera* camera, Vec3f velocity, struct Unk_8018
     }
 }
 
-void audio_update_sound_source_cameras(void) {
+void audio_update_3d_spatial_sounds(void) {
     u8 var_s1;
     u8 var_a1;
     u8 cameraId;
@@ -449,9 +450,9 @@ void audio_update_sound_source_cameras(void) {
             cameraId = gSoundSources[var_s1].cameraId;
             // Why? Why would you do it this way? For what possible reason?
             camera = &gCopyCamera[cameraId];
-            audio_update_sound_pos(*camera, (*camera)->rot, &gSoundSources[var_s1]);
-            if (gAudioDefaultPos != gSoundSources[var_s1].velX) {
-                audio_update_doppler_effect(*camera, gVelocityCamera[0], &gSoundSources[var_s1]);
+            audio_calculate_sound_relative_camera_position(*camera, (*camera)->rot, &D_8018EFD8[var_s1]);
+            if (D_800EA1C8 != D_8018EFD8[var_s1].velX) {
+                audio_calculate_doppler_pitch_shift(*camera, gVelocityCamera[0], &D_8018EFD8[var_s1]);
             }
             var_a1 = var_s1;
         }
@@ -462,7 +463,7 @@ void audio_update_sound_source_cameras(void) {
     }
 }
 
-Vec3f* audio_get_sound_source_pos(Vec3f pos, u32 soundBits) {
+Vec3f* audio_get_active_3d_sound_relative_pos(Vec3f pos, u32 soundBits) {
     u8 it; // iterator
     Vec3f* ret;
     // Only here to force a match
@@ -491,7 +492,7 @@ Vec3f* audio_get_sound_source_pos(Vec3f pos, u32 soundBits) {
     return ret;
 }
 
-void audio_process_sfx_script(u8 player) {
+void audio_sync_sequence_script_io(u8 player) {
     s16 sp46;
     s16 var_s1;
     s16 sp42;
@@ -524,7 +525,7 @@ void audio_process_sfx_script(u8 player) {
                 var_s1 = 9;
             }
             sp42 = gSequencePlayers[player].channels[var_a2]->soundScriptIO[3] % 8u;
-            eu_audio_cmd_send_byte(((player & 0xFF) << 0x10) | 0x06000000 | ((var_a2 & 0xFF) << 8), -1);
+            audio_cmd_queue_push_s8(((player & 0xFF) << 0x10) | 0x06000000 | ((var_a2 & 0xFF) << 8), -1);
         }
         switch (temp_s0) { /* switch 1; irregular */
             case 1:        /* switch 1 */
@@ -532,7 +533,7 @@ void audio_process_sfx_script(u8 player) {
                 D_8018FC10[sp46][1] = sp42;
                 for (var_s0 = 0; var_s0 < 4; var_s0++) {
                     if (D_8018FC10[var_s0][0] != why) {
-                        init_camera_path_audio(var_s0, D_8018FC10[var_s0][0], D_8018FC10[var_s0][1]);
+                        camera_set_target_override(var_s0, D_8018FC10[var_s0][0], D_8018FC10[var_s0][1]);
                         D_8018FC10[var_s0][0] = why;
                     }
                 }
@@ -545,7 +546,7 @@ void audio_process_sfx_script(u8 player) {
     }
 }
 
-void audio_init_cameras_and_state(void) {
+void audio_reset_state_and_cameras(void) {
     u8 var_v0;
 
     D_8018EF10 = 0;
@@ -561,7 +562,7 @@ void audio_init_cameras_and_state(void) {
     D_800EA108 = 0;
     D_800EA0F0 = 0;
     D_800EA16C = 0;
-    eu_audio_cmd_send_u32(0xF2000000U, 0);
+    audio_cmd_queue_push_u32(0xF2000000U, 0);
     D_800EA16C = 0;
     D_800EA15C = 0;
     D_800EA160 = 0;
@@ -623,7 +624,7 @@ void audio_init_cameras_and_state(void) {
     gSoundSources[var_v0].next = 0xFF;
 }
 
-void audio_cmd_play_sequence(u8 arg0, u8 arg1, u8 arg2, u16 arg3) {
+void seq_player_play_sequence(u8 arg0, u8 arg1, u8 arg2, u16 arg3) {
     u8 var_v1;
     UNUSED s32 pad;
 
@@ -631,10 +632,10 @@ void audio_cmd_play_sequence(u8 arg0, u8 arg1, u8 arg2, u16 arg3) {
         return;
     }
 
-    eu_audio_cmd_send_u32(0x82000000 | (((u32) arg0 & 0xFF) << 0x10) | (((u32) arg1 & 0xFF) << 8), arg3);
-    gSequenceState[arg0].unk_248 = arg1 | (arg2 << 8);
-    if (gSequenceState[arg0].unk_000 != 1.0f) {
-        eu_audio_cmd_send_f32(0x41000000 | (((u32) arg0 & 0xFF) << 0x10), gSequenceState[arg0].unk_000);
+    audio_cmd_queue_push_u32(0x82000000 | (((u32) arg0 & 0xFF) << 0x10) | (((u32) arg1 & 0xFF) << 8), arg3);
+    D_801930D0[arg0].unk_248 = arg1 | (arg2 << 8);
+    if (D_801930D0[arg0].unk_000 != 1.0f) {
+        audio_cmd_queue_push_f32(0x41000000 | (((u32) arg0 & 0xFF) << 0x10), D_801930D0[arg0].unk_000);
     }
     gSequenceState[arg0].unk_028 = 0;
     gSequenceState[arg0].unk_018 = 0;
@@ -651,12 +652,12 @@ void audio_cmd_play_sequence(u8 arg0, u8 arg1, u8 arg2, u16 arg3) {
     gSequenceState[arg0].unk_246 = 0;
 }
 
-void audio_cmd_stop_sequence(u8 arg0, u16 arg1) {
-    eu_audio_cmd_send_u32(((arg0 & 0xFF) << 0x10) | 0x83000000, arg1);
-    gSequenceState[arg0].unk_248 = 0xFFFF;
+void seq_player_stop_sequence(u8 arg0, u16 arg1) {
+    audio_cmd_queue_push_u32(((arg0 & 0xFF) << 0x10) | 0x83000000, arg1);
+    D_801930D0[arg0].unk_248 = 0xFFFF;
 }
 
-void audio_execute_cmd(u32 cmd) {
+void audio_execute_sequence_command(u32 cmd) {
     f32 freqScaleTarget;
     u16 channelMaskDisable;
     u16 val;
@@ -680,12 +681,12 @@ void audio_execute_cmd(u32 cmd) {
             seqId = cmd & 0xFF;
             subArgs = (cmd & 0xFF00) >> 8;
             fadeTimer = (cmd & 0xFF0000) >> 13;
-            audio_cmd_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
+            seq_player_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
             break;
 
         case 1:
             fadeTimer = (cmd & 0xFF0000) >> 13;
-            audio_cmd_stop_sequence(seqPlayerIndex, fadeTimer);
+            seq_player_stop_sequence(seqPlayerIndex, fadeTimer);
             break;
 
         case 2:
@@ -697,7 +698,7 @@ void audio_execute_cmd(u32 cmd) {
             for (i = 0; i < gSequenceQueueSize[seqPlayerIndex]; i++) {
                 if (gSequenceQueue[seqPlayerIndex][i].thing0 == seqId) {
                     if (i == 0) {
-                        audio_cmd_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
+                        seq_player_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
                     }
                     return;
                 }
@@ -724,7 +725,7 @@ void audio_execute_cmd(u32 cmd) {
                 gSequenceQueue[seqPlayerIndex][found].thing0 = seqId;
             }
             if (found == 0) {
-                audio_cmd_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
+                seq_player_play_sequence(seqPlayerIndex, seqId, subArgs, fadeTimer);
             }
             break;
 
@@ -749,10 +750,10 @@ void audio_execute_cmd(u32 cmd) {
                 gSequenceQueueSize[seqPlayerIndex]--;
             }
             if (found == 0) {
-                audio_cmd_stop_sequence(seqPlayerIndex, fadeTimer);
-                if (gSequenceQueueSize[seqPlayerIndex] != 0) {
-                    audio_cmd_play_sequence(seqPlayerIndex, gSequenceQueue[seqPlayerIndex][0].thing0,
-                                  gSequenceQueue[seqPlayerIndex][0].thing1, fadeTimer);
+                seq_player_stop_sequence(seqPlayerIndex, fadeTimer);
+                if (D_80192CC6[seqPlayerIndex] != 0) {
+                    seq_player_play_sequence(seqPlayerIndex, D_80192CA8[seqPlayerIndex][0].thing0,
+                                  D_80192CA8[seqPlayerIndex][0].thing1, fadeTimer);
                 }
             }
             break;
@@ -815,15 +816,15 @@ void audio_execute_cmd(u32 cmd) {
         case 7:
             ioPort = (cmd & 0xFF0000) >> 16;
             val = cmd & 0xFF;
-            eu_audio_cmd_send_byte((0x46000000 | ((seqPlayerIndex & 0xFF) << 0x10)) | ((ioPort & 0xFF) << 8), val);
+            audio_cmd_queue_push_s8((0x46000000 | ((seqPlayerIndex & 0xFF) << 0x10)) | ((ioPort & 0xFF) << 8), val);
             break;
 
         case 8:
             channelIndex = (cmd & 0xF00) >> 8;
             ioPort = (cmd & 0xFF0000) >> 16;
             val = cmd & 0xFF;
-            if (!(gSequenceState[seqPlayerIndex].unk_24A & (1 << channelIndex))) {
-                eu_audio_cmd_send_byte(((0x06000000 | ((seqPlayerIndex & 0xFF) << 0x10)) | (((u32) channelIndex & 0xFF) << 8)) |
+            if (!(D_801930D0[seqPlayerIndex].unk_24A & (1 << channelIndex))) {
+                audio_cmd_queue_push_s8(((0x06000000 | ((seqPlayerIndex & 0xFF) << 0x10)) | (((u32) channelIndex & 0xFF) << 8)) |
                                   (ioPort & 0xFF),
                               val);
             }
@@ -837,7 +838,7 @@ void audio_execute_cmd(u32 cmd) {
             val = 1;
             channelMaskDisable = cmd & 0xFFFF;
             for (i = 0; i < 0x10; i++) {
-                eu_audio_cmd_send_byte(0x08000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) i & 0xFF) << 8),
+                audio_cmd_queue_push_s8(0x08000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) i & 0xFF) << 8),
                               (channelMaskDisable & val) ? 1 : 0);
                 val <<= 1;
             }
@@ -866,7 +867,7 @@ void audio_execute_cmd(u32 cmd) {
             val = cmd & 0xFF;
             switch (subArgs) {
                 case 0:
-                    eu_audio_cmd_send_u32(0xF0000000, gSoundModes[val]);
+                    audio_cmd_queue_push_u32(0xF0000000, D_800EA1F0[val]);
                     break;
 
                 case 1:
@@ -881,9 +882,9 @@ void audio_execute_cmd(u32 cmd) {
             subArgs = (cmd & 0xFF00) >> 8;
             gAudioNumCameras = subArgs;
             audio_reset_session_eu((void*) seqId);
-            gAudioActiveSequence[0] = seqId;
-            eu_audio_cmd_send_byte(0x46020000, subArgs);
-            audio_reset_session();
+            D_800EA1F4[0] = seqId;
+            audio_cmd_queue_push_s8(0x46020000, subArgs);
+            audio_soft_reset();
             break;
 
         default:
@@ -891,25 +892,25 @@ void audio_execute_cmd(u32 cmd) {
     }
 }
 
-void audio_push_cmd(u32 arg0) {
-    gAudioCmdBuffer[gAudioCmdWritePos] = arg0;
-    gAudioCmdWritePos += 1;
+void audio_push_sequence_command(u32 arg0) {
+    D_80192CD0[D_800EA1E4] = arg0;
+    D_800EA1E4 += 1;
 }
 
-void audio_process_cmd_buffer(void) {
-    for (gAudioCmdReadPos; gAudioCmdWritePos != gAudioCmdReadPos;) {
-        audio_execute_cmd(gAudioCmdBuffer[gAudioCmdReadPos++]);
+void audio_process_sequence_commands(void) {
+    for (D_800EA1E8; D_800EA1E4 != D_800EA1E8;) {
+        audio_execute_sequence_command(D_80192CD0[D_800EA1E8++]);
     }
 }
 
-u16 audio_get_sequence_id(u8 player) {
+u16 seq_player_get_active_sequence_id(u8 player) {
     if (!gSequencePlayers[player].enabled) {
         return -1;
     }
     return gSequenceState[player].unk_248;
 }
 
-u8 audio_is_cmd_not_in_queue(s32 arg0) {
+u8 audio_is_sequence_command_pending(s32 arg0) {
     u8 var_v1;
     u8 i;
 
@@ -925,7 +926,7 @@ u8 audio_is_cmd_not_in_queue(s32 arg0) {
 }
 
 #ifdef VERSION_EU
-u8 audio_is_cmd_not_in_queue_eu(s32 arg0, s32 arg1) {
+u8 audio_is_sequence_command_pending_eu(s32 arg0, s32 arg1) {
     u8 var_v1;
     u8 i;
 
@@ -941,11 +942,11 @@ u8 audio_is_cmd_not_in_queue_eu(s32 arg0, s32 arg1) {
 }
 #endif
 
-void audio_clear_sequence_timer(u8 arg0) {
-    gSequenceQueueSize[arg0] = 0;
+void seq_player_clear_queued_count(u8 arg0) {
+    D_80192CC6[arg0] = 0;
 }
 
-void audio_clear_sequence_mask(u8 arg0, u8 arg1) {
+void seq_player_cancel_setup_operations(u8 arg0, u8 arg1) {
     u8 var_v0;
     u8 thing;
 
@@ -957,13 +958,13 @@ void audio_clear_sequence_mask(u8 arg0, u8 arg1) {
     }
 }
 
-void audio_set_sequence_volume(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
-    gSequenceState[arg0].unk_00E[arg1] = arg2;
-    gSequenceState[arg0].unk_011 = arg3;
-    gSequenceState[arg0].unk_012 = 1;
+void seq_player_set_volume_target(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    D_801930D0[arg0].unk_00E[arg1] = arg2;
+    D_801930D0[arg0].unk_011 = arg3;
+    D_801930D0[arg0].unk_012 = 1;
 }
 
-void audio_update_sequences(void) {
+void audio_update_sequence_players(void) {
     u8 seqPlayerIndex;
     f32 volume;
     u8 tempoOp;
@@ -986,8 +987,8 @@ void audio_update_sequences(void) {
                 volume *= gSequenceState[seqPlayerIndex].unk_00E[j] / 127.0f;
             }
 
-            audio_push_cmd(0x40000000 | (((u8) seqPlayerIndex) << 0x18) |
-                          (((u8) gSequenceState[seqPlayerIndex].unk_011) << 0x10) | ((u16) (u8) (volume * 127.0f)));
+            audio_push_sequence_command(0x40000000 | (((u8) seqPlayerIndex) << 0x18) |
+                          (((u8) D_801930D0[seqPlayerIndex].unk_011) << 0x10) | ((u16) (u8) (volume * 127.0f)));
 
             gSequenceState[seqPlayerIndex].unk_012 = 0;
         }
@@ -998,7 +999,7 @@ void audio_update_sequences(void) {
             } else {
                 gSequenceState[seqPlayerIndex].unk_000 = gSequenceState[seqPlayerIndex].unk_004;
             }
-            eu_audio_cmd_send_f32(0x41000000 | (((u32) seqPlayerIndex & 0xFF) << 0x10), gSequenceState[seqPlayerIndex].unk_000);
+            audio_cmd_queue_push_f32(0x41000000 | (((u32) seqPlayerIndex & 0xFF) << 0x10), D_801930D0[seqPlayerIndex].unk_000);
         }
         if (gSequenceState[seqPlayerIndex].unk_014 != 0) {
             tempoCmd = gSequenceState[seqPlayerIndex].unk_014;
@@ -1054,8 +1055,8 @@ void audio_update_sequences(void) {
             } else {
                 gSequenceState[seqPlayerIndex].unk_01C = gSequenceState[seqPlayerIndex].unk_020;
             }
-            eu_audio_cmd_send_u32(0x47000000 | (((u32) seqPlayerIndex & 0xFF) << 0x10),
-                          (s32) gSequenceState[seqPlayerIndex].unk_01C);
+            audio_cmd_queue_push_u32(0x47000000 | (((u32) seqPlayerIndex & 0xFF) << 0x10),
+                          (s32) D_801930D0[seqPlayerIndex].unk_01C);
         }
 
         if (gSequenceState[seqPlayerIndex].unk_246 != 0) {
@@ -1070,8 +1071,8 @@ void audio_update_sequences(void) {
                             gSequenceState[seqPlayerIndex].unk_044[channelIndex].unk_04;
                         gSequenceState[seqPlayerIndex].unk_246 ^= 1 << channelIndex;
                     }
-                    eu_audio_cmd_send_f32(0x01000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) channelIndex & 0xFF) << 8),
-                                  gSequenceState[seqPlayerIndex].unk_044[channelIndex].unk_00);
+                    audio_cmd_queue_push_f32(0x01000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) channelIndex & 0xFF) << 8),
+                                  D_801930D0[seqPlayerIndex].unk_044[channelIndex].unk_00);
                 }
             }
         }
@@ -1087,15 +1088,15 @@ void audio_update_sequences(void) {
                             gSequenceState[seqPlayerIndex].unk_044[channelIndex].unk_14;
                         gSequenceState[seqPlayerIndex].unk_244 ^= 1 << channelIndex;
                     }
-                    eu_audio_cmd_send_f32(0x04000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) channelIndex & 0xFF) << 8),
-                                  gSequenceState[seqPlayerIndex].unk_044[channelIndex].unk_10);
+                    audio_cmd_queue_push_f32(0x04000000 | ((seqPlayerIndex & 0xFF) << 0x10) | (((u32) channelIndex & 0xFF) << 8),
+                                  D_801930D0[seqPlayerIndex].unk_044[channelIndex].unk_10);
                 }
             }
         }
         if (gSequenceState[seqPlayerIndex].unk_041) {
 #ifdef VERSION_EU
-            if (audio_is_cmd_not_in_queue_eu(-0x10000000, -0x10000000) == 0) {
-                gSequenceState[seqPlayerIndex].unk_041 = 0;
+            if (audio_is_sequence_command_pending_eu(-0x10000000, -0x10000000) == 0) {
+                D_801930D0[seqPlayerIndex].unk_041 = 0;
                 return;
             }
 #endif
@@ -1120,33 +1121,33 @@ void audio_update_sequences(void) {
                         break;
 
                     case 1:
-                        audio_push_cmd(0x30000000 | ((u8) seqPlayerIndex) << 0x18 |
-                                      (gSequenceState[seqPlayerIndex].unk_248));
+                        audio_push_sequence_command(0x30000000 | ((u8) seqPlayerIndex) << 0x18 |
+                                      (D_801930D0[seqPlayerIndex].unk_248));
                         break;
 
                     case 2:
-                        audio_push_cmd((((u8) targetSeqPlayerIndex) << 0x18) | 0x10000 |
-                                      (u16) (gSequenceState[targetSeqPlayerIndex].unk_248));
-                        gSequenceState[targetSeqPlayerIndex].unk_012 = 1;
-                        gSequenceState[targetSeqPlayerIndex].unk_00E[1] = 0x7F;
+                        audio_push_sequence_command((((u8) targetSeqPlayerIndex) << 0x18) | 0x10000 |
+                                      (u16) (D_801930D0[targetSeqPlayerIndex].unk_248));
+                        D_801930D0[targetSeqPlayerIndex].unk_012 = 1;
+                        D_801930D0[targetSeqPlayerIndex].unk_00E[1] = 0x7F;
                         break;
 
                     case 3:
-                        audio_push_cmd(0xB0003000 | (((u8) targetSeqPlayerIndex) << 0x18) | (((u8) setupVal2) << 0x10) |
+                        audio_push_sequence_command(0xB0003000 | (((u8) targetSeqPlayerIndex) << 0x18) | (((u8) setupVal2) << 0x10) |
                                       (u16) setupVal1);
                         break;
 
                     case 4:
-                        audio_push_cmd(0xB0004000 | (((u8) targetSeqPlayerIndex) << 0x18) | (((u8) setupVal1) << 0x10));
+                        audio_push_sequence_command(0xB0004000 | (((u8) targetSeqPlayerIndex) << 0x18) | (((u8) setupVal1) << 0x10));
                         break;
 
                     case 5:
-                        seqId = gSequenceState[seqPlayerIndex].unk_02C[j] & 0xFFFF;
-                        audio_push_cmd((((u8) targetSeqPlayerIndex) << 0x18) |
-                                      (((u8) gSequenceState[targetSeqPlayerIndex].unk_042) << 0x10) | ((u16) seqId));
+                        seqId = D_801930D0[seqPlayerIndex].unk_02C[j] & 0xFFFF;
+                        audio_push_sequence_command((((u8) targetSeqPlayerIndex) << 0x18) |
+                                      (((u8) D_801930D0[targetSeqPlayerIndex].unk_042) << 0x10) | ((u16) seqId));
 
-                        audio_set_sequence_volume(targetSeqPlayerIndex, 1, 0x7F, 0);
-                        gSequenceState[targetSeqPlayerIndex].unk_042 = 0;
+                        seq_player_set_volume_target(targetSeqPlayerIndex, 1, 0x7F, 0);
+                        D_801930D0[targetSeqPlayerIndex].unk_042 = 0;
                         break;
 
                     case 6:
@@ -1160,7 +1161,7 @@ void audio_update_sequences(void) {
     }
 }
 
-void audio_reset_sequence_data(void) {
+void audio_reset_all_sequence_player_settings(void) {
     u8 var_v0;
 
     for (var_v0 = 0; var_v0 < 3; var_v0++) {
@@ -1183,7 +1184,7 @@ void audio_reset_sequence_data(void) {
     }
 }
 
-void audio_reset_sequence_data_partial(void) {
+void audio_reset_soft_sequence_player_settings(void) {
     u8 var_v0;
 
     for (var_v0 = 0; var_v0 < 3; var_v0++) {
@@ -1201,7 +1202,7 @@ void audio_reset_sequence_data_partial(void) {
 }
 
 // Appears to be an unused combo of sound_banks_enable and sound_banks_disable
-void audio_set_bank_disabled_mask(u16 bankMask) {
+void audio_set_sound_banks_enabled_mask(u16 bankMask) {
     u8 bank;
 
     for (bank = 0; bank < SOUND_BANK_COUNT; bank++) {
@@ -1214,7 +1215,7 @@ void audio_set_bank_disabled_mask(u16 bankMask) {
     }
 }
 
-void audio_clear_sequence_mask_bit(u8 arg0) {
+void audio_clear_sound_channel_active_bit(u8 arg0) {
     D_800EA1C4 &= ((1 << (arg0)) ^ (u16) -1);
     if (!D_800EA1C4) {
         gSequenceState[0].unk_012 = 1;
@@ -1243,7 +1244,7 @@ void play_sound(u32 soundBits, Vec3f* position, u8 cameraId, f32* arg3, f32* arg
     }
 }
 
-void audio_cancel_sound_requests(u8 arg0, struct SoundCharacteristics* arg1) {
+void audio_cancel_matching_sound_requests(u8 arg0, struct SoundCharacteristics* arg1) {
     s32 found;
     u8 soundId;
     struct Sound* sound;
@@ -1335,7 +1336,7 @@ void audio_process_sound_requests(void) {
                 if ((var_a2->soundBits & 0x08000000) || (var_a2->soundBits & 0x40000) || (soundIndex == var_t2)) {
                     if ((sSoundBanks[bank][soundIndex].soundBits & 0x80000) &&
                         (sSoundBanks[bank][soundIndex].soundStatus != 1)) {
-                        audio_clear_sequence_mask_bit(sSoundBanks[bank][soundIndex].unk2C);
+                        audio_clear_sound_channel_active_bit(sSoundBanks[bank][soundIndex].unk2C);
                     }
                     sSoundBanks[bank][soundIndex].cameraId = var_a2->cameraId;
                     sSoundBanks[bank][soundIndex].soundBits = var_a2->soundBits;
@@ -1384,7 +1385,7 @@ void delete_sound_from_bank(u8 bankId, u8 soundId) {
         *temp->unk04 = 100000.0f;
     }
     if (temp->soundBits & 0x80000) {
-        audio_clear_sequence_mask_bit(temp->unk2C);
+        audio_clear_sound_channel_active_bit(temp->unk2C);
     }
     if (soundId == sSoundBankUsedListBack[bankId]) {
         sSoundBankUsedListBack[bankId] = temp->prev;
@@ -1405,7 +1406,7 @@ struct ActiveSfx {
 };
 #define AUDIO_MK_CMD(b0, b1, b2, b3) \
     ((((b0) & 0xFF) << 0x18) | (((b1) & 0xFF) << 0x10) | (((b2) & 0xFF) << 0x8) | (((b3) & 0xFF) << 0))
-void audio_process_sound_requests_for_bank(u8 bankId) {
+void audio_sort_sound_bank_priorities(u8 bankId) {
     u8 j;
     u8 numChannels;
     u8 chosenEntryIndex;
@@ -1464,7 +1465,7 @@ void audio_process_sound_requests_for_bank(u8 bankId) {
             }
             if (var_f0 < entry->distance) {
                 if (entry->soundStatus == 4) {
-                    eu_audio_cmd_send_byte(AUDIO_MK_CMD(0x06, 2, entry->unk2C, 0), 0);
+                    audio_cmd_queue_push_s8(AUDIO_MK_CMD(0x06, 2, entry->unk2C, 0), 0);
                     if (entry->soundBits & 0x08000000) {
                         delete_sound_from_bank(bankId, soundIndex);
                         soundIndex = k;
@@ -1558,7 +1559,7 @@ void audio_process_sound_requests_for_bank(u8 bankId) {
     }
 }
 
-void audio_play_sound_requests(u8 bankId) {
+void audio_dispatch_active_sound_bank_channels(u8 bankId) {
     u8 soundId;
     u8 var_s4;
     UNUSED u32 cmd;
@@ -1577,15 +1578,15 @@ void audio_play_sound_requests(u8 bankId) {
                     gSequenceState->unk_012 = 1;
                     gSequenceState->unk_00E[2] = 0x28;
                 }
-                audio_update_sound_params(bankId, soundId, gSfxChannelIndex);
-                eu_audio_cmd_send_byte(((gSfxChannelIndex & 0xFF) << 8) | 0x06020000, 1);
-                eu_audio_cmd_send_byte(((gSfxChannelIndex & 0xFF) << 8) | 0x06020000 | 4, (u8) (temp_s0->soundBits & 0xFF));
+                audio_apply_sound_characteristics_to_channel(bankId, soundId, D_80192C38);
+                audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000, 1);
+                audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000 | 4, (u8) (temp_s0->soundBits & 0xFF));
                 temp_s0->soundStatus = 4U;
             } else if (((u8) thing->soundScriptIO[7]) == 0x80) {
-                eu_audio_cmd_send_byte(((gSfxChannelIndex & 0xFF) << 8) | 0x06020000 | 7, 0);
+                audio_cmd_queue_push_s8(((D_80192C38 & 0xFF) << 8) | 0x06020000 | 7, 0);
                 delete_sound_from_bank(bankId, soundId);
             } else if (temp_s0->soundStatus == 3) {
-                audio_update_sound_params(bankId, soundId, gSfxChannelIndex);
+                audio_apply_sound_characteristics_to_channel(bankId, soundId, D_80192C38);
                 temp_s0->soundStatus = 4U;
             }
         }
@@ -1594,7 +1595,7 @@ void audio_play_sound_requests(u8 bankId) {
 }
 
 // Seems somewhat similar to certain parts of `select_current_sounds` from SM64
-void audio_stop_all_sounds_in_bank(u8 bankId) {
+void audio_clear_sound_bank(u8 bankId) {
     UNUSED s32 stackPadding0;
     u8 soundId;
     struct SoundCharacteristics sp60;
@@ -1602,7 +1603,7 @@ void audio_stop_all_sounds_in_bank(u8 bankId) {
     soundId = sSoundBanks[bankId][0].next;
     while (soundId != 0xFF) {
         if (sSoundBanks[bankId][soundId].soundStatus >= 3) {
-            eu_audio_cmd_send_byte(((sSoundBanks[bankId][soundId].unk2C & 0xff) << 8) | 0x06020000, 0);
+            audio_cmd_queue_push_s8(((sSoundBanks[bankId][soundId].unk2C & 0xff) << 8) | 0x06020000, 0);
         }
         if (sSoundBanks[bankId][soundId].soundStatus != 0) {
             delete_sound_from_bank(bankId, soundId);
@@ -1613,10 +1614,10 @@ void audio_stop_all_sounds_in_bank(u8 bankId) {
         soundId = sSoundBanks[bankId][0].next;
     }
     sp60.soundBits = bankId << 0x1C;
-    audio_cancel_sound_requests(0, &sp60);
+    audio_cancel_matching_sound_requests(0, &sp60);
 }
 
-void audio_stop_sounds_in_bank_by_pos(u8 arg0, Vec3f* arg1) {
+void audio_stop_sounds_at_position_in_bank(u8 arg0, Vec3f* arg1) {
     u8 curr;
     u8 next;
 
@@ -1626,7 +1627,7 @@ void audio_stop_sounds_in_bank_by_pos(u8 arg0, Vec3f* arg1) {
     while (next != 0xff) {
         if (*arg1 == *sSoundBanks[arg0][next].unk00) {
             if (sSoundBanks[arg0][next].soundStatus >= 3) {
-                eu_audio_cmd_send_byte((0x06020000 | ((sSoundBanks[arg0][next].unk2C & 0xff) << 8)), 0);
+                audio_cmd_queue_push_s8((0x06020000 | ((sSoundBanks[arg0][next].unk2C & 0xff) << 8)), 0);
             }
 
             if (sSoundBanks[arg0][next].soundStatus != 0) {
@@ -1640,27 +1641,27 @@ void audio_stop_sounds_in_bank_by_pos(u8 arg0, Vec3f* arg1) {
     }
 }
 
-void audio_stop_sounds_and_requests_in_bank_by_pos(u8 arg0, Vec3f* arg1) {
+void audio_stop_and_cancel_sounds_at_position_in_bank(u8 arg0, Vec3f* arg1) {
     struct SoundCharacteristics unk;
-    audio_stop_sounds_in_bank_by_pos(arg0, arg1);
+    audio_stop_sounds_at_position_in_bank(arg0, arg1);
     unk.soundBits = arg0 << 0x1C;
     unk.unk00 = arg1;
-    audio_cancel_sound_requests(1, &unk);
+    audio_cancel_matching_sound_requests(1, &unk);
 }
 
-void audio_stop_all_sounds_and_requests_by_pos(Vec3f* arg0) {
+void audio_stop_all_sounds_at_position(Vec3f* arg0) {
     u8 i;
     struct SoundCharacteristics sp3C;
 
     for (i = 0; i < 6; i++) {
-        audio_stop_sounds_in_bank_by_pos(i, arg0);
+        audio_stop_sounds_at_position_in_bank(i, arg0);
     }
 
     sp3C.unk00 = arg0;
-    audio_cancel_sound_requests(2, &sp3C);
+    audio_cancel_matching_sound_requests(2, &sp3C);
 }
 
-void audio_stop_sound_and_request_by_pos_and_id(Vec3f* arg0, u32 soundBits) {
+void audio_stop_sound_at_position(Vec3f* arg0, u32 soundBits) {
     UNUSED s32 stackPadding0;
     u8 bankId;
     u8 next;
@@ -1673,7 +1674,7 @@ void audio_stop_sound_and_request_by_pos_and_id(Vec3f* arg0, u32 soundBits) {
     while (next != 0xFF) {
         if ((arg0 == sSoundBanks[bankId][next].unk00) && (soundBits == sSoundBanks[bankId][next].soundBits)) {
             if (sSoundBanks[bankId][next].soundStatus >= 3) {
-                eu_audio_cmd_send_byte(((sSoundBanks[bankId][next].unk2C & 0xff) << 8) | 0x06020000, 0);
+                audio_cmd_queue_push_s8(((sSoundBanks[bankId][next].unk2C & 0xff) << 8) | 0x06020000, 0);
             }
             if (sSoundBanks[bankId][next].soundStatus != 0) {
                 delete_sound_from_bank(bankId, next);
@@ -1688,10 +1689,10 @@ void audio_stop_sound_and_request_by_pos_and_id(Vec3f* arg0, u32 soundBits) {
     }
     sp60.unk00 = arg0;
     sp60.soundBits = soundBits;
-    audio_cancel_sound_requests(3, &sp60);
+    audio_cancel_matching_sound_requests(3, &sp60);
 }
 
-void audio_stop_sound_and_request_by_id(u32 soundBits) {
+void audio_stop_sound_by_bits(u32 soundBits) {
     UNUSED s32 stackPadding0;
     u8 bankId;
     u8 next;
@@ -1704,7 +1705,7 @@ void audio_stop_sound_and_request_by_id(u32 soundBits) {
     while (next != 0xFF) {
         if (soundBits == sSoundBanks[bankId][next].soundBits) {
             if (sSoundBanks[bankId][next].soundStatus >= 3) {
-                eu_audio_cmd_send_byte(((sSoundBanks[bankId][next].unk2C & 0xff) << 8) | 0x06020000, 0);
+                audio_cmd_queue_push_s8(((sSoundBanks[bankId][next].unk2C & 0xff) << 8) | 0x06020000, 0);
             }
             if (sSoundBanks[bankId][next].soundStatus != 0) {
                 delete_sound_from_bank(bankId, next);
@@ -1715,11 +1716,11 @@ void audio_stop_sound_and_request_by_id(u32 soundBits) {
         next = sSoundBanks[bankId][curr].next;
     }
     sp68.soundBits = soundBits;
-    audio_cancel_sound_requests(5, &sp68);
+    audio_cancel_matching_sound_requests(5, &sp68);
 }
 
 // Might be process_all_sound_requests
-void audio_process_all_sound_requests(void) {
+void audio_process_all_pending_sound_requests(void) {
     while (sSoundRequestCount != sNumProcessedSoundRequests) {
         audio_process_sound_requests();
         sNumProcessedSoundRequests++;
@@ -1739,7 +1740,7 @@ void fade_channel_volume_scale(u8 player, u8 targetScale, u16 fadeDuration) {
     temp_v0->velocity = (temp_v0->current - temp_v0->target) / fadeDuration;
 }
 
-void audio_process_channel_volume_fade(u8 arg0) {
+void audio_update_channel_volume_scale_fade(u8 arg0) {
     struct ChannelVolumeScaleFade* temp_v0;
 
     temp_v0 = &gChannelVolumeScaleFade[arg0];
@@ -1753,15 +1754,15 @@ void audio_process_channel_volume_fade(u8 arg0) {
     }
 }
 
-void audio_process_sound_banks(void) {
+void audio_update_all_sound_banks(void) {
     u8 i;
 
     if (gSequencePlayers[2].channels[0] != &gSequenceChannelNone) {
         gSfxChannelIndex = 0;
         for (i = 0; i < 6; i++) {
-            audio_process_sound_requests_for_bank(i);
-            audio_play_sound_requests(i);
-            audio_process_channel_volume_fade(i);
+            audio_sort_sound_bank_priorities(i);
+            audio_dispatch_active_sound_bank_channels(i);
+            audio_update_channel_volume_scale_fade(i);
         }
     }
 }
@@ -1799,36 +1800,36 @@ void sound_init(void) {
     }
 }
 
-void audio_send_character_voice_cmd(void) {
-    if (gAudioNumCameras == 0) {
-        eu_audio_cmd_send_byte(((D_800EA154[gPlayers[0].characterId] & 0xFFFF) << 8) | 0xF3000000, 0);
+void audio_init_player_sound_bank(void) {
+    if (D_800EA1C0 == 0) {
+        audio_cmd_queue_push_s8(((D_800EA154[gPlayers[0].characterId] & 0xFFFF) << 8) | 0xF3000000, 0);
     } else {
-        eu_audio_cmd_send_byte(0xF3004D00, 0);
+        audio_cmd_queue_push_s8(0xF3004D00, 0);
     }
 }
 
-void audio_reset_session(void) {
-    audio_init_cameras_and_state();
-    if (gHasAudioInitialized != 0) {
-        audio_reset_sequence_data_partial();
+void audio_soft_reset(void) {
+    audio_reset_state_and_cameras();
+    if (D_800E9DA0 != 0) {
+        audio_reset_soft_sequence_player_settings();
     } else {
-        gHasAudioInitialized++;
-        audio_reset_sequence_data();
+        D_800E9DA0++;
+        audio_reset_all_sequence_player_settings();
     }
     sound_init();
-    audio_cmd_play_sequence(2, 0, 0xFF, 1);
-    audio_send_character_voice_cmd();
+    seq_player_play_sequence(2, 0, 0xFF, 1);
+    audio_init_player_sound_bank();
 }
 
 // game_audio_init?
-void audio_init(void) {
-    audio_init_cameras_and_state();
-    audio_reset_sequence_data();
+void game_audio_init(void) {
+    audio_reset_state_and_cameras();
+    audio_reset_all_sequence_player_settings();
     sound_init();
-    audio_cmd_play_sequence(2, 0, 0xFF, 1);
+    seq_player_play_sequence(2, 0, 0xFF, 1);
 }
 
-void audio_update_throttle_state(u8 playerId) {
+void audio_update_kart_throttle_timer(u8 playerId) {
     if ((gPlayers[playerId].kartProps & THROTTLE) == THROTTLE) {
         D_800E9E34[playerId] = 0;
         if (D_800E9E24[playerId] < 0x4E20) {
@@ -1841,8 +1842,8 @@ void audio_update_throttle_state(u8 playerId) {
                 case 2:
                     D_800EA0EC[playerId] = 1;
                 case 0:
-                    audio_stop_character_sounds(playerId);
-                    audio_play_character_engine_sound(playerId);
+                    audio_stop_kart_engine_sound(playerId);
+                    audio_play_kart_engine_idle(playerId);
                     break;
                 default:
                     break;
@@ -1856,7 +1857,7 @@ void audio_update_throttle_state(u8 playerId) {
     }
 }
 
-void audio_update_throttle_sound_state(u8 playerId) {
+void audio_update_kart_engine_rev_sound(u8 playerId) {
     if (D_800EA108 == 0) {
         if (((gPlayers[playerId].kartProps & THROTTLE) != THROTTLE) && (gPlayers[playerId].unk_098 > 400.0f)) {
             D_800E9E14[playerId] = 1;
@@ -1888,7 +1889,7 @@ void audio_update_throttle_sound_state(u8 playerId) {
             }
         } else {
             if (D_800E9E24[playerId] == 0x0000000A) {
-                if ((s32) gAudioNumCameras < 2) {
+                if ((s32) D_800EA1C0 < 2) {
                     audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xF9, 0x26));
                 } else {
                     audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
@@ -1905,7 +1906,7 @@ void audio_update_throttle_sound_state(u8 playerId) {
     }
 }
 
-void audio_update_throttle_sound_pitch(u8 playerId) {
+void audio_calculate_kart_engine_pitch(u8 playerId) {
     Player* player;
 
     player = &gPlayers[playerId];
@@ -1970,7 +1971,7 @@ void audio_update_throttle_sound_pitch(u8 playerId) {
     gAudioCharacterStates[playerId].unk_38 = (gAudioCharacterStates[playerId].unk_0C / 1.5f) + 0.4f;
 }
 
-void audio_update_throttle_sound_volume(u8 playerId) {
+void audio_update_skid_sound_volume(u8 playerId) {
     switch (D_800E9E74[playerId]) {
         case 3:
             D_800E9EF4[playerId] = (gPlayers[playerId].speed / 5.0f) + 0.2f;
@@ -2021,7 +2022,7 @@ void audio_update_throttle_sound_volume(u8 playerId) {
     }
 }
 
-void audio_update_throttle_sound_speed(u8 playerId) {
+void audio_update_skid_sound_frequency(u8 playerId) {
     switch (D_800E9E74[playerId]) { /* irregular */
         case 3:
             D_800E9F14[playerId] = (gPlayers[playerId].speed / 9.0f) + 0.6f;
@@ -2037,10 +2038,10 @@ void audio_update_throttle_sound_speed(u8 playerId) {
     }
 }
 
-void audio_update_throttle_sound_type(u8 cameraId) {
+void audio_update_tyre_skid_sound(u8 cameraId) {
     if ((D_800EA108 == 0) && (D_800EA0EC[cameraId] == 0)) {
         if (D_800E9E74[cameraId] != D_800E9E84[cameraId]) {
-            audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[cameraId].pos, D_800E9E94[cameraId]);
+            audio_stop_sound_at_position(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
             switch (D_800E9E74[cameraId]) {
                 case 3:
                     play_sound(SOUND_ACTION_TYRE_SQUEAL, &gAudioCharacterStates[cameraId].pos, cameraId, &D_800E9F14[cameraId],
@@ -2185,7 +2186,7 @@ void audio_update_throttle_sound_type(u8 cameraId) {
                     D_800E9E94[cameraId] = SOUND_ARG_LOAD(0x01, 0x00, 0xF0, 0x2B);
                     break;
                 default:
-                    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[cameraId].pos, D_800E9E94[cameraId]);
+                    audio_stop_sound_at_position(&D_800E9F7C[cameraId].pos, D_800E9E94[cameraId]);
                     break;
             }
         }
@@ -2193,7 +2194,7 @@ void audio_update_throttle_sound_type(u8 cameraId) {
     }
 }
 
-void audio_update_surface_sound(u8 playerId) {
+void audio_determine_surface_skid_effect(u8 playerId) {
     if (D_800EA0EC[playerId] == 0) {
         D_800E9E74[playerId] = 0;
         if ((D_800E9E54[playerId] > 3500.0f) || ((gPlayers[playerId].effects & DRIFTING_EFFECT) == DRIFTING_EFFECT)) {
@@ -2411,7 +2412,7 @@ void audio_update_surface_sound(u8 playerId) {
    Contains a LOT of inlined funcs.
    Modify if you dare.
 */
-void audio_handle_race_finish(u8 playerId) {
+void audio_update_race_finish_sequences(u8 playerId) {
     if (D_800E9EA4[playerId] != 0) {
         if (D_800E9EA4[playerId] < 0x2BC) {
             D_800E9EA4[playerId]++;
@@ -2420,92 +2421,92 @@ void audio_handle_race_finish(u8 playerId) {
             audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
             audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFF, 0x2C));
             audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x4C));
-            audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[playerId].pos, D_800E9E94[playerId]);
+            audio_stop_sound_at_position(&D_800E9F7C[playerId].pos, D_800E9E94[playerId]);
             D_800E9E74[playerId] = 0;
             switch (gModeSelection) { /* irregular */
                 case GRAND_PRIX:
                     D_800EA0EC[playerId] = 2;
-                    audio_play_sound_by_player_id(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0xF1, 0x03));
-                    if (gAudioNumCameras == 0) {
-                        audio_push_cmd(0x100100FF);
-                        audio_push_cmd(0x110100FF);
-                        audio_stop_all_sounds_in_bank(5U);
+                    audio_play_player_sound(playerId, SOUND_ARG_LOAD(0x19, 0x00, 0xF1, 0x03));
+                    if (D_800EA1C0 == 0) {
+                        audio_push_sequence_command(0x100100FF);
+                        audio_push_sequence_command(0x110100FF);
+                        audio_clear_sound_bank(5U);
                         if (gPlayers[playerId].currentRank == 0) {
-                            audio_stop_character_sounds(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            audio_play_race_finish_sound(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (gPlayers[playerId].currentRank < 4) {
-                            audio_stop_character_sounds(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            audio_play_race_finish_sound(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_OTHER, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else {
-                            audio_push_cmd(-0x3E9F9C00);
+                            audio_push_sequence_command(-0x3E9F9C00);
                             play_sequences(SEQ_EVENT_RACE_FINISH_LOSE, SEQ_MENU_RESULTS_SCREEN_LOSE);
                         }
                     } else {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_sound_by_player_id(playerId, 0x1900F103U);
+                        audio_play_player_sound(playerId, 0x1900F103U);
                         if (gPlayers[playerId].currentRank == 0) {
-                            audio_push_cmd(0x100100FF);
-                            audio_push_cmd(0x110100FF);
-                            audio_stop_character_sounds(playerId);
+                            audio_push_sequence_command(0x100100FF);
+                            audio_push_sequence_command(0x110100FF);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            audio_play_race_finish_sound(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (gPlayers[playerId].currentRank < 4) {
                             if (D_800EA104 == 0) {
-                                audio_push_cmd(0x100100FF);
-                                audio_push_cmd(0x110100FF);
+                                audio_push_sequence_command(0x100100FF);
+                                audio_push_sequence_command(0x110100FF);
                             }
-                            audio_stop_character_sounds(playerId);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            audio_play_race_finish_sound(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_OTHER, SEQ_MENU_RESULTS_SCREEN_WIN);
                         } else if (D_800EA104 == 0) {
-                            audio_push_cmd(0x100100FF);
-                            audio_push_cmd(0x110100FF);
-                            audio_push_cmd(-0x3E9F9C00);
+                            audio_push_sequence_command(0x100100FF);
+                            audio_push_sequence_command(0x110100FF);
+                            audio_push_sequence_command(-0x3E9F9C00);
                             play_sequences(SEQ_EVENT_RACE_FINISH_LOSE, SEQ_MENU_RESULTS_SCREEN_LOSE);
                         }
                         if ((D_800EA104 != 0) || (D_800EA0EC[playerId] != 1)) {
-                            audio_stop_all_sounds_in_bank(5U);
+                            audio_clear_sound_bank(5U);
                         }
                     }
                     break;
                 case TIME_TRIALS:
-                    audio_push_cmd(0x100100FF);
-                    audio_push_cmd(0x110100FF);
-                    audio_stop_character_sounds(playerId);
+                    audio_push_sequence_command(0x100100FF);
+                    audio_push_sequence_command(0x110100FF);
+                    audio_stop_kart_engine_sound(playerId);
                     D_800EA0F0 = 2;
-                    audio_play_race_finish_sound(0U);
+                    audio_play_kart_engine_driving(0U);
                     D_800EA0EC[playerId] = 2;
-                    audio_play_sound_by_player_id(playerId, 0x1900F103U);
+                    audio_play_player_sound(playerId, 0x1900F103U);
                     if (D_801657E5 == 1) {
                         play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN);
                     } else if (D_8018ED90 == 1) {
                         play_sequences(SEQ_EVENT_RACE_FINISH_OTHER, SEQ_MENU_RESULTS_SCREEN_WIN);
                     } else {
-                        audio_push_cmd(0x01640010);
+                        audio_push_sequence_command(0x01640010);
                     }
                     break;
                 case VERSUS:
                     D_800EA0EC[playerId] = 2;
-                    audio_play_sound_by_player_id(playerId, 0x1900F103U);
-                    switch (gAudioNumCameras) { /* switch 1; irregular */
+                    audio_play_player_sound(playerId, 0x1900F103U);
+                    switch (D_800EA1C0) { /* switch 1; irregular */
                         case 1:           /* switch 1 */
-                            audio_push_cmd(0x100100FF);
-                            audio_push_cmd(0x110100FF);
-                            audio_stop_character_sounds(playerId);
+                            audio_push_sequence_command(0x100100FF);
+                            audio_push_sequence_command(0x110100FF);
+                            audio_stop_kart_engine_sound(playerId);
                             D_800EA0F0 = 2;
-                            audio_play_race_finish_sound(playerId);
+                            audio_play_kart_engine_driving(playerId);
                             play_sequences(SEQ_EVENT_RACE_FINISH_FIRST, SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                             break;
                         case 2: /* switch 1 */
                             if ((D_800EA104 == 0) && (D_800EA0EC[playerId] == 1)) {
-                                audio_push_cmd(0x100100FF);
-                                audio_push_cmd(0x110100FF);
+                                audio_push_sequence_command(0x100100FF);
+                                audio_push_sequence_command(0x110100FF);
 #ifdef VERSION_EU
                                 play_sequence2(SEQ_EVENT_RACE_FINISH_FIRST);
 #else
@@ -2513,9 +2514,9 @@ void audio_handle_race_finish(u8 playerId) {
 #endif
                                 D_800EA104 = 1;
                             } else if ((D_800EA104 == 1) && (D_800EA0EC[playerId] == 1)) {
-                                audio_stop_all_sounds_in_bank(5U);
+                                audio_clear_sound_bank(5U);
 #ifndef VERSION_EU
-                                if (audio_get_sequence_id(1) != 0x000D)
+                                if (seq_player_get_active_sequence_id(1) != 0x000D)
 #endif
                                 {
                                     D_800EA104 = 0;
@@ -2526,20 +2527,20 @@ void audio_handle_race_finish(u8 playerId) {
                             break;
                         case 3: /* switch 1 */
                             if ((D_800EA104 == 0) && (D_800EA0EC[playerId] == 1)) {
-                                audio_push_cmd(0x100100FF);
-                                audio_push_cmd(0x110100FF);
+                                audio_push_sequence_command(0x100100FF);
+                                audio_push_sequence_command(0x110100FF);
                                 play_sequence2(SEQ_EVENT_RACE_FINISH_FIRST);
                                 D_800EA104 = 1;
                             } else if ((D_800EA104 == 1) && (D_800EA0EC[playerId] == 1)) {
-                                if (audio_get_sequence_id(1) != 0x000D) {
+                                if (seq_player_get_active_sequence_id(1) != 0x000D) {
                                     D_800EA104 = 0;
                                     play_sequence2(SEQ_EVENT_RACE_FINISH_OTHER);
                                 }
                                 D_800EA104 = 2;
                             } else if ((D_800EA104 == 2) && (D_800EA0EC[playerId] == 1)) {
-                                audio_stop_all_sounds_in_bank(5U);
+                                audio_clear_sound_bank(5U);
 #ifndef VERSION_EU
-                                if (audio_get_sequence_id(1) != 0x000E)
+                                if (seq_player_get_active_sequence_id(1) != 0x000E)
 #endif
                                 {
                                     D_800EA104 = 0;
@@ -2553,33 +2554,33 @@ void audio_handle_race_finish(u8 playerId) {
                 case BATTLE:
                     switch (gAudioNumCameras) { /* switch 2; irregular */
                         case 1:           /* switch 2 */
-                            audio_push_cmd(0x100100FF);
-                            audio_push_cmd(0x110100FF);
-                            audio_stop_all_sounds_in_bank(5U);
+                            audio_push_sequence_command(0x100100FF);
+                            audio_push_sequence_command(0x110100FF);
+                            audio_clear_sound_bank(5U);
                             audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xF9, 0x26));
                             play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                             D_800EA0EC[playerId] = 2;
-                            audio_play_character_sound(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
+                            audio_play_player_character_voice(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
                                                         SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                             break;
                         case 2: /* switch 2 */
                             if ((D_800EA0EC[0] == 1) && (D_800EA0EC[1] == 1) && (D_800EA0EC[2] == 1)) {
-                                audio_stop_all_sounds_in_bank(5U);
+                                audio_clear_sound_bank(5U);
                                 audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
                                 play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                                 D_800EA0EC[playerId] = 2;
-                                audio_play_character_sound(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
+                                audio_play_player_character_voice(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
                                                             SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                             }
                             break;
                         case 3: /* switch 2 */
                             if ((D_800EA0EC[0] == 1) && (D_800EA0EC[1] == 1) && (D_800EA0EC[2] == 1) &&
                                 (D_800EA0EC[3] == 1)) {
-                                audio_stop_all_sounds_in_bank(5U);
+                                audio_clear_sound_bank(5U);
                                 audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
                                 play_sequence2(SEQ_MENU_RESULTS_SCREEN_WIN_VS);
                                 D_800EA0EC[playerId] = 2;
-                                audio_play_character_sound(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
+                                audio_play_player_character_voice(playerId, (gPlayers[gPlayerWinningIndex].characterId * 0x10) +
                                                             SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                             }
                             break;
@@ -2596,33 +2597,33 @@ void audio_handle_race_finish(u8 playerId) {
                 case GRAND_PRIX: /* switch 3 */
                     if (gPlayers[playerId].currentRank == 0) {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
                     } else if (gPlayers[playerId].currentRank < 4) {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                     } else {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x03));
                     }
                     break;
                 case VERSUS: /* switch 3 */
                     if (gPlayers[playerId].currentRank == 0) {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                     }
                     break;
                 case TIME_TRIALS: /* switch 3 */
                     if (D_801657E5 == 1) {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x07));
                     } else if (D_8018ED90 == (u8) 1) {
                         D_800EA0EC[playerId] = 2;
-                        audio_play_character_sound(playerId,
+                        audio_play_player_character_voice(playerId,
                                       (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x0D));
                     }
                     break;
@@ -2633,7 +2634,7 @@ void audio_handle_race_finish(u8 playerId) {
                 if (gPlayers[playerId].currentRank == 0) {
                     if (D_800E9EA4[playerId] >= 0x15F) {
                         if (D_800E9EA4[playerId] == 0x0000015F) {
-                            audio_stop_race_finish_sound(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 400.0f;
@@ -2641,14 +2642,14 @@ void audio_handle_race_finish(u8 playerId) {
                 } else if (gPlayers[playerId].currentRank < 4) {
                     if (D_800E9EA4[playerId] >= 0x15F) {
                         if (D_800E9EA4[playerId] == 0x0000015F) {
-                            audio_stop_race_finish_sound(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 400.0f;
                     }
                 } else if (D_800E9EA4[playerId] >= 0x12D) {
                     if (D_800E9EA4[playerId] == 0x0000012D) {
-                        audio_stop_character_sounds(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 330.0f;
@@ -2658,14 +2659,14 @@ void audio_handle_race_finish(u8 playerId) {
                 if (gAudioNumCameras == (u8) 1) {
                     if (D_800E9EA4[playerId] >= 0x65) {
                         if (D_800E9EA4[playerId] == 0x00000065) {
-                            audio_stop_race_finish_sound(playerId);
+                            audio_stop_player_driving_sound_3d(playerId);
                         }
                     } else {
                         D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
                     }
                 } else if (D_800E9EA4[playerId] >= 0x65) {
                     if (D_800E9EA4[playerId] == 0x00000065) {
-                        audio_stop_character_sounds(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
@@ -2674,7 +2675,7 @@ void audio_handle_race_finish(u8 playerId) {
             case TIME_TRIALS: /* switch 4 */
                 if (D_800E9EA4[playerId] >= 0x12D) {
                     if (D_800E9EA4[playerId] == 0x0000012D) {
-                        audio_stop_race_finish_sound(0U);
+                        audio_stop_player_driving_sound_3d(0U);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 350.0f;
@@ -2683,7 +2684,7 @@ void audio_handle_race_finish(u8 playerId) {
             case BATTLE: /* switch 4 */
                 if (D_800E9EA4[playerId] >= 0x65) {
                     if (D_800E9EA4[playerId] == 0x00000065) {
-                        audio_stop_character_sounds(playerId);
+                        audio_stop_kart_engine_sound(playerId);
                     }
                 } else {
                     D_800EA130[playerId] = (f32) D_800E9EA4[playerId] / 120.0f;
@@ -2693,17 +2694,17 @@ void audio_handle_race_finish(u8 playerId) {
     }
 }
 
-void audio_update_water_sound(u8 playerId) {
+void audio_update_player_submerged_sound(u8 playerId) {
     if ((gPlayers[playerId].oobProps & UNDER_OOB_OR_FLUID_LEVEL) == UNDER_OOB_OR_FLUID_LEVEL) {
         if (D_800E9F74[playerId] == 0) {
-            if ((s32) gAudioNumCameras < 2) {
+            if ((s32) D_800EA1C0 < 2) {
                 audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xF9, 0x26));
             } else {
                 audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0x80, 0x26));
             }
-            audio_stop_character_sounds(playerId);
+            audio_stop_kart_engine_sound(playerId);
             D_800E9F74[playerId] = 1;
-            audio_play_character_engine_sound(playerId);
+            audio_play_kart_engine_idle(playerId);
             if (((gCurrentCourseId == COURSE_CHOCO_MOUNTAIN) || (gCurrentCourseId == COURSE_BOWSER_CASTLE) ||
                  (gCurrentCourseId == COURSE_BANSHEE_BOARDWALK) || (gCurrentCourseId == COURSE_YOSHI_VALLEY) ||
                  (gCurrentCourseId == COURSE_FRAPPE_SNOWLAND) || (gCurrentCourseId == COURSE_KOOPA_BEACH) ||
@@ -2717,9 +2718,9 @@ void audio_update_water_sound(u8 playerId) {
         }
     } else {
         if (D_800E9F74[playerId] == 1) {
-            audio_stop_character_sounds(playerId);
+            audio_stop_kart_engine_sound(playerId);
             D_800E9F74[playerId] = 2;
-            audio_play_character_engine_sound(playerId);
+            audio_play_kart_engine_idle(playerId);
             D_800E9F74[playerId] = 0;
             if ((gCurrentCourseId == COURSE_KOOPA_BEACH) && (D_800EA0EC[playerId] == 0)) {
                 play_sound((gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08),
@@ -2730,13 +2731,13 @@ void audio_update_water_sound(u8 playerId) {
     }
 }
 
-void audio_update_lightning_effect_sound(u8 playerId) {
+void audio_play_player_lightning_recovery_voice(u8 playerId) {
     if (((gPlayers[playerId].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) && (D_800E9F24[playerId] == 1)) {
-        audio_play_character_sound(playerId, (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08));
+        audio_play_player_character_voice(playerId, (gPlayers[playerId].characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08));
     }
 }
 
-void audio_update_lightning_effect_pitch(u8 playerId) {
+void audio_update_player_lightning_distortion(u8 playerId) {
     if ((gPlayers[playerId].effects & LIGHTNING_EFFECT) == LIGHTNING_EFFECT) {
         D_800E9F24[playerId] = 1;
         if (D_800E9F2C[playerId] < 0xFA) {
@@ -2768,8 +2769,8 @@ void audio_update_lightning_effect_pitch(u8 playerId) {
     }
 }
 
-// Checks the same field for all players before doing something?
-void audio_check_lightning_effect_end(void) {
+// Checks if any player still has the lightning effect; if not, resets thunder sound/volume state
+void check_and_reset_thunder_effect(void) {
     if (((u8) D_800EA168 != 0) && ((gPlayers[0].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[1].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[2].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
@@ -2778,11 +2779,11 @@ void audio_check_lightning_effect_end(void) {
         ((gPlayers[5].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[6].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT) &&
         ((gPlayers[7].effects & LIGHTNING_EFFECT) != LIGHTNING_EFFECT)) {
-        audio_stop_thunder_sound_effect();
+        reset_thunder_sound_effect();
     }
 }
 
-void audio_update_star_effect_volume(void) {
+void audio_update_ambient_volume_fade(void) {
     if (D_800EA180 != 0) {
         D_800EA180++;
         if (D_800EA180 == 2) {
@@ -2805,7 +2806,7 @@ void audio_update_star_effect_volume(void) {
     }
 }
 
-void audio_update_luigi_raceway_tunnel_sound(void) {
+void audio_update_tunnel_ambient_reverb(void) {
     if (gCurrentCourseId == COURSE_LUIGI_RACEWAY) {
         if (D_800EA184 != 0) {
             if ((u8) D_800EA16C == 0) {
@@ -2848,39 +2849,39 @@ void audio_update_luigi_raceway_tunnel_sound(void) {
     }
 }
 
-void audio_update_camera_sound_volume(u8 arg0) {
-    gAudioCameraStates[arg0].unk00[2] = (1.0f - D_800E9F54[arg0]) - D_800EA130[arg0];
+void audio_update_player_effective_volume(u8 arg0) {
+    D_800EA06C[arg0].unk00[2] = (1.0f - D_800E9F54[arg0]) - D_800EA130[arg0];
 }
 
 void audio_update_all_player_sounds() {
     u8 var_s0;
 
-    for (var_s0 = 0; var_s0 < gAudioNumCameras + 1; var_s0++) {
-        audio_update_throttle_state(var_s0);
-        audio_update_throttle_sound_state(var_s0);
-        audio_update_throttle_sound_pitch(var_s0);
-        audio_update_throttle_sound_volume(var_s0);
-        audio_update_throttle_sound_speed(var_s0);
-        audio_update_throttle_sound_type(var_s0);
-        audio_update_surface_sound(var_s0);
-        audio_handle_race_finish(var_s0);
-        audio_update_water_sound(var_s0);
-        audio_update_lightning_effect_sound(var_s0);
+    for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
+        audio_update_kart_throttle_timer(var_s0);
+        audio_update_kart_engine_rev_sound(var_s0);
+        audio_calculate_kart_engine_pitch(var_s0);
+        audio_update_skid_sound_volume(var_s0);
+        audio_update_skid_sound_frequency(var_s0);
+        audio_update_tyre_skid_sound(var_s0);
+        audio_determine_surface_skid_effect(var_s0);
+        audio_update_race_finish_sequences(var_s0);
+        audio_update_player_submerged_sound(var_s0);
+        audio_play_player_lightning_recovery_voice(var_s0);
     }
     if (gModeSelection == GRAND_PRIX) {
         for (var_s0 = 0; var_s0 < 8; var_s0++) {
-            audio_update_lightning_effect_pitch(var_s0);
-            audio_update_camera_sound_volume(var_s0);
+            audio_update_player_lightning_distortion(var_s0);
+            audio_update_player_effective_volume(var_s0);
         }
     } else {
-        for (var_s0 = 0; var_s0 < gAudioNumCameras + 1; var_s0++) {
-            audio_update_lightning_effect_pitch(var_s0);
-            audio_update_camera_sound_volume(var_s0);
+        for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
+            audio_update_player_lightning_distortion(var_s0);
+            audio_update_player_effective_volume(var_s0);
         }
     }
-    audio_check_lightning_effect_end();
-    audio_update_star_effect_volume();
-    audio_update_luigi_raceway_tunnel_sound();
+    check_and_reset_thunder_effect();
+    audio_update_ambient_volume_fade();
+    audio_update_tunnel_ambient_reverb();
 }
 
 void play_sound2(s32 soundBits) {
@@ -2895,20 +2896,20 @@ void play_sound2(s32 soundBits) {
 }
 
 void play_sequence(u16 index) {
-    audio_push_cmd(index | 0x0010000);
+    audio_push_sequence_command(index | 0x0010000);
     D_800EA15C = index;
 }
 
 void play_sequence2(u16 index) {
-    audio_push_cmd(index | 0x1010000);
+    audio_push_sequence_command(index | 0x1010000);
     D_800EA160 = index;
 }
 
-void audio_set_sequence_volume_0(u8 arg0) {
-    audio_set_sequence_volume(0, 0, arg0, 1);
+void audio_set_music_volume(u8 arg0) {
+    seq_player_set_volume_target(0, 0, arg0, 1);
 }
 
-void audio_play_sound_by_player_id_and_pos(u8 arg0, u32 soundBits) {
+void audio_play_player_sound_at_position(u8 arg0, u32 soundBits) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[arg0]) {
             case 2:
@@ -2921,10 +2922,10 @@ void audio_play_sound_by_player_id_and_pos(u8 arg0, u32 soundBits) {
 }
 
 void audio_stop_player_sound(u8 playerIndex, u32 soundBits) {
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[playerIndex].pos, soundBits);
+    audio_stop_sound_at_position(&D_800E9F7C[playerIndex].pos, soundBits);
 }
 
-void audio_play_sound_by_player_id(u8 playerId, u32 soundBits) {
+void audio_play_player_sound(u8 playerId, u32 soundBits) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerId]) {
             case 2:
@@ -2937,7 +2938,7 @@ void audio_play_sound_by_player_id(u8 playerId, u32 soundBits) {
     }
 }
 
-void audio_play_character_sound(u8 playerId, u32 soundBits) {
+void audio_play_player_character_voice(u8 playerId, u32 soundBits) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerId]) {
             case 2:
@@ -2963,18 +2964,18 @@ void audio_play_character_sound(u8 playerId, u32 soundBits) {
     }
 }
 
-void audio_play_character_sound_2901(u8 playerIndex) {
-    audio_play_character_sound(playerIndex, (gPlayers[playerIndex].characterId * 0x10) + (gAudioRandom & 1) +
+void audio_play_player_random_voice(u8 playerIndex) {
+    audio_play_player_character_voice(playerIndex, (gPlayers[playerIndex].characterId * 0x10) + (gAudioRandom & 1) +
                                    SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x01));
 }
 
-void audio_play_character_sound_with_effects(u8 playerId, u32 soundBits) {
+void audio_play_player_speech_3d(u8 playerId, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
-    if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) gAudioNumCameras < 2)) {
-        for (var_s0 = 0; var_s0 < gAudioNumCameras + 1; var_s0++) {
-            temp_v0 = audio_alloc_sound_source(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity, gAudioDefaultPos,
+    if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) D_800EA1C0 < 2)) {
+        for (var_s0 = 0; var_s0 < D_800EA1C0 + 1; var_s0++) {
+            temp_v0 = audio_allocate_3d_sound_node(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity, D_800EA1C8,
                                     (u8) var_s0, soundBits);
             if (temp_v0 != NULL) {
                 temp_v0->unk34 = 170.0f;
@@ -2991,7 +2992,7 @@ void audio_play_character_sound_with_effects(u8 playerId, u32 soundBits) {
     }
 }
 
-void audio_play_character_engine_sound(u8 playerId) {
+void audio_play_kart_engine_idle(u8 playerId) {
     u32 var_a0;
 
     if (D_800EA108 == 0) {
@@ -3083,21 +3084,21 @@ void audio_play_character_engine_sound(u8 playerId) {
     }
 }
 
-void audio_stop_character_sounds(u8 arg0) {
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x00));
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x14));
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x2E));
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x36));
-    audio_stop_sound_and_request_by_pos_and_id(&gAudioCharacterStates[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x3E));
+void audio_stop_kart_engine_sound(u8 arg0) {
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x00));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x14));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x2E));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x36));
+    audio_stop_sound_at_position(&D_800E9F7C[arg0].pos, gPlayers[arg0].characterId + SOUND_ARG_LOAD(0x01, 0x04, 0xFF, 0x3E));
 }
 
-void audio_play_sound_by_pos(Vec3f position, Vec3f velocity, u32 soundBits) {
+void audio_play_sound_at_position_3d(Vec3f position, Vec3f velocity, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
-        for (var_s0 = 0; var_s0 < (gAudioNumCameras + 1); var_s0++) {
-            temp_v0 = audio_alloc_sound_source(0U, position, velocity, gAudioDefaultPos, (u8) var_s0, soundBits);
+        for (var_s0 = 0; var_s0 < (D_800EA1C0 + 1); var_s0++) {
+            temp_v0 = audio_allocate_3d_sound_node(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
             if (temp_v0 != 0) {
                 temp_v0->unk34 = 170.0f;
                 play_sound(soundBits, &temp_v0->unk18, var_s0, &temp_v0->unk2C, &gAudioOneFloat, &gAudioZeroS8);
@@ -3106,21 +3107,21 @@ void audio_play_sound_by_pos(Vec3f position, Vec3f velocity, u32 soundBits) {
     }
 }
 
-void audio_stop_sound_by_pos_and_id_all_cameras(Vec3f arg0, s32 soundBits) {
+void audio_stop_sound_at_position_3d(Vec3f arg0, s32 soundBits) {
     Vec3f* temp_v0;
     u8 temp_t9;
 
     if (D_800EA108 == 0) {
-        for (temp_t9 = 0; temp_t9 < gAudioNumCameras + 1; temp_t9++) {
-            temp_v0 = audio_get_sound_source_pos(arg0, soundBits);
+        for (temp_t9 = 0; temp_t9 < D_800EA1C0 + 1; temp_t9++) {
+            temp_v0 = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
             if (temp_v0 != NULL) {
-                audio_stop_sound_and_request_by_pos_and_id(temp_v0, soundBits);
+                audio_stop_sound_at_position(temp_v0, soundBits);
             }
         }
     }
 }
 
-void audio_play_race_finish_sound(u8 playerId) {
+void audio_play_kart_engine_driving(u8 playerId) {
     u8 var_s0;
     u32 soundBits;
     struct Unk_8018EFD8* temp_v0_6;
@@ -3158,7 +3159,7 @@ void audio_play_race_finish_sound(u8 playerId) {
                 if (gAudioNumCameras < 2) {
                     for (var_s0 = 0; var_s0 < gAudioNumCameras + 1; var_s0++) {
                         soundBits = gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00);
-                        temp_v0_6 = audio_alloc_sound_source(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity,
+                        temp_v0_6 = audio_allocate_3d_sound_node(playerId, gPlayers[playerId].pos, gPlayers[playerId].velocity,
                                                   &gPlayers[playerId].unk_098, var_s0, soundBits);
                         if (temp_v0_6 != NULL) {
                             temp_v0_6->unk34 = 40.0f;
@@ -3174,18 +3175,18 @@ void audio_play_race_finish_sound(u8 playerId) {
     }
 }
 
-void audio_stop_race_finish_sound(u8 playerId) {
-    audio_stop_all_sounds_and_requests_by_pos(
-        audio_get_sound_source_pos(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
+void audio_stop_player_driving_sound_3d(u8 playerId) {
+    audio_stop_all_sounds_at_position(
+        audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, gPlayers[playerId].characterId + SOUND_ARG_LOAD(0x31, 0x02, 0x80, 0x00)));
 }
 
-void audio_play_sound_by_pos_with_effects(Vec3f position, Vec3f velocity, u32 soundBits) {
+void audio_play_looping_sound_at_position_3d(Vec3f position, Vec3f velocity, u32 soundBits) {
     u8 var_s0;
     struct Unk_8018EFD8* temp_v0;
 
-    if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) gAudioNumCameras < 4)) {
-        for (var_s0 = 0; var_s0 < ((gAudioNumCameras + 1)); var_s0++) {
-            temp_v0 = audio_alloc_sound_source(0U, position, velocity, gAudioDefaultPos, (u8) var_s0, soundBits);
+    if ((D_800EA108 == 0) && (D_800EA0F0 == 0) && ((s32) D_800EA1C0 < 4)) {
+        for (var_s0 = 0; var_s0 < ((D_800EA1C0 + 1)); var_s0++) {
+            temp_v0 = audio_allocate_3d_sound_node(0U, position, velocity, D_800EA1C8, (u8) var_s0, soundBits);
             if (temp_v0 != 0) {
                 temp_v0->unk34 = 170.0f;
                 if (soundBits == SOUND_ARG_LOAD(0x51, 0x03, 0x70, 0x0B)) {
@@ -3198,33 +3199,33 @@ void audio_play_sound_by_pos_with_effects(Vec3f position, Vec3f velocity, u32 so
     }
 }
 
-void audio_stop_sound_by_pos_all_cameras(Vec3f arg0, u32 soundBits) {
+void audio_stop_looping_sound_at_position_3d(Vec3f arg0, u32 soundBits) {
     Vec3f* temp;
     u8 i;
 
-    for (i = 0; i < gAudioNumCameras + 1; i++) {
-        temp = audio_get_sound_source_pos(arg0, soundBits);
+    for (i = 0; i < D_800EA1C0 + 1; i++) {
+        temp = audio_get_active_3d_sound_relative_pos(arg0, soundBits);
         if (temp != NULL) {
-            audio_stop_sound_and_request_by_pos_and_id(temp, soundBits);
+            audio_stop_sound_at_position(temp, soundBits);
         }
     }
 }
 
-void audio_play_menu_sound(u8 arg0) {
+void audio_set_pause_mute(u8 arg0) {
     if ((arg0) != 0) {
         play_sound2(SOUND_ACTION_GO_BACK_2);
-        eu_audio_cmd_send_u32(0xF1000000, 0);
+        audio_cmd_queue_push_u32(0xF1000000, 0);
         D_800EA16C = 1;
     } else {
         play_sound2(SOUND_ACTION_UNKNOWN_CONFIRMATION);
-        eu_audio_cmd_send_u32(0xF2000000, 0);
+        audio_cmd_queue_push_u32(0xF2000000, 0);
         D_800EA16C = 0;
     }
 }
 
-void audio_set_sequence_and_volume(u8 arg0, u8 arg1) {
-    audio_set_sequence_volume(0, 0, 0x7F, 1);
-    audio_set_sequence_volume(1, 0, 0x7F, 1);
+void audio_init_course_sequence(u8 arg0, u8 arg1) {
+    seq_player_set_volume_target(0, 0, 0x7F, 1);
+    seq_player_set_volume_target(1, 0, 0x7F, 1);
 
     if (arg1 >= 4) {
         if ((arg1 == 0xC) || (arg1 == 4)) {
@@ -3233,85 +3234,85 @@ void audio_set_sequence_and_volume(u8 arg0, u8 arg1) {
             arg1 = 4;
         }
     }
-    audio_push_cmd((arg0 << 8) | 0xF0000000 | arg1);
+    audio_push_sequence_command((arg0 << 8) | 0xF0000000 | arg1);
 }
 
 // With -framepointer active, you CANNOT put void
 // in the argument list, causes a minor stack difference
-void audio_set_flag_800EA108_true() {
+void audio_mute_sfx_enable() {
     D_800EA108 = 1;
 }
 
-void audio_set_flag_800EA108_false() {
+void audio_mute_sfx_disable() {
     D_800EA108 = 0;
 }
 
-void audio_set_flag_800EA108_true2() {
+void audio_mute_sfx_enable_cutscene() {
     D_800EA108 = 1;
 }
 
-void audio_stop_banks_3_and_5(void) {
-    audio_stop_all_sounds_in_bank(3);
-    audio_stop_all_sounds_in_bank(5);
+void audio_clear_sound_banks(void) {
+    audio_clear_sound_bank(3);
+    audio_clear_sound_bank(5);
 }
 
-void audio_set_player_finished(u8 arg0) {
+void audio_trigger_race_finish(u8 arg0) {
     D_800EA0EC[arg0] = 1;
     D_800E9EA4[arg0] = 1;
     switch (gAudioNumCameras) { /* irregular */
         case 0:
             D_800EA0F0 = 1;
-            audio_stop_banks_3_and_5();
+            audio_clear_sound_banks();
             break;
         case 1:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                audio_stop_banks_3_and_5();
+                audio_clear_sound_banks();
             }
             break;
         case 2:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1) && (D_800EA0EC[2] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                audio_stop_banks_3_and_5();
+                audio_clear_sound_banks();
             }
             break;
         case 3:
             if ((D_800EA0EC[0] == (u8) 1) && (D_800EA0EC[1] == (u8) 1) && (D_800EA0EC[2] == (u8) 1) &&
                 (D_800EA0EC[3] == (u8) 1)) {
                 D_800EA0F0 = 1;
-                audio_stop_banks_3_and_5();
+                audio_clear_sound_banks();
             }
             break;
     }
 }
 
-void audio_set_player_finished_2(u8 playerIndex) {
+void audio_set_player_finish_state(u8 playerIndex) {
     D_800EA0EC[playerIndex] = 2;
 }
 
-void audio_set_flag_800EA0F4_true() {
+void audio_set_race_finish_flag() {
     D_800EA0F4 = 1;
 }
 
-void audio_set_sound_param_14(u8 arg0, s8 arg1) {
-    gAudioCharacterStates[arg0].unk_14 = arg1;
+void audio_set_player_tunnel_reverb(u8 arg0, s8 arg1) {
+    D_800E9F7C[arg0].unk_14 = arg1;
 }
 
-void audio_clear_sound_param_14(u8 arg0) {
-    gAudioCharacterStates[arg0].unk_14 = 0;
+void audio_clear_player_tunnel_reverb(u8 arg0) {
+    D_800E9F7C[arg0].unk_14 = 0;
 }
 
-void audio_set_sound_param_0C(u8 arg0, s8 arg1) {
-    gAudioCameraStates[arg0].unk0C = arg1;
+void audio_set_cpu_tunnel_reverb(u8 arg0, s8 arg1) {
+    D_800EA06C[arg0].unk0C = arg1;
 }
 
-void audio_clear_sound_param_0C(u8 arg0) {
-    gAudioCameraStates[arg0].unk0C = 0;
+void audio_clear_cpu_tunnel_reverb(u8 arg0) {
+    D_800EA06C[arg0].unk0C = 0;
 }
 
-void audio_push_volume_cmd(u8 arg0) {
-    audio_push_cmd(arg0 << 0x10 | 0x100000FF);
-    audio_push_cmd(arg0 << 0x10 | 0x110000FF);
+void audio_fade_out_all_sequences(u8 arg0) {
+    audio_push_sequence_command(arg0 << 0x10 | 0x100000FF);
+    audio_push_sequence_command(arg0 << 0x10 | 0x110000FF);
 }
 
 void fade_all_channel_volume_scale(u8 arg0) {
@@ -3325,29 +3326,29 @@ void fade_all_channel_volume_scale(u8 arg0) {
 
 void play_sequences(u16 first, u16 second) {
     if (D_800EA104 == 0) {
-        audio_push_cmd(audio_get_sequence_id(0) | 0x30000000);
-        audio_clear_sequence_timer(0);
-        audio_push_cmd(second | 0xC1510000);
-        audio_push_cmd(first | 0x01000000);
+        audio_push_sequence_command(seq_player_get_active_sequence_id(0) | 0x30000000);
+        seq_player_clear_queued_count(0);
+        audio_push_sequence_command(second | 0xC1510000);
+        audio_push_sequence_command(first | 0x01000000);
     }
     D_800EA104 = 1;
 }
 
-void audio_play_final_lap_music(u8 playerIndex) {
+void audio_play_final_lap_fanfare(u8 playerIndex) {
     if (D_800EA108 == 0) {
-        if (gAudioNumCameras >= 2) {
-            audio_play_sound_by_player_id(playerIndex, 0x1900FF3A);
+        if (D_800EA1C0 >= 2) {
+            audio_play_player_sound(playerIndex, 0x1900FF3A);
         } else if (D_800EA164 != 0) {
-            audio_push_cmd(0x100100FF); // 0x19000000
-            audio_push_cmd(0x110100FF);
+            audio_push_sequence_command(0x100100FF); // 0x19000000
+            audio_push_sequence_command(0x110100FF);
             play_sequence2(SEQ_EVENT_RACE_FINAL_LAP);
-            audio_push_cmd(0xC1510011);
+            audio_push_sequence_command(0xC1510011);
         } else {
-            audio_push_cmd(0x100100FF); // 0x19000000
-            audio_push_cmd(0x110100FF);
+            audio_push_sequence_command(0x100100FF); // 0x19000000
+            audio_push_sequence_command(0x110100FF);
             play_sequence2(SEQ_EVENT_RACE_FINAL_LAP);
-            audio_push_cmd(D_800EA15C | 0xC1500000);
-            audio_push_cmd(0xC130017D);
+            audio_push_sequence_command(D_800EA15C | 0xC1500000);
+            audio_push_sequence_command(0xC130017D);
         }
         D_8018FC08 = D_8018FC08 + 1;
     }
@@ -3358,16 +3359,16 @@ void play_star_music(u8 playerId) {
         play_sound((gPlayers[playerId].characterId * 0x10) + 0x29008001, &gAudioCharacterStates[playerId].pos, playerId,
                    &gAudioOneFloat, &gAudioOneFloat, (s8*) &gAudioCharacterStates[playerId].unk_14);
         D_800EA164 = 1;
-        if ((s32) gAudioNumCameras >= 2) {
-            audio_play_sound_by_player_id_and_pos(playerId, 0x0100FF2C);
+        if ((s32) D_800EA1C0 >= 2) {
+            audio_play_player_sound_at_position(playerId, 0x0100FF2C);
         } else {
-            audio_push_cmd(0x100100FF);
+            audio_push_sequence_command(0x100100FF);
             if (D_800EA104 != 0) {
-                audio_play_sound_by_player_id_and_pos(playerId, 0x0100FF2C);
+                audio_play_player_sound_at_position(playerId, 0x0100FF2C);
             } else if (D_8018FC08 != 0) {
-                if ((audio_get_sequence_id(1) == 0x000C) || (audio_is_cmd_not_in_queue(0x0101000C) == 0)) {
-                    audio_push_cmd(0xC1F00000);
-                    audio_push_cmd(0xC1510011);
+                if ((seq_player_get_active_sequence_id(1) == 0x000C) || (audio_is_sequence_command_pending(0x0101000C) == 0)) {
+                    audio_push_sequence_command(0xC1F00000);
+                    audio_push_sequence_command(0xC1510011);
                 } else {
                     play_sequence2(SEQ_EVENT_RACE_POWERUP_STAR);
                 }
@@ -3387,7 +3388,7 @@ void stop_star_music(u8 playerIndex) {
                        &gAudioCharacterStates[playerIndex].pos, playerIndex, &gAudioOneFloat, &gAudioOneFloat,
                        (s8*) &gAudioCharacterStates[playerIndex].unk_14);
             if (D_800EA10C[playerIndex] != 0) {
-                if ((s32) gAudioNumCameras >= 2) {
+                if ((s32) D_800EA1C0 >= 2) {
                     audio_stop_player_sound(playerIndex, SOUND_ARG_LOAD(0x01, 0x00, 0xFF, 0x2C));
                 } else {
                     D_800EA10C[playerIndex] = 0;
@@ -3396,20 +3397,20 @@ void stop_star_music(u8 playerIndex) {
                     } else if ((D_800EA10C[0] == 0) && (D_800EA10C[1] == 0)) {
                         if (D_8018FC08 != 0) {
                             if (((u32) (gSequencePlayers[1].enabled)) == 0) {
-                                audio_clear_sequence_mask(1, 5);
+                                seq_player_cancel_setup_operations(1, 5);
                                 play_sequence(D_800EA15C);
-                                audio_push_cmd(0xB001307DU);
-                            } else if ((audio_get_sequence_id(1) == 0xC) || (audio_is_cmd_not_in_queue(0x0101000C) == 0)) {
-                                audio_push_cmd(0xC1F00000U);
-                                audio_push_cmd(D_800EA15C | 0xC1500000);
-                                audio_push_cmd(0xC130017DU);
+                                audio_push_sequence_command(0xB001307DU);
+                            } else if ((seq_player_get_active_sequence_id(1) == 0xC) || (audio_is_sequence_command_pending(0x0101000C) == 0)) {
+                                audio_push_sequence_command(0xC1F00000U);
+                                audio_push_sequence_command(D_800EA15C | 0xC1500000);
+                                audio_push_sequence_command(0xC130017DU);
                             } else {
-                                audio_push_cmd(0x110100FFU);
+                                audio_push_sequence_command(0x110100FFU);
                                 play_sequence(D_800EA15C);
-                                audio_push_cmd(0xB001307DU);
+                                audio_push_sequence_command(0xB001307DU);
                             }
                         } else {
-                            audio_push_cmd(0x110100FFU);
+                            audio_push_sequence_command(0x110100FFU);
                             play_sequence(D_800EA15C);
                         }
                     }
@@ -3426,8 +3427,8 @@ void play_star_sound_effect(u8 playerIndex) {
     struct Unk_8018EFD8* temp_v0_2;
 
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
-        for (i = 0; i < gAudioNumCameras + 1; i++) {
-            temp_v0_2 = audio_alloc_sound_source(playerIndex, gPlayers[playerIndex].pos, gAudioDefaultPos,
+        for (i = 0; i < D_800EA1C0 + 1; i++) {
+            temp_v0_2 = audio_allocate_3d_sound_node(playerIndex, gPlayers[playerIndex].pos, D_800EA1C8,
                                       &gPlayers[playerIndex].unk_098, (u8) i, SOUND_ITEM_STAR);
             if (temp_v0_2) {
                 play_sound(SOUND_ITEM_STAR, &temp_v0_2->unk18, i, &gAudioOneFloat, &gAudioOneFloat, &gAudioZeroS8);
@@ -3438,7 +3439,7 @@ void play_star_sound_effect(u8 playerIndex) {
 
 void play_star_music_stop_effect(u8 playerId) {
     if ((u8) D_800EA108 == 0) {
-        audio_stop_sound_and_request_by_pos_and_id(audio_get_sound_source_pos(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
+        audio_stop_sound_at_position(audio_get_active_3d_sound_relative_pos(gPlayers[playerId].pos, SOUND_ITEM_STAR), SOUND_ITEM_STAR);
     }
 }
 
@@ -3451,9 +3452,9 @@ void play_star_sound_effect_stop(u8 playerIndex) {
             case 2:
                 D_800EA0EC[playerIndex] = 1;
             case 0:
-                audio_set_sequence_volume(0, 1U, 0x55U, 5);
-                audio_play_sound_by_player_id(playerIndex, 0x1900F013U);
-                play_sound(SOUND_ITEM_THUNDERBOLT, &gAudioDefaultPos, 0U, &gAudioOneFloat, &gAudioOneFloat, &gAudioZeroS8);
+                seq_player_set_volume_target(0, 1U, 0x55U, 5);
+                audio_play_player_sound(playerIndex, 0x1900F013U);
+                play_sound(SOUND_ITEM_THUNDERBOLT, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
                 break;
             default:
                 break;
@@ -3462,10 +3463,10 @@ void play_star_sound_effect_stop(u8 playerIndex) {
     }
 }
 
-void audio_stop_thunder_sound_effect() {
+void reset_thunder_sound_effect() {
     if (D_800EA108 == 0) {
-        audio_set_sequence_volume(0, 1U, 0x7FU, 0x19);
-        audio_stop_sound_and_request_by_id(SOUND_ITEM_THUNDERBOLT);
+        seq_player_set_volume_target(0, 1U, 0x7FU, 0x19);
+        audio_stop_sound_by_bits(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
     }
 }
@@ -3474,8 +3475,8 @@ void play_thunder_sound_effect(UNUSED u8 arg0) {
     if ((D_800EA108 == 0) && (D_800EA0F0 == 0)) {
         play_sound(SOUND_ACTION_EXPLOSION_2, &gAudioDefaultPos, 0U, &gAudioOneFloat, &gAudioOneFloat, &gAudioZeroS8);
         if ((D_800EA10C[0] != 1) && (D_800EA10C[1] != 1)) {
-            audio_set_sequence_volume(0, 1, 0x37U, 5);
-            play_sound(SOUND_ITEM_THUNDERBOLT, &gAudioDefaultPos, 0U, &gAudioOneFloat, &gAudioOneFloat, &gAudioZeroS8);
+            seq_player_set_volume_target(0, 1, 0x37U, 5);
+            play_sound(SOUND_ITEM_THUNDERBOLT, &D_800EA1C8, 0U, &D_800EA1D4, &D_800EA1D4, &D_800EA1DC);
             D_800EA168 = 1;
         }
     }
@@ -3484,14 +3485,14 @@ void play_thunder_sound_effect(UNUSED u8 arg0) {
 void play_thunder_sound_effect_stop(UNUSED s32 arg0) {
     if (D_800EA108 == 0) {
         if ((D_800EA170[0] == 0) && (D_800EA170[1] == 0) && (D_800EA170[2] == 0) && (D_800EA170[3] == 0)) {
-            audio_set_sequence_volume(0, 1, 0x7FU, 0x19);
+            seq_player_set_volume_target(0, 1, 0x7FU, 0x19);
         }
-        audio_stop_sound_and_request_by_id(SOUND_ITEM_THUNDERBOLT);
+        audio_stop_sound_by_bits(SOUND_ITEM_THUNDERBOLT);
         D_800EA168 = 0;
     }
 }
 
-void audio_update_drift_sound_pitch(u8 playerIndex, f32 arg1) {
+void play_kart_landing_sound_effect(u8 playerIndex, f32 arg1) {
     if (D_800EA108 == 0) {
         switch (D_800EA0EC[playerIndex]) {
             case 2:
@@ -3545,9 +3546,9 @@ void play_boo_sound_effect(u8 playerIndex) {
             case 2:
                 D_800EA0EC[playerIndex] = 1;
             case 0:
-                audio_set_sequence_volume(0, 1, 0x55U, 5);
-                audio_play_sound_by_player_id(playerIndex, 0x19009E59U);
-                audio_play_sound_by_player_id_and_pos(playerIndex, 0x0100FA4C);
+                seq_player_set_volume_target(0, 1, 0x55U, 5);
+                audio_play_player_sound(playerIndex, 0x19009E59U);
+                audio_play_player_sound_at_position(playerIndex, 0x0100FA4C);
                 D_800EA170[playerIndex] = 1;
                 break;
         }
@@ -3558,9 +3559,9 @@ void stop_boo_sound_effect(u8 playerIndex) {
     if (D_800EA108 == 0) {
         if (D_800EA170[playerIndex] == 1) {
             if ((u8) D_800EA168 == 0) {
-                audio_set_sequence_volume(0, 1U, 0x7FU, 0x19);
+                seq_player_set_volume_target(0, 1U, 0x7FU, 0x19);
             }
-            audio_play_character_sound(playerIndex,
+            audio_play_player_character_voice(playerIndex,
                           gPlayers[playerIndex].characterId * 0x10 + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x08));
             audio_stop_player_sound(playerIndex, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x4C));
             D_800EA170[playerIndex] = 0;
@@ -3568,7 +3569,7 @@ void stop_boo_sound_effect(u8 playerIndex) {
     }
 }
 
-void audio_trigger_losing_ceremony_sequence() {
+void trigger_losing_ceremony_sequence() {
     D_800EA174 = 1;
 }
 
@@ -3583,56 +3584,56 @@ void begin_losing_ceremony_sequence() {
 
         if (D_800EA174 == 3) {
             play_sequence(SEQ_EVENT_CEREMONY_PRESENTATION_PART1); // Begin with Part 1 of the ceremony presentation music --- "Everything seems normal..."
-            audio_push_cmd(0x4000007F);
+            audio_push_sequence_command(0x4000007F);
         }
 
         if (D_800EA174 == 300) {
             play_sequence(SEQ_EVENT_CEREMONY_PRESENTATION_PART2_WIN); // Follow up with Part 2 of the winning ceremony presentation music --- "Looks like I won...?"
-            audio_push_cmd(0x4000007F);
+            audio_push_sequence_command(0x4000007F);
             play_sequence2(SEQ_EVENT_CEREMONY_PRESENTATION_PART2_LOSE); // Once it ends, begin the LOSING ceremony presentation music, which has a few notes changed to be off-tune --- "Uh oh..."
-            audio_push_cmd(0x41000000);
+            audio_push_sequence_command(0x41000000);
         }
 
         if (D_800EA174 == 560) { // (Somewhere in this code it slows down the music, changes the pitch of it and completely breaks the music)
-            audio_push_cmd(0x40640000);
-            audio_push_cmd(0xB0640073);
-            audio_push_cmd(0x4150007F);
-            audio_push_cmd(0xB1640073);
+            audio_push_sequence_command(0x40640000);
+            audio_push_sequence_command(0xB0640073);
+            audio_push_sequence_command(0x4150007F);
+            audio_push_sequence_command(0xB1640073);
         }
 
         if (D_800EA174 == 680) {
-            audio_push_cmd(0x100100FF);
+            audio_push_sequence_command(0x100100FF);
         }
 
         if (D_800EA174 == 1050) {
-            audio_push_cmd(0xB1500001);
-            audio_push_cmd(0x51500001);
+            audio_push_sequence_command(0xB1500001);
+            audio_push_sequence_command(0x51500001);
         }
 
         if (D_800EA174 == 1130) {
-            audio_push_cmd(0x41320000);
+            audio_push_sequence_command(0x41320000);
         }
 
         if (D_800EA174 == 1200) { // (Player gets hit by the bomb-omb car; play the "explosion" sound effect and the "hurt" voice for the current character)
-            audio_push_cmd(0x110100FF);
+            audio_push_sequence_command(0x110100FF);
         }
 
         if (D_800EA174 == 1230) { // Once the music is completely broken by this point, play the "No Trophy For You!"
                                   // sequence --- "Aw man, I lost... :("
             play_sequence(SEQ_EVENT_CEREMONY_TROPHY_LOSE);
-            audio_push_cmd(0x4000007F); // (Play the "losing" voice for the current character, twice)
+            audio_push_sequence_command(0x4000007F); // (Play the "losing" voice for the current character, twice)
         }
     }
 }
 
-// run audio?
+// Main audio update loop called per game tick
 void audio_game_loop_tick() {
-    audio_update_sound_source_cameras();
-    audio_update_sequences();
-    audio_process_cmd_buffer();
-    audio_process_all_sound_requests();
-    audio_process_sound_banks();
+    audio_update_3d_spatial_sounds();
+    audio_update_sequence_players();
+    audio_process_sequence_commands();
+    audio_process_all_pending_sound_requests();
+    audio_update_all_sound_banks();
     audio_update_all_player_sounds();
-    audio_process_sfx_script(0);
-    eu_audio_cmd_flush();
+    audio_sync_sequence_script_io(0);
+    audio_cmd_queue_flush();
 }

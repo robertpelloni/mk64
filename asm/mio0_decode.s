@@ -61,7 +61,7 @@ glabel mio0decode
 glabel D_80040170
 /* 040D70 80040170 00000000 */ .word 0x00000000
 
-glabel func_80040174
+glabel mio0_encode_preprocess
 /* 040D74 80040174 23BDFED0 */  addi  $sp, $sp, -0x130
 /* 040D78 80040178 AFA60128 */  sw    $a2, 0x128($sp)
 /* 040D7C 8004017C AFBE0104 */  sw    $fp, 0x104($sp)

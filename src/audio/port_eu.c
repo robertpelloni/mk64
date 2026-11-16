@@ -119,8 +119,8 @@ struct SPTask* create_next_audio_frame_task(void) {
     if (gAiBufferLengths[index] > gAudioBufferParameters.maxAiBufferLength) {
         gAiBufferLengths[index] = gAudioBufferParameters.maxAiBufferLength;
     }
-    if (osRecvMesg(gAudioCmdQueuePtr, &sp54, 0) != -1) {
-        audio_process_mac_cmds((u32) sp54);
+    if (osRecvMesg(D_800EA3AC, &sp54, 0) != -1) {
+        audio_cmd_queue_process((u32) sp54);
     }
     gAudioCmd = synthesis_execute((Acmd*) gAudioCmd, &writtenCmds, currAiBuffer, gAiBufferLengths[index]);
     gAudioRandom = osGetCount() * (gAudioRandom + gAudioFrameCount);
@@ -167,7 +167,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
         case 0x82:
         case 0x88:
             load_sequence(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
-            audio_fade_in_sequence_player(cmd->u.s.bankId, cmd->u2.as_s32);
+            seq_player_fade_in(cmd->u.s.bankId, cmd->u2.as_s32);
             break;
 
         case 0x83:
@@ -198,7 +198,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
             }
             break;
         case 0xF3:
-            audio_preload_instrument(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
+            audio_load_instrument_samples_immediate(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
             break;
     }
 }
@@ -215,7 +215,7 @@ void seq_player_fade_to_zero_volume(s32 arg0, s32 fadeOutTime) {
     player->fadeVelocity = -(player->fadeVolume / fadeOutTime);
 }
 
-void audio_fade_in_sequence_player(s32 playerIndex, s32 fadeInTime) {
+void seq_player_fade_in(s32 playerIndex, s32 fadeInTime) {
     struct SequencePlayer* player;
 
     if (fadeInTime != 0) {
@@ -237,28 +237,28 @@ void port_eu_init_queues(void) {
     osCreateMesgQueue(gAudioResetQueue2Ptr, gAudioResetMesgBuf2, 1);
 }
 
-void eu_audio_cmd_send_raw(s32 arg0, s32* arg1) {
-    struct EuAudioCmd* cmd = &sAudioCmd[gAudioCmdWriteIndex[0] & 0xff];
+void audio_cmd_queue_push(s32 arg0, s32* arg1) {
+    struct EuAudioCmd* cmd = &sAudioCmd[D_800EA3A0[0] & 0xff];
     cmd->u.first = arg0;
     cmd->u2.as_u32 = *arg1;
     gAudioCmdWriteIndex[0]++;
 }
 
-void eu_audio_cmd_send_f32(u32 arg0, f32 arg1) {
-    eu_audio_cmd_send_raw(arg0, (s32*) &arg1);
+void audio_cmd_queue_push_f32(u32 arg0, f32 arg1) {
+    audio_cmd_queue_push(arg0, (s32*) &arg1);
 }
 
-void eu_audio_cmd_send_u32(u32 arg0, u32 arg1) {
-    eu_audio_cmd_send_raw(arg0, (s32*) &arg1);
+void audio_cmd_queue_push_u32(u32 arg0, u32 arg1) {
+    audio_cmd_queue_push(arg0, (s32*) &arg1);
 }
 
-void eu_audio_cmd_send_byte(u32 arg0, s8 arg1) {
+void audio_cmd_queue_push_s8(u32 arg0, s8 arg1) {
     s32 sp34 = arg1 << 24;
-    eu_audio_cmd_send_raw(arg0, &sp34);
+    audio_cmd_queue_push(arg0, &sp34);
 }
 
-//! @todo clenanup, something's weird with the variables. gMaxAudioCmdLength is probably EuAudioCmd bc of the + 0x100
-void eu_audio_cmd_flush(void) {
+//! @todo clenanup, something's weird with the variables. D_800EA4A4 is probably EuAudioCmd bc of the + 0x100
+void audio_cmd_queue_flush(void) {
     s32 temp_t6;
     s32 test;
     OSMesg thing;
@@ -275,7 +275,7 @@ void eu_audio_cmd_flush(void) {
     gAudioCmdReadIndex[0] = gAudioCmdWriteIndex[0];
 }
 
-void audio_process_mac_cmds(u32 arg0) {
+void audio_cmd_queue_process(u32 arg0) {
     struct EuAudioCmd* cmd;
     struct SequencePlayer* seqPlayer;
     struct SequenceChannel* chan;

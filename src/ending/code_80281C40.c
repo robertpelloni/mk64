@@ -86,7 +86,7 @@ void render_podium_ceremony(void) {
     gSPDisplayList(gDisplayListHead++, VIRTUAL_TO_PHYSICAL2(&D_80284EE0));
     update_actors_loop();
     render_object(PLAYER_ONE + SCREEN_MODE_1P);
-    func_80021B0C();
+    render_player_particles_screen_one();
     gSPDisplayList(gDisplayListHead++, VIRTUAL_TO_PHYSICAL2(&D_80284EE0));
     func_80093F10();
     ceremony_transition_sliding_borders();

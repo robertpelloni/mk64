@@ -27,7 +27,7 @@
 #include "kart_dma.h"
 
 extern s32 mio0encode(s32 input, s32, s32);
-extern s32 func_80040174(void*, s32, s32);
+extern s32 mio0_encode_preprocess(void*, s32, s32);
 
 u8* sReplayGhostBuffer;
 s16 sReplayGhostBufferSize;
@@ -121,7 +121,7 @@ void set_staff_ghost(void) {
 #if !ENABLE_CUSTOM_COURSE_ENGINE
     switch (gCurrentCourseId) {
         case COURSE_MARIO_RACEWAY:
-            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_MARIO) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -133,7 +133,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 0;
             break;
         case COURSE_ROYAL_RACEWAY:
-            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_ROYAL) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -145,7 +145,7 @@ void set_staff_ghost(void) {
             D_80162DE4 = 6;
             break;
         case COURSE_LUIGI_RACEWAY:
-            bestTime = save_get_course_time_trial_record(0) & 0xfffff;
+            bestTime = get_current_course_time_trial_record(0) & 0xfffff;
             if (bestTime <= GHOST_UNLOCK_LUIGI) {
                 bCourseGhostDisabled = 0;
                 bUnusedCourseGhostDisabled = 0;
@@ -165,19 +165,19 @@ void set_staff_ghost(void) {
 #endif
 }
 
-s32 encode_ghost_data(void) {
+s32 compress_ghost_replay_data(void) {
     s32 phi_v0;
 
     if (sReplayGhostBufferSize != 0) {
-        // func_80040174 in mio0_decode.s
-        func_80040174((void*) sReplayGhostBuffer, (sReplayGhostBufferSize * 4) + 0x20, (s32) sReplayGhostEncoded);
+        // mio0_encode_preprocess in mio0_decode.s
+        mio0_encode_preprocess((void*) sReplayGhostBuffer, (sReplayGhostBufferSize * 4) + 0x20, (s32) sReplayGhostEncoded);
         phi_v0 =
             mio0encode((s32) sReplayGhostEncoded, (sReplayGhostBufferSize * 4) + 0x20, (s32) gReplayGhostCompressed);
         return phi_v0 + 0x1e;
     }
 }
 
-void decode_ghost_data(void) {
+void decompress_player_ghost(void) {
     sPlayerGhostReplay = (u32*) &D_802BFB80.arraySize8[0][D_80162DC8][3];
     mio0decode((u8*) gReplayGhostCompressed, (u8*) sPlayerGhostReplay);
     sPlayerGhostFramesRemaining = (s32) (*sPlayerGhostReplay & REPLAY_FRAME_COUNTER);
@@ -185,7 +185,7 @@ void decode_ghost_data(void) {
     D_80162E00 = 1;
 }
 
-void swap_ghost_buffer_index(void) {
+void swap_replay_buffers(void) {
     s16 temp_v0;
 
     if (D_80162DC8 == 1) {
@@ -201,7 +201,7 @@ void swap_ghost_buffer_index(void) {
     D_80162D86 = temp_v0;
 }
 
-void init_ghost_data(void) {
+void init_time_trial_replay_state(void) {
 
     if (gModeSelection == TIME_TRIALS) {
 
@@ -331,7 +331,7 @@ void process_ghost_replay_generic(u32* replayData, s32* replayIdx, s32* framesRe
     s16 stickVal;
     s16 buttons = 0;
     if (sCourseGhostReplayIdx >= 0x1000) {
-        init_ghost_player(gPlayerThree);
+        set_player_to_cinematic_cpu(gPlayerThree);
         return;
     }
 
@@ -398,7 +398,7 @@ void process_player_ghost_replay(void) {
     s16 buttons = 0;
 
     if (sPlayerGhostReplayIdx >= 0x1000) {
-        init_ghost_player(gPlayerTwo);
+        set_player_to_cinematic_cpu(gPlayerTwo);
         return;
     }
     inputs = sPlayerGhostReplay[sPlayerGhostReplayIdx];
@@ -516,36 +516,36 @@ void save_player_replay(void) {
 }
 
 // sets player to AI? (unconfirmed)
-void init_ghost_player(Player* ply) {
+void set_player_to_cinematic_cpu(Player* ply) {
     if (((ply->type & PLAYER_INVISIBLE_OR_BOMB) != 0) && (ply != gPlayerOne)) {
         ply->type = PLAYER_CINEMATIC_MODE | PLAYER_START_SEQUENCE | PLAYER_CPU;
     }
 }
 
-void check_and_finalize_ghost_data(void) {
+void update_time_trial_replays(void) {
     if (gModeSelection == TIME_TRIALS) {
         if ((gLapCountByPlayerId[0] == 3) && (D_80162DDC == 0) && (gPostTimeTrialReplayCannotSave != 1)) {
             if (bPlayerGhostDisabled == 1) {
                 D_80162DD0 = D_80162DCC;
-                swap_ghost_buffer_index();
+                swap_replay_buffers();
                 bPlayerGhostDisabled = 0;
                 D_80162DDC = 1;
                 D_80162DE0 = gPlayerOne->characterId;
                 D_80162DE8 = gPlayerOne->characterId;
                 D_80162E00 = 0;
                 D_80162DFC = playerHUD[PLAYER_ONE].someTimer;
-                init_ghost_player(gPlayerTwo);
-                init_ghost_player(gPlayerThree);
+                set_player_to_cinematic_cpu(gPlayerTwo);
+                set_player_to_cinematic_cpu(gPlayerThree);
             } else if (gLapCountByPlayerId[1] != 3) {
                 D_80162DD0 = D_80162DCC;
-                swap_ghost_buffer_index();
+                swap_replay_buffers();
                 D_80162DDC = 1;
                 D_80162DE0 = gPlayerOne->characterId;
                 D_80162DFC = playerHUD[PLAYER_ONE].someTimer;
                 D_80162E00 = 0;
                 D_80162DE8 = gPlayerOne->characterId;
-                init_ghost_player(gPlayerTwo);
-                init_ghost_player(gPlayerThree);
+                set_player_to_cinematic_cpu(gPlayerTwo);
+                set_player_to_cinematic_cpu(gPlayerThree);
             } else {
                 sReplayGhostBuffer = D_802BFB80.arraySize8[0][D_80162DC8][3].pixel_index_array;
                 sReplayGhostBufferSize = D_80162D86;
@@ -554,8 +554,8 @@ void check_and_finalize_ghost_data(void) {
                 D_80162DD8 = 0;
                 bPlayerGhostDisabled = 0;
                 D_80162DDC = 1;
-                init_ghost_player(gPlayerTwo);
-                init_ghost_player(gPlayerThree);
+                set_player_to_cinematic_cpu(gPlayerTwo);
+                set_player_to_cinematic_cpu(gPlayerThree);
             }
         } else {
             if ((gLapCountByPlayerId[0] == 3) && (D_80162DDC == 0) && (gPostTimeTrialReplayCannotSave == 1)) {
@@ -564,8 +564,8 @@ void check_and_finalize_ghost_data(void) {
                 D_80162DDC = 1;
             }
             if ((gPlayerOne->type & PLAYER_CINEMATIC_MODE) == PLAYER_CINEMATIC_MODE) {
-                init_ghost_player(gPlayerTwo);
-                init_ghost_player(gPlayerThree);
+                set_player_to_cinematic_cpu(gPlayerTwo);
+                set_player_to_cinematic_cpu(gPlayerThree);
             } else {
                 sUnusedReplayCounter += 1;
                 if (sUnusedReplayCounter > 100) {
@@ -587,7 +587,7 @@ void check_and_finalize_ghost_data(void) {
     }
 }
 
-void update_ghost_replays(void) {
+void playback_post_time_trial_replays(void) {
     if ((gModeSelection == TIME_TRIALS) && (gModeSelection == TIME_TRIALS) && (gActiveScreenMode == SCREEN_MODE_1P)) {
         if ((D_80162DD8 == 0) && (gLapCountByPlayerId[1] != 3)) {
             process_player_ghost_replay(); // 3
@@ -599,18 +599,18 @@ void update_ghost_replays(void) {
             process_post_time_trial_replay(); // 1
             return;
         }
-        init_ghost_player(gPlayerTwo);
-        init_ghost_player(gPlayerThree);
+        set_player_to_cinematic_cpu(gPlayerTwo);
+        set_player_to_cinematic_cpu(gPlayerThree);
     }
 }
 
 void replays_loop(void) {
     if (D_8015F890 == 1) {
-        update_ghost_replays();
+        playback_post_time_trial_replays();
         return;
     }
     if (!gPauseTriggered) {
-        check_and_finalize_ghost_data();
+        update_time_trial_replays();
         return;
     }
     /* This only gets triggered when the previous if-statements are not met

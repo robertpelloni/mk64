@@ -450,7 +450,7 @@ void podium_ceremony_loop(void) {
     D_802874FC = 0;
     update_camera_podium_ceremony();
     func_80028F70();
-    func_80022744();
+    update_player_render_state();
     func_80059AC8();
     func_80059AC8();
     func_8005A070();

@@ -8,14 +8,14 @@
 
 void eu_process_audio_cmd(struct EuAudioCmd*);
 void seq_player_fade_to_zero_volume(s32 arg0, s32 fadeOutTime);
-void audio_fade_in_sequence_player(s32 playerIndex, s32 fadeInTime);
+void seq_player_fade_in(s32 playerIndex, s32 fadeInTime);
 void port_eu_init_queues(void);
-void eu_audio_cmd_send_raw(s32, s32*);
-void eu_audio_cmd_send_f32(u32, f32);
-void eu_audio_cmd_send_u32(u32, u32);
-void eu_audio_cmd_send_byte(u32, s8);
-void eu_audio_cmd_flush(void);
-void audio_process_mac_cmds(u32 arg0);
+void audio_cmd_queue_push(s32, s32*);
+void audio_cmd_queue_push_f32(u32, f32);
+void audio_cmd_queue_push_u32(u32, u32);
+void audio_cmd_queue_push_s8(u32, s8);
+void audio_cmd_queue_flush(void);
+void audio_cmd_queue_process(u32 arg0);
 void port_eu_init(void);
 
 extern OSMesgQueue gAudioSyncQueue;

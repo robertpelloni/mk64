@@ -243,7 +243,7 @@ void* dma_sample_data(uintptr_t devAddr, u32 size, s32 arg2, u8* dmaIndexRef) {
 }
 
 // init_sample_dma_buffers
-void audio_alloc_sample_dma_buffers(UNUSED s32 arg0) {
+void init_sample_dma_buffers(UNUSED s32 arg0) {
     s32 i;
 #define j i
 
@@ -306,7 +306,7 @@ void audio_alloc_sample_dma_buffers(UNUSED s32 arg0) {
 }
 
 // Similar to patch_sound, but not really
-s32 audio_load_sample(struct AudioBankSample* sample) {
+s32 audio_dma_load_sample_immediate(struct AudioBankSample* sample) {
     // struct AudioBankSample *sample = sound->sample;
     UNUSED u8* mem;
 
@@ -327,7 +327,7 @@ s32 audio_load_sample(struct AudioBankSample* sample) {
     }
 }
 
-s32 audio_preload_instrument(s32 bankId, s32 instId, s32 arg2) {
+s32 audio_load_instrument_samples_immediate(s32 bankId, s32 instId, s32 arg2) {
     struct Instrument* instr;
     struct Drum* drum;
 
@@ -337,11 +337,11 @@ s32 audio_preload_instrument(s32 bankId, s32 instId, s32 arg2) {
             return -1;
         }
         if (instr->normalRangeLo != 0) {
-            audio_load_sample(instr->lowNotesSound.sample);
+            audio_dma_load_sample_immediate(instr->lowNotesSound.sample);
         }
-        audio_load_sample(instr->normalNotesSound.sample);
+        audio_dma_load_sample_immediate(instr->normalNotesSound.sample);
         if (instr->normalRangeHi != 0x7F) {
-            audio_load_sample(instr->highNotesSound.sample);
+            audio_dma_load_sample_immediate(instr->highNotesSound.sample);
         }
         //! @bug missing return
     } else if (instId == 0x7F) {
@@ -349,7 +349,7 @@ s32 audio_preload_instrument(s32 bankId, s32 instId, s32 arg2) {
         if (drum == NULL) {
             return -1;
         }
-        audio_load_sample(drum->sound.sample);
+        audio_dma_load_sample_immediate(drum->sound.sample);
         return 0;
     }
 #ifdef AVOID_UB
@@ -360,7 +360,7 @@ s32 audio_preload_instrument(s32 bankId, s32 instId, s32 arg2) {
 // This appears to be a modified version of alSeqFileNew
 // from src/os/alBankNew.c
 // Or maybe its patch_seq_file from SM64's load_sh.c?
-void audio_patch_seq_file(ALSeqFile* f, u8* base) {
+void patch_seq_file(ALSeqFile* f, u8* base) {
 #define PATCH(SRC, BASE, TYPE) SRC = (TYPE) ((uintptr_t) SRC + (uintptr_t) BASE)
     int i;
     u8* wut = base;
@@ -406,7 +406,7 @@ void patch_sound(struct AudioBankSound* sound, u8* memBase, u8* offsetBase) {
 }
 
 // There does not appear to an SM64 counterpart to this function
-void audio_patch_bank(s32 bankId) {
+void patch_audio_bank_by_id(s32 bankId) {
     u8* var_a1;
 
     if (gAlTbl->seqArray[bankId].len == 0) {
@@ -504,7 +504,7 @@ struct AudioBank* bank_load_immediate(s32 bankId, s32 arg1) {
     }
     audio_dma_copy_immediate(ctlData + 0x10, ret, (u32) alloc);
     gCtlEntries[bankId].instruments = ret->instruments;
-    audio_patch_bank(bankId);
+    patch_audio_bank_by_id(bankId);
     if (gBankLoadStatus[bankId] != 5) {
         gBankLoadStatus[bankId] = 2;
     }
@@ -855,7 +855,7 @@ void audio_init(void) {
     size = ALIGN16(size);
     gSeqFileHeader = soundAlloc(&gAudioInitPool, size);
     audio_dma_copy_immediate(data, gSeqFileHeader, size);
-    audio_patch_seq_file(gSeqFileHeader, data);
+    patch_seq_file(gSeqFileHeader, data);
 
     // Load header for CTL (instrument metadata)
     gAlCtlHeader = (ALSeqFile*) buf;
@@ -865,7 +865,7 @@ void audio_init(void) {
     size = ALIGN16(ctlSeqCount * sizeof(ALSeqData) + 4);
     gAlCtlHeader = soundAlloc(&gAudioInitPool, size);
     audio_dma_copy_immediate(data, gAlCtlHeader, size);
-    audio_patch_seq_file(gAlCtlHeader, data);
+    patch_seq_file(gAlCtlHeader, data);
     gCtlEntries = soundAlloc(&gAudioInitPool, ctlSeqCount * sizeof(struct CtlEntry));
     for (i = 0; i < ctlSeqCount; i++) {
         audio_dma_copy_immediate(gAlCtlHeader->seqArray[i].offset, buf, 0x10);
@@ -881,7 +881,7 @@ void audio_init(void) {
     size = ALIGN16(size);
     gAlTbl = soundAlloc(&gAudioInitPool, size);
     audio_dma_copy_immediate(data, gAlTbl, size);
-    audio_patch_seq_file(gAlTbl, data);
+    patch_seq_file(gAlTbl, data);
 
     // Load bank sets for each sequence
     gAlBankSets = soundAlloc(&gAudioInitPool, 0x100);

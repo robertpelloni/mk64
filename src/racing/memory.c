@@ -397,7 +397,7 @@ UNUSED uintptr_t func_802A8348(s32 arg0, s32 arg1, s32 arg2) {
                  &gDmaMesgQueue);
     osRecvMesg(&gDmaMesgQueue, &gMainReceivedMesg, 1);
 
-    func_80040030((u8*) newAddr, (u8*) oldAddr);
+    mio0decode_alt((u8*) newAddr, (u8*) oldAddr);
     gNextFreeMemoryAddress += offset;
     return oldAddr;
 }
@@ -414,7 +414,7 @@ UNUSED u8* func_802A841C(u8* arg0, s32 arg1, s32 arg2) {
     osPiStartDma(&gDmaIoMesg, 0, 0, (uintptr_t) &_other_texturesSegmentRomStart[SEGMENT_OFFSET(arg0)], temp_a0, arg1,
                  &gDmaMesgQueue);
     osRecvMesg(&gDmaMesgQueue, &gMainReceivedMesg, 1);
-    func_80040030((u8*) temp_a0, temp_v0);
+    mio0decode_alt((u8*) temp_a0, temp_v0);
     gNextFreeMemoryAddress += arg2;
     return temp_v0;
 }

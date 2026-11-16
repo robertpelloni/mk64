@@ -41,7 +41,7 @@ const u8 gGameName[] = {
 const u8 gExtCode[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // new file start?
-void write_time_trial_records_to_eeprom(s32 arg0) {
+void write_eeprom_course_time_trial_records(s32 arg0) {
     CourseTimeTrialRecords* courseTimeTrialRecordsPtr =
         &gSaveData.allCourseTimeTrialRecords.cupRecords[arg0 / 4].courseRecords[arg0 % 4];
 
@@ -57,19 +57,19 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
-void reset_all_save_data(void) {
+void reset_all_save_data_to_defaults(void) {
     s32 i;
 
     for (i = 0; i < 16; i++) {
-        reset_time_trial_records_for_course(i);
-        save_update_best_time_trial_records(i);
+        reset_course_time_trial_records(i);
+        write_eeprom_best_time_trial_records(i);
     }
 
     reset_save_data_grand_prix_points_and_sound_mode();
     update_save_data_backup();
 }
 
-void reset_time_trial_records_for_course(s32 arg0) {
+void reset_course_time_trial_records(s32 arg0) {
     s32 i, j;
     CourseTimeTrialRecords* courseTimeTrialRecords;
 
@@ -87,7 +87,7 @@ void reset_time_trial_records_for_course(s32 arg0) {
 
     courseTimeTrialRecords->unknownBytes[0] = 0;
     courseTimeTrialRecords->checksum = checksum_time_trial_records(arg0);
-    write_time_trial_records_to_eeprom(arg0);
+    write_eeprom_course_time_trial_records(arg0);
 }
 
 /**
@@ -180,7 +180,7 @@ void load_save_data(void) {
     osEepromLongRead(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData), (u8*) &gSaveData, sizeof(SaveData));
     // 16: 4 cup records * 4 course records?
     for (i = 0; i < 16; i++) {
-        save_check_and_recover_time_trial_records(i);
+        validate_and_recover_course_time_trials(i);
     }
 
     validate_save_data();
@@ -215,22 +215,22 @@ void load_save_data(void) {
     }
 }
 
-void save_check_and_recover_time_trial_records(s32 course) {
+void validate_and_recover_course_time_trials(s32 course) {
     OnlyBestTimeTrialRecords* test;
     CourseTimeTrialRecords* sp24;
     s32 i;
 
-    if ((save_get_time_trial_record_by_course(0, course) & 0xFFFFF) < 0x927C0U) {
+    if ((get_course_time_trial_record(0, course) & 0xFFFFF) < 0x927C0U) {
         gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4].unknownBytes[0] = 1;
     }
     sp24 = &gSaveData.allCourseTimeTrialRecords.cupRecords[course / 4].courseRecords[course % 4];
 
-    save_get_single_lap_record_by_course(course);
+    get_course_best_lap_record(course);
     if (sp24) {}
 
     if (sp24->checksum != checksum_time_trial_records(course)) {
-        reset_time_trial_records_for_course(course);
-        if (save_is_best_records_checksum_invalid(course) == 0) {
+        reset_course_time_trial_records(course);
+        if (validate_best_time_trial_records_checksum(course) == 0) {
             s32 a3 = 0;
 
             test = &gSaveData.onlyBestTimeTrialRecords[course / 8];
@@ -252,13 +252,13 @@ void save_check_and_recover_time_trial_records(s32 course) {
             } else {
                 sp24->unknownBytes[0] = 1;
             }
-            write_time_trial_records_to_eeprom(course);
+            write_eeprom_course_time_trial_records(course);
         }
         // L800B4C78
-        save_update_best_time_trial_records(course);
-    } else if (save_is_best_records_checksum_invalid(course)) {
+        write_eeprom_best_time_trial_records(course);
+    } else if (validate_best_time_trial_records_checksum(course)) {
         // L800B4C88
-        save_update_best_time_trial_records(course);
+        write_eeprom_best_time_trial_records(course);
     }
 }
 
@@ -303,7 +303,7 @@ void populate_time_trial_record(u8* timeTrialRecord, u32 time, s32 characterId) 
 }
 
 // combine time trial record u8[3] into the lower 24 bits of a word [xx221100]
-u32 save_unpack_time_trial_record(u8* arr) {
+u32 unpack_time_trial_record(u8* arr) {
     s32 a, b, c;
     a = arr[0];
     b = arr[1];
@@ -313,34 +313,34 @@ u32 save_unpack_time_trial_record(u8* arr) {
 }
 
 // Get a time trial record, infer course index
-s32 save_get_course_time_trial_record(s32 recordIndex) {
-    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 get_current_course_time_trial_record(s32 recordIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[recordIndex]);
 }
 
 // Get a time trial record, but take the course index as an argument
-u32 save_get_time_trial_record_by_course(s32 recordIndex, s32 courseIndex) {
-    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+u32 get_course_time_trial_record(s32 recordIndex, s32 courseIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[recordIndex]);
 }
 
 // Get Best Lap record of the inferred course index
-s32 save_get_course_single_lap_record(void) {
-    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
+s32 get_current_course_best_lap_record(void) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(((gCupSelection * 4) + gCourseIndexInCup) / 4)]
                              .courseRecords[(((gCupSelection * 4) + gCourseIndexInCup) % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
 // Get the best single lap time record of the given course index
-s32 save_get_single_lap_record_by_course(s32 courseIndex) {
-    return save_unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
+s32 get_course_best_lap_record(s32 courseIndex) {
+    return unpack_time_trial_record(gSaveData.allCourseTimeTrialRecords.cupRecords[(courseIndex / 4)]
                              .courseRecords[(courseIndex % 4)]
                              .records[TIME_TRIAL_1LAP_RECORD]);
 }
 
-s32 save_update_course_time_trial_records(u32 time, s32 charId) {
+s32 update_course_three_lap_records(u32 time, s32 charId) {
     UNUSED s32 stackPadding[3];
     s32 course; // sp30
     s32 i;
@@ -352,7 +352,7 @@ s32 save_update_course_time_trial_records(u32 time, s32 charId) {
 
     i = 0;
     for (; i < 5; i++) {
-        if (time < (save_unpack_time_trial_record(tt->records[i]) & 0x000FFFFF)) {
+        if (time < (unpack_time_trial_record(tt->records[i]) & 0x000FFFFF)) {
             break;
         }
     }
@@ -373,12 +373,12 @@ s32 save_update_course_time_trial_records(u32 time, s32 charId) {
 
     populate_time_trial_record(tt->records[i], time, charId);
     tt->unknownBytes[0] = 1;
-    write_time_trial_records_to_eeprom(course);
+    write_eeprom_course_time_trial_records(course);
 
     return i;
 }
 
-s32 save_update_course_single_lap_record(void) {
+s32 update_course_best_single_lap_record(void) {
     u8* recordPointer;
     UNUSED s32 pad;
     s32 fastestLapIndex;
@@ -402,34 +402,34 @@ s32 save_update_course_single_lap_record(void) {
         }
     }
 
-    if (playerHUD->lapDurations[fastestLapIndex] < (save_get_course_single_lap_record() & 0xFFFFF)) {
+    if (playerHUD->lapDurations[fastestLapIndex] < (get_current_course_best_lap_record() & 0xFFFFF)) {
         populate_time_trial_record(recordPointer + 0xF, playerHUD->lapDurations[fastestLapIndex], character);
         recordPointer[0x12] = 1;
-        write_time_trial_records_to_eeprom(recordIndex);
+        write_eeprom_course_time_trial_records(recordIndex);
         return lapBitmask;
     } else {
         return 0;
     }
 }
 
-void save_update_grand_prix_points(s32 arg0) {
+void update_current_cup_grand_prix_points(s32 arg0) {
     u8* points;
     u8 tmp;
     s32 tmp2;
 
     if (arg0 >= 0) {
         points = &gSaveData.main.saveInfo.grandPrixPoints[gCCSelection];
-        tmp = save_get_grand_prix_points_for_cup(gCupSelection, *points);
+        tmp = extract_cup_grand_prix_points(gCupSelection, *points);
         tmp2 = 3 - arg0;
         if ((arg0 < 3) && (tmp < (3 - arg0))) {
-            *points = save_calculate_grand_prix_points(gCupSelection, *points, tmp2);
+            *points = pack_cup_grand_prix_points(gCupSelection, *points, tmp2);
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
         }
     }
 }
 
-void save_set_grand_prix_points(s32 arg0, s32 arg1) {
+void update_cup_grand_prix_points(s32 arg0, s32 arg1) {
     u8* points;
     s32 temp_a0;
     s32 temp;
@@ -439,10 +439,10 @@ void save_set_grand_prix_points(s32 arg0, s32 arg1) {
     if (arg0 >= 0) {
         temp2 = arg1 / 4;
         points = &gSaveData.main.saveInfo.grandPrixPoints[arg1 % 4];
-        temp = save_get_grand_prix_points_for_cup(temp2, *points);
+        temp = extract_cup_grand_prix_points(temp2, *points);
 
         if ((arg0 < 3) && (temp < (temp_a0 = 3 - arg0))) {
-            *points = save_calculate_grand_prix_points(temp2, *points, temp_a0);
+            *points = pack_cup_grand_prix_points(temp2, *points, temp_a0);
 
             write_save_data_grand_prix_points_and_sound_mode();
             update_save_data_backup();
@@ -451,12 +451,12 @@ void save_set_grand_prix_points(s32 arg0, s32 arg1) {
 }
 
 // Get Grand Prix points for a given cup and CC mode
-u8 save_get_grand_prix_points(s32 cup, s32 cc_mode) {
-    return save_get_grand_prix_points_for_cup(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
+u8 get_cup_grand_prix_points(s32 cup, s32 cc_mode) {
+    return extract_cup_grand_prix_points(cup, gSaveData.main.saveInfo.grandPrixPoints[cc_mode]);
 }
 
 // Get Grand Prix points scored for a given cup
-u8 save_get_grand_prix_points_for_cup(s32 cup, s32 ccGrandPrixPoints) {
+u8 extract_cup_grand_prix_points(s32 cup, s32 ccGrandPrixPoints) {
     s32 cup_index = cup * 2;
     u32 cup_points = ccGrandPrixPoints;
 
@@ -469,7 +469,7 @@ u8 save_get_grand_prix_points_for_cup(s32 cup, s32 ccGrandPrixPoints) {
 
 // Generate a new CC Grand Prix Points entry with points_scored
 // placed in the given cup's location
-u8 save_calculate_grand_prix_points(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
+u8 pack_cup_grand_prix_points(s32 cup, s32 ccGrandPrixPoints, s32 points_scored) {
     s32 cup_index = cup * 2;
 
     points_scored <<= cup_index;
@@ -497,7 +497,7 @@ s32 has_completed_extra_mode(void) {
     return is_cc_mode_complete(CC_EXTRA);
 }
 
-void save_update_best_time_trial_records(s32 arg0) {
+void write_eeprom_best_time_trial_records(s32 arg0) {
     CourseTimeTrialRecords* courseRecord;
     OnlyBestTimeTrialRecords* bestRecord;
     s32 x = arg0 / 8;
@@ -519,8 +519,8 @@ void save_update_best_time_trial_records(s32 arg0) {
         }
     }
     bestRecord = &gSaveData.onlyBestTimeTrialRecords[x];
-    bestRecord->unknownBytes[6] = save_calc_best_records_checksum(x);
-    bestRecord->unknownBytes[7] = save_calc_best_records_checksum_2(x);
+    bestRecord->unknownBytes[6] = compute_best_time_trial_records_checksum_1(x);
+    bestRecord->unknownBytes[7] = compute_best_time_trial_records_checksum_2(x);
     osEepromLongWrite(&gSIEventMesgQueue, ((u32) (((u8*) bestRecord) - ((u8*) (&gSaveData)))) >> 3,
                       bestRecord->bestThreelaps[0], 0x38);
 }
@@ -534,7 +534,7 @@ void save_update_best_time_trial_records(s32 arg0) {
  *
  * But only unknown bytes 7 and 8 ever get set, so why the extra 3, and why in chunks of 17?
  **/
-u8 save_calc_best_records_checksum(s32 arg0) {
+u8 compute_best_time_trial_records_checksum_1(s32 arg0) {
     u8* times = (u8*)&gSaveData.onlyBestTimeTrialRecords[arg0];
     s32 checksum = 0;
     s32 i;
@@ -548,20 +548,20 @@ u8 save_calc_best_records_checksum(s32 arg0) {
     return (checksum % 256);
 }
 
-s32 save_calc_best_records_checksum_2(s32 arg0) {
+s32 compute_best_time_trial_records_checksum_2(s32 arg0) {
     s32 tmp = gSaveData.onlyBestTimeTrialRecords[arg0].unknownBytes[6] + 90;
     return (tmp % 256) & 0xFF;
 }
 
-s32 save_is_best_records_checksum_invalid(s32 arg0) {
+s32 validate_best_time_trial_records_checksum(s32 arg0) {
     UNUSED s32 pad1;
     OnlyBestTimeTrialRecords* temp_v1;
     UNUSED s32 pad2;
     UNUSED s32 pad3;
 
     temp_v1 = &gSaveData.onlyBestTimeTrialRecords[arg0 / 8];
-    if ((temp_v1->unknownBytes[6] != (save_calc_best_records_checksum(arg0 / 8) ^ 0)) ||
-        (temp_v1->unknownBytes[7] != (save_calc_best_records_checksum_2(arg0 / 8) ^ 0))) {
+    if ((temp_v1->unknownBytes[6] != (compute_best_time_trial_records_checksum_1(arg0 / 8) ^ 0)) ||
+        (temp_v1->unknownBytes[7] != (compute_best_time_trial_records_checksum_2(arg0 / 8) ^ 0))) {
         return 1;
     }
 
@@ -742,7 +742,7 @@ s32 controller_pak_2_status(void) {
     }
 }
 
-s32 check_and_init_controller_pak_1(void) {
+s32 probe_controller_pak_1(void) {
     s32 errorCode;
 
     if (gControllerPak1State) {
@@ -768,7 +768,7 @@ s32 check_and_init_controller_pak_1(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 check_and_init_controller_pak_2(void) {
+s32 probe_controller_pak_2(void) {
     s32 errorCode;
 
     if (sControllerPak2State) {
@@ -784,17 +784,17 @@ s32 check_and_init_controller_pak_2(void) {
     return PAK_NOT_INSERTED;
 }
 
-s32 update_and_write_controller_pak_1_ghost_header(s32 arg0) {
+s32 save_ghost_header_to_pak(s32 arg0) {
     struct_8018EE10_entry* temp_v1;
 
     temp_v1 = &D_8018EE10[arg0];
-    temp_v1->checksum = save_compute_ghost_header_checksum(arg0);
+    temp_v1->checksum = calculate_pak1_ghost_header_checksum(arg0);
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               arg0 * 0x80 /* 0x80 == sizeof(struct_8018EE10_entry) */, sizeof(struct_8018EE10_entry),
                               (u8*) temp_v1);
 }
 
-u8 compute_ghost_data_page_checksum(s32 page) {
+u8 calculate_ghost_page_checksum(s32 page) {
     s32 i;
     u32 checksum = 0;
     u8* addr;
@@ -805,7 +805,7 @@ u8 compute_ghost_data_page_checksum(s32 page) {
     return checksum;
 }
 
-s32 load_ghost_data_from_controller_pak(s32 arg0) {
+s32 save_ghost_data_to_pak1(s32 arg0) {
     s32 var_v0;
     s32 var_s0;
     struct_8018EE10_entry* temp_s3;
@@ -818,11 +818,11 @@ s32 load_ghost_data_from_controller_pak(s32 arg0) {
             return -1;
     }
     if (gGamestate == RACING) {
-        encode_ghost_data();
+        compress_ghost_replay_data();
     }
     temp_s3 = &D_8018EE10[arg0];
     temp_s3->ghostDataSaved = 0;
-    var_v0 = update_and_write_controller_pak_1_ghost_header(arg0);
+    var_v0 = save_ghost_header_to_pak(arg0);
     if (var_v0 != 0) {
         temp_s3->ghostDataSaved = 0;
         for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
@@ -839,9 +839,9 @@ s32 load_ghost_data_from_controller_pak(s32 arg0) {
             temp_s3->unk_00 = D_80162DFC;
             temp_s3->characterId = (u8) D_80162DE0;
             for (var_s0 = 0; var_s0 < 0x3C; var_s0++) {
-                temp_s3->unk_07[var_s0] = compute_ghost_data_page_checksum(var_s0);
+                temp_s3->unk_07[var_s0] = calculate_ghost_page_checksum(var_s0);
             }
-            var_v0 = update_and_write_controller_pak_1_ghost_header(arg0);
+            var_v0 = save_ghost_header_to_pak(arg0);
         }
         if (var_v0 != 0) {
             temp_s3->ghostDataSaved = 0;
@@ -853,7 +853,7 @@ s32 load_ghost_data_from_controller_pak(s32 arg0) {
     return var_v0;
 }
 
-s32 save_get_ghost_data_controller_pak_index(s32 arg0) {
+s32 get_ghost_slot_index_for_course(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -863,7 +863,7 @@ s32 save_get_ghost_data_controller_pak_index(s32 arg0) {
     return 0;
 }
 
-s32 get_ghost_data_index_for_course(s32 arg0) {
+s32 find_saved_ghost_index_for_course(s32 arg0) {
     if ((D_8018EE10[0].ghostDataSaved != 0) && (arg0 == D_8018EE10[0].courseIndex)) {
         return 0;
     }
@@ -873,14 +873,14 @@ s32 get_ghost_data_index_for_course(s32 arg0) {
     return -1;
 }
 
-s32 save_check_ghost_data_validity(s32 arg0) {
+s32 verify_ghost_candidate_match(s32 arg0) {
     s32 temp_s0;
     u8* phi_s1;
     s32 phi_s3;
 
-    encode_ghost_data();
+    compress_ghost_replay_data();
     bCourseGhostDisabled = 1;
-    init_ghost_player(gPlayerThree);
+    set_player_to_cinematic_cpu(gPlayerThree);
 
     phi_s3 = 0;
     if (((gCupSelection * 4) + gCourseIndexInCup) != D_8018EE10[arg0].courseIndex) {
@@ -895,7 +895,7 @@ s32 save_check_ghost_data_validity(s32 arg0) {
             phi_s1 = (u8*) &D_8018EE10[arg0];
 
             while (temp_s0 < 0x3C) {
-                if (phi_s1[7] != compute_ghost_data_page_checksum(temp_s0)) {
+                if (phi_s1[7] != calculate_ghost_page_checksum(temp_s0)) {
                     phi_s3 = 1;
                     break;
                 }
@@ -909,7 +909,7 @@ s32 save_check_ghost_data_validity(s32 arg0) {
     return phi_s3;
 }
 
-s32 load_ghost_data_and_verify_checksum(s32 arg0) {
+s32 load_ghost_data_from_pak1(s32 arg0) {
     s32 temp_s0;
     s32 temp_v0;
     u8* phi_s1;
@@ -925,14 +925,14 @@ s32 load_ghost_data_and_verify_checksum(s32 arg0) {
         phi_s1 = (u8 *) &D_8018EE10[arg0]; temp_s0 = 0; while (1) {
             // clang-format on
 
-            if (phi_s1[7] != compute_ghost_data_page_checksum(temp_s0)) {
+            if (phi_s1[7] != calculate_ghost_page_checksum(temp_s0)) {
                 D_8018EE10[arg0].ghostDataSaved = 0;
                 return -2;
             }
 
             ++phi_s1;
             if ((++temp_s0) == 0x3C) {
-                decode_ghost_data();
+                decompress_player_ghost();
                 bPlayerGhostDisabled = 0;
                 D_80162DE0 = (s32) D_8018EE10[arg0].characterId;
                 D_80162DFC = D_8018EE10[arg0].unk_00;
@@ -944,7 +944,7 @@ s32 load_ghost_data_and_verify_checksum(s32 arg0) {
     return temp_v0;
 }
 
-s32 save_ghost_data_to_controller_pak(s32 arg0, s32 arg1) {
+s32 copy_ghost_data_from_pak2_to_buffer(s32 arg0, s32 arg1) {
     UNUSED s32 stackPadding;
     s32 i;
     s32 writeStatus;
@@ -961,7 +961,7 @@ s32 save_ghost_data_to_controller_pak(s32 arg0, s32 arg1) {
     if (writeStatus == 0) {
         temp_s3 = &((struct_8018EE10_entry*) gSomeDLBuffer)[arg0];
         for (i = 0; i < 0x3C; i++) {
-            if (temp_s3->unk_07[i] != compute_ghost_data_page_checksum(i)) {
+            if (temp_s3->unk_07[i] != calculate_ghost_page_checksum(i)) {
                 temp_s3->ghostDataSaved = 0;
                 return -2;
             }
@@ -973,20 +973,20 @@ s32 save_ghost_data_to_controller_pak(s32 arg0, s32 arg1) {
     return writeStatus;
 }
 
-void read_controller_pak_1_ghost_headers(void) {
+void load_and_validate_pak1_ghost_headers(void) {
     s32 temp_s0;
 
     osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_READ, 0,
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, (u8*) &D_8018EE10);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        if (D_8018EE10[temp_s0].checksum != save_compute_ghost_header_checksum(temp_s0)) {
+        if (D_8018EE10[temp_s0].checksum != calculate_pak1_ghost_header_checksum(temp_s0)) {
             D_8018EE10[temp_s0].ghostDataSaved = 0;
         }
     }
 }
 
-void read_controller_pak_2_ghost_headers(void) {
+void load_and_validate_pak2_ghost_headers(void) {
     s32 temp_s0;
     u8* tmp;
 
@@ -996,16 +996,16 @@ void read_controller_pak_2_ghost_headers(void) {
                        0x100 /*  2*sizeof(struct_8018EE10_entry) ? */, tmp);
 
     for (temp_s0 = 0; temp_s0 < 2; ++temp_s0) {
-        // if (gSomeDLBuffer[temp_s0]->checksum != save_compute_ghost_header_checksum_dl_buffer(temp_s0)) {
+        // if (gSomeDLBuffer[temp_s0]->checksum != calculate_pak2_ghost_header_checksum(temp_s0)) {
         //     gSomeDLBuffer[temp_s0]->ghostDataSaved = 0;
         // }
-        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != save_compute_ghost_header_checksum_dl_buffer(temp_s0)) {
+        if (((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->checksum != calculate_pak2_ghost_header_checksum(temp_s0)) {
             ((struct_8018EE10_entry*) (tmp + (temp_s0 << 7)))->ghostDataSaved = 0;
         }
     }
 }
 
-u8 save_compute_ghost_header_checksum(s32 arg0) {
+u8 calculate_pak1_ghost_header_checksum(s32 arg0) {
     u32 checksum = 0;
     u8* addr = (u8*) &D_8018EE10[arg0];
     s32 i;
@@ -1015,7 +1015,7 @@ u8 save_compute_ghost_header_checksum(s32 arg0) {
     return checksum;
 }
 
-u8 save_compute_ghost_header_checksum_dl_buffer(s32 arg0) {
+u8 calculate_pak2_ghost_header_checksum(s32 arg0) {
     struct_8018EE10_entry* var_v0 = gSomeDLBuffer;
     u8* addr = (u8*) (var_v0 + arg0);
     s32 i = 0;
@@ -1028,7 +1028,7 @@ u8 save_compute_ghost_header_checksum_dl_buffer(s32 arg0) {
     return checksum;
 }
 
-s32 reset_controller_pak_1_ghost_header(s32 arg0) {
+s32 clear_and_write_pak1_ghost_header(s32 arg0) {
     u32 i;
     struct_8018EE10_entry* plz = &D_8018EE10[arg0];
 
@@ -1038,13 +1038,13 @@ s32 reset_controller_pak_1_ghost_header(s32 arg0) {
     for (i = 0; i < sizeof(plz->unk_07); i++) {
         plz->unk_07[i] = i;
     }
-    plz->checksum = save_compute_ghost_header_checksum(arg0);
+    plz->checksum = calculate_pak1_ghost_header_checksum(arg0);
 
     return osPfsReadWriteFile(&gControllerPak1FileHandle, gControllerPak1FileNote, PFS_WRITE,
                               (s32) sizeof(struct_8018EE10_entry) * arg0, sizeof(struct_8018EE10_entry), (u8*) plz);
 }
 
-s32 allocate_controller_pak_1_file(void) {
+s32 allocate_pak1_ghost_file(void) {
     UNUSED s32 pad;
     s32 ret;
     s32 i;
@@ -1053,7 +1053,7 @@ s32 allocate_controller_pak_1_file(void) {
                             0x7900, &gControllerPak1FileNote);
     if (ret == 0) {
         for (i = 0; i < 2; i++) {
-            reset_controller_pak_1_ghost_header(i);
+            clear_and_write_pak1_ghost_header(i);
         }
     }
 
@@ -1070,7 +1070,7 @@ void func_8800B6AF8(void) {
         osPfsFreeBlocks(&gControllerPak1FileHandle, &gControllerPak1NumPagesFree) == 0) {
         gControllerPak1NumPagesFree >>= 8;
         if (gControllerPak1NumPagesFree >= 0x79) {
-            allocate_controller_pak_1_file();
+            allocate_pak1_ghost_file();
         }
     }
 }
