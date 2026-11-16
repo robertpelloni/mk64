@@ -480,11 +480,11 @@ void play_music_for_current_track(s32 track) {
         case COURSE_BIG_DONUT:
             play_sequence(SEQ_TRACK_BATTLE);
             break;
-		
+
 #ifdef AVOID_UB
-		default: //! @BUG: No default case. Enable AVOID_UB for custom tracks.
-		    play_sequence(SEQ_TRACK_RACEWAY);
-			break;
+        default: //! @BUG: No default case. Enable AVOID_UB for custom tracks.
+            play_sequence(SEQ_TRACK_RACEWAY);
+            break;
 #endif
     }
 }
@@ -924,9 +924,10 @@ void func_8028FCBC(void) {
     if (gDemoUseController) {
         end_demo_update();
     }
-    switch (gRaceState) {
-        case RACE_NONE:
-            if (!gDemoMode) { // If we're not in the demo mode, play the starting fanfare for the current mode (Grand Prix / Time Trials / VS / Battle)
+    switch (D_800DC510) {
+        case 0:
+            if (!gDemoMode) { // If we're not in the demo mode, play the starting fanfare for the current mode (Grand
+                              // Prix / Time Trials / VS / Battle)
                 if (gModeSelection == GRAND_PRIX) {
                     play_sequence2(SEQ_EVENT_RACE_STARTING);
                     play_sound2(SOUND_ACTION_REV_ENGINE);
