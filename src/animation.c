@@ -26,7 +26,10 @@ void convert_to_fixed_point_matrix_animation(Mtx* dest, Mat4 src) {
     register f32* t1 = (f32*) src;
 
     for (i = 0; i < 16; i++) {
-        asFixedPoint = *t1++ * (1 << 16);         //! float-to-integer conversion responsible for PU crashes
+        f32 fixed_f = *t1++ * (1 << 16);
+        if (fixed_f > 2147483647.0f) fixed_f = 2147483647.0f; // Prevent PU crashes via overflow
+        if (fixed_f < -2147483648.0f) fixed_f = -2147483648.0f;
+        asFixedPoint = (s32)fixed_f;         //! float-to-integer conversion responsible for PU crashes
         *a3++ = GET_HIGH_S16_OF_32(asFixedPoint); // integer part
         *t0++ = GET_LOW_S16_OF_32(asFixedPoint);  // fraction part
     }

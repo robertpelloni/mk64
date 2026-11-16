@@ -1,5 +1,20 @@
 # Changelog
 
+## [8.107.8] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C3448` to `issue_audio_command` across the codebase.
+
+## [8.107.7] - 2026-06-28
+
+### Fixed
+- Applied fixed-point math clamps to `guMtxF2L` in `src/os/guMtxF2L.c` to resolve floating-point overflow "PU crashes" on strict target environments when `-DAvoid_UB=1` is active.
+
+## [8.107.6] - 2026-06-28
+
+### Refactored
+- Continued decompilation: Renamed `func_800C284C` to `sequence_player_play_sequence` and `func_800C29B4` to `sequence_player_fade_out` in the audio engine.
+
 All notable changes to this project will be documented in this file.
 
 ## [8.107.4] - 2026-05-20
@@ -16,35 +31,16 @@ All notable changes to this project will be documented in this file.
 ### Updated
 - Synced `tools/torch` and `tools/blender/fast64` submodules to latest upstream commits.
 
-## [1.0.2] - 2024-05-23
-### Maintenance
-- **Submodules:** Updated all submodules to their latest upstream versions.
-  - `doxygen-awesome-css` updated to v2.4.1.
-  - `tools/asm-differ` updated to latest main.
-  - `tools/blender/fast64` updated to latest main.
-  - `tools/decomp-permuter` updated to latest main.
-  - `tools/torch` updated to latest main.
-- **Documentation:** Updated `DASHBOARD.md` and `PROJECT_STRUCTURE.md` to reflect the new submodule status.
-
-## [1.0.1] - 2024-05-23
-### Merged
-- **Feature Complete:** Merged all features from `jules-3728563315125857798-70eb2013` into `master`.
-- **Documentation:** Added `DASHBOARD.md` for submodule tracking.
-- **Standards:** Updated `AGENTS.md` with comprehensive universal instructions.
-
-## [1.0.0] - 2024-05-23
+## [1.7.2] - Phase 2 Modern Mechanics
 ### Added
-- **60 FPS Support:** Game now runs at 60Hz. Logic update rate adjusted to match.
-- **Widescreen Support:** 16:9 Aspect Ratio enabled for 3D rendering.
-- **Widescreen HUD Fix:** HUD elements are correctly scaled (pillar-boxed) to avoid stretching.
-- **Widescreen Culling Fix:** Widened object visibility checks to prevent pop-in at screen edges.
-- **Fast Boot:** Skips initial logo screens, booting directly to the Title Screen.
+- **Item Holding (Double Dash):** Players can now carry a secondary reserve item (`sReserveItems`). If the active item slot is occupied, new items from boxes are placed in reserve.
+- **Item Swapping:** Pressing `L_TRIG` swaps the currently active item with the reserve item, allowing for tactical item holding and defensive dragging.
 
-### Changed
-- **AI Behavior:** Removed rubber banding. AI no longer unfairly speeds up or slows down based on player rank.
-- **Unlocks:** All cups and Extra Mode are unlocked by default.
+## [1.7.3] - Phase 2 Coin Mechanics
+### Added
+- **Coin Speed Boost:** The physics engine (`player_controller.c`, `spawn_players.c`) now calculates `topSpeed` using a modifier based on the player's active coin count (`sCoins`), giving a 1.5f maximum velocity boost per coin.
 
-### Fixed
-- Fixed object culling issues in widescreen mode.
-- Fixed HUD aspect ratio in widescreen mode.
-
+## [8.109.0] - 2026-06-23
+### Added
+- **Phase 5 Dynamics:** Anti-Gravity. `ANTI_GRAVITY_WALL` surface modifier allows karts to stick to walls. Spin Boosts occur on player collisions instead of standard crashing.
+- **Phase 6 Dynamics:** Half-Pipes. `HALF_PIPE` surface modifier pulls kart to walls and forces an auto-trick pop at the apex.

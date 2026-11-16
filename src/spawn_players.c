@@ -31,6 +31,8 @@ f32 D_80165230[8];
 UNUSED f32 D_80165250[8];
 s16 D_80165270[8];
 f32 gPlayerCurrentSpeed[8];
+extern s16 sCoins[8];
+
 f32 D_801652A0[8];
 s32 D_801652C0[8];
 s32 D_801652E0[8];
@@ -92,7 +94,7 @@ void spawn_player(Player* player, s8 playerIndex, f32 startingRow, f32 startingC
             player->unk_084 = D_800E2400[gCCSelection][player->characterId];
             player->unk_088 = D_800E24B4[gCCSelection][player->characterId];
             player->unk_210 = D_800E2568[gCCSelection][player->characterId];
-            player->topSpeed = gTopSpeedTable[gCCSelection][player->characterId];
+            player->topSpeed = gTopSpeedTable[gCCSelection][player->characterId] + (sCoins[playerIndex] * 1.5f);
             break;
 
         // Uses 100CC values
@@ -100,14 +102,14 @@ void spawn_player(Player* player, s8 playerIndex, f32 startingRow, f32 startingC
             player->unk_084 = D_800E2400[CC_100][player->characterId];
             player->unk_088 = D_800E24B4[CC_100][player->characterId];
             player->unk_210 = D_800E2568[CC_100][player->characterId];
-            player->topSpeed = gTopSpeedTable[CC_100][player->characterId];
+            player->topSpeed = gTopSpeedTable[CC_100][player->characterId] + (sCoins[playerIndex] * 1.5f);
             break;
 
         case BATTLE:
             player->unk_084 = D_800E2400[CC_BATTLE][player->characterId];
             player->unk_088 = D_800E24B4[CC_BATTLE][player->characterId];
             player->unk_210 = D_800E2568[CC_BATTLE][player->characterId];
-            player->topSpeed = gTopSpeedTable[CC_BATTLE][player->characterId];
+            player->topSpeed = gTopSpeedTable[CC_BATTLE][player->characterId] + (sCoins[playerIndex] * 1.5f);
             break;
     }
 
@@ -1155,6 +1157,9 @@ void func_8003C0F0(void) {
     if (gModeSelection != BATTLE) {
         init_players();
     }
+
+    // Clear retro-modern feature state for the new race
+    reset_retro_modern_state();
 }
 
 void func_8003CD78(void) {

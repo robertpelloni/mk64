@@ -28,6 +28,9 @@
 #include "code_80091440.h"
 #include "menu_items.h"
 #include "podium_ceremony_actors.h"
+s16 sReserveItems[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+s16 sSwapCooldown[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
 #include "courses/all_course_data.h"
 #include <assets/ceremony_data.h>
 #include "src/ending/ceremony_and_credits.h"
@@ -3718,7 +3721,15 @@ s16 func_8007AFB0(s32 objectIndex, s32 arg1) {
         playerHUD[arg1].itemOverride = 0;
     }
 
-    func_800729B4(objectIndex, (s32) randomItem);
+        // Retro-Modern: If player already has an item, store it in reserve.
+    ItemWindowObjects* itemWindow = (ItemWindowObjects*) &gObjectList[objectIndex];
+    if (gPlayerOne[arg1].currentItemCopy != ITEM_NONE || itemWindow->currentItem != ITEM_NONE) {
+        if (sReserveItems[arg1] == ITEM_NONE) {
+            sReserveItems[arg1] = randomItem;
+        }
+    } else {
+        func_800729B4(objectIndex, (s32) randomItem);
+    }
 
     return randomItem;
 }
@@ -3819,6 +3830,19 @@ void func_8007B34C(s32 playerId) {
     sp38 = &gPlayerOne[playerId];
     sp40 = 0;
     new_var = &gControllerOne[playerId];
+        // Retro-Modern: Item Swapping Logic via L_TRIG
+    if ((new_var->buttonPressed & L_TRIG)) {
+        ItemWindowObjects* itemWindow = (ItemWindowObjects*) &gObjectList[temp_s0];
+        if (sReserveItems[playerId] != ITEM_NONE) {
+            // Swap the reserve with the currently held / active item window slot.
+            s16 temp = itemWindow->currentItem;
+            itemWindow->currentItem = sReserveItems[playerId];
+            itemWindow->textureListIndex = sReserveItems[playerId];
+            sp38->currentItemCopy = sReserveItems[playerId];
+            sReserveItems[playerId] = temp;
+        }
+    }
+
     if (new_var->buttonPressed & Z_TRIG) {
         sp40 = 1;
     }
