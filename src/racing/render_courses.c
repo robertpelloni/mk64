@@ -17,6 +17,7 @@
 #include "courses/all_course_data.h"
 #include "courses/all_course_packed.h"
 #include "courses/all_course_offsets.h"
+#include "flycam.h"
 
 s16 D_802B87B0 = 995;
 s16 D_802B87B4 = 1000;

@@ -8,4 +8,5 @@
  *
  */
 #define ENABLE_CUSTOM_COURSE_ENGINE 0
+#define CRASH_SCREEN_ENHANCEMENT 1
 #endif

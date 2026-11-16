@@ -1,42 +1,32 @@
-# Submodule Dashboard
+# Project Dashboard
 
-## Overview
-This dashboard tracks the status of all submodules in the project. The repository uses several external tools and libraries managed as git submodules.
+## Project Structure
+*   **root:** Main build files and documentation.
+*   **src/**: Source code (C and Assembly).
+    *   `src/racing/`: Core racing logic (actors, physics).
+    *   `src/audio/`: Sound and music.
+    *   `src/menu_items.c`, `src/menus.c`: UI logic.
+*   **include/**: Header files.
+*   **asm/**: Disassembled ASM files (non-decompiled).
+*   **assets/**: Extracted game assets (textures, models).
+*   **tools/**: Build tools and submodules.
 
-## Current Submodule Status
-| Submodule Path | Version (Commit) | Branch | Status |
+## Submodules Status
+
+| Submodule | Path | Description | Status |
 | :--- | :--- | :--- | :--- |
-| `doxygen-awesome-css` | `1f36200` (v2.4.1) | `main` | Up to date |
-| `tools/asm-differ` | `4eb23bc` | `main` | Up to date |
-| `tools/blender/fast64` | `67552ca` | `main` | Up to date |
-| `tools/decomp-permuter` | `ec2efee` | `main` | Up to date |
-| `tools/torch` | `73f7a4a` | `main` | Up to date |
+| **asm-differ** | `tools/asm-differ/` | Tool for comparing C output with original ASM. | Active |
+| **fast64** | `tools/blender/fast64/` | Blender plugin for N64 asset creation. | Active |
+| **decomp-permuter** | `tools/decomp-permuter/` | C code permuter for matching ASM. | Active |
+| **torch** | `tools/torch/` | Build system / Toolchain helper. | Active |
+| **doxygen-awesome-css** | `doxygen-awesome-css/` | CSS theme for Doxygen documentation. | Active |
 
-## Project Directory Structure
-The following tree outlines the project layout and the location of each submodule:
+## Build Info
+*   **Version:** 1.6.8
+*   **Target:** N64 (US v1.0) / Native PC Target (In Progress)
+*   **Compiler:** IDO 5.3 / 7.1 (N64) / GCC/Clang (PC)
 
-```
-.
-├── AGENTS.md               # Instructions for AI agents
-├── CHANGELOG.md            # Version history
-├── DASHBOARD.md            # This file
-├── HANDOFF.md              # Project handoff notes
-├── PROJECT_STRUCTURE.md    # Detailed architecture documentation
-├── VERSION                 # Current version string
-├── include/                # Header files
-├── src/                    # Source code
-├── tools/                  # Build tools and utilities
-│   ├── asm-differ/         # [Submodule] Diff tool for decompilation
-│   ├── blender/fast64/     # [Submodule] Fast64 Blender plugin
-│   ├── decomp-permuter/    # [Submodule] Code permuter for matching
-│   └── torch/              # [Submodule] Asset extraction tool
-└── doxygen-awesome-css/    # [Submodule] Doxygen theme
-```
-
-## Update Protocol
-To update these submodules to their latest upstream versions:
-```bash
-git submodule update --remote --merge
-```
-
-*Last Updated: 2024-05-23 (Build 1.0.2)*
+## Recent Changes
+*   **1.6.8:** Deep Code Audit, Unused Variable Purge, and Handoff Preparation.
+*   **1.6.7:** PC Renderer Shaders and Gfx Parsing Loop.
+*   **1.6.6:** PC Renderer Intercept and Assembly Filtering.

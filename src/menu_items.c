@@ -481,9 +481,91 @@ char* D_800E7860[] = {
 char* gTextOptionMenu[] = {
     "RETURN TO GAME SELECT",
     "SOUND MODE",
-    "COPY N64 CONTROLLER PAK",
+    "MANAGE SAVE DATA",
     "ERASE ALL DATA",
+    "EXTRAS",
 };
+
+char* gTextExtrasMenu[] = {
+    "60 FPS MODE",
+    "WIDESCREEN 16:9",
+    "FAST BOOT",
+    "DISABLE RUBBER BANDING",
+    "UNLOCK ALL",
+    "FLY CAM",
+    "RESOURCE METERS",
+    "DEBUG MODE",
+    "STICK DEADZONE",
+    "TOGGLE MUSIC",
+    "TOGGLE SFX",
+    "PRACTICE OPTIONS",
+    "CUSTOM ASSETS",
+    "RETURN",
+};
+
+char* gTextExtrasHelp[] = {
+    "RENDERS AT 60 FRAMES PER SECOND.",
+    "EXPANDS FIELD OF VIEW FOR 16:9.",
+    "SKIPS STARTUP LOGOS.",
+    "DISABLES AI SPEED ADJUSTMENT.",
+    "TEMPORARILY UNLOCKS ALL CONTENT.",
+    "TOGGLES FREE FLY CAMERA MODE.",
+    "DISPLAYS SYSTEM RESOURCE USAGE.",
+    "ENABLES DEBUG MENU AND FEATURES.",
+    "SETS ANALOG STICK DEADZONE.",
+    "TOGGLES BACKGROUND MUSIC.",
+    "TOGGLES SOUND EFFECTS.",
+    "OPEN PRACTICE MODE SETTINGS.",
+    "LOAD EXTERNAL ASSETS (MODDING).",
+    "RETURN TO OPTIONS MENU.",
+};
+
+char* gTextPracticeMenu[] = {
+    "INPUT DISPLAY",
+    "SPEEDOMETER",
+    "LEVEL RESET (L+R+S)",
+    "FLY CAM",
+    "ITEM CONTROL",
+    "LAP SKIP (L+UP)",
+    "TIMER FREEZE",
+    "SAVE GHOST",
+    "RETURN",
+};
+
+char* gTextPracticeHelp[] = {
+    "DISPLAYS CONTROLLER INPUTS.",
+    "TOGGLES ON-SCREEN SPEEDOMETER.",
+    "ENABLES L+R+START TO RESET RACE.",
+    "TOGGLES FREE FLY CAMERA MODE.",
+    "SETS FORCED ITEM (PRACTICE).",
+    "ENABLES L+D-PAD UP TO SKIP LAP.",
+    "STOPS THE RACE TIMER.",
+    "SAVES CURRENT RACE TO PC DISK.",
+    "RETURN TO EXTRAS MENU.",
+};
+
+char* gTextItemOptions[] = {
+    "DEFAULT",
+    "NONE",
+    "BANANA",
+    "BANANA BUNCH",
+    "GREEN SHELL",
+    "TRIPLE GREEN",
+    "RED SHELL",
+    "TRIPLE RED",
+    "BLUE SHELL",
+    "THUNDERBOLT",
+    "FAKE ITEM BOX",
+    "STAR",
+    "BOO",
+    "MUSHROOM",
+    "DOUBLE MUSHROOM",
+    "TRIPLE MUSHROOM",
+    "SUPER MUSHROOM",
+};
+
+char* gTextOn = "ON";
+char* gTextOff = "OFF";
 
 char* D_800E7878[] = {
     "ALL SAVED DATA WILL BE",
@@ -499,25 +581,25 @@ char* D_800E7884[] = {
 
 // In a perfect world this would be `char *D_800E7890[][4]`
 char* D_800E7890[] = {
-    "CONTROLLER 1 DOES NOT HAVE ",
-    "N64 CONTROLLER PAK",
+    "NO SAVE FILE FOUND",
+    "ON DISK",
     "",
     "",
 
     "UNABLE TO READ ",
-    "N64 CONTROLLER PAK DATA ",
-    "FROM CONTROLLER 1",
+    "SAVE FILE DATA ",
+    "FROM DISK",
     "",
 
-    "UNABLE TO CREATE GAME DATA ",
-    "FROM CONTROLLER 1 ",
-    "N64 CONTROLLER PAK",
+    "UNABLE TO CREATE SAVE FILE ",
+    "ON DISK ",
+    "",
     "",
 
     "UNABLE TO COPY GHOST ",
-    "-- INSUFFICIENT FREE PAGES ",
-    "IN CONTROLLER 1 ",
-    "N64 CONTROLLER PAK",
+    "-- DISK FULL ",
+    "",
+    "",
 };
 
 // In a perfect world this would be `char *D_800E78D0[][3]`
@@ -6874,10 +6956,128 @@ void func_800A1FB0(MenuItem* arg0) {
 
     gDisplayListHead = draw_box(gDisplayListHead, 0, 0, 0x00000140, 0x000000F0, 0, 0, 0, 0x00000064);
     switch (gSubMenuSelection) {
+        case SUB_MENU_EXTRAS_60FPS:
+        case SUB_MENU_EXTRAS_WIDESCREEN:
+        case SUB_MENU_EXTRAS_FAST_BOOT:
+        case SUB_MENU_EXTRAS_NO_RUBBER:
+        case SUB_MENU_EXTRAS_UNLOCK_ALL:
+        case SUB_MENU_EXTRAS_FLYCAM:
+        case SUB_MENU_EXTRAS_PROFILER:
+        case SUB_MENU_EXTRAS_DEBUG:
+        case SUB_MENU_EXTRAS_CUSTOM_ASSETS:
+        case SUB_MENU_EXTRAS_RETURN:
+            {
+                // Implement scrolling logic to keep the selected item on screen
+                s32 totalItems = ARRAY_COUNT(gTextExtrasMenu);
+                s32 maxVisible = 7; // Max items to display on screen at once
+                s32 selectedIndex = gSubMenuSelection - SUB_MENU_EXTRAS_MIN;
+
+                // Calculate scrolling window
+                s32 startIdx = selectedIndex - (maxVisible / 2);
+                if (startIdx < 0) startIdx = 0;
+                if (startIdx > totalItems - maxVisible) startIdx = totalItems - maxVisible;
+                if (startIdx < 0) startIdx = 0; // Failsafe if totalItems < maxVisible
+
+                s32 endIdx = startIdx + maxVisible;
+                if (endIdx > totalItems) endIdx = totalItems;
+
+                s32 drawY = 0x30;
+
+                for (i = startIdx; i < endIdx; i++) {
+                    set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_EXTRAS_MIN, i, 3);
+                    print_text_mode_1(0x32, drawY, gTextExtrasMenu[i], 0, 0.9f, 1.0f);
+
+                    if (i == selectedIndex) {
+                        spE0.column = 0x32;
+                        spE0.row = drawY;
+                    }
+
+                    // Draw corresponding value toggles
+                    set_text_color(TEXT_GREEN);
+                    switch (i) {
+                        case 0: print_text1_center_mode_1(0xE0, drawY, gEnable60FPS ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 1: print_text1_center_mode_1(0xE0, drawY, gEnableWidescreen ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 2: print_text1_center_mode_1(0xE0, drawY, gEnableFastBoot ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 3: print_text1_center_mode_1(0xE0, drawY, gDisableRubberBanding ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 4: print_text1_center_mode_1(0xE0, drawY, gUnlockAll ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 5: print_text1_center_mode_1(0xE0, drawY, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 6: print_text1_center_mode_1(0xE0, drawY, gEnableResourceMeters ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 7: print_text1_center_mode_1(0xE0, drawY, gEnableDebugMode ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        // 8: Stick Deadzone (Needs int printing, simplified for now to generic text or off)
+                        case 8: func_80057A50(0xE0, drawY, " ", gStickDeadzone); break;
+                        case 9: print_text1_center_mode_1(0xE0, drawY, gToggleMusic ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 10: print_text1_center_mode_1(0xE0, drawY, gToggleSFX ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        // 11: Practice Menu (No toggle)
+                        case 12: print_text1_center_mode_1(0xE0, drawY, gEnableCustomAssets ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                    }
+                    drawY += 0x18;
+                }
+
+                // Draw Description/Tooltip (Fixed position at bottom)
+                set_text_color(TEXT_YELLOW);
+                if (selectedIndex >= 0 && selectedIndex < ARRAY_COUNT(gTextExtrasHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextExtrasHelp[selectedIndex], 0, 0.7f, 0.7f);
+                }
+            }
+            break;
+        case SUB_MENU_PRACTICE_INPUT_DISPLAY:
+        case SUB_MENU_PRACTICE_SPEEDOMETER:
+        case SUB_MENU_PRACTICE_LEVEL_RESET:
+        case SUB_MENU_PRACTICE_FLYCAM:
+        case SUB_MENU_PRACTICE_ITEM_OPTION:
+        case SUB_MENU_PRACTICE_LAP_SKIP:
+        case SUB_MENU_PRACTICE_TIMER_FREEZE:
+        case SUB_MENU_PRACTICE_SAVE_GHOST:
+        case SUB_MENU_PRACTICE_RETURN:
+            {
+                s32 totalItems = ARRAY_COUNT(gTextPracticeMenu);
+                s32 maxVisible = 7;
+                s32 selectedIndex = gSubMenuSelection - SUB_MENU_PRACTICE_MIN;
+
+                s32 startIdx = selectedIndex - (maxVisible / 2);
+                if (startIdx < 0) startIdx = 0;
+                if (startIdx > totalItems - maxVisible) startIdx = totalItems - maxVisible;
+                if (startIdx < 0) startIdx = 0;
+
+                s32 endIdx = startIdx + maxVisible;
+                if (endIdx > totalItems) endIdx = totalItems;
+
+                s32 drawY = 0x30;
+
+                for (i = startIdx; i < endIdx; i++) {
+                    set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_PRACTICE_MIN, i, 3);
+                    print_text_mode_1(0x32, drawY, gTextPracticeMenu[i], 0, 0.9f, 1.0f);
+
+                    if (i == selectedIndex) {
+                        spE0.column = 0x32;
+                        spE0.row = drawY;
+                    }
+
+                    set_text_color(TEXT_GREEN);
+                    switch (i) {
+                        case 0: print_text1_center_mode_1(0xE0, drawY, gEnableInputDisplay ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 1: print_text1_center_mode_1(0xE0, drawY, gEnableSpeedometer ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 2: print_text1_center_mode_1(0xE0, drawY, gEnableLevelReset ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 3: print_text1_center_mode_1(0xE0, drawY, gEnableFlycam ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 4: print_text1_center_mode_1(0xE0, drawY, gTextItemOptions[gPracticeItemOption], 0, 0.9f, 1.0f); break;
+                        case 5: print_text1_center_mode_1(0xE0, drawY, gEnableLapSkip ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 6: print_text1_center_mode_1(0xE0, drawY, gPracticeTimerFreeze ? gTextOn : gTextOff, 0, 0.9f, 1.0f); break;
+                        case 7: print_text1_center_mode_1(0xE0, drawY, "SAVE TO DISK", 0, 0.9f, 1.0f); break;
+                    }
+                    drawY += 0x18;
+                }
+
+                set_text_color(TEXT_YELLOW);
+                if (selectedIndex >= 0 && selectedIndex < ARRAY_COUNT(gTextPracticeHelp)) {
+                     print_text1_center_mode_1(160, 200, gTextPracticeHelp[selectedIndex], 0, 0.7f, 0.7f);
+                }
+            }
+            break;
         case SUB_MENU_OPTION_RETURN_GAME_SELECT:
         case SUB_MENU_OPTION_SOUND_MODE:
         case SUB_MENU_OPTION_COPY_CONTROLLER_PAK:
         case SUB_MENU_OPTION_ERASE_ALL_DATA:
+        case SUB_MENU_EXTRAS:
             for (i = 0; i < ARRAY_COUNT(gTextOptionMenu); i++) {
                 set_text_color_rainbow_if_selected(gSubMenuSelection - SUB_MENU_OPTION_MIN, i, 3);
                 print_text_mode_1(0x00000032, 0x55 + (0x23 * i), gTextOptionMenu[i], 0, 0.9f, 1.0f);

@@ -1307,6 +1307,11 @@ bool is_object_visible_on_camera(s32 objectIndex, Camera* camera, u16 angle) {
     u16 temp_t2;
     s32 var_t0;
 
+    if (gEnableWidescreen) {
+        // Widen the culling angle for 16:9 (approx 4/3 ratio)
+        angle = ((u32)angle * 4) / 3;
+    }
+
     var_t0 = false;
     temp_t2 = (get_angle_between_xy(camera->pos[0], gObjectList[objectIndex].pos[0], camera->pos[2],
                                     gObjectList[objectIndex].pos[2]) +

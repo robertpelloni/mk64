@@ -207,6 +207,9 @@ void thread9_crash_screen(UNUSED void* arg0) {
                 crash_screen_draw_square(pFramebuffer);
 #ifndef DEBUG
                 while (true) {
+                    if (gEnableDebugMode) {
+                        break;
+                    }
                     read_controllers();
 
                     if (!gControllerOne->buttonPressed) {
@@ -228,7 +231,11 @@ void thread9_crash_screen(UNUSED void* arg0) {
 #if DEBUG
                 crash_screen_draw(thread);
 #else
+#ifdef CRASH_SCREEN_ENHANCEMENT
+                crash_screen_draw(thread);
+#else
                 crash_screen_draw_info(pFramebuffer, thread);
+#endif
 #endif
             }
             if (sCounter < 5) {

@@ -461,7 +461,9 @@ void podium_ceremony_loop(void) {
     render_podium_ceremony();
     func_80281540();
 #if DVDL
-    display_dvdl();
+    if (gEnableDebugMode) {
+        display_dvdl();
+    }
 #endif
     gDPFullSync(gDisplayListHead++);
     gSPEndDisplayList(gDisplayListHead++);

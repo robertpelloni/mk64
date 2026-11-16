@@ -1,16 +1,25 @@
-# Session Handoff - 2026-06-28 (v8.107.8)
+# Project Memory & Handoff Document
 
-## Executive Summary
-Successfully navigated through the remaining Retro-Modern physics mechanics for Phase 5 (Anti-Gravity) and Phase 6 (Half-Pipes).
+This document records the current state of the project, significant architectural decisions, and ongoing observations for AI models working on the repository.
 
-### Noteworthy Modifications & Fixes
-- **Phase 1 Decompilation:** Identified and mapped `func_800C3448` to `issue_audio_command` globally.
-- **PU Crash Vector Fix:** Clamped unbounded `f32` to `s32` casts in `guMtxF2L` matrix conversions (`src/os/guMtxF2L.c`), resolving float-to-int overflow exceptions that caused physics desyncs on console/strict environments.
-- **Phase 1 Decompilation:** Mapped `func_800C284C` and `func_800C29B4` to `sequence_player_play_sequence` and `sequence_player_fade_out` respectively.
-- **Phase 1 Decompilation:** Identified and mapped `func_800C9A88` to `play_race_finish_sound`.
-- **Anti-Gravity:** Added `ANTI_GRAVITY_WALL` (`0xFA`) to `SURFACE_TYPE`. `sIsAntiGravity` array tracks state. Replaced standard crashing with Spin Boosts (+20 velocity) when interacting during anti-gravity in `func_8002B8A4`.
-- **Half-Pipes:** Added `HALF_PIPE` (`0xFB`) to `SURFACE_TYPE`. Increases stickiness dramatically on vertical planes. Pops a `trigger_wood_ramp_boost` jump with upward vertical velocity upon reaching an orientation threshold representing the "lip".
-- All `player_controller.c` AST fixes were managed manually to bypass duplicate/parsing errors via awk.
+## Current Project Version: 1.6.8
 
-## Next Steps for Successor
-1. **Zero-Latency Rust Bridge:** Phase 1 and the custom physics iterations are effectively closed out. The next major instruction mandates porting these core collision sub-routines into the Rust bridge. Transition your focus away from `src/` and look towards `tools/` or how the Rust backend integrates into the `Makefile`.
+## Architectural State & Observations
+*   **Codebase:** Built on `n64decomp/mk64`. Compiling requires an original `baserom.us.z64`. The codebase contains over 1,500 instances of the `UNUSED` macro (primarily padding and legacy decomp arrays) and one remaining `TODO` flag for audio function labeling in `src/menus.c`.
+*   **Build System:** `Makefile` handles N64 hardware targets (`make -j4`). `Makefile.pc` handles native PC targets (SDL/OpenGL), defining `PC_BUILD` and filtering out raw MIPS assembly directories (`src/os/`, `src/gu/`). New C files must be explicitly added to `mk64.ld` in the `.main` segment.
+*   **Feature Toggles:** `gEnable...` and `gToggle...` variables are declared in `src/main.h` and persisted via the `SaveExtended_` API in `src/save_extended.c`.
+*   **Settings Persistence:** Extended settings are safely packed into `checksum[0]` and `onlyBestTimeTrialRecords[0].unknownBytes` within the game's EEPROM structure, bypassing standard integrity checks.
+*   **Menus:** Modifying menus involves updating `src/menus.c` (backend logic, button presses) and `src/menu_items.c` (frontend string arrays, enums, switch statements, rendering).
+*   **PC Porting (Active Focus):** The project is actively abstracting N64 dependencies. `src/pc_port/` houses stubs for filesystem (`platform_save.c`, now using `stdio.h`), audio (`platform_audio.c`), input (`platform_input.c`, overriding `osContGetReadData`), and rendering (`platform_renderer.c`).
+*   **SDL Renderer Abstraction:** `PC_RenderDisplayList` is injected into `exec_display_list` (`src/main.c`) to intercept the Fast3DEX macro stream (`gSPDisplayList`) right before RSP dispatch. The logic translates N64 `s16` coordinates to `f32`, extracts RGBA colors, and prepares element indices for `glDrawElements`. It decodes 16-bit N64 texture formats (RGBA/IA) to standard 32-bit GL_RGBA arrays within the `G_SETTILESIZE` case. An actual SDL2 window (`SDL_Window`) and `SDL_GLContext` are generated in `platform_window.c` when `PC_BUILD` is defined.
+*   **Modding:** Basic hooks (`Mod_OnGameTick`, `Mod_OnRaceStart`, `Mod_OnLapComplete`) are injected into `src/main.c` and `src/code_80057C60.c`. `src/modding/mod_assets.c` acts as a data-driven Asset Registry, toggled via the UI (`gEnableCustomAssets`).
+*   **Redundancy Check:** Ghost replay logic (`process_course_ghost_replay` / `process_player_ghost_replay`) has been refactored into `process_ghost_replay_generic` (`src/replays.c`).
+*   **Practice Tools:** Fast Reset (L+R+Start, bypasses `load_course` in `src/main.c`), Timer Freeze, Lap Skip (1P only), Item Forcing (`gPracticeItemOption` overrides `src/update_objects.c`), Speedometer, Input Display, Flycam, and Robust Save States (L+Left/Right, capturing Position, Rotation, Velocity, Held Item, Lap Count, RNG Seed `gRandomSeed16`).
+*   **Visual Enhancements:** 60 FPS uses an `osGetTime` delta (`src/main.c`). 16:9 Widescreen adjusts the FOV and pillarboxes the HUD (`guOrtho` in `src/math_util_2.c`).
+
+## Critical Rules for Next Steps
+1.  **Always refer to `LLM_INSTRUCTIONS.md` for core directives.**
+2.  Any new UI feature *must* be added to both `gTextPracticeMenu`/`gTextExtrasMenu` in `src/menu_items.c` AND its corresponding enum in `src/menu_items.h`. The enum count must map 1:1 with the string array size.
+3.  When updating the `Makefile.pc` to support the SDL renderer translation, do not modify the core `Makefile`. Keep the N64 compilation target strictly separated from the PC target.
+4.  Do not assume compilation works without the ROM. Rely on strong static analysis.
+5.  Update `VERSION`, `CHANGELOG.md`, `ROADMAP.md`, and `TODO.md` after every successful feature implementation.

@@ -83,6 +83,7 @@ u8 func_800B6828(s32);
 u8 func_800B68F4(s32);
 s32 func_800B69BC(s32);
 s32 func_800B6A68(void);
+void save_options(void);
 
 /* data */
 // these might not be in this file, but for now...

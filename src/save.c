@@ -8,8 +8,10 @@
 #include "menu_items.h"
 #include "menus.h"
 #include "save_data.h"
+#include "save_extended.h"
 #include "replays.h"
 #include "code_80057C60.h"
+#include "main.h"
 
 /*** macros ***/
 #define PFS_COMPANY_CODE(c0, c1) ((u16) (((c0) << 8) | ((c1))))
@@ -55,6 +57,49 @@ void write_save_data_grand_prix_points_and_sound_mode(void) {
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(main), (u8*) main, sizeof(Stuff));
 }
 
+/**
+ * @brief Saves current game options to the EEPROM.
+ *
+ * Packs boolean feature flags into the upper bits of the sound mode byte
+ * to persist settings without altering the save data structure size.
+ *
+ * **Packing Scheme:**
+ * - Bits 0-1: Sound Mode (Stereo/Headphone/Mono)
+ * - Bit 2: 60 FPS Mode
+ * - Bit 3: Widescreen Mode
+ * - Bit 4: Fast Boot
+ * - Bit 5: Disable Rubber Banding
+ * - Bit 6: Debug Mode
+ * - Bit 7: Fly Cam
+ *
+ * Resource Meters setting is stored in `checksum[0]` as an overflow storage.
+ */
+void save_options(void) {
+    u8 packed = (gSoundMode & 0x03);
+    if (gEnable60FPS) packed |= (1 << 2);
+    if (gEnableWidescreen) packed |= (1 << 3);
+    if (gEnableFastBoot) packed |= (1 << 4);
+    if (gDisableRubberBanding) packed |= (1 << 5);
+    if (gEnableDebugMode) packed |= (1 << 6);
+    if (gEnableFlycam) packed |= (1 << 7);
+
+    gSaveData.main.saveInfo.soundMode = packed;
+
+    write_save_data_grand_prix_points_and_sound_mode();
+
+    // Use extended save logic for other options AFTER write_save_data_grand_prix_points_and_sound_mode
+    // because compute_save_data_checksum functions (which modify checksums) are called inside it.
+    // If SaveExtended modifies checksum[0], we must apply it last before the struct write.
+    SaveExtended_Save();
+
+    // Write out the modified struct with the newly packed checksum[0] and unknownBytes
+    osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData.main), (u8*) &gSaveData.main, sizeof(Stuff));
+
+    // Persist extended options (index 0 covers bytes for first cup, but we just need the struct write)
+    func_800B559C(0);
+    update_save_data_backup();
+}
+
 void func_800B46D0(void) {
     s32 i;
 
@@ -88,6 +133,12 @@ void func_800B4728(s32 arg0) {
     func_800B45E0(arg0);
 }
 
+/**
+ * @brief Resets all save data options and progress to default values.
+ *
+ * Clears Grand Prix points and resets all enhancement settings (60FPS, Widescreen, etc.)
+ * to their default (OFF) state.
+ */
 void reset_save_data_grand_prix_points_and_sound_mode(void) {
     s32 cup_index;
     Stuff* main = &gSaveData.main;
@@ -96,8 +147,33 @@ void reset_save_data_grand_prix_points_and_sound_mode(void) {
     }
     main->saveInfo.soundMode = SOUND_STEREO;
     gSoundMode = SOUND_STEREO;
+
+    gEnable60FPS = 0;
+    gEnableWidescreen = 0;
+    gEnableFastBoot = 0;
+    gDisableRubberBanding = 0;
+    gUnlockAll = 0;
+    gEnableDebugMode = 0;
+    gEnableFlycam = 0;
+    gEnableResourceMeters = 0;
+    gStickDeadzone = 7;
+    gToggleMusic = 1;
+    gToggleSFX = 1;
+
+    gEnableInputDisplay = 0;
+    gEnableSpeedometer = 0;
+    gEnableLevelReset = 0;
+    gPracticeItemOption = 0;
+    gEnableLapSkip = 0;
+    gPracticeTimerFreeze = 0;
+    gEnableCustomAssets = 0;
+
+    // Use extended save logic to clear defaults (which updates globals and save struct)
+    SaveExtended_Save();
+
     set_sound_mode();
     write_save_data_grand_prix_points_and_sound_mode();
+    func_800B559C(0);
 }
 
 // create a magic number based on the time trial records
@@ -134,8 +210,15 @@ u8 compute_save_data_checksum_2(void) {
     return (tmp % 256);
 }
 
+/**
+ * @brief Loads save data from EEPROM and unpacks options.
+ *
+ * Reads the persistent save data and extracts the bit-packed enhancement settings
+ * from `soundMode` and `checksum[0]`.
+ */
 void load_save_data(void) {
     s32 i;
+    u8 packed;
 
     osEepromLongRead(&gSIEventMesgQueue, EEPROM_ADDR(&gSaveData), (u8*) &gSaveData, sizeof(SaveData));
     // 16: 4 cup records * 4 course records?
@@ -145,7 +228,31 @@ void load_save_data(void) {
 
     validate_save_data();
 
-    gSoundMode = gSaveData.main.saveInfo.soundMode;
+    packed = gSaveData.main.saveInfo.soundMode;
+    gSoundMode = packed & 0x03;
+    gEnable60FPS = (packed >> 2) & 1;
+    gEnableWidescreen = (packed >> 3) & 1;
+    gEnableFastBoot = (packed >> 4) & 1;
+    gDisableRubberBanding = (packed >> 5) & 1;
+    gEnableDebugMode = (packed >> 6) & 1;
+    gEnableFlycam = (packed >> 7) & 1;
+
+    // Use extended save logic to unpack
+    gEnableResourceMeters = SaveExtended_GetResourceMeters();
+    gToggleMusic = SaveExtended_GetMusic();
+    gToggleSFX = SaveExtended_GetSFX();
+    gEnableInputDisplay = SaveExtended_GetInputDisplay();
+    gStickDeadzone = SaveExtended_GetDeadzone();
+
+    if (gStickDeadzone > 15) gStickDeadzone = 7; // Safety cap
+
+    gEnableSpeedometer = SaveExtended_GetSpeedometer();
+    gEnableLevelReset = SaveExtended_GetLevelReset();
+    gPracticeItemOption = SaveExtended_GetItemOption();
+    gEnableLapSkip = SaveExtended_GetLapSkip();
+    gPracticeTimerFreeze = SaveExtended_GetTimerFreeze();
+    gEnableCustomAssets = SaveExtended_GetCustomAssets();
+
     if (gSoundMode >= NUM_SOUND_MODES) {
         gSoundMode = SOUND_MONO;
     }
@@ -423,11 +530,13 @@ bool is_cc_mode_complete(s32 cc_mode) {
 
 // Check if the 150CC mode has all 4 gold cups
 s32 has_unlocked_extra_mode(void) {
+    if (gUnlockAll) return 1;
     return is_cc_mode_complete(CC_150);
 }
 
 // Check if the Extra mode has all 4 gold cups
 s32 has_completed_extra_mode(void) {
+    if (gUnlockAll) return 1;
     return is_cc_mode_complete(CC_EXTRA);
 }
 
@@ -510,6 +619,7 @@ void update_save_data_backup(void) {
         backup->saveInfo.grandPrixPoints[cup_index] = main->saveInfo.grandPrixPoints[cup_index];
     }
     backup->saveInfo.soundMode = main->saveInfo.soundMode;
+    backup->checksum[0] = main->checksum[0]; // Sync extended settings
     backup->checksum[1] = compute_save_data_checksum_backup_1();
     backup->checksum[2] = compute_save_data_checksum_backup_2();
     osEepromLongWrite(&gSIEventMesgQueue, EEPROM_ADDR(backup), (u8*) backup, sizeof(Stuff));

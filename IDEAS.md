@@ -1,23 +1,42 @@
-# Ideas for Improvement: MK64 (Mario Kart 64 Decompilation)
+# MK64 Enhancement Ideas & Future Directions
 
-MK64 is a highly sophisticated decompilation project for Mario Kart 64. To move from "Game Preservation" to "The Ultimate Racing AI Sandbox," here are several creative ideas:
+This document outlines potential future features, refactors, and pivots for the Mario Kart 64 Enhancement project.
 
-## 1. Architectural & Bare-Metal Perspectives
-*   **The "Zero-Latency" Engine (Rust Bridge):** Port the core "Item & Collision" logic to **Rust**. Standard MK64 physics can be "Floaty" due to N64 limitations; a high-performance Rust module handling the "Modern Physics" would allow for true "Ultra-Precise" racing at 144FPS in **bobzilla**.
-*   **WASM-Native "64-Bit" Emulation:** Ensure that the decompiled code can be **cross-compiled to WASM with Shared Memory**. This would allow MK64 to run flawlessly in the browser, with the AI-native browser handling the multi-threaded rendering of complex "Rainbow Road" geometry.
+## 1. True PC Porting (Native Executable)
+Currently, this project produces an N64 ROM. A major pivot would be to create a native PC port (similar to *sm64-port* or *Ship of Harkinian*).
+*   **Rendering:** Replace the GBI/RDP commands with a modern graphics API (OpenGL, Vulkan, DirectX). This would allow for arbitrary resolutions, uncapped framerates, and texture replacement without ROM size limits.
+*   **Audio:** Replace the N64 audio synthesis loop with an SDL2/OpenAL backend.
+*   **Input:** Map keyboard/mouse and modern controllers directly to game inputs.
+*   **Benefits:** Easier modding, better performance, wider accessibility.
 
-## 2. AI & Intelligence Perspectives
-*   **Autonomous "TAS" Agent:** Integrate an agent that uses **Reinforcement Learning (RL) to "Perfect" every track**. Users could race against an AI that has analyzed 1,000,000 simulations of "Toad's Turnpike," finding the exact pixel-perfect path to avoid traffic and maximize drift boosts.
-*   **Neural "Kart" Sentinel:** Implement a background agent that performs **Visual Audit Checks on player inputs**. It could autonomously "See" if a player is using a macro for "Perfect Starts" or "Wall-Clipping," providing real-time anti-cheat enforcement on the Stone.Ledger.
+## 2. Online Multiplayer (Netcode)
+Implementing true online play would revolutionize the game.
+*   **Architecture:** Lockstep input sharing (simpler but sensitive to lag) vs. State synchronization + Rollback (complex but smoother).
+*   **Backend:** Use `ENet` or `SteamNetworkingSockets` (if PC port). For N64 hardware, maybe a serial-to-Wi-Fi adapter interface?
+*   **Challenges:** RNG synchronization is critical. The current `gRandomSeed16` must be strictly deterministic.
 
-## 3. Product & Ecosystem Perspectives
-*   **The "Level-Gen" Sandbox:** Integrate with **Jules-Autopilot**. A user could say, "Jules, create a 4-lap version of Banshee Boardwalk with 2x more lightning items," and the agent autonomously modifies the `courses/` C code and hot-reloads the game.
-*   **Embedded Kart-Racing Economy:** Integrate Proof-of-Play. Users earn tokens for "Winning Grand Prix Cups" or "Setting Local Course Records," turning nostalgic retro-gaming into a productive value-generating activity.
+## 3. Advanced Modding API
+Expand the current "Hooks" system into a full scripting environment.
+*   **Lua / Python:** Embed a lightweight interpreter to allow users to write game logic (e.g., custom game modes like "Capture the Flag" or "Elimination") without recompiling C code.
+*   **Hot-Reloading:** Allow reloading scripts/assets while the game is running.
 
-## 4. UX & Integration Perspectives
-*   **Unified "MUSE" HUD:** Create a **Custom WebGL Overlay** that mirrors the "Premium Design Standard" of Stone.Ledger. Instead of 1996 UI, users see a "Judicial Navy" and "Muted Gold" racing interface with fluid micro-animations and "Insanely Great" typography.
-*   **VR/MR "Kart" Experience:** Develop a prototype that uses **WebXR** (via the WASM build). Imagine racing through "Royal Raceway" in first-person VR, with the "Boost" and "Power-Slide" mechanics mapped to actual physical hand gestures.
+## 4. Asset Replacement System (HD Texture Pack Support)
+*   **Implementation:** Hook into the texture loading functions (`load_menu_img`, `dma_copy`). Check a "mod" directory for a replacement file (PNG/BMP) matching the texture ID/address.
+*   **Upscaling:** Implement runtime AI upscaling or support pre-scaled assets.
 
-## 5. Security & Sovereignty Perspectives
-*   **The "Private Grand-Prix" Mesh:** Implement a **P2P Multiplayer protocol (using libp2p)**. MK64 instances could host "Decentralized Lobbies," ensuring that the racing community is resilient to outages and can continue to "Battle" even without a central server.
-*   **Immutable "Race Proof":** Store the cryptographic hashes of every "World Record" race replay on **Stone.Ledger**. This provides a "Forensic Proof of Racing Supremacy," proving that you held the record for "Yoshi Valley" at a specific point in time.
+## 5. Custom Track Editor / Level Builder
+*   **In-Game Editor:** A simple tile-based editor for placing objects, walls, and checkpoints.
+*   **External Tool Integration:** Better integration with Blender/Fast64 to streamline the "import custom track" workflow.
+
+## 6. Physics Overhaul / "Pro Mode"
+*   **Toggles:** Option to disable specific physics quirks (wall bonking speed loss, tumbling).
+*   **Tuning:** Sliders for gravity, acceleration, top speed, and turning radius in the "Practice Options" menu.
+
+## 7. Ghost Data Cloud Sync
+*   **Leaderboards:** Upload time trial ghosts to a central server.
+*   **Rival Download:** Download top global ghosts to race against.
+
+## 8. Accessibility Features
+*   **Colorblind Modes:** Filters for the framebuffer.
+*   **Button Remapping:** Full in-game controller remapping.
+*   **Assist Mode:** Auto-accelerate, smart steering (keep on track).

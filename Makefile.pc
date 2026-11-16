@@ -1,0 +1,59 @@
+# Makefile for the MK64 Native PC Port
+
+# Default target
+default: all
+
+#==============================================================================#
+# Build Options                                                                #
+#==============================================================================#
+
+# Build for PC (disables N64 hardware dependencies)
+TARGET_N64 := 0
+PC_BUILD   := 1
+
+# Toolchain (Native GCC/Clang)
+CC := gcc
+CXX := g++
+
+# Directories
+SRC_DIR := src
+INCLUDE_DIR := include
+BUILD_DIR := build/pc
+
+# Source Files
+# Find all C files, but explicitly filter out N64 hardware-specific folders
+# like libultra (`src/os`, `src/gu`, `src/io`) which contain MIPS assembly
+# or hardware registers that will not compile on a native PC.
+ALL_C_FILES := $(shell find $(SRC_DIR) -name '*.c')
+
+EXCLUDE_DIRS := src/os% src/gu% src/io%
+C_FILES := $(filter-out $(EXCLUDE_DIRS), $(ALL_C_FILES))
+
+# Object Files
+O_FILES := $(C_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+
+# Flags
+CFLAGS := -Wall -Wextra -g -O2 -I$(INCLUDE_DIR) -I$(SRC_DIR) -DPC_BUILD=1 -DTARGET_N64=0
+LDFLAGS := -lm -lSDL2 -lGLEW -lGL
+
+# Executable Output
+TARGET := $(BUILD_DIR)/mk64_pc
+
+#==============================================================================#
+# Rules                                                                        #
+#==============================================================================#
+
+all: $(TARGET)
+
+$(TARGET): $(O_FILES)
+	@mkdir -p $(@D)
+	$(CC) $(O_FILES) $(LDFLAGS) -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(BUILD_DIR)
+
+.PHONY: all clean default

@@ -1,13 +1,13 @@
-# mk64 TODO
+# TODO List
 
-## High Priority
-- Port the core "Item & Collision" logic to Rust to enable the "Zero-Latency" Engine.
-- Cross-compile the decompiled code to WASM with Shared Memory for browser emulation.
-- Create missing specific documentation files required by universal instructions: `ROADMAP.md`, `CHANGELOG.md`, `HANDOFF.md`, `DEPLOY.md`, `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `GPT.md`, `copilot-instructions.md`, `MEMORY.md`.
-- Label more functions in `src/audio` (ongoing).
-- Expand documentation around memory layout and `mk64.ld`.
+## Immediate Priorities
+- [ ] **PC Input Abstraction:** Flesh out the `PC_ReadInput` stub in `platform_input.c`. Poll `SDL_GameController` and `SDL_Keyboard` to map native PC inputs to the N64 `OSContPad` bitmasks.
+- [ ] **PC Audio Backend:** Integrate `SDL_Audio` callback logic in `platform_audio.c`. Investigate how the decompiled `audio/external.c` pushes synthesized 16-bit PCM buffers to `osAiSetNextBuffer` and route that payload to the SDL queue.
 
-## Backlog
-- Build the "Level-Gen" Sandbox with AI manipulation.
-- Implement the "Private Grand-Prix" Mesh for P2P Multiplayer (using libp2p).
-- Construct a VR/MR Kart Experience utilizing WebXR.
+## Short Term
+- [ ] **PC Port:** Full SDL/OpenGL Backend (Renderer translation).
+- [ ] **Online Play:** Abstract N64 controller inputs over ENet sockets.
+
+## Long Term / Tech Debt
+- [ ] **Lua API:** Expose `Player` structs to Lua scripts loaded at runtime (PC Port only).
+- [ ] **Build System:** Improve `Makefile` dependency tracking for header changes.

@@ -116,7 +116,9 @@ void credits_loop(void) {
             func_80280000();
             func_80280038();
 #if DVDL
-            display_dvdl();
+            if (gEnableDebugMode) {
+                display_dvdl();
+            }
 #endif
             gDPFullSync(gDisplayListHead++);
             gSPEndDisplayList(gDisplayListHead++);
