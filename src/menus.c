@@ -182,7 +182,7 @@ void update_menus(void) {
                 // this is certainly a way to write these...
                 switch (gMenuSelection) {
                     case COURSE_SELECT_MENU:
-                        play_sound_global(0x19);
+                        audio_push_volume_cmd(0x19);
                         // deliberate (?) fallthru
                     case MAIN_MENU:
                     case CHARACTER_SELECT_MENU:
@@ -195,7 +195,7 @@ void update_menus(void) {
                     case START_MENU:
                         break;
                     default:
-                        trigger_menu_fade_main();
+                        menu_fade_in_main();
                 }
             }
             osViSetSpecialFeatures(sVIGammaOffDitherOn);
@@ -288,7 +288,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                     sp38->state = gSoundMode;
                 }
                 if (btnAndStick & B_BUTTON) {
-                    trigger_menu_fade_5();
+                    menu_fade_in_option();
                     play_sound2(SOUND_MENU_GO_BACK);
                     if (gSoundMode != sp38->state) {
                         save_options();
@@ -327,7 +327,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                                     return;
                                 case PFS_NO_ERROR:
-                                    func_800B6798();
+                                    read_controller_pak_2_ghost_headers();
                                     tempVar = controller_pak_1_status();
                                     switch (tempVar) {
                                         case PFS_INVALID_DATA:
@@ -336,7 +336,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                                             play_sound2(SOUND_MENU_SELECT);
                                             break;
                                         case PFS_NO_ERROR:
-                                            func_800B6708();
+                                            read_controller_pak_1_ghost_headers();
                                             break;
                                         case PFS_NO_PAK_INSERTED:
                                             gSubMenuSelection = SUB_MENU_COPY_PAK_ERROR_NO_PAK_1P;
@@ -389,7 +389,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             return;
                         }
                         case SUB_MENU_OPTION_RETURN_GAME_SELECT: {
-                            trigger_menu_fade_5();
+                            menu_fade_in_option();
                             play_sound2(SOUND_MENU_GO_BACK);
                             return;
                         }
@@ -614,7 +614,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                             break;
                         case SUB_MENU_ERASE_ERASE:
                             gSubMenuSelection = SUB_MENU_SAVE_DATA_ERASED;
-                            func_800B46D0();
+                            reset_all_save_data();
                             D_800DC5AC = 0;
                             play_sound2(SOUND_MENU_EXPLOSION);
                             break;
@@ -768,7 +768,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
             case SUB_MENU_COPY_PAK_COPYING: {
                 res = controller_pak_2_status();
                 if (res == PFS_NO_ERROR) {
-                    res = func_800B65F4(sp38->param2, sp38->param1);
+                    res = save_ghost_data_to_controller_pak(sp38->param2, sp38->param1);
                 }
                 if (res != 0) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_UNABLE_READ_FROM_2P;
@@ -778,7 +778,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 res = osPfsFindFile(&gControllerPak1FileHandle, gCompanyCode, gGameCode, (u8*) gGameName,
                                     (u8*) gExtCode, &gControllerPak1FileNote);
                 if (res == PFS_NO_ERROR) {
-                    res = func_800B6178(sp38->param1);
+                    res = load_ghost_data_from_controller_pak(sp38->param1);
                 }
                 if (res != 0) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_UNABLE_COPY_FROM_1P;
@@ -787,7 +787,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 gSubMenuSelection = SUB_MENU_COPY_PAK_COMPLETED;
                 D_8018EE10[sp38->param1].courseIndex = (sp30 + sp38->param2)->courseIndex;
-                func_800B6088(sp38->param1);
+                update_and_write_controller_pak_1_ghost_header(sp38->param1);
                 break;
             }
             case SUB_MENU_COPY_PAK_CREATE_GAME_DATA_INIT: {
@@ -800,7 +800,7 @@ void options_menu_act(struct Controller* controller, u16 controllerIdx) {
                 break;
             }
             case SUB_MENU_COPY_PAK_CREATE_GAME_DATA_DONE: {
-                if (func_800B6A68()) {
+                if (allocate_controller_pak_1_file()) {
                     gSubMenuSelection = SUB_MENU_COPY_PAK_ERROR_CANT_CREATE_1P;
                     play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                 } else if (sp30[0].ghostDataSaved) {
@@ -859,21 +859,21 @@ void data_menu_act(struct Controller* controller, UNUSED u16 controllerIdx) {
             }
             // If B pressed, go to main menu
             if ((btnAndStick & B_BUTTON) != 0) {
-                trigger_menu_fade_4();
+                menu_fade_in_data();
                 play_sound2(SOUND_MENU_GO_BACK);
                 return;
             }
             // If A pressed, go to selected course's records
             if ((btnAndStick & A_BUTTON) != 0) {
                 gCourseRecordsMenuSelection = COURSE_RECORDS_MENU_RETURN_MENU;
-                trigger_menu_fade_main();
+                menu_fade_in_main();
                 play_sound2(SOUND_MENU_OK_CLICKED);
             }
         }
         // If gSubMenuSelection is not SUB_MENU_DATA and A pressed, go to main menu
         // This condition is not reachable but this failsafe was added nonetheless
         else if ((btnAndStick & A_BUTTON) != 0) {
-            trigger_menu_fade_4();
+            menu_fade_in_data();
             play_sound2(SOUND_MENU_OK_CLICKED);
         }
     }
@@ -911,7 +911,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                 sp24 = &gSaveData.allCourseTimeTrialRecords.cupRecords[gTimeTrialDataCourseIndex / 4]
                             .courseRecords[gTimeTrialDataCourseIndex % 4];
                 if (gCourseRecordsMenuSelection == COURSE_RECORDS_MENU_ERASE_GHOST &&
-                    func_800B639C(gTimeTrialDataCourseIndex) < 0) {
+                    get_ghost_data_index_for_course(gTimeTrialDataCourseIndex) < 0) {
                     gCourseRecordsMenuSelection -= 1;
                 }
 
@@ -939,7 +939,7 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                     }
 
                     if (gCourseRecordsMenuSelection == COURSE_RECORDS_MENU_ERASE_GHOST &&
-                        func_800B639C(gTimeTrialDataCourseIndex) < 0) {
+                        get_ghost_data_index_for_course(gTimeTrialDataCourseIndex) < 0) {
                         if (sp24->unknownBytes[0] == 0) {
                             gCourseRecordsMenuSelection = COURSE_RECORDS_MENU_RETURN_MENU;
                         } else {
@@ -955,14 +955,14 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                 }
 
                 if (btnAndStick & B_BUTTON) {
-                    trigger_menu_fade_3();
+                    menu_fade_in_back();
                     play_sound2(SOUND_MENU_GO_BACK);
                 } else if (btnAndStick & A_BUTTON) {
                     if (sp28->paramf < 4.2) {
                         sp28->paramf += 4.0;
                     }
                     if (gCourseRecordsMenuSelection == COURSE_RECORDS_MENU_RETURN_MENU) {
-                        trigger_menu_fade_3();
+                        menu_fade_in_back();
                         play_sound2(SOUND_MENU_GO_BACK);
                     } else {
                         gSubMenuSelection = SUB_MENU_DATA_ERASE_CONFIRM;
@@ -1000,16 +1000,16 @@ void course_data_menu_act(struct Controller* controller, UNUSED u16 controllerId
                         res = 0;
                         switch (gCourseRecordsMenuSelection) {
                             case COURSE_RECORDS_MENU_ERASE_RECORDS: {
-                                func_800B4728(gTimeTrialDataCourseIndex);
-                                func_800B559C(gTimeTrialDataCourseIndex);
+                                reset_time_trial_records_for_course(gTimeTrialDataCourseIndex);
+                                save_update_best_time_trial_records(gTimeTrialDataCourseIndex);
                                 play_sound2(SOUND_MENU_EXPLOSION);
                                 res = -1;
                                 break;
                             }
                             case COURSE_RECORDS_MENU_ERASE_GHOST: {
-                                res = func_800B639C(gTimeTrialDataCourseIndex);
+                                res = get_ghost_data_index_for_course(gTimeTrialDataCourseIndex);
                                 if (res >= 0) {
-                                    if (func_800B69BC(res) != 0) {
+                                    if (reset_controller_pak_1_ghost_header(res) != 0) {
                                         gSubMenuSelection = SUB_MENU_DATA_CANT_ERASE;
                                         play_sound2(SOUND_MENU_FILE_NOT_FOUND);
                                     } else {
@@ -1051,7 +1051,7 @@ void logo_intro_menu_act(struct Controller* controller, UNUSED u16 controllerIdx
     if ((is_screen_being_faded() == 0) && (btnAndStick)) {
         fade_all_channel_volume_scale(0x3C);
 
-        trigger_menu_fade_main_2();
+        menu_fade_out_main();
     }
 }
 
@@ -1082,7 +1082,7 @@ void controller_pak_menu_act(struct Controller* controller, UNUSED u16 controlle
             case CONTROLLER_PAK_MENU_END:
                 if ((btnAndStick & (A_BUTTON | START_BUTTON)) != 0) {
                     play_sound2(SOUND_MENU_SELECT);
-                    trigger_menu_fade_main();
+                    menu_fade_in_main();
                     gControllerPak1State = BAD;
                     return;
                 }
@@ -1222,8 +1222,8 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
             case DEBUG_MENU_DISABLED: {
                 isDebug = false;
                 if ((gMenuDelayTimer >= 46) && (btnAndStick & (A_BUTTON | START_BUTTON))) {
-                    trigger_menu_fade_main();
-                    play_sound_global(0x19);
+                    menu_fade_in_main();
+                    audio_push_volume_cmd(0x19);
                     play_sound2(SOUND_INTRO_ENTER_MENU);
                 } else {
                     break;
@@ -1346,14 +1346,14 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 if (btnAndStick & B_BUTTON) {
                     for (i = 0; i < 16; i++) {
-                        func_800B5404(0, i);
+                        save_set_grand_prix_points(0, i);
                     }
                     play_sound2(SOUND_MENU_SELECT);
                     break;
                 } else if (btnAndStick & L_TRIG) {
                     reset_save_data_grand_prix_points_and_sound_mode();
                     for (i = 0; i < 16; i++) {
-                        func_800B5404(i / 4, i);
+                        save_set_grand_prix_points(i / 4, i);
                     }
                     play_sound2(SOUND_MENU_SELECT);
                     break;
@@ -1361,9 +1361,9 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                     reset_save_data_grand_prix_points_and_sound_mode();
                     for (i = 0; i < 16; i++) {
                         if (i % 4 == 2) {
-                            func_800B5404(0, i);
+                            save_set_grand_prix_points(0, i);
                         } else {
-                            func_800B5404(i / 4, i);
+                            save_set_grand_prix_points(i / 4, i);
                         }
                     }
                     play_sound2(SOUND_MENU_SELECT);
@@ -1380,8 +1380,8 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
 
         if (isDebug) {
             if (btnAndStick & (A_BUTTON | START_BUTTON)) {
-                trigger_menu_fade_main();
-                play_sound_global(0x19);
+                menu_fade_in_main();
+                audio_push_volume_cmd(0x19);
                 gDebugMenuSelection = DEBUG_MENU_OPTION_SELECTED;
 
                 if (controller->button & L_TRIG) {
@@ -1399,8 +1399,8 @@ void splash_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 play_sound2(SOUND_MENU_OK_CLICKED);
             } else if ((btnAndStick & B_BUTTON) && (controller->button & Z_TRIG)) {
-                trigger_menu_fade_main();
-                play_sound_global(0x19);
+                menu_fade_in_main();
+                audio_push_volume_cmd(0x19);
                 gDebugMenuSelection = DEBUG_MENU_OPTION_SELECTED;
                 gDebugGotoScene = DEBUG_GOTO_CREDITS_SEQUENCE_DEFAULT;
                 play_sound2(SOUND_MENU_OK_CLICKED);
@@ -1485,8 +1485,8 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                         break;
                 }
                 if (btnAndStick & B_BUTTON) {
-                    func_8009E0F0(0x14);
-                    play_sound_global(0x19);
+                    menu_start_transition_type_3(0x14);
+                    audio_push_volume_cmd(0x19);
                     gMenuFadeType = MENU_FADE_TYPE_BACK;
                     play_sound2(SOUND_MENU_GO_BACK);
                     break;
@@ -1499,13 +1499,13 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                 }
                 if (btnAndStick & L_TRIG) {
                     gMainMenuSelection = MAIN_MENU_OPTION;
-                    trigger_menu_fade_5();
+                    menu_fade_in_option();
                     play_sound2(SOUND_MENU_OPTION);
                     break;
                 }
                 if (btnAndStick & R_TRIG) {
                     gMainMenuSelection = MAIN_MENU_DATA;
-                    trigger_menu_fade_4();
+                    menu_fade_in_data();
                     play_sound2(SOUND_MENU_DATA);
                     break;
                 }
@@ -1611,7 +1611,7 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                 if (btnAndStick & A_BUTTON) {
                     reset_cycle_flash_menu();
                     if ((gPlayerCount == 1) && ((gGameModeMenuColumn - 1)[gPlayerCount] == 1) && (subMode == 1)) {
-                        trigger_menu_fade_4();
+                        menu_fade_in_data();
                         play_sound2(SOUND_MENU_DATA);
                     } else {
                         gMainMenuSelection = MAIN_MENU_OK_SELECT;
@@ -1647,7 +1647,7 @@ void main_menu_act(struct Controller* controller, u16 controllerIdx) {
                     break;
                 }
                 if (btnAndStick & A_BUTTON) {
-                    trigger_menu_fade_main();
+                    menu_fade_in_main();
                     play_sound2(SOUND_MENU_OK_CLICKED);
                     setup_selected_game_mode();
                     break;
@@ -1697,7 +1697,7 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
             case PLAYER_SELECT_MENU_MAIN:
                 if (gCharacterGridSelections[controllerIdx] == 0) {
                     if (btnAndStick & B_BUTTON) {
-                        trigger_menu_fade_3();
+                        menu_fade_in_back();
                         play_sound2(SOUND_MENU_GO_BACK);
                     }
                     return;
@@ -1708,16 +1708,14 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
                         gCharacterGridIsSelected[controllerIdx] = false;
                         play_sound2(SOUND_MENU_GO_BACK);
                     } else {
-                        trigger_menu_fade_3();
+                        menu_fade_in_back();
                         play_sound2(SOUND_MENU_GO_BACK);
                     }
                 }
 
                 if ((btnAndStick & A_BUTTON) && (gCharacterGridIsSelected[controllerIdx] == 0)) {
                     gCharacterGridIsSelected[controllerIdx] = true;
-                    func_800C90F4(controllerIdx,
-                                  ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) +
-                                      0x2900800E);
+                    audio_play_character_sound(controllerIdx, ((sCharacterGridOrder - 1)[gCharacterGridSelections[controllerIdx]] * 0x10) + 0x2900800E);
                 }
 
                 selected = false;
@@ -1852,9 +1850,9 @@ void player_select_menu_act(struct Controller* controller, u16 controllerIdx) {
                     break;
                 }
                 if (btnAndStick & A_BUTTON) {
-                    trigger_menu_fade_main();
+                    menu_fade_in_main();
                     play_sound2(SOUND_MENU_OK_CLICKED);
-                    func_8000F124();
+                    init_cpu_vehicles_camera_path_data();
                 }
                 break;
             default:
@@ -1898,7 +1896,7 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
                 D_800DC540 = gCupSelection;
                 gCurrentCourseId = gCupCourseOrder[gCupSelection][gCourseIndexInCup];
                 if ((btnAndStick & B_BUTTON) != 0) {
-                    trigger_menu_fade_3();
+                    menu_fade_in_back();
                     play_sound2(SOUND_MENU_GO_BACK);
                 } else if ((btnAndStick & A_BUTTON) != 0) {
                     if (gModeSelection != GRAND_PRIX) {
@@ -1931,7 +1929,7 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
                     if (gSubMenuSelection == SUB_MENU_MAP_SELECT_COURSE) {
                         gSubMenuSelection = SUB_MENU_MAP_SELECT_CUP;
                     } else {
-                        trigger_menu_fade_3();
+                        menu_fade_in_back();
                     }
                     reset_cycle_flash_menu();
                     play_sound2(SOUND_MENU_GO_BACK);
@@ -1968,8 +1966,8 @@ void course_select_menu_act(struct Controller* arg0, u16 controllerIdx) {
                     return;
                 }
                 if ((btnAndStick & A_BUTTON) != 0) {
-                    trigger_menu_fade_main();
-                    play_sound_global(0x19);
+                    menu_fade_in_main();
+                    audio_push_volume_cmd(0x19);
                     play_sound2(SOUND_MENU_OK_CLICKED);
                 }
                 break;
@@ -2013,11 +2011,11 @@ void load_menu_states(s32 menuSelection) {
             gSubMenuSelection = SUB_MENU_DATA_OPTIONS;
             break;
         case LOGO_INTRO_MENU:
-            func_800CA008(0, 0);
+            audio_set_sequence_and_volume(0, 0);
             break;
         case CONTROLLER_PAK_MENU: {
             gControllerPakMenuSelection = CONTROLLER_PAK_MENU_SELECT_RECORD;
-            func_800CA008(0, 0);
+            audio_set_sequence_and_volume(0, 0);
             break;
         }
         case 0:
@@ -2033,7 +2031,7 @@ void load_menu_states(s32 menuSelection) {
                 gPlayerCount = 4;
             }
             gScreenModeListIndex = sScreenModeIdxFromPlayerMode[gPlayerCount - 1];
-            func_800CA008(0, 0);
+            audio_set_sequence_and_volume(0, 0);
             play_sequence(SEQ_MENU_TITLE_SCREEN);
             gCourseMapInit = 0;
             break;
@@ -2042,12 +2040,12 @@ void load_menu_states(s32 menuSelection) {
         case MAIN_MENU: {
             gIsMirrorMode = 0;
             gCourseMapInit = 0;
-            func_800B5F30();
-            func_8000F0E0();
+            check_and_init_controller_pak_1();
+            reset_cpu_vehicles_camera_path_data();
 
             if (gGamestate != 0) {
-                func_800CA008(0, 0);
-                func_800CB2C4();
+                audio_set_sequence_and_volume(0, 0);
+                audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;
                 play_sequence(SEQ_MENU_MAIN_MENU);
@@ -2104,8 +2102,8 @@ void load_menu_states(s32 menuSelection) {
                         }
                         play_sound2(SOUND_MENU_SELECT_PLAYER);
                     } else {
-                        func_800CA008(0, 0);
-                        func_800CB2C4();
+                        audio_set_sequence_and_volume(0, 0);
+                        audio_game_loop_tick();
                         gGamestate = 0;
                         gGamestateNext = 0;
                         play_sequence(SEQ_MENU_MAIN_MENU);
@@ -2142,8 +2140,8 @@ void load_menu_states(s32 menuSelection) {
                 gSubMenuSelection = SUB_MENU_MAP_SELECT_CUP;
             }
             if (gGamestate != 0) {
-                func_800CA008(0, 0);
-                func_800CB2C4();
+                audio_set_sequence_and_volume(0, 0);
+                audio_game_loop_tick();
                 gGamestate = 0;
                 gGamestateNext = 0;
                 play_sequence(SEQ_MENU_MAIN_MENU);
@@ -2179,7 +2177,7 @@ void set_sound_mode(void) {
 
     pack = sSoundMenuPack;
     if ((gSoundMode == SOUND_STEREO) || (gSoundMode == SOUND_HEADPHONES) || (gSoundMode == SOUND_MONO)) {
-        issue_audio_command(pack.modes[gSoundMode] | 0xE0000000);
+        audio_push_cmd(pack.modes[gSoundMode] | 0xE0000000);
     }
 }
 

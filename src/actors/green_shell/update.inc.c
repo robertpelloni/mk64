@@ -71,8 +71,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                         shell->velocity[1] = somePosVel[1];
                         shell->velocity[2] = somePosVel[2];
                         shell->state = 2;
-                        func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                        func_800C90F4(shell->playerId,
+                        audio_play_sound_by_player_id(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                        audio_play_character_sound(shell->playerId,
                                       (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                         add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                         return;
@@ -95,8 +95,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                 if (shell->rotAngle < 0) {
                     shell->state = 2;
                     shell->someTimer = 0x001E;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    audio_play_sound_by_player_id(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    audio_play_character_sound(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                 }
@@ -105,8 +105,8 @@ void update_actor_green_shell(struct ShellActor* shell) {
                 if (shell->rotAngle > 0) {
                     shell->state = 2;
                     shell->someTimer = 0x001E;
-                    func_800C9060(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
-                    func_800C90F4(shell->playerId,
+                    audio_play_sound_by_player_id(shell->playerId, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x04));
+                    audio_play_character_sound(shell->playerId,
                                   (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x00));
                     add_green_shell_in_unexpired_actor_list((struct Actor*) shell - gActorList);
                 }
@@ -155,7 +155,7 @@ void update_actor_green_shell(struct ShellActor* shell) {
             func_802B4E30((struct Actor*) shell);
             if ((shell->unk30.surfaceDistance[0] < 0.0f) || (shell->unk30.surfaceDistance[1] < 0.0f)) {
                 shell_collision(&shell->unk30, shell->velocity);
-                func_800C98B8(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
+                audio_play_sound_by_pos(shell->pos, shell->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x54));
                 shell->flags |= 0x80;
             }
             break;

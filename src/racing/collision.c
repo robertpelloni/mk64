@@ -27,7 +27,7 @@ void nullify_displaylist(uintptr_t addr) {
     macro->words.w1 = 0;
 }
 
-void func_802AAAAC(Collision* collision) {
+void init_collision_struct(Collision* collision) {
     collision->meshIndexYX = 5000;
     collision->meshIndexZY = 5000;
     collision->meshIndexZX = 5000;
@@ -42,7 +42,7 @@ void func_802AAAAC(Collision* collision) {
     vec3f_set(collision->orientationVector, 0.0f, 1.0f, 0.0f);
 }
 
-f32 func_802AAB4C(Player* player) {
+f32 get_course_water_level(Player* player) {
     f32 playerX;
     f32 playerZ;
     s32 temp_v1;
@@ -511,17 +511,17 @@ s16 get_track_section_id(u16 index) {
     return triangle->flags & 0xFF;
 }
 
-s16 func_802ABD7C(u16 index) {
+s16 collision_check_flag_1000(u16 index) {
     CollisionTriangle* triangle = &gCollisionMesh[index];
     return triangle->flags & 0x1000;
 }
 
-s16 func_802ABDB8(u16 index) {
+s16 collision_check_flag_400(u16 index) {
     CollisionTriangle* triangle = &gCollisionMesh[index];
     return triangle->flags & 0x400;
 }
 
-s16 func_802ABDF4(u16 index) {
+s16 collision_check_flag_800(u16 index) {
     CollisionTriangle* triangle = &gCollisionMesh[index];
     return triangle->flags & 0x800;
 }
@@ -534,7 +534,7 @@ f32 calculate_surface_height(f32 x, f32 y, f32 z, u16 index) {
     return ((triangle->normalX * x) + (triangle->normalZ * z) + triangle->distance) / -triangle->normalY;
 }
 
-f32 func_802ABEAC(Collision* collision, Vec3f pos) {
+f32 collision_calculate_surface_height(Collision* collision, Vec3f pos) {
     if (collision->unk34 == 1) {
         return calculate_surface_height(pos[0], pos[1], pos[2], collision->meshIndexZX);
     }

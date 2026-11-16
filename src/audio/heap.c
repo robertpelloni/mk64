@@ -187,7 +187,7 @@ void temporary_pool_clear(struct TemporaryPool* temporary) {
     temporary->entries[1].id = -1;
 }
 
-void func_800B90E0(struct SoundAllocPool* pool) {
+void audio_reset_alloc_pool(struct SoundAllocPool* pool) {
     pool->numAllocatedEntries = 0;
     pool->cur = pool->start;
 }
@@ -199,7 +199,7 @@ void sound_init_main_pools(s32 arg0) {
 }
 
 // inspired by session_pools_init in sm64
-void func_800B914C(struct PoolSplit* arg0) {
+void audio_init_session_pools(struct PoolSplit* arg0) {
     gAudioSessionPool.cur = gAudioSessionPool.start;
     sound_alloc_pool_init(&gNotesAndBuffersPool, soundAlloc(&gAudioSessionPool, arg0->wantSeq), arg0->wantSeq);
     sound_alloc_pool_init(&gSeqAndBankPool, soundAlloc(&gAudioSessionPool, arg0->wantCustom), arg0->wantCustom);
@@ -509,7 +509,7 @@ void* get_bank_or_seq_inner(s32 poolIdx, s32 arg1, s32 bankId) {
     return NULL;
 }
 
-void func_800B9BE4(f32 arg0, f32 arg1, u16* arg2) {
+void audio_generate_resampling_filter(f32 arg0, f32 arg1, u16* arg2) {
     s32 i;
     f32 tmp[16];
 
@@ -638,7 +638,7 @@ void audio_reset_session(void) {
     temp = (gAudioSessionPool.size - totalMem) - 0x100;
     sSessionPoolSplit.wantSeq = temp;
     sSessionPoolSplit.wantCustom = totalMem;
-    func_800B914C(&sSessionPoolSplit);
+    audio_init_session_pools(&sSessionPoolSplit);
     sSeqAndBankPoolSplit.wantPersistent = persistentMem;
     sSeqAndBankPoolSplit.wantTemporary = temporaryMem;
     seq_and_bank_pool_init(&sSeqAndBankPoolSplit);
@@ -694,7 +694,7 @@ void audio_reset_session(void) {
             }
         }
     }
-    func_800BB030(gMaxSimultaneousNotes);
+    audio_alloc_sample_dma_buffers(gMaxSimultaneousNotes);
     osWritebackDCacheAll();
 }
 
@@ -712,7 +712,7 @@ void* unk_pool1_lookup(s32 poolIdx, s32 id) {
 // SM64 does not appear to have a function
 // comparable to this one, not a clue what
 // this one is doing.
-void func_800BA8B0(s32 poolIdx, s32 id) {
+void audio_load_seq_to_pool(s32 poolIdx, s32 id) {
     ALSeqFile* sp3C;
     s32 temp_a2;
     u32 temp_a1;
@@ -755,7 +755,7 @@ void func_800BA8B0(s32 poolIdx, s32 id) {
                     break;
                 case 1: /* switch 1 */
                     gCtlEntries[id].instruments = (struct Instrument**) (gUnkPool1.entries[temp_a2].ptr + 4);
-                    func_800BB584(id);
+                    audio_patch_bank(id);
                     if (gBankLoadStatus[id] != 5) {
                         gBankLoadStatus[id] = 5;
                     }

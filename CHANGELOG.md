@@ -24,6 +24,17 @@
 ### Added
 - **PC Renderer Abstraction:** Added `src/pc_port/platform_renderer.c`. Intercepted the N64 Fast3D display list (`Gfx*`) directly within `exec_display_list` in `src/main.c`. This provides the critical hook for translating `gSP*` macros to OpenGL calls in the future.
 
+## [8.107.6] - 2026-07-01
+### Added
+- Created `DASHBOARD.md` to map out the status of new mechanics and features per the `UNIVERSAL_LLM_INSTRUCTIONS.md`.
+
+### Changed
+- Massively refactored and renamed `func_800C...` functions and `D_80...` global data variables in `src/audio/external.c` and `src/audio/port_eu.c` to improve code readability and maintainability.
+- Renamed ghost data and save management functions in `src/save.c`, `src/menus.c`, and `src/replays.c` to reflect their true purposes.
+
+## [8.107.4] - 2026-05-20
+### Removed
+- Removed the `bobcoin` submodule to decouple unused blockchain experimental UI from the core engine repo.
 ### Changed
 - **Makefile.pc:** Added a `filter-out` routine to explicitly ignore N64 hardware-specific assembly files (e.g., `src/os/`, `src/gu/`) during native PC builds.
 
@@ -31,79 +42,7 @@
 ### Added
 - **Native PC Build:** Created `Makefile.pc` to compile the C codebase using a modern GCC/Clang toolchain. It defines the `PC_BUILD` macro, filters out N64 hardware dependencies (`TARGET_N64=0`), and sets up output directories for the `mk64_pc` executable.
 
-## [1.6.4] - PC Input & Filesystem Finalization
-### Added
-- **PC Input Abstraction:** Created `src/pc_port/platform_input.c` and `.h`. Hooked `PC_ReadInput` into the primary controller polling function (`read_controllers` in `main.c`) to allow native SDL controller mapping to override N64 struct states.
-- **PC Filesystem Abstraction:** Fully implemented `PC_SaveFile` and `PC_LoadFile` in `platform_save.c` using standard C `<stdio.h>` calls (`fopen`, `fread`, `fwrite`) wrapped in `#ifdef PC_BUILD` guards.
-
-## [1.6.3] - Modding UI & Audio Abstraction
-### Added
-- **Custom Assets Toggle:** Added a "CUSTOM ASSETS" option to the Extras menu. This persists to EEPROM and controls whether the game attempts to load external textures/models via the Modding Asset Registry.
-- **PC Audio Abstraction:** Created `src/pc_port/platform_audio.c` as a skeleton for future SDL audio backend integration.
-
-### Changed
-- **TODO Cleanup:** Re-prioritized roadmap and todo lists to focus on advanced modding and PC backend ports.
-
-## [1.6.0] - PC Porting & Modding Support
-### Added
-- **PC Save System:** Abstracted save logic to use file I/O instead of N64 Controller Pak calls. Added support for saving "Practice Ghosts" to disk.
-- **Modding Hooks:** Implemented `Mod_OnRaceStart`, `Mod_OnLapComplete`, and `Mod_OnGameTick` hooks for external scripting support.
-- **Asset Registry:** Added `mod_assets.c` to facilitate data-driven asset replacement (textures/models).
-
-### Changed
-- **UI Updates:** Renamed "Controller Pak" menu options to "Save File" / "Disk" to reflect the PC environment.
-- **Refactoring:** Created `src/pc_port/` and `src/modding/` directories to separate platform-specific logic.
-
-## [1.5.2] - Save System Safety & Optimization
-### Changed
-- **Performance:** Optimized menu save logic. Settings like "Stick Deadzone" and "Item Control" now only trigger a save when exiting the menu, preventing EEPROM wear and menu lag.
-- **Verification:** Confirmed that the extended settings storage in `checksum[0]` is safe and does not conflict with the game's integrity checks or checksum calculations.
-
-## [1.5.0] - Robust Save States & Feedback
-### Added
-- **Robust Save States:** Save States (L + D-Pad Left/Right) now preserve:
-    - **Held Item:** The item currently in the player's inventory.
-    - **Lap Count:** The current lap number.
-    - **RNG State:** The Random Number Generator seed, ensuring consistent outcomes for deterministic events.
-- **On-Screen Feedback:** Added "STATE SAVED" and "STATE LOADED" text overlays to provide immediate visual confirmation of save state actions.
-
-### Changed
-- Updated `MANUAL.md` with detailed Save State information.
-- Refined Save State logic in `src/main.c` to integrate deeply with player and game state variables.
-
-## [1.4.0] - Practice Tools: Lap Skip & Timer Freeze
-### Added
-- **Lap Skip:** Added "Lap Skip" feature (L + D-Pad Up) to instantly complete the current lap. Useful for practicing specific laps or finishing races quickly.
-- **Timer Freeze:** Added "Timer Freeze" feature to stop the race timer. Useful for infinite practice sessions.
-- **Practice Menu:** Updated Practice Menu UI to include Lap Skip and Timer Freeze options with tooltips.
-- **Persistence:** Both features are saved to extended save data.
-
-### Changed
-- Updated `MANUAL.md` with new features.
-- Updated `ROADMAP.md` and `TODO.md` to reflect progress.
-- Extended save data logic to support `unknownBytes[1]` for Timer Freeze persistence.
-
-## [1.3.0] - Item Control & Practice Enhancements
-### Added
-- **Item Control:** New "Practice Options" menu item allowing players to force specific items (Banana, Shells, Stars, etc.) or disable items completely.
-- **UI Descriptions:** Added on-screen help text/tooltips for all Extras and Practice menu options to explain functionality.
-- **Practice Menu Polish:** Reorganized Practice Menu with "Item Control" and improved navigation.
-- **Persistence:** Item Control settings are saved to EEPROM (extended save data).
-
-### Changed
-- Updated `MANUAL.md` with new features.
-- Updated `ROADMAP.md` and `TODO.md` to reflect progress.
-
-## [1.2.0] - Audio & Deadzone
-### Added
-- Analog Stick Deadzone configuration.
-- Music and SFX toggles.
-- Robust save data persistence for new settings using `checksum[0]` packing.
-
-## [1.1.0] - Practice Tools
-### Added
-- Input Display.
-- Speedometer.
-- Level Reset (L+R+Start).
-- Fly Cam.
-- Widescreen, 60FPS, Fast Boot.
+## [8.107.2] - 2026-05-19
+### Updated
+- Synced `tools/torch` and `tools/blender/fast64` submodules to latest upstream commits.
+- Renamed remaining func_800... routines in src/racing/race_logic.c and src/racing/actors.c to descriptive names.

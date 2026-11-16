@@ -9,27 +9,27 @@
 #include "audio/heap.h"
 #include "audio/data.h"
 
-OSMesgQueue D_801937C0;
-OSMesgQueue D_801937D8;
-OSMesgQueue D_801937F0;
-OSMesgQueue D_80193808;
+OSMesgQueue gAudioSyncQueue;
+OSMesgQueue gAudioCmdQueue;
+OSMesgQueue gAudioResetQueue;
+OSMesgQueue gAudioResetQueue2;
 
 struct EuAudioCmd sAudioCmd[0x100];
 
 // Seems oversized by 1
-OSMesg D_80194020[2];
-OSMesg D_80194028[4];
-OSMesg D_80194038[1];
-OSMesg D_8019403C[1];
+OSMesg gAudioSyncMesgBuf[2];
+OSMesg gAudioCmdMesgBuf[4];
+OSMesg gAudioResetMesgBuf[1];
+OSMesg gAudioResetMesgBuf2[1];
 
-u8 D_800EA3A0[] = { 0, 0, 0, 0 };
+u8 gAudioCmdWriteIndex[] = { 0, 0, 0, 0 };
 
-u8 D_800EA3A4[] = { 0, 0, 0, 0 };
+u8 gAudioCmdReadIndex[] = { 0, 0, 0, 0 };
 
-OSMesgQueue* D_800EA3A8 = &D_801937C0;
-OSMesgQueue* D_800EA3AC = &D_801937D8;
-OSMesgQueue* D_800EA3B0 = &D_801937F0;
-OSMesgQueue* D_800EA3B4 = &D_80193808;
+OSMesgQueue* gAudioSyncQueuePtr = &gAudioSyncQueue;
+OSMesgQueue* gAudioCmdQueuePtr = &gAudioCmdQueue;
+OSMesgQueue* gAudioResetQueuePtr = &gAudioResetQueue;
+OSMesgQueue* gAudioResetQueue2Ptr = &gAudioResetQueue2;
 
 char port_eu_unused_string0[] = "DAC:Lost 1 Frame.\n";
 char port_eu_unused_string1[] = "DMA: Request queue over.( %d )\n";
@@ -38,11 +38,11 @@ char port_eu_unused_string3[] = "Warning: WaveDmaQ contains %d msgs.\n";
 char port_eu_unused_string4[] = "Audio:now-max tasklen is %d / %d\n";
 char port_eu_unused_string5[] = "Audio:Warning:ABI Tasklist length over (%d)\n";
 
-s32 D_800EA484 = 128;
+s32 gMaxAudioCmds_eu = 128;
 
 char port_eu_unused_string6[] = "AudioSend: %d -> %d (%d)\n";
 
-s32 D_800EA4A4 = 0;
+s32 gMaxAudioCmdLength = 0;
 
 char port_eu_unused_string7[] = "Undefined Port Command %d\n";
 
@@ -62,7 +62,7 @@ struct SPTask* create_next_audio_frame_task(void) {
     if ((gAudioFrameCount % gAudioBufferParameters.presetUnk4) != 0) {
         return NULL;
     }
-    osSendMesg(D_800EA3A8, (OSMesg) gAudioFrameCount, OS_MESG_NOBLOCK);
+    osSendMesg(gAudioSyncQueuePtr, (OSMesg) gAudioFrameCount, OS_MESG_NOBLOCK);
 
     gAudioTaskIndex ^= 1;
     gCurrAiBufferIndex++;
@@ -92,14 +92,14 @@ struct SPTask* create_next_audio_frame_task(void) {
     }
     gCurrAudioFrameDmaCount = 0;
     decrease_sample_dma_ttls();
-    if (osRecvMesg(D_800EA3B0, &sp58, 0) != -1) {
+    if (osRecvMesg(gAudioResetQueuePtr, &sp58, 0) != -1) {
         gAudioResetPresetIdToLoad = (u8) (u32) sp58;
         gAudioResetStatus = 5;
     }
     if (gAudioResetStatus != 0) {
         if (audio_shut_down_and_reset_step() == 0) {
             if (gAudioResetStatus == 0) {
-                osSendMesg(D_800EA3B4, (OSMesg) (u32) gAudioResetPresetIdToLoad, OS_MESG_NOBLOCK);
+                osSendMesg(gAudioResetQueue2Ptr, (OSMesg) (u32) gAudioResetPresetIdToLoad, OS_MESG_NOBLOCK);
             }
             return NULL;
         }
@@ -119,8 +119,8 @@ struct SPTask* create_next_audio_frame_task(void) {
     if (gAiBufferLengths[index] > gAudioBufferParameters.maxAiBufferLength) {
         gAiBufferLengths[index] = gAudioBufferParameters.maxAiBufferLength;
     }
-    if (osRecvMesg(D_800EA3AC, &sp54, 0) != -1) {
-        func_800CBCB0((u32) sp54);
+    if (osRecvMesg(gAudioCmdQueuePtr, &sp54, 0) != -1) {
+        audio_process_mac_cmds((u32) sp54);
     }
     gAudioCmd = synthesis_execute((Acmd*) gAudioCmd, &writtenCmds, currAiBuffer, gAiBufferLengths[index]);
     gAudioRandom = osGetCount() * (gAudioRandom + gAudioFrameCount);
@@ -150,8 +150,8 @@ struct SPTask* create_next_audio_frame_task(void) {
     task->yield_data_ptr = NULL;
     task->yield_data_size = 0;
     writtenCmdsCopy = writtenCmds;
-    if (D_800EA484 < writtenCmds) {
-        D_800EA484 = writtenCmdsCopy;
+    if (gMaxAudioCmds_eu < writtenCmds) {
+        gMaxAudioCmds_eu = writtenCmdsCopy;
     }
     return gAudioTask;
 }
@@ -167,7 +167,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
         case 0x82:
         case 0x88:
             load_sequence(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
-            func_800CBA64(cmd->u.s.bankId, cmd->u2.as_s32);
+            audio_fade_in_sequence_player(cmd->u.s.bankId, cmd->u2.as_s32);
             break;
 
         case 0x83:
@@ -198,7 +198,7 @@ void eu_process_audio_cmd(struct EuAudioCmd* cmd) {
             }
             break;
         case 0xF3:
-            func_800BB388(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
+            audio_preload_instrument(cmd->u.s.bankId, cmd->u.s.arg2, cmd->u.s.arg3);
             break;
     }
 }
@@ -215,7 +215,7 @@ void seq_player_fade_to_zero_volume(s32 arg0, s32 fadeOutTime) {
     player->fadeVelocity = -(player->fadeVolume / fadeOutTime);
 }
 
-void func_800CBA64(s32 playerIndex, s32 fadeInTime) {
+void audio_fade_in_sequence_player(s32 playerIndex, s32 fadeInTime) {
     struct SequencePlayer* player;
 
     if (fadeInTime != 0) {
@@ -229,53 +229,53 @@ void func_800CBA64(s32 playerIndex, s32 fadeInTime) {
 }
 
 void port_eu_init_queues(void) {
-    D_800EA3A0[0] = 0;
-    D_800EA3A4[0] = 0;
-    osCreateMesgQueue(D_800EA3A8, D_80194020, 1);
-    osCreateMesgQueue(D_800EA3AC, D_80194028, 4);
-    osCreateMesgQueue(D_800EA3B0, D_80194038, 1);
-    osCreateMesgQueue(D_800EA3B4, D_8019403C, 1);
+    gAudioCmdWriteIndex[0] = 0;
+    gAudioCmdReadIndex[0] = 0;
+    osCreateMesgQueue(gAudioSyncQueuePtr, gAudioSyncMesgBuf, 1);
+    osCreateMesgQueue(gAudioCmdQueuePtr, gAudioCmdMesgBuf, 4);
+    osCreateMesgQueue(gAudioResetQueuePtr, gAudioResetMesgBuf, 1);
+    osCreateMesgQueue(gAudioResetQueue2Ptr, gAudioResetMesgBuf2, 1);
 }
 
-void func_800CBB48(s32 arg0, s32* arg1) {
-    struct EuAudioCmd* cmd = &sAudioCmd[D_800EA3A0[0] & 0xff];
+void eu_audio_cmd_send_raw(s32 arg0, s32* arg1) {
+    struct EuAudioCmd* cmd = &sAudioCmd[gAudioCmdWriteIndex[0] & 0xff];
     cmd->u.first = arg0;
     cmd->u2.as_u32 = *arg1;
-    D_800EA3A0[0]++;
+    gAudioCmdWriteIndex[0]++;
 }
 
-void func_800CBB88(u32 arg0, f32 arg1) {
-    func_800CBB48(arg0, (s32*) &arg1);
+void eu_audio_cmd_send_f32(u32 arg0, f32 arg1) {
+    eu_audio_cmd_send_raw(arg0, (s32*) &arg1);
 }
 
-void func_800CBBB8(u32 arg0, u32 arg1) {
-    func_800CBB48(arg0, (s32*) &arg1);
+void eu_audio_cmd_send_u32(u32 arg0, u32 arg1) {
+    eu_audio_cmd_send_raw(arg0, (s32*) &arg1);
 }
 
-void func_800CBBE8(u32 arg0, s8 arg1) {
+void eu_audio_cmd_send_byte(u32 arg0, s8 arg1) {
     s32 sp34 = arg1 << 24;
-    func_800CBB48(arg0, &sp34);
+    eu_audio_cmd_send_raw(arg0, &sp34);
 }
 
-//! @todo clenanup, something's weird with the variables. D_800EA4A4 is probably EuAudioCmd bc of the + 0x100
-void func_800CBC24(void) {
+//! @todo clenanup, something's weird with the variables. gMaxAudioCmdLength is probably EuAudioCmd bc of the + 0x100
+void eu_audio_cmd_flush(void) {
     s32 temp_t6;
     s32 test;
     OSMesg thing;
-    temp_t6 = D_800EA3A0[0] - D_800EA3A4[0];
+    temp_t6 = gAudioCmdWriteIndex[0] - gAudioCmdReadIndex[0];
     test = (u8) temp_t6;
     test = (test + 0x100) & 0xFF;
     do {
     } while (0);
-    if (D_800EA4A4 < test) {
-        D_800EA4A4 = test;
+    if (gMaxAudioCmdLength < test) {
+        gMaxAudioCmdLength = test;
     }
-    thing = (OSMesg) ((D_800EA3A0[0] & 0xFF) | ((D_800EA3A4[0] & 0xFF) << 8));
-    osSendMesg(D_800EA3AC, thing, 0);
-    D_800EA3A4[0] = D_800EA3A0[0];
+    thing = (OSMesg) ((gAudioCmdWriteIndex[0] & 0xFF) | ((gAudioCmdReadIndex[0] & 0xFF) << 8));
+    osSendMesg(gAudioCmdQueuePtr, thing, 0);
+    gAudioCmdReadIndex[0] = gAudioCmdWriteIndex[0];
 }
 
-void func_800CBCB0(u32 arg0) {
+void audio_process_mac_cmds(u32 arg0) {
     struct EuAudioCmd* cmd;
     struct SequencePlayer* seqPlayer;
     struct SequenceChannel* chan;

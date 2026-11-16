@@ -162,8 +162,8 @@ void func_800AFF58(Vtx* arg0) {
     }
 }
 
-void func_800B0004(void) {
-    Vtx* vtxs;
+void render_course_selection_menu(void) {
+    Vtx *vtxs;
     s32 res1;
     s32 res2;
     UNUSED u32 pad[0x4];

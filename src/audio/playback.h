@@ -38,7 +38,7 @@ void note_init(struct Note* note);
 void seq_channel_layer_decay_release_internal(struct SequenceChannelLayer* seqLayer, s32 target);
 void seq_channel_layer_note_decay(struct SequenceChannelLayer* seqLayer);
 void seq_channel_layer_note_release(struct SequenceChannelLayer* seqLayer);
-void func_800BD8F4(struct Note* note, struct SequenceChannelLayer* seqLayer);
+void audio_note_release_and_take_ownership(struct Note* note, struct SequenceChannelLayer* seqLayer);
 void note_release_and_take_ownership(struct Note* note, struct SequenceChannelLayer* seqLayer);
 struct Note* alloc_note_from_disabled(struct NotePool* pool, struct SequenceChannelLayer* seqLayer);
 struct Note* alloc_note_from_decaying(struct NotePool* pool, struct SequenceChannelLayer* seqLayer);

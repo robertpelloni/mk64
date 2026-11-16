@@ -7,18 +7,18 @@
 #define NO_COLLISION 0x0
 
 void nullify_displaylist(uintptr_t);
-void func_802AAAAC(Collision*);
-f32 func_802AAB4C(Player*);
+void init_collision_struct(Collision*);
+f32 get_course_water_level(Player*);
 s32 check_collision_zx(Collision*, f32, f32, f32, f32, u16);
 s32 check_collision_yx(Collision*, f32, f32, f32, f32, u16);
 s32 check_collision_zy(Collision*, f32, f32, f32, f32, u16);
 s8 get_surface_type(u16);
 s16 get_track_section_id(u16);
-s16 func_802ABD7C(u16);
-s16 func_802ABDB8(u16);
-s16 func_802ABDF4(u16);
+s16 collision_check_flag_1000(u16);
+s16 collision_check_flag_400(u16);
+s16 collision_check_flag_800(u16);
 f32 calculate_surface_height(f32, f32, f32, u16);
-f32 func_802ABEAC(Collision*, Vec3f);
+f32 collision_calculate_surface_height(Collision*, Vec3f);
 void shell_collision(Collision*, Vec3f);
 void process_shell_collision(Vec3f, f32, Vec3f, f32);
 u16 player_terrain_collision(Player*, KartTyre*, f32, f32, f32);

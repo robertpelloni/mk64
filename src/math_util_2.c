@@ -388,14 +388,14 @@ UNUSED s32 func_800416AC(f32 arg0, f32 arg1) {
     return atan2s(arg1, arg0);
 }
 
-f32 func_800416D8(f32 x, f32 z, u16 angle) {
+f32 math_calc_x_rotated(f32 x, f32 z, u16 angle) {
     f32 cosAngle;
 
     cosAngle = coss(angle);
     return (cosAngle * x) - (sins(angle) * z);
 }
 
-f32 func_80041724(f32 x, f32 z, u16 angle) {
+f32 math_calc_z_rotated(f32 x, f32 z, u16 angle) {
     f32 sinAngle;
 
     sinAngle = sins(angle);

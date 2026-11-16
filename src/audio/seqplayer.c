@@ -1217,7 +1217,7 @@ void sequence_player_process_sequence(struct SequencePlayer* seqPlayer) {
         }
         if (seqPlayer->bankDmaRemaining == 0) {
             seqPlayer->bankDmaInProgress = false;
-            func_800BB584(seqPlayer->loadingBankId);
+            audio_patch_bank(seqPlayer->loadingBankId);
             if (gBankLoadStatus[seqPlayer->loadingBankId] != 5) {
                 gBankLoadStatus[seqPlayer->loadingBankId] = 2;
             }

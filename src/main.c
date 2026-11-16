@@ -772,7 +772,7 @@ void race_logic_loop(void) {
     gMatrixObjectCount = 0;
     gMatrixEffectCount = 0;
     if (gIsGamePaused != 0) {
-        func_80290B14();
+        update_all_cameras();
     }
     if (gIsInQuitToMenuTransition != 0) {
         func_802A38B4();
@@ -858,7 +858,7 @@ void race_logic_loop(void) {
                     if (D_8015011E && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
-                    func_802909F0();
+                    evaluate_all_player_collisions();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
                     //func_8001EE98(gPlayerOneCopy, camera1, 0);
@@ -867,7 +867,7 @@ void race_logic_loop(void) {
                     func_80059AC8();
                     update_course_actors();
                     course_update_water();
-                    func_8028FCBC();
+                    update_race_state_machine();
                 }
                 func_80022744();
             }
@@ -922,7 +922,7 @@ void race_logic_loop(void) {
                     if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
-                    func_802909F0();
+                    evaluate_all_player_collisions();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
                     func_8001EE98(gPlayerOneCopy, camera1, 0);
@@ -933,7 +933,7 @@ void race_logic_loop(void) {
                     func_80059AC8();
                     update_course_actors();
                     course_update_water();
-                    func_8028FCBC();
+                    update_race_state_machine();
                 }
                 func_80022744();
             }
@@ -970,7 +970,7 @@ void race_logic_loop(void) {
                     if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
-                    func_802909F0();
+                    evaluate_all_player_collisions();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
                     func_8001EE98(gPlayerOneCopy, camera1, 0);
@@ -981,7 +981,7 @@ void race_logic_loop(void) {
                     func_80059AC8();
                     update_course_actors();
                     course_update_water();
-                    func_8028FCBC();
+                    update_race_state_machine();
                 }
                 func_80022744();
             }
@@ -1040,7 +1040,7 @@ void race_logic_loop(void) {
                     if (D_8015011E != 0 && !gPracticeTimerFreeze) {
                         gCourseTimer += COURSE_TIMER_ITER;
                     }
-                    func_802909F0();
+                    evaluate_all_player_collisions();
                     evaluate_collision_for_players_and_actors();
                     handle_a_press_for_all_players_during_race();
                     func_8001EE98(gPlayerOneCopy, camera1, 0);
@@ -1055,7 +1055,7 @@ void race_logic_loop(void) {
                     func_80059AC8();
                     update_course_actors();
                     course_update_water();
-                    func_8028FCBC();
+                    update_race_state_machine();
                 }
                 func_80022744();
             }
@@ -1464,10 +1464,10 @@ void thread5_game_loop(UNUSED void* arg) {
     gNmiUnknown6 = &pAppNmiBuffer[28]; // 4  u8's, tracking number of Battle mode wins by player 1/2/3/4
     rendering_init();
     read_controllers();
-    func_800C5CB8();
+    audio_init();
 
     while (true) {
-        func_800CB2C4();
+        audio_game_loop_tick();
 
         // Update the gamestate if it has changed (racing, menus, credits, etc.).
         if (gGamestateNext != gGamestate) {

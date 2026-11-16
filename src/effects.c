@@ -213,8 +213,8 @@ void func_8008C528(Player* player, s8 playerIndex) {
     player->unk_042 = 0;
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (temp_v1 * 0x10) + 0x29008005);
-        func_800C9060(playerIndex, SOUND_ACTION_EXPLOSION);
+        audio_play_character_sound(playerIndex, (temp_v1 * 0x10) + 0x29008005);
+        audio_play_sound_by_player_id(playerIndex, SOUND_ACTION_EXPLOSION);
     } else {
         play_cpu_sound_effect(playerIndex, player);
     }
@@ -286,7 +286,7 @@ void add_spinout_effect(Player* player, s8 playerIndex) {
 
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
             ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-            func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008003);
+            audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008003);
         } else {
             play_cpu_sound_effect(playerIndex, player);
         }
@@ -419,7 +419,7 @@ void apply_banana_near_spinout_effect(Player* player, s8 playerIndex) {
                 player->kartGraphics |= WHISTLE;
                 player->effects &= ~BANANA_SPINOUT_SAVE_EFFECT;
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
-                    func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008008);
+                    audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008008);
                     swerve_timer = 0;
                 }
             }
@@ -490,7 +490,7 @@ void apply_driving_near_spinout_effect(Player* player, s8 playerIndex) {
                 player->kartGraphics |= WHISTLE;
                 player->effects &= ~BANANA_SPINOUT_SAVE_EFFECT;
                 if ((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) {
-                    func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008008);
+                    audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008008);
                     swerve_timer = 0;
                 }
             }
@@ -531,13 +531,13 @@ void trigger_shroom(Player* player, s8 playerIndex) {
     if (D_8015F890 != 1) {
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
             ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-            func_800C9250(playerIndex);
-            func_800C9060(playerIndex, 0x1900A40B);
+            audio_play_character_sound_2901(playerIndex);
+            audio_play_sound_by_player_id(playerIndex, 0x1900A40B);
         }
     } else {
         if (player == gPlayerOne) {
-            func_800C9250(playerIndex);
-            func_800C9060(playerIndex, 0x1900A40B);
+            audio_play_character_sound_2901(playerIndex);
+            audio_play_sound_by_player_id(playerIndex, 0x1900A40B);
         }
     }
 
@@ -584,12 +584,12 @@ void func_8008D570(Player* player, s8 playerIndex) {
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C9060(playerIndex, 0x19008002);
+        audio_play_sound_by_player_id(playerIndex, 0x19008002);
     }
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x2900800C);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x2900800C);
     }
 }
 
@@ -643,7 +643,7 @@ void func_8008D7B0(Player* player, s8 playerIndex) {
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008003);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008003);
     }
 }
 
@@ -722,7 +722,7 @@ void trigger_squish(Player* player, s8 playerIndex) {
         }
 
         if (((player->type & PLAYER_HUMAN) != 0) && ((player->effects & SQUISH_EFFECT) == 0)) {
-            func_800C90F4(playerIndex, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x05));
+            audio_play_character_sound(playerIndex, (player->characterId * 0x10) + SOUND_ARG_LOAD(0x29, 0x00, 0x80, 0x05));
         }
 
         player->effects |= SQUISH_EFFECT;
@@ -755,7 +755,7 @@ void apply_hit_effect(Player* player, s8 playerIndex) {
                     D_8018D990[playerIndex] = 1;
                     player->unk_238 = 0;
                     if ((player->type & PLAYER_HUMAN) != 0) {
-                        func_800C9060(playerIndex, 0x1901904B);
+                        audio_play_sound_by_player_id(playerIndex, 0x1901904B);
                         break;
                     }
                 }
@@ -765,7 +765,7 @@ void apply_hit_effect(Player* player, s8 playerIndex) {
                     D_8018D990[playerIndex] = 1;
                     player->unk_238 = 0;
                     if ((player->type & PLAYER_HUMAN) != 0) {
-                        func_800C9060(playerIndex, 0x1901904B);
+                        audio_play_sound_by_player_id(playerIndex, 0x1901904B);
                         break;
                     }
                 }
@@ -834,7 +834,7 @@ void apply_hit_effect(Player* player, s8 playerIndex) {
             D_80165190[3][playerIndex] = 1;
 
             if ((player->type & PLAYER_HUMAN) != 0) {
-                func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008008);
+                audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008008);
             }
             break;
     }
@@ -865,7 +865,7 @@ void trigger_lightning_strike(Player* player, s8 playerIndex) {
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008003);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008003);
     } else {
         play_cpu_sound_effect(playerIndex, player);
     }
@@ -912,7 +912,7 @@ void apply_lightning_effect(Player* player, s8 playerIndex) {
         player->unk_0B0 += 1;
         player->unk_08C = (f32) ((f64) player->unk_08C * 0.6);
         if ((player->unk_0B0 == 1) && (player->type & PLAYER_HUMAN)) {
-            func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008005);
+            audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008005);
         }
         if ((player->unk_0B0 >= 0) && (player->unk_0B0 < 0x1CC)) {
             move_f32_towards(&player->size, 0.7f, 0.1f);
@@ -921,7 +921,7 @@ void apply_lightning_effect(Player* player, s8 playerIndex) {
         } else {
             remove_lightning_effect(player, playerIndex);
             if (player->type & PLAYER_HUMAN) {
-                func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008008);
+                audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008008);
             }
         }
     }
@@ -1026,16 +1026,16 @@ void trigger_vertical_tumble(Player* player, s8 playerIndex) {
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
         if (((gModeSelection == VERSUS) && ((player->type & PLAYER_CPU) != 0)) && (!gDemoMode)) {
-            func_800CA24C(playerIndex);
+            audio_set_player_finished_2(playerIndex);
         }
 
         if (1) {}
 
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008005);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008005);
         if (((gModeSelection == VERSUS) && ((player->type & PLAYER_CPU) != 0)) && (!gDemoMode)) {
-            func_800CA24C(playerIndex);
+            audio_set_player_finished_2(playerIndex);
         }
-        func_800C9060(playerIndex, SOUND_ACTION_EXPLOSION);
+        audio_play_sound_by_player_id(playerIndex, SOUND_ACTION_EXPLOSION);
     } else {
         play_cpu_sound_effect(playerIndex, player);
     }
@@ -1134,8 +1134,8 @@ void trigger_high_tumble(Player* player, s8 playerIndex) {
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008005);
-        func_800C9060(playerIndex, SOUND_ACTION_EXPLOSION);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008005);
+        audio_play_sound_by_player_id(playerIndex, SOUND_ACTION_EXPLOSION);
     } else {
         play_cpu_sound_effect(playerIndex, player);
     }
@@ -1170,12 +1170,12 @@ void trigger_asphalt_ramp_boost(Player* player, s8 playerId) {
     player->unk_DB4.unk8 = 8.0f;
     if (D_8015F890 != 1) {
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0)) {
-            func_800C90F4(playerId, (player->characterId * 0x10) + 0x29008001);
-            func_800C9060(playerId, 0x1900A40B);
+            audio_play_character_sound(playerId, (player->characterId * 0x10) + 0x29008001);
+            audio_play_sound_by_player_id(playerId, 0x1900A40B);
         }
     } else if (player == gPlayerOne) {
-        func_800C90F4(playerId, (player->characterId * 0x10) + 0x29008001);
-        func_800C9060(playerId, 0x1900A40B);
+        audio_play_character_sound(playerId, (player->characterId * 0x10) + 0x29008001);
+        audio_play_sound_by_player_id(playerId, 0x1900A40B);
     }
     player->kartProps &= ~BACK_UP;
     player->effects &= ~AB_SPIN_EFFECT;
@@ -1217,12 +1217,12 @@ void trigger_wood_ramp_boost(Player* player, s8 playerId) {
 
     if (D_8015F890 != 1) {
         if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) && ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0)) {
-            func_800C90F4(playerId, (player->characterId * 0x10) + 0x29008001);
-            func_800C9060(playerId, 0x1900A40B);
+            audio_play_character_sound(playerId, (player->characterId * 0x10) + 0x29008001);
+            audio_play_sound_by_player_id(playerId, 0x1900A40B);
         }
     } else if (player == gPlayerOne) {
-        func_800C90F4(playerId, (player->characterId * 0x10) + 0x29008001);
-        func_800C9060(playerId, 0x1900A40B);
+        audio_play_character_sound(playerId, (player->characterId * 0x10) + 0x29008001);
+        audio_play_sound_by_player_id(playerId, 0x1900A40B);
     }
 
     player->kartProps &= ~BACK_UP;
@@ -1264,7 +1264,7 @@ void func_8008F104(Player* player, s8 playerIndex) {
 
     if (((player->type & PLAYER_HUMAN) == PLAYER_HUMAN) &&
         ((player->type & PLAYER_INVISIBLE_OR_BOMB) != PLAYER_INVISIBLE_OR_BOMB)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008003);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008003);
     }
 }
 
@@ -1358,7 +1358,7 @@ void func_8008F494(Player* player, s8 playerIndex) {
     if (((player->type & PLAYER_HUMAN) != 0) && ((player->type & PLAYER_INVISIBLE_OR_BOMB) == 0) &&
         ((player->lakituProps & HELD_BY_LAKITU) == 0) && ((player->oobProps & UNDER_OOB_OR_FLUID_LEVEL) == 0) &&
         ((player->oobProps & PASS_OOB_OR_FLUID_LEVEL) == 0)) {
-        func_800C90F4(playerIndex, (player->characterId * 0x10) + 0x29008004);
+        audio_play_character_sound(playerIndex, (player->characterId * 0x10) + 0x29008004);
     }
 }
 
@@ -1953,7 +1953,7 @@ void func_80090970(Player* player, s8 playerId, s8 arg2) {
                 player->lakituProps &= ~LAKITU_LAVA;
                 if (player->unk_0C8 >= 0x5B) {
                     if (player->type & PLAYER_HUMAN) {
-                        func_800C9018(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
+                        audio_stop_player_sound(playerId, SOUND_ARG_LOAD(0x01, 0x00, 0xFA, 0x28));
                     }
                     if (gModeSelection == BATTLE) {
                         pop_player_balloon(player, playerId);

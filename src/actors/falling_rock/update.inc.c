@@ -44,7 +44,7 @@ void spawn_falling_rocks(struct ActorSpawnData* spawnData) {
         temp_v1 = (struct FallingRock*) &gActorList[temp];
 
         temp_v1->unk_06 = temp_s0->someId;
-        func_802AAAAC((Collision*) &temp_v1->unk30);
+        init_collision_struct((Collision*) &temp_v1->unk30);
         temp_s0++;
     }
 }
@@ -88,7 +88,7 @@ void update_actor_falling_rocks(struct FallingRock* rock) {
         rock->pos[2] += unkVec[2] * rock->unk30.surfaceDistance[2];
         adjust_pos_orthogonally(unkVec, pad0, rock->velocity, 2.0f);
         rock->velocity[1] = -1.2f * pad1;
-        func_800C98B8(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
+        audio_play_sound_by_pos(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
     }
     pad0 = rock->unk30.surfaceDistance[0];
     if (pad0 < 0.0f) {
@@ -104,7 +104,7 @@ void update_actor_falling_rocks(struct FallingRock* rock) {
             rock->pos[2] += unkVec[2] * rock->unk30.surfaceDistance[0];
             adjust_pos_orthogonally(unkVec, pad0, rock->velocity, 2.0f);
             rock->velocity[1] = -1.2f * pad1;
-            func_800C98B8(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
+            audio_play_sound_by_pos(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
         }
     }
     pad0 = rock->unk30.surfaceDistance[1];
@@ -121,7 +121,7 @@ void update_actor_falling_rocks(struct FallingRock* rock) {
             pad1 = rock->velocity[1];
             adjust_pos_orthogonally(unkVec, pad0, rock->velocity, 2.0f);
             rock->velocity[1] = -1.2f * pad1;
-            func_800C98B8(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
+            audio_play_sound_by_pos(rock->pos, rock->velocity, SOUND_ARG_LOAD(0x19, 0x00, 0x80, 0x0F));
         }
     }
 }

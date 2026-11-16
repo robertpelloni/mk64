@@ -3,7 +3,7 @@
 
 /* Function Prototypes */
 
-void func_802903D8(Player*, Player*);
+void check_player_player_collision(Player*, Player*);
 void func_8028DF00(void);
 void func_8028DF38(void);
 void func_8028E028(void);
@@ -28,14 +28,14 @@ void func_8028F914(void);
 void func_8028F970(void);
 void func_8028FBD4(void);
 void end_demo_update(void);
-void func_8028FCBC(void);
-void func_80290314(void);
-void func_80290338(void);
-void func_80290360(void);
-void func_80290388(void);
-void func_802903B0(void);
-void func_802909F0(void);
-void func_80290B14(void);
+void update_race_state_machine(void);
+void quit_to_start_menu(void);
+void quit_to_main_menu(void);
+void quit_to_player_select_menu(void);
+void quit_to_course_select_menu(void);
+void trigger_restart_race(void);
+void evaluate_all_player_collisions(void);
+void update_all_cameras(void);
 
 extern f32 gLapCompletionPercentByPlayerId[];
 extern s32 gGPCurrentRaceRankByPlayerId[]; // D_801643B8 (position for each player)

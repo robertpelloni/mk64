@@ -1,25 +1,17 @@
-# Project Memory & Handoff Document
+# Session Handoff - 2026-07-01 (v8.107.5)
 
-This document records the current state of the project, significant architectural decisions, and ongoing observations for AI models working on the repository.
+## Executive Summary
+Focused heavily on the Phase 1 goal of perfect decompilation by aggressively renaming internal audio, save, and menu routines to descriptive names based on structural context. Created and expanded `DASHBOARD.md` to map out the status of new mechanics and features per the `UNIVERSAL_LLM_INSTRUCTIONS.md`.
 
-## Current Project Version: 1.6.8
+### Recent Fixes & Additions
+- **Audio Subsystem Overhaul:** Extensively renamed functions and data arrays in `src/audio/external.c` and `src/audio/port_eu.c`. Mapped EU-specific port macros and queue processing functions. Labeled major structures like `gAudioCmdBuffer`, `gSequenceQueue`, and `gAudioCharacterStates`.
+- **Save & Replays:** Renamed functions dealing with ghost data and controller pak I/O in `src/save.c` and `src/menus.c` (e.g., `save_ghost_data_to_controller_pak`, `save_update_course_time_trial_records`). Also renamed the ghost indexing routines in `src/replays.c` (`encode_ghost_data`, `decode_ghost_data`).
 
-## Architectural State & Observations
-*   **Codebase:** Built on `n64decomp/mk64`. Compiling requires an original `baserom.us.z64`. The codebase contains over 1,500 instances of the `UNUSED` macro (primarily padding and legacy decomp arrays) and one remaining `TODO` flag for audio function labeling in `src/menus.c`.
-*   **Build System:** `Makefile` handles N64 hardware targets (`make -j4`). `Makefile.pc` handles native PC targets (SDL/OpenGL), defining `PC_BUILD` and filtering out raw MIPS assembly directories (`src/os/`, `src/gu/`). New C files must be explicitly added to `mk64.ld` in the `.main` segment.
-*   **Feature Toggles:** `gEnable...` and `gToggle...` variables are declared in `src/main.h` and persisted via the `SaveExtended_` API in `src/save_extended.c`.
-*   **Settings Persistence:** Extended settings are safely packed into `checksum[0]` and `onlyBestTimeTrialRecords[0].unknownBytes` within the game's EEPROM structure, bypassing standard integrity checks.
-*   **Menus:** Modifying menus involves updating `src/menus.c` (backend logic, button presses) and `src/menu_items.c` (frontend string arrays, enums, switch statements, rendering).
-*   **PC Porting (Active Focus):** The project is actively abstracting N64 dependencies. `src/pc_port/` houses stubs for filesystem (`platform_save.c`, now using `stdio.h`), audio (`platform_audio.c`), input (`platform_input.c`, overriding `osContGetReadData`), and rendering (`platform_renderer.c`).
-*   **SDL Renderer Abstraction:** `PC_RenderDisplayList` is injected into `exec_display_list` (`src/main.c`) to intercept the Fast3DEX macro stream (`gSPDisplayList`) right before RSP dispatch. The logic translates N64 `s16` coordinates to `f32`, extracts RGBA colors, and prepares element indices for `glDrawElements`. It decodes 16-bit N64 texture formats (RGBA/IA) to standard 32-bit GL_RGBA arrays within the `G_SETTILESIZE` case. An actual SDL2 window (`SDL_Window`) and `SDL_GLContext` are generated in `platform_window.c` when `PC_BUILD` is defined.
-*   **Modding:** Basic hooks (`Mod_OnGameTick`, `Mod_OnRaceStart`, `Mod_OnLapComplete`) are injected into `src/main.c` and `src/code_80057C60.c`. `src/modding/mod_assets.c` acts as a data-driven Asset Registry, toggled via the UI (`gEnableCustomAssets`).
-*   **Redundancy Check:** Ghost replay logic (`process_course_ghost_replay` / `process_player_ghost_replay`) has been refactored into `process_ghost_replay_generic` (`src/replays.c`).
-*   **Practice Tools:** Fast Reset (L+R+Start, bypasses `load_course` in `src/main.c`), Timer Freeze, Lap Skip (1P only), Item Forcing (`gPracticeItemOption` overrides `src/update_objects.c`), Speedometer, Input Display, Flycam, and Robust Save States (L+Left/Right, capturing Position, Rotation, Velocity, Held Item, Lap Count, RNG Seed `gRandomSeed16`).
-*   **Visual Enhancements:** 60 FPS uses an `osGetTime` delta (`src/main.c`). 16:9 Widescreen adjusts the FOV and pillarboxes the HUD (`guOrtho` in `src/math_util_2.c`).
+## Roadblocks
+- A known compilation constraint exists where `make` fails without `baserom.us.z64`. To verify code changes, we have to rely on `cc -fsyntax-only -I include -I src -D _LANGUAGE_C src/*.c` for static analysis.
 
-## Critical Rules for Next Steps
-1.  **Always refer to `LLM_INSTRUCTIONS.md` for core directives.**
-2.  Any new UI feature *must* be added to both `gTextPracticeMenu`/`gTextExtrasMenu` in `src/menu_items.c` AND its corresponding enum in `src/menu_items.h`. The enum count must map 1:1 with the string array size.
-3.  When updating the `Makefile.pc` to support the SDL renderer translation, do not modify the core `Makefile`. Keep the N64 compilation target strictly separated from the PC target.
-4.  Do not assume compilation works without the ROM. Rely on strong static analysis.
-5.  Update `VERSION`, `CHANGELOG.md`, `ROADMAP.md`, and `TODO.md` after every successful feature implementation.
+## Next Steps for Implementor
+1. **Continue C Renaming:** Finish the `func_800B...` renaming in `src/audio/load.c`, `src/audio/synthesis.c`, and `src/audio/playback.c`. There are still many unnamed functions handling low-level sample DMA and envelope mixing.
+2. **Subsystem Pivot (Physics/Rust):** As `src/racing/collision.c` is nearly completely labeled, begin identifying the core physics loops in `src/racing/race_logic.c` or `src/racing/math_util.c` for extraction into the Rust bridge.
+- Renamed remaining func_800... routines in race_logic.c and actors.c.
+- Need to implement tkmk00 compressor/decompressor for menu textures (e.g. tkmk00decode) and map out the remaining menu and audio functions.

@@ -116,7 +116,7 @@ void func_800911B4(Player*, s8);
 void func_80091298(Player*, s8);
 
 // audio/external.c
-void func_800C9250(u8);
+void audio_play_character_sound_2901(u8);
 void play_star_music(u8);
 void stop_star_music(u8);
 void play_star_sound_effect(u8);

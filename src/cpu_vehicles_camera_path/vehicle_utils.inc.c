@@ -305,10 +305,10 @@ void update_vehicle_trains(void) {
         if ((oldPathPointIndex != gTrainList[i].locomotive.pathPointIndex) &&
             ((gTrainList[i].locomotive.pathPointIndex == 0x00BE) ||
              (gTrainList[i].locomotive.pathPointIndex == 0x0140))) { // play crossing bell sound
-            func_800C98B8(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
+            audio_play_sound_by_pos(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
                           SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x0E));
         } else if (random_int(100) == 0) { // play train whistle sound
-            func_800C98B8(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
+            audio_play_sound_by_pos(gTrainList[i].locomotive.position, gTrainList[i].locomotive.velocity,
                           SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x0D));
         }
 
@@ -534,9 +534,9 @@ void update_vehicle_paddle_boats(void) {
             }
             if (random_int(100) == 0) {
                 if (random_int(2) == 0) {
-                    func_800C98B8(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x47));
+                    audio_play_sound_by_pos(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x47));
                 } else {
-                    func_800C98B8(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x48));
+                    audio_play_sound_by_pos(paddleBoat->position, paddleBoat->velocity, SOUND_ARG_LOAD(0x19, 0x01, 0x80, 0x48));
                 }
             }
             sp94[0] = temp_f26;
@@ -818,14 +818,14 @@ void handle_vehicle_interactions(s32 playerId, Player* player, VehicleStuff* veh
                     if ((sVehicleSoundRenderCounter > 0) && (vehicle->someFlags == 0)) {
                         sVehicleSoundRenderCounter--;
                         vehicle->someFlags |= (RENDER_VEHICLE << playerId);
-                        func_800C9D80(vehicle->position, vehicle->velocity, soundBits);
+                        audio_play_sound_by_pos_with_effects(vehicle->position, vehicle->velocity, soundBits);
                     }
                 } else {
                     if (vehicle->someFlags != 0) {
                         vehicle->someFlags &= ~(RENDER_VEHICLE << playerId);
                         if (vehicle->someFlags == 0) {
                             sVehicleSoundRenderCounter++;
-                            func_800C9EF4(vehicle->position, soundBits);
+                            audio_stop_sound_by_pos_all_cameras(vehicle->position, soundBits);
                         }
                     }
                 }
@@ -904,7 +904,7 @@ void handle_vehicle_interactions(s32 playerId, Player* player, VehicleStuff* veh
                                     break;
                             }
                             vehicle->someFlagsTheSequel |= ((1 << playerId));
-                            func_800C98B8(vehicle->position, vehicle->velocity, soundBits2);
+                            audio_play_sound_by_pos(vehicle->position, vehicle->velocity, soundBits2);
                         }
                     }
                 } else {
